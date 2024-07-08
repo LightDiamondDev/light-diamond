@@ -1,0 +1,24 @@
+<script setup lang="ts">
+import GlobalModals from '@/components/GlobalModals.vue'
+import Header from '@/components/Header.vue'
+import {usePostCategoryStore} from '@/stores/postCategory'
+
+usePostCategoryStore().load()
+</script>
+
+<template>
+    <GlobalModals/>
+    <div class="surface-ground">
+        <Header/>
+        <div class='page-container mb-4'>
+            <RouterView></RouterView>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+.page-container {
+    /* Margin to prevent the fixed header from overlapping the beginning of the page content. */
+    margin-top: var(--header-with-margin-height);
+}
+</style>
