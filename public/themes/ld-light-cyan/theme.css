@@ -1,0 +1,9 @@
+:root {
+    --bg-image: '/public/images/elements/base-background.png';
+    --primary-bg-color: #005565;
+    --primary-text-color: #005565;
+    --secondary-bg-color: #eaeaea;
+    --secondary-text-color: #eaeaea;
+    --surface-border: #eaeaea;
+    --primary-color: #5aedda;
+}

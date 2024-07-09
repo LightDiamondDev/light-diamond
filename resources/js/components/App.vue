@@ -17,8 +17,8 @@ usePostCategoryStore().load()
 </template>
 
 <style scoped>
-.page-container {
-    /* Margin to prevent the fixed header from overlapping the beginning of the page content. */
+/*.page-container {
+     Margin to prevent the fixed header from overlapping the beginning of the page content.
     margin-top: var(--header-with-margin-height);
-}
+}*/
 </style>

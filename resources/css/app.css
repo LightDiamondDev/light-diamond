@@ -1,10 +1,48 @@
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
+/* =============== [ Подключение Шрифтов ] =============== */
+
+/* Шрифт Minecraft Ten */
+@font-face {
+    src: url('/public/fonts/minecraft-ten.ttf');
+    font-family: "Minecraft Ten";
+    font-weight: normal;
+    font-style: normal;
+}
+/* Шрифт Monocraft */
+@font-face {
+    src: url('/public/fonts/monocraft.otf');
+    font-family: "Monocraft";
+    font-weight: normal;
+    font-style: normal;
+}
+/* Шрифт Pixel Code Pro */
+@font-face {
+    src: url('/public/fonts/pixel-code-pro.ttf');
+    font-family: "Pixel Code Pro";
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    overflow-y: scroll;
+    margin: 0;
+}
+.icon {
+    background-size: contain;
+    vert-align: middle;
+    height: 48px;
+    width: 48px;
+
+}
+
+
 @layer tailwind {
     @tailwind base;
     @tailwind components;
     @tailwind utilities;
 }
+
 
 :root {
     --header-height: 3.5rem;
@@ -12,9 +50,6 @@
     --header-with-margin-height: calc(var(--header-height) + var(--header-margin));
 }
 
-body {
-    overflow-y: scroll;
-}
 
 .page-container {
     width: 100%;
@@ -42,7 +77,7 @@ body {
     }
 }
 
-/* Editor placeholder */
+
 .ProseMirror > .is-empty:before {
     color: #adb5bd;
     content: attr(data-placeholder);
@@ -127,14 +162,16 @@ body {
         margin: 0;
     }
 
+    /*
+
     code {
-        /*background-color: var(--surface-50);*/
+        background-color: var(--surface-50);
         border-radius: 0.3rem;
         padding: 0.2rem 0.5rem;
     }
 
     pre {
-        /*background: var(--surface-50);*/
+        background: var(--surface-50);
         border-radius: 0.5rem;
         padding: 0.6rem 0.9rem;
         overflow-x: auto;
@@ -148,6 +185,8 @@ body {
     :first-child {
         margin-top: 0;
     }
+
+    */
 }
 
 .post-content {
@@ -191,3 +230,11 @@ body {
         margin-top: 0.5rem;
     }
 }
+
+
+
+
+
+
+
+
