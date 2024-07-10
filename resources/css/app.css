@@ -23,19 +23,85 @@
     font-weight: normal;
     font-style: normal;
 }
-
+* {
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+    letter-spacing: 1px;
+    font-weight: normal;
+    outline: none;
+    margin: 0;
+}
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
 body {
     overflow-y: scroll;
     margin: 0;
 }
+a {
+    border: 2px solid transparent;
+    text-decoration: none;
+    line-height: 1.5;
+}
+button {
+    border: 2px solid transparent;
+    background: none;
+    cursor: pointer;
+}
+code { font-family: Monocraft, sans-serif; }
+fieldset { border: none; }
+img { user-select: none; }
+input {
+    font-family: Monocraft, sans-serif;
+    background: none;
+    padding: 0 10px;
+    border: none;
+}
+input::placeholder { color: #aaaaaa; }
+input::-ms-reveal { filter: invert(100%); }
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    font-family: "Monocraft", sans-serif;
+    -webkit-text-fill-color: #ffffff;
+}
+p, span { line-height: 1.5; }
 .icon {
     background-size: contain;
     vert-align: middle;
     height: 48px;
     width: 48px;
-
 }
 
+/* =============== [ Анимации ] =============== */
+
+@keyframes icon-trigger-up-animation
+{
+    0% { margin-bottom: 0; }
+    50% { margin-bottom: 10px; }
+    100% { margin-bottom: 0; }
+}
+@keyframes smooth-disappear-animation
+{
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+@keyframes smooth-appear-animation
+{
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes transfusion-animation
+{
+    0% { background-position: 400% 0; }
+    25% { background-position: 300% 0; }
+    50% { background-position: 200% 0; }
+    75% { background-position: 100% 0; }
+    100% { background-position: 0 0; }
+}
 
 @layer tailwind {
     @tailwind base;

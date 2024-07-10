@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <p class="text-xl">Главная страница</p>
+    <img alt="" src="/images/users/content/ld.png">
 </template>
 
 <style scoped>

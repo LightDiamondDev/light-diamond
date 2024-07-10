@@ -1,9 +1,80 @@
 :root {
-    --bg-image: '/public/images/elements/base-background.png';
     --primary-bg-color: #005565;
-    --primary-text-color: #005565;
+    --primary-text-color: #eaeaea;
     --secondary-bg-color: #eaeaea;
-    --secondary-text-color: #eaeaea;
+    --secondary-text-color: #005565;
+    --hover-text-color: #00ffff;
     --surface-border: #eaeaea;
     --primary-color: #5aedda;
+    --small-font-size: 12px;
+    --smaller-font-size: 16px;
+    --default-font-size: 18px;
+    --larger-font-size: 32px;
+    --large-font-size: 56px;
 }
+header,
+.header-dropdown-content,
+.profile-dropdown-content {
+    background-image: url('../../images/elements/base-background.png');
+}
+.header-dropdown-content a:hover,
+.profile-dropdown-content a:hover { background-color: rgba(0, 255, 255, .1) }
+.profile-dropdown-content .profile-link {
+    background: linear-gradient(90deg, rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1));
+    animation: transfusion-animation 10s linear infinite;
+    border: 2px solid rgba(0, 255, 255, .3);
+}
+.profile-dropdown-content .ld-pay-link {
+    background: linear-gradient(90deg, rgba(0, 200, 0, .1), rgba(0, 200, 0, .3), rgba(0, 200, 0, .1), rgba(0, 200, 0, .3), rgba(0, 200, 0, .1));
+    animation: transfusion-animation 10s linear infinite;
+    border: 2px solid rgba(0, 200, 0, .3);
+}
+.profile-dropdown-content .profile-link:focus-visible,
+.profile-dropdown-content .ld-pay-link:focus-visible {
+    border: 2px solid #00ffff;
+}
+.profile-dropdown-content .line { background-color: #ffffff; }
+a:focus-visible, button:focus-visible {
+    background-color: rgba(0, 255, 255, .1);
+    border: 2px solid #00ffff;
+    color: #00ffff;
+}
+input:focus-visible, input:active {
+}
+::selection { background-color: rgba(0, 255, 255, .3); }
+::-moz-selection { background-color: rgba(0, 255, 255, .3); }
+
+header .icon-down-arrow {
+    background-image: url('../../images/items/diamond-down-arrow.png');
+}
+.search-content-form label input { border: 2px solid #ffffff; }
+.search-content-form label input:focus-visible {
+    background-color: rgba(0, 255, 255, .1);
+    border: 2px solid #00ffff;
+}
+
+.icon-apple { background-image: url('../../images/items/diamond-apple.png'); }
+.icon-axolotl-bucket { background-image: url('../../images/items/diamond-axolotl-bucket.png'); }
+.icon-bedrock-dev-small { background-image: url('../../images/items/bedrock-dev-small.png'); }
+.icon-bedrock-wiki { background-image: url('../../images/items/bedrock-wiki.png'); }
+.icon-bestiary { background-image: url('../../images/items/bestiary.png'); }
+.icon-book { background-image: url('../../images/items/diamond-book.png'); }
+.icon-border-profile { background-image: url('../../images/items/diamond-border-profile.png'); }
+.icon-border { background-image: url('../../images/items/diamond-border.png'); }
+.icon-bottle { background-image: url('../../images/items/diamond-bottle.png'); }
+.icon-diamond-pickaxe { background-image: url('../../images/items/diamond-pickaxe-icon.png'); }
+.icon-diamond-sword { background-image: url('../../images/items/diamond-sword-icon.png'); }
+.icon-diamond { background-image: url('../../images/items/diamond.png'); }
+.icon-documentary { background-image: url('../../images/items/documentary.png'); }
+.icon-download { background-image: url('../../images/items/diamond-download.png'); }
+.icon-eye { background-image: url('../../images/items/diamond-eye.png'); }
+.icon-faq { background-image: url('../../images/items/diamond-faq.png'); }
+.icon-gear { background-image: url('../../images/items/diamond-gear.png'); }
+.icon-left-arrow { background-image: url('../../images/items/diamond-left-arrow.png'); }
+.icon-magnifier { background-image: url('../../images/items/diamond-magnifier.png'); }
+.icon-map { background-image: url('../../images/items/diamond-map.png'); }
+.icon-microsoft-small { background-image: url('../../images/items/microsoft-small.png'); }
+.icon-minecraft-materials { background-image: url('../../images/items/minecraft-materials.png'); }
+.icon-script { background-image: url('../../images/items/diamond-script.png'); }
+.icon-skin { background-image: url('../../images/items/diamond-skin.png'); }
+.icon-spawn-egg { background-image: url('../../images/items/diamond-spawn-egg.png'); }
