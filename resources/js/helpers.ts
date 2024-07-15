@@ -1,4 +1,5 @@
 import {PostVersionStatus} from '@/types'
+import {ref} from 'vue'
 
 interface ImportMeta {
     env: {
@@ -45,7 +46,7 @@ export function getRelativeDate(date: Date | string): string {
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
 
     if (diffInSeconds < 60) {
-        return 'только что'
+        return 'Только что'
     }
 
     const diffInMinutes = Math.floor(diffInSeconds / 60)
@@ -100,4 +101,24 @@ export function getPostVersionStatusInfo(status: PostVersionStatus) {
                 severity: 'danger'
             }
     }
+}
+
+export function getCssVariableValue(variable: string) {
+    return getComputedStyle(document.documentElement).getPropertyValue(variable).trim()
+}
+export function remToPixels(remValue: string) {
+    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize)
+    return parseFloat(remValue) * rootFontSize
+}
+export function lockGlobalScroll() {
+    document.body.classList.add('lock-scroll')
+    //document.body.style.setProperty('padding-right', this.calculateBodyScrollbarWidth() + 'px')
+}
+export function unlockGlobalScroll()
+{
+    document.body.classList.remove('lock-scroll')
+    //document.body.style.removeProperty('--global-scrollbar-width')
+}
+function calculateBodyScrollbarWidth() {
+    return window.innerWidth - document.documentElement.offsetWidth
 }

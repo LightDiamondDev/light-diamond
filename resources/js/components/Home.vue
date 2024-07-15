@@ -4,6 +4,10 @@
 
 <template>
     <img alt="" src="/images/users/content/ld.png">
+    <img alt="" src="/images/users/content/ld.png">
+    <img alt="" src="/images/users/content/ld.png">
+    <img alt="" src="/images/users/content/ld.png">
+    <img alt="" src="/images/users/content/ld.png">
 </template>
 
 <style scoped>

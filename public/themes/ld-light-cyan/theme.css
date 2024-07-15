@@ -6,29 +6,51 @@
     --hover-text-color: #00ffff;
     --surface-border: #eaeaea;
     --primary-color: #5aedda;
-    --small-font-size: 12px;
-    --smaller-font-size: 16px;
-    --default-font-size: 18px;
-    --larger-font-size: 32px;
-    --large-font-size: 56px;
+    --global-scrollbar-width: 12px;
+    --bar-scrollbar-width: 8px;
 }
 header,
+.header-blur aside,
 .header-dropdown-content,
-.profile-dropdown-content {
-    background-image: url('../../images/elements/base-background.png');
-}
+.mobile-search-dropdown-content,
+.profile-dropdown-content { background-image: url('../../images/elements/base-background.png'); }
+.header-blur-on { background-color: rgba(0, 0, 0, .5); }
+.header-blur-off { pointer-events: none; }
+.left-header-sidebar.header-sidebar-on { transform: translateX(0); }
+.right-header-sidebar.header-sidebar-on { transform: translateX(0); }
+.left-header-sidebar.header-sidebar-off { transform: translateX(-100%); }
+.right-header-sidebar.header-sidebar-off { transform: translateX(100%); }
+.left-header-sidebar .closing-header-sidebar-button.closing-button { animation: rotate-left-360-animation .5s ease }
+.left-header-sidebar .closing-header-sidebar-button.opening-button { animation: rotate-right-360-animation .5s ease }
 .header-dropdown-content a:hover,
-.profile-dropdown-content a:hover { background-color: rgba(0, 255, 255, .1) }
+.left-header-sidebar a:hover,
+.left-header-sidebar .sign-in-button:hover,
+.right-header-sidebar a:hover,
+.right-header-sidebar .sign-in-button:hover,
+.profile-dropdown-content a:hover,
+.profile-dropdown-content .button-link:hover { background-color: rgba(0, 255, 255, .1) }
+.left-header-sidebar .profile-link,
+.right-header-sidebar .profile-link,
 .profile-dropdown-content .profile-link {
     background: linear-gradient(90deg, rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1));
     animation: transfusion-animation 10s linear infinite;
     border: 2px solid rgba(0, 255, 255, .3);
+}
+.left-header-sidebar .unit-title,
+.right-header-sidebar .unit-title {
+    background: linear-gradient(90deg, rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1));
+    animation: transfusion-animation 10s linear infinite;
+    font-family: "Minecraft Ten", sans-serif;
 }
 .profile-dropdown-content .ld-pay-link {
     background: linear-gradient(90deg, rgba(0, 200, 0, .1), rgba(0, 200, 0, .3), rgba(0, 200, 0, .1), rgba(0, 200, 0, .3), rgba(0, 200, 0, .1));
     animation: transfusion-animation 10s linear infinite;
     border: 2px solid rgba(0, 200, 0, .3);
 }
+.left-header-sidebar .logo-wrap:hover,
+.right-header-sidebar .logo-wrap:hover { background-color: rgba(0, 255, 255, 0); }
+.left-header-sidebar .profile-link:focus-visible,
+.right-header-sidebar .profile-link:focus-visible,
 .profile-dropdown-content .profile-link:focus-visible,
 .profile-dropdown-content .ld-pay-link:focus-visible {
     border: 2px solid #00ffff;
@@ -43,14 +65,54 @@ input:focus-visible, input:active {
 }
 ::selection { background-color: rgba(0, 255, 255, .3); }
 ::-moz-selection { background-color: rgba(0, 255, 255, .3); }
-
-header .icon-down-arrow {
-    background-image: url('../../images/items/diamond-down-arrow.png');
+input::placeholder { color: #aaaaaa; }
+input::-ms-reveal { filter: invert(100%); }
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    font-family: "Monocraft", sans-serif;
+    -webkit-text-fill-color: #ffffff;
 }
-.search-content-form label input { border: 2px solid #ffffff; }
+.left-header-sidebar::-webkit-scrollbar,
+.right-header-sidebar::-webkit-scrollbar {
+    width: var(--bar-scrollbar-width);
+}
+::-webkit-scrollbar {
+    width: var(--global-scrollbar-width);
+}
+.left-header-sidebar::-webkit-scrollbar-thumb,
+.right-header-sidebar::-webkit-scrollbar-thumb { background: rgba(0, 255, 255, .2); }
+.left-header-sidebar::-webkit-scrollbar-track,
+.right-header-sidebar::-webkit-scrollbar-track { background: rgba(0, 0, 0, .3); }
+
+
+::-webkit-scrollbar-thumb { background: rgba(0, 85, 100, 1); }
+::-webkit-scrollbar-track { background: rgba(0, 55, 70, 1); }
+
+.search-content-form label input { border: 2px solid #dadada; }
 .search-content-form label input:focus-visible {
     background-color: rgba(0, 255, 255, .1);
     border: 2px solid #00ffff;
+}
+header .list-label-text,
+.header-dropdown-content .list-label-text {
+    font-family: "Minecraft Ten", sans-serif;
+}
+.icon { background-repeat: no-repeat; }
+.left-header-sidebar .naked-link .list-label-text,
+.left-header-sidebar .profile-link .title,
+.left-header-sidebar .profile-link .subtitle,
+.right-header-sidebar .naked-link .list-label-text,
+.right-header-sidebar .profile-link .title,
+.right-header-sidebar .profile-link .subtitle,
+.profile-dropdown-content .profile-link .title,
+.profile-dropdown-content .profile-link .subtitle,
+.profile-dropdown-content .ld-pay-link .title,
+.profile-dropdown-content .ld-pay-link .subtitle,
+.left-header-sidebar .naked-link .list-label-text {
+    font-family: "Monocraft", sans-serif;
 }
 
 .icon-apple { background-image: url('../../images/items/diamond-apple.png'); }
@@ -62,19 +124,29 @@ header .icon-down-arrow {
 .icon-border-profile { background-image: url('../../images/items/diamond-border-profile.png'); }
 .icon-border { background-image: url('../../images/items/diamond-border.png'); }
 .icon-bottle { background-image: url('../../images/items/diamond-bottle.png'); }
+.icon-cross { background-image: url('../../images/items/diamond-cross.png'); }
 .icon-diamond-pickaxe { background-image: url('../../images/items/diamond-pickaxe-icon.png'); }
 .icon-diamond-sword { background-image: url('../../images/items/diamond-sword-icon.png'); }
 .icon-diamond { background-image: url('../../images/items/diamond.png'); }
 .icon-documentary { background-image: url('../../images/items/documentary.png'); }
+.icon-down-arrow { background-image: url('../../images/items/diamond-down-arrow.png'); }
 .icon-download { background-image: url('../../images/items/diamond-download.png'); }
 .icon-eye { background-image: url('../../images/items/diamond-eye.png'); }
 .icon-faq { background-image: url('../../images/items/diamond-faq.png'); }
+.icon-fixed-header { background-image: url('../../images/items/diamond-fixed-header.png'); }
+.icon-free-header { background-image: url('../../images/items/diamond-free-header.png'); }
 .icon-gear { background-image: url('../../images/items/diamond-gear.png'); }
+.icon-hand { background-image: url('../../images/items/diamond-hand.png'); }
 .icon-left-arrow { background-image: url('../../images/items/diamond-left-arrow.png'); }
 .icon-magnifier { background-image: url('../../images/items/diamond-magnifier.png'); }
 .icon-map { background-image: url('../../images/items/diamond-map.png'); }
+.icon-moon { background-image: url('../../images/items/diamond-moon.png'); }
 .icon-microsoft-small { background-image: url('../../images/items/microsoft-small.png'); }
 .icon-minecraft-materials { background-image: url('../../images/items/minecraft-materials.png'); }
 .icon-script { background-image: url('../../images/items/diamond-script.png'); }
 .icon-skin { background-image: url('../../images/items/diamond-skin.png'); }
 .icon-spawn-egg { background-image: url('../../images/items/diamond-spawn-egg.png'); }
+.icon-sun { background-image: url('../../images/items/diamond-sun.png'); }
+.icon-switcher-handle { background-image: url('../../images/items/diamond-switcher-handle.png'); }
+.icon-switcher-way { background-image: url('../../images/items/diamond-switcher-way.png'); }
+.icon-units { background-image: url('../../images/items/diamond-units.png'); }

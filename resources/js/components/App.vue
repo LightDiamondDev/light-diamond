@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import GlobalModals from '@/components/GlobalModals.vue'
-import Header from '@/components/Header.vue'
-import {usePostCategoryStore} from '@/stores/postCategory'
+    import GlobalModals from '@/components/GlobalModals.vue'
+    import Header from '@/components/Header.vue'
+    import {usePostCategoryStore} from '@/stores/postCategory'
+    import {ref} from 'vue'
 
-usePostCategoryStore().load()
+    usePostCategoryStore().load()
 </script>
 
 <template>
@@ -14,6 +15,14 @@ usePostCategoryStore().load()
             <RouterView></RouterView>
         </div>
     </div>
+    <!--
+    <div class="surface-ground">
+        <Header/>
+        <div class='page-container mb-4'>
+            <RouterView></RouterView>
+        </div>
+    </div>
+    -->
 </template>
 
 <style scoped>

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import {useModalStore} from '@/stores/modal'
-import {computed, ref, watch} from 'vue'
+import {computed, onMounted, onUnmounted, ref, watch} from 'vue'
 import {storeToRefs} from 'pinia'
+import tailwindConfig from '../../../tailwind.config'
+import {getCssVariableValue, remToPixels} from '@/helpers'
 
 enum AuthFormType {
     LOGIN,
@@ -29,6 +31,7 @@ watch(isAuthModal, (showAuthModal: boolean) => {
         authFormType.value = AuthFormType.LOGIN
     }
 })
+
 </script>
 
 <template>
