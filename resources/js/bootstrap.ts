@@ -1,6 +1,6 @@
 /**
  * Load theme (light/dark) from local storage.
  */
-import useThemeManager from '@/theme-manager'
+import useDesignManager from '@/design-manager'
 
-useThemeManager().loadTheme()
+useDesignManager().load()

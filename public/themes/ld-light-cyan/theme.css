@@ -9,17 +9,22 @@
     --global-scrollbar-width: 12px;
     --bar-scrollbar-width: 8px;
 }
+body,
 header,
 .header-blur aside,
 .header-dropdown-content,
 .mobile-search-dropdown-content,
-.profile-dropdown-content { background-image: url('../../images/elements/base-background.png'); }
+.profile-dropdown-content,
+footer {
+    background-image: url('../../images/elements/base-background.png');
+    background-color: var(--primary-bg-color);
+}
+.surface-ground {
+    background-image: url('../../images/elements/base-background.png');
+    background-color: var(--secondary-bg-color);
+}
 .header-blur-on { background-color: rgba(0, 0, 0, .5); }
 .header-blur-off { pointer-events: none; }
-.left-header-sidebar.header-sidebar-on { transform: translateX(0); }
-.right-header-sidebar.header-sidebar-on { transform: translateX(0); }
-.left-header-sidebar.header-sidebar-off { transform: translateX(-100%); }
-.right-header-sidebar.header-sidebar-off { transform: translateX(100%); }
 .left-header-sidebar .closing-header-sidebar-button.closing-button { animation: rotate-left-360-animation .5s ease }
 .left-header-sidebar .closing-header-sidebar-button.opening-button { animation: rotate-right-360-animation .5s ease }
 .header-dropdown-content a:hover,
@@ -97,10 +102,13 @@ input:-webkit-autofill:active {
     border: 2px solid #00ffff;
 }
 header .list-label-text,
-.header-dropdown-content .list-label-text {
+.header-dropdown-content .list-label-text,
+footer nav a span {
     font-family: "Minecraft Ten", sans-serif;
 }
+footer .tinted-gradient { background: linear-gradient(rgba(0, 15, 15, .8), transparent); }
 .icon { background-repeat: no-repeat; }
+.header-blur .sign-in-button .list-label-text,
 .left-header-sidebar .naked-link .list-label-text,
 .left-header-sidebar .profile-link .title,
 .left-header-sidebar .profile-link .subtitle,
@@ -111,7 +119,7 @@ header .list-label-text,
 .profile-dropdown-content .profile-link .subtitle,
 .profile-dropdown-content .ld-pay-link .title,
 .profile-dropdown-content .ld-pay-link .subtitle,
-.left-header-sidebar .naked-link .list-label-text {
+footer .row {
     font-family: "Monocraft", sans-serif;
 }
 
@@ -146,7 +154,11 @@ header .list-label-text,
 .icon-script { background-image: url('../../images/items/diamond-script.png'); }
 .icon-skin { background-image: url('../../images/items/diamond-skin.png'); }
 .icon-spawn-egg { background-image: url('../../images/items/diamond-spawn-egg.png'); }
-.icon-sun { background-image: url('../../images/items/diamond-sun.png'); }
+.icon-sun { background-image: url('../../images/items/diamond-sun.svg'); }
 .icon-switcher-handle { background-image: url('../../images/items/diamond-switcher-handle.png'); }
 .icon-switcher-way { background-image: url('../../images/items/diamond-switcher-way.png'); }
+.icon-telegram { background-image: url('../../images/items/diamond-telegram.png'); }
+.icon-top-arrow { background-image: url('../../images/items/diamond-top-arrow.png'); }
 .icon-units { background-image: url('../../images/items/diamond-units.png'); }
+.icon-vk { background-image: url('../../images/items/diamond-vk.png'); }
+.icon-youtube { background-image: url('../../images/items/diamond-youtube.png'); }

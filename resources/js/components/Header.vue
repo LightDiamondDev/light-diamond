@@ -1,6 +1,6 @@
 <script setup lang='ts'>
     import {useAuthStore} from '@/stores/auth'
-    import useThemeManager from '@/theme-manager'
+    import useDesignManager from '@/design-manager'
     import {useRouter} from 'vue-router'
     import {useModalStore} from '@/stores/modal'
     import {usePostCategoryStore} from '@/stores/postCategory'
@@ -11,14 +11,12 @@
     const authStore = useAuthStore()
     const categoryStore = usePostCategoryStore()
     const modalStore = useModalStore()
-    const themeManager = useThemeManager()
+    const designManager = useDesignManager()
 
     const headerHeight = remToPixels(getCssVariableValue('--header-height'))
 
-    let isHeaderFixed = ref(false)
+    const isHeaderSidebar = ref(false)
     const isHeaderHidden = ref(false)
-    let isHeaderSidebarDisplay = ref(false);
-    let isDesktopSidebarDisplay = ref(false);
     let isLightTheme = ref(true);
 
     let previousScroll = 0;
@@ -32,25 +30,17 @@
     }
     function closeHeaderSidebar()
     {
-        isHeaderSidebarDisplay.value = false
+        isHeaderSidebar.value = false
         unlockGlobalScroll();
     }
     function openHeaderSidebar()
     {
-        isHeaderSidebarDisplay.value = true
+        isHeaderSidebar.value = true
         lockGlobalScroll()
-    }
-    function switchHeaderDisplay()
-    {
-        isHeaderFixed.value ? isHeaderFixed.value = false : isHeaderFixed.value = true
-    }
-    function switchDesktopSidebarDisplay()
-    {
-        isDesktopSidebarDisplay.value ? isDesktopSidebarDisplay.value = false : isDesktopSidebarDisplay.value = true
     }
     function switchLightTheme()
     {
-        isLightTheme.value ? isLightTheme.value = false : isLightTheme.value = true
+        isLightTheme.value = !isLightTheme.value
     }
 
     onMounted(() => document.addEventListener('scroll', headerScrollEvent))
@@ -60,227 +50,238 @@
 
 <template>
 
-    <div class="h-[var(--header-height)]" id="header" :class="{'header-hidden': isHeaderHidden}">></div>
+    <div
+        class="header-blur flex visible"
+        :class="{'header-blur-on': isHeaderSidebar, 'header-blur-off': !isHeaderSidebar}">
+        <aside
+            class="left-header-sidebar flex flex-col"
+            :class="{'xl:hidden': !designManager.isDesktopSidebarVisible(),
+            'translate-x-0': isHeaderSidebar,
+            '-translate-x-full': !isHeaderSidebar,
+            'fixed': designManager.isHeaderFixedVisible()}">
+            <div class="left-header-sidebar-interaction flex justify-between items-center">
+                <div></div>
+                <a class="logo-wrap flex items-center" href="#">
+                    <span class="logo"></span>
+                </a>
+                <button
+                    class="closing-header-sidebar-button flex justify-center items-center"
+                    :class="{'closing-button': !isHeaderSidebar, 'opening-button': isHeaderSidebar}"
+                    @click="closeHeaderSidebar">
+                    <span class="icon icon-cross"></span>
+                </button>
+            </div>
 
-    <header class="h-[var(--header-height)] flex justify-center" :class="{'header-hidden': !isHeaderFixed && isHeaderHidden}">
+            <div class="unit-title flex justify-center text-[1.1rem]">Действия</div>
 
-        <div
-            v-if="isDesktopSidebarDisplay"
-            class="header-blur flex"
-            :class="{'header-blur-on': isHeaderSidebarDisplay, 'header-blur-off': !isHeaderSidebarDisplay}">
-            <aside
-                class="left-header-sidebar flex flex-col"
-                :class="{'header-sidebar-on': isHeaderSidebarDisplay, 'header-sidebar-off': !isHeaderSidebarDisplay}">
-
-                <div class="left-header-sidebar-interaction flex justify-between items-center">
-                    <div></div>
-                    <a class="logo-wrap flex items-center" href="#">
-                        <span class="logo"></span>
-                    </a>
-                    <button
-                        class="closing-header-sidebar-button flex justify-center items-center"
-                        :class="{'closing-button': !isHeaderSidebarDisplay, 'opening-button': isHeaderSidebarDisplay}"
-                        @click="closeHeaderSidebar">
-                        <span class="icon icon-cross"></span>
-                    </button>
-                </div>
-
-                <div class="unit-title flex justify-center text-[1.1rem]">Действия</div>
-
-                <a v-if="authStore.isAuthenticated" class="profile-link laminated-link flex items-center" href="#">
+            <a v-if="authStore.isAuthenticated" class="profile-link laminated-link flex items-center" href="#">
                     <span class="icon-outline flex justify-center items-center icon icon-border">
                         <img alt="" src="/images/users/content/funny-girl.png" style="height: 26px;">
                     </span>
-                    <div class="flex flex-col">
-                        <span class="title list-label-text text-sm">S3V3N1ce</span>
-                        <span class="subtitle list-label-text text-[0.75rem]">Профиль</span>
-                    </div>
-                </a>
+                <div class="flex flex-col">
+                    <span class="title list-label-text text-sm">S3V3N1ce</span>
+                    <span class="subtitle list-label-text text-[0.75rem]">Профиль</span>
+                </div>
+            </a>
 
-                <a v-if="authStore.isAuthenticated" class="naked-link flex items-center" href="#">
-                    <span class="icon icon-bottle"></span>
-                    <span class="list-label-text text-base">Контент-Студия</span>
-                </a>
+            <a v-if="authStore.isAuthenticated" class="naked-link flex items-center" href="#">
+                <span class="icon icon-bottle"></span>
+                <span class="list-label-text">Контент-Студия</span>
+            </a>
 
-                <a v-if="authStore.isAuthenticated" class="naked-link flex items-center" href="#">
-                    <span class="icon icon-download"></span>
-                    <span class="list-label-text text-base">Создать Материал</span>
-                </a>
+            <a v-if="authStore.isAuthenticated" class="naked-link flex items-center" href="#">
+                <span class="icon icon-download"></span>
+                <span class="list-label-text">Создать Материал</span>
+            </a>
 
-                <a v-if="authStore.isAuthenticated" class="naked-link flex items-center" href="#">
-                    <span class="icon icon-gear"></span>
-                    <span class="list-label-text text-base">Настройки</span>
-                </a>
+            <a v-if="authStore.isAuthenticated" class="naked-link flex items-center" href="#">
+                <span class="icon icon-gear"></span>
+                <span class="list-label-text">Настройки</span>
+            </a>
 
-                <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="switchHeaderDisplay">
-                    <span v-if="isHeaderFixed" class="quick-settings-icon icon icon-fixed-header"></span>
-                    <span v-if="!isHeaderFixed" class="quick-settings-icon icon icon-free-header"></span>
-                    <span v-if="isHeaderFixed" class="list-label-text text-[0.7rem]">Фиксированная Шапка</span>
-                    <span v-if="!isHeaderFixed" class="list-label-text text-sm">Свободная Шапка</span>
-                    <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
-                        <span :class="{'off': !isHeaderFixed, 'on': isHeaderFixed}" class="handle icon icon-switcher-handle"></span>
+            <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="designManager.switchHeaderFixed()">
+                <span v-if="designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-fixed-header"></span>
+                <span v-if="!designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-free-header"></span>
+                <span v-if="designManager.isHeaderFixedVisible()" class="list-label-text text-[0.7rem]">Фиксированная Шапка</span>
+                <span v-if="!designManager.isHeaderFixedVisible()" class="list-label-text text-sm">Свободная Шапка</span>
+                <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
+                        <span :class="{'off': !designManager.isHeaderFixedVisible(), 'on': designManager.isHeaderFixedVisible()}" class="handle icon icon-switcher-handle"></span>
                     </span>
-                </button>
+            </button>
 
-                <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="switchLightTheme">
-                    <span v-if="isLightTheme" class="quick-settings-icon icon icon-sun"></span>
-                    <span v-if="!isLightTheme" class="quick-settings-icon icon icon-moon"></span>
-                    <span v-if="isLightTheme" class="list-label-text text-[1.1rem]">Светлая Тема</span>
-                    <span v-if="!isLightTheme" class="list-label-text text-[1.1rem]">Тёмная Тема</span>
-                    <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
+            <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="switchLightTheme">
+                <span v-if="isLightTheme" class="quick-settings-icon icon icon-sun"></span>
+                <span v-if="!isLightTheme" class="quick-settings-icon icon icon-moon"></span>
+                <span v-if="isLightTheme" class="list-label-text text-[1.1rem]">Светлая Тема</span>
+                <span v-if="!isLightTheme" class="list-label-text text-[1.1rem]">Тёмная Тема</span>
+                <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
                         <span :class="{'off': isLightTheme, 'on': !isLightTheme}" class="handle icon icon-switcher-handle"></span>
                     </span>
-                </button>
+            </button>
 
-                <button v-if="!authStore.isAuthenticated" class="sign-in-button flex items-center" href="#">
-                    <span class="icon icon-border-profile"></span>
-                    <span class="list-label-text text-[1.1rem]">Войти</span>
-                </button>
+            <button v-if="!authStore.isAuthenticated" class="sign-in-button flex items-center" href="#">
+                <span class="icon icon-border-profile"></span>
+                <span class="list-label-text text-[1.1rem]">Войти</span>
+            </button>
 
-                <div class="unit-title flex justify-center text-[1.1rem]">Контент</div>
+            <div class="unit-title flex justify-center text-[1.1rem]">Контент</div>
 
-                <a class="naked-link flex items-center" href="#">
-                    <span class="icon icon-book"></span>
-                    <span class="list-label-text text-base">Каталог</span>
-                </a>
-                <a class="naked-link flex items-center" href="#">
-                    <span class="icon icon-apple flex"></span>
-                    <span class="list-label-text text-base">Аддон LD</span>
-                </a>
-                <a class="naked-link flex items-center" href="#">
-                    <span class="icon icon-axolotl-bucket"></span>
-                    <span class="list-label-text text-base">Ресурс-Паки</span>
-                </a>
-                <a class="naked-link flex items-center" href="#">
-                    <span class="icon icon-spawn-egg"></span>
-                    <span class="list-label-text text-base">Аддоны</span>
-                </a>
-                <a class="naked-link flex items-center" href="#">
-                    <span class="icon icon-skin"></span>
-                    <span class="list-label-text text-base">Скины</span>
-                </a>
-                <a class="naked-link flex items-center" href="#">
-                    <span class="icon icon-map"></span>
-                    <span class="list-label-text text-base">Карты</span>
-                </a>
-                <a class="naked-link flex items-center" href="#">
-                    <span class="icon icon-script"></span>
-                    <span class="list-label-text text-base">Статьи</span>
-                </a>
+            <a class="naked-link flex items-center" href="#">
+                <span class="icon icon-book"></span>
+                <span class="list-label-text">Каталог</span>
+            </a>
+            <a class="naked-link flex items-center" href="#">
+                <span class="icon icon-apple flex"></span>
+                <span class="list-label-text">Аддон LD</span>
+            </a>
+            <a class="naked-link flex items-center" href="#">
+                <span class="icon icon-axolotl-bucket"></span>
+                <span class="list-label-text">Ресурс-Паки</span>
+            </a>
+            <a class="naked-link flex items-center" href="#">
+                <span class="icon icon-spawn-egg"></span>
+                <span class="list-label-text">Аддоны</span>
+            </a>
+            <a class="naked-link flex items-center" href="#">
+                <span class="icon icon-skin"></span>
+                <span class="list-label-text">Скины</span>
+            </a>
+            <a class="naked-link flex items-center" href="#">
+                <span class="icon icon-map"></span>
+                <span class="list-label-text">Карты</span>
+            </a>
+            <a class="naked-link flex items-center" href="#">
+                <span class="icon icon-script"></span>
+                <span class="list-label-text">Статьи</span>
+            </a>
 
-                <div class="unit-title flex justify-center text-[1.1rem]">Материалы</div>
+            <div class="unit-title flex justify-center text-[1.1rem]">Материалы</div>
 
-                <a class="naked-link flex items-center" href="#">
-                    <span class="icon icon-bestiary"></span>
-                    <span class="list-label-text text-sm">Бестиарий Light Diamond</span>
-                </a>
-                <a class="naked-link flex items-center" href="https://github.com/Mojang/bedrock-samples/releases">
-                    <span class="icon icon-documentary"></span>
-                    <span class="list-label-text text-sm">Документация Light Diamond</span>
-                </a>
-                <a class="naked-link flex items-center" href="https://learn.microsoft.com/en-us/minecraft/creator/reference/content/entityreference/examples/componentlist">
-                    <span class="icon icon-microsoft-small"></span>
-                    <span class="list-label-text text-sm">Документация Microsoft</span>
-                </a>
-                <a class="naked-link flex items-center" href="https://bedrock.dev/">
-                    <span class="icon icon-bedrock-dev-small"></span>
-                    <span class="list-label-text text-sm">Документация Bedrock.Dev</span>
-                </a>
-                <a class="naked-link flex items-center" href="https://wiki.bedrock.dev/">
-                    <span class="icon icon-bedrock-wiki"></span>
-                    <span class="list-label-text text-sm">Документация Bedrock Wiki</span>
-                </a>
-                <a class="naked-link flex items-center" href="https://github.com/Mojang/bedrock-samples/releases">
-                    <span class="icon icon-minecraft-materials"></span>
-                    <span class="list-label-text text-sm">Материалы Minecraft</span>
-                </a>
+            <a class="naked-link flex items-center" href="#">
+                <span class="icon icon-bestiary"></span>
+                <span class="list-label-text small">Бестиарий Light Diamond</span>
+            </a>
+            <a class="naked-link flex items-center" href="https://github.com/Mojang/bedrock-samples/releases">
+                <span class="icon icon-documentary"></span>
+                <span class="list-label-text small">Документация Light Diamond</span>
+            </a>
+            <a class="naked-link flex items-center" href="https://learn.microsoft.com/en-us/minecraft/creator/reference/content/entityreference/examples/componentlist">
+                <span class="icon icon-microsoft-small"></span>
+                <span class="list-label-text small">Документация Microsoft</span>
+            </a>
+            <a class="naked-link flex items-center" href="https://bedrock.dev/">
+                <span class="icon icon-bedrock-dev-small"></span>
+                <span class="list-label-text small">Документация Bedrock.Dev</span>
+            </a>
+            <a class="naked-link flex items-center" href="https://wiki.bedrock.dev/">
+                <span class="icon icon-bedrock-wiki"></span>
+                <span class="list-label-text small">Документация Bedrock Wiki</span>
+            </a>
+            <a class="naked-link flex items-center" href="https://github.com/Mojang/bedrock-samples/releases">
+                <span class="icon icon-minecraft-materials"></span>
+                <span class="list-label-text small">Материалы Minecraft</span>
+            </a>
 
-                <div class="unit-title flex justify-center text-[1.1rem]">Ссылки</div>
+            <div class="unit-title flex justify-center text-[1.1rem]">Ссылки</div>
 
-                <a class="naked-link flex items-center" href="https://vk.com/light.diamond">
-                    <span class="icon icon-diamond"></span>
-                    <span class="list-label-text text-base">Группа VK</span>
-                </a>
-                <a class="naked-link flex items-center" href="https://www.youtube.com/@grostlight3303">
-                    <span class="icon icon-eye"></span>
-                    <span class="list-label-text text-base">YouTube</span>
-                </a>
-                <a class="naked-link flex items-center" href="#">
-                    <span class="icon icon-hand"></span>
-                    <span class="list-label-text text-base">Правила Пользования</span>
-                </a>
-                <a class="naked-link flex items-center" href="#">
-                    <span class="icon icon-script"></span>
-                    <span class="list-label-text text-sm">Политика Конфиденциальности</span>
-                </a>
+            <a class="naked-link flex items-center" href="https://vk.com/light.diamond">
+                <span class="icon icon-vk"></span>
+                <span class="list-label-text text-base">ВКонтакте</span>
+            </a>
+            <a class="naked-link flex items-center" href="https://t.me/light_diamond_channel">
+                <span class="icon icon-telegram"></span>
+                <span class="list-label-text text-base">Телеграм</span>
+            </a>
+            <a class="naked-link flex items-center" href="https://www.youtube.com/@grostlight3303">
+                <span class="icon icon-youtube"></span>
+                <span class="list-label-text text-base">YouTube</span>
+            </a>
+            <a class="naked-link flex items-center" href="#">
+                <span class="icon icon-diamond"></span>
+                <span class="list-label-text text-base">Обновления</span>
+            </a>
+            <a class="naked-link flex items-center" href="#">
+                <span class="icon icon-hand"></span>
+                <span class="list-label-text text-base">Правила Пользования</span>
+            </a>
+            <a class="naked-link flex items-center" href="#">
+                <span class="icon icon-script"></span>
+                <span class="list-label-text policy">Политика Конфиденциальности</span>
+            </a>
 
-                <div class="unit-title flex justify-center text-[1.1rem]">Поддержка</div>
+            <div class="unit-title flex justify-center text-[1.1rem]">Поддержка</div>
 
-                <a class="naked-link flex items-center" href="#">
-                    <span class="icon icon-diamond-sword"></span>
-                    <span class="list-label-text text-[1.1rem]">Помощь</span>
-                </a>
-                <a class="naked-link flex items-center" href="#">
-                    <span class="icon icon-diamond-pickaxe"></span>
-                    <span class="list-label-text text-[1.1rem]">Гайды</span>
-                </a>
-                <a class="naked-link flex items-center" href="#">
-                    <span class="icon icon-faq"></span>
-                    <span class="list-label-text text-[1.1rem]">О Проекте</span>
-                </a>
+            <a class="naked-link flex items-center" href="#">
+                <span class="icon icon-diamond-sword"></span>
+                <span class="list-label-text text-[1.1rem]">Помощь</span>
+            </a>
+            <a class="naked-link flex items-center" href="#">
+                <span class="icon icon-diamond-pickaxe"></span>
+                <span class="list-label-text text-[1.1rem]">Гайды</span>
+            </a>
+            <a class="naked-link flex items-center" href="#">
+                <span class="icon icon-faq"></span>
+                <span class="list-label-text text-[1.1rem]">О Проекте</span>
+            </a>
+        </aside>
+        <div class="close-header-sidebar-background" @click="closeHeaderSidebar"></div>
+    </div>
 
-            </aside>
-            <div class="close-header-sidebar-background" @click="closeHeaderSidebar"></div>
-        </div>
+    <div class="h-[var(--header-height)]" id="header" :class="{'header-hidden': isHeaderHidden}">></div>
+
+    <header class="h-[var(--header-height)] flex justify-center" :class="{'header-hidden': !designManager.isHeaderFixedVisible() && isHeaderHidden}">
 
         <nav class="header-wrap flex justify-between">
-            <div class="flex items-center">
+            <div class="div flex items-center">
 
                 <button
-                    :class="{'on': isDesktopSidebarDisplay}"
-                    class="opening-header-sidebar-button flex justify-center items-center"
+                    :class="{'xl:hidden': !designManager.isDesktopSidebarVisible(), 'sm:opacity-0': isHeaderSidebar}"
+                    class="opening-header-sidebar-button opacity-100 duration-1 flex justify-center items-center"
                     @click="openHeaderSidebar"
                     type="button">
                     <span class="icon icon-units"></span>
                 </button>
 
-                <a class="logo-wrap flex items-center" href="#">
+                <a
+                    :class="{'opacity-0': isHeaderSidebar}"
+                    class="logo-wrap flex items-center duration-200"
+                    href="#">
                     <span class="logo"></span>
                 </a>
 
                 <div class="header-dropdown inline-flex flex-col">
                     <button class="flex list-label items-center" type="button">
                         <span class="icon icon-down-arrow"></span>
-                        <span class="list-label-text text-[1.1rem]">Контент</span>
+                        <span class="list-label-text">Контент</span>
                     </button>
                     <div class="header-dropdown-content">
                         <a class="flex items-center" href="#">
                             <span class="icon icon-book"></span>
-                            <span class="list-label-text text-[1.1rem]">Каталог</span>
+                            <span class="list-label-text">Каталог</span>
                         </a>
                         <a class="flex items-center" href="#">
                             <span class="icon icon-apple flex"></span>
-                            <span class="list-label-text text-[1.1rem]">Аддон LD</span>
+                            <span class="list-label-text">Аддон LD</span>
                         </a>
                         <a class="flex items-center" href="#">
                             <span class="icon icon-axolotl-bucket"></span>
-                            <span class="list-label-text text-[1.1rem]">Ресурс-Паки</span>
+                            <span class="list-label-text">Ресурс-Паки</span>
                         </a>
                         <a class="flex items-center" href="#">
                             <span class="icon icon-spawn-egg"></span>
-                            <span class="list-label-text text-[1.1rem]">Аддоны</span>
+                            <span class="list-label-text">Аддоны</span>
                         </a>
                         <a class="flex items-center" href="#">
                             <span class="icon icon-skin"></span>
-                            <span class="list-label-text text-[1.1rem]">Скины</span>
+                            <span class="list-label-text">Скины</span>
                         </a>
                         <a class="flex items-center" href="#">
                             <span class="icon icon-map"></span>
-                            <span class="list-label-text text-[1.1rem]">Карты</span>
+                            <span class="list-label-text">Карты</span>
                         </a>
                         <a class="flex items-center" href="#">
                             <span class="icon icon-script"></span>
-                            <span class="list-label-text text-[1.1rem]">Статьи</span>
+                            <span class="list-label-text">Статьи</span>
                         </a>
                     </div>
                 </div>
@@ -288,32 +289,32 @@
                 <div class="header-dropdown inline-flex flex-col">
                     <button class="flex list-label items-center" type="button">
                         <span class="icon icon-down-arrow"></span>
-                        <span class="list-label-text text-[1.1rem]">Материалы</span>
+                        <span class="list-label-text">Материалы</span>
                     </button>
                     <div class="header-dropdown-content">
                         <a class="flex items-center" href="#">
                             <span class="icon icon-bestiary"></span>
-                            <span class="list-label-text text-[1.1rem]">Бестиарий Light Diamond</span>
+                            <span class="list-label-text small">Бестиарий Light Diamond</span>
                         </a>
                         <a class="flex items-center" href="https://github.com/Mojang/bedrock-samples/releases">
                             <span class="icon icon-documentary"></span>
-                            <span class="list-label-text text-[1.1rem]">Документация Light Diamond</span>
+                            <span class="list-label-text small">Документация Light Diamond</span>
                         </a>
                         <a class="flex items-center" href="https://learn.microsoft.com/en-us/minecraft/creator/reference/content/entityreference/examples/componentlist">
                             <span class="icon icon-microsoft-small"></span>
-                            <span class="list-label-text text-[1.1rem]">Документация Microsoft</span>
+                            <span class="list-label-text small">Документация Microsoft</span>
                         </a>
                         <a class="flex items-center" href="https://bedrock.dev/">
                             <span class="icon icon-bedrock-dev-small"></span>
-                            <span class="list-label-text text-[1.1rem]">Документация Bedrock.Dev</span>
+                            <span class="list-label-text small">Документация Bedrock.Dev</span>
                         </a>
                         <a class="flex items-center" href="https://wiki.bedrock.dev/">
                             <span class="icon icon-bedrock-wiki"></span>
-                            <span class="list-label-text text-[1.1rem]">Документация Bedrock Wiki</span>
+                            <span class="list-label-text small">Документация Bedrock Wiki</span>
                         </a>
                         <a class="flex items-center" href="https://github.com/Mojang/bedrock-samples/releases">
                             <span class="icon icon-minecraft-materials"></span>
-                            <span class="list-label-text text-[1.1rem]">Материалы Minecraft</span>
+                            <span class="list-label-text small">Материалы Minecraft</span>
                         </a>
                     </div>
                 </div>
@@ -321,24 +322,32 @@
                 <div class="header-dropdown inline-flex flex-col">
                     <button class="flex list-label items-center" type="button">
                         <span class="icon icon-down-arrow"></span>
-                        <span class="list-label-text text-[1.1rem]">Ссылки</span>
+                        <span class="list-label-text">Ссылки</span>
                     </button>
                     <div class="header-dropdown-content">
                         <a class="flex items-center" href="https://vk.com/light.diamond">
-                            <span class="icon icon-diamond"></span>
-                            <span class="list-label-text text-[1.1rem]">Группа VK</span>
+                            <span class="icon icon-vk"></span>
+                            <span class="list-label-text">ВКонтакте</span>
+                        </a>
+                        <a class="flex items-center" href="https://t.me/light_diamond_channel">
+                            <span class="icon icon-telegram"></span>
+                            <span class="list-label-text">Телеграм</span>
                         </a>
                         <a class="flex items-center" href="https://www.youtube.com/@grostlight3303">
-                            <span class="icon icon-eye"></span>
-                            <span class="list-label-text text-[1.1rem]">YouTube</span>
+                            <span class="icon icon-youtube"></span>
+                            <span class="list-label-text">YouTube</span>
+                        </a>
+                        <a class="flex items-center" href="#">
+                            <span class="icon icon-diamond"></span>
+                            <span class="list-label-text">Обновления</span>
                         </a>
                         <a class="flex items-center" href="#">
                             <span class="icon icon-hand"></span>
-                            <span class="list-label-text text-[1.1rem]">Правила Пользования</span>
+                            <span class="list-label-text">Правила Пользования</span>
                         </a>
                         <a class="flex items-center" href="#">
                             <span class="icon icon-script"></span>
-                            <span class="list-label-text text-base">Политика Конфиденциальности</span>
+                            <span class="list-label-text policy">Политика Конфиденциальности</span>
                         </a>
                     </div>
                 </div>
@@ -346,20 +355,20 @@
                 <div class="header-dropdown inline-flex flex-col">
                     <button class="flex list-label items-center" type="button">
                         <span class="icon icon-down-arrow"></span>
-                        <span class="list-label-text text-[1.1rem]">Поддержка</span>
+                        <span class="list-label-text">Поддержка</span>
                     </button>
                     <div class="header-dropdown-content">
                         <a class="flex items-center" href="#">
                             <span class="icon icon-diamond-sword"></span>
-                            <span class="list-label-text text-[1.1rem]">Помощь</span>
+                            <span class="list-label-text">Помощь</span>
                         </a>
                         <a class="flex items-center" href="#">
                             <span class="icon icon-diamond-pickaxe"></span>
-                            <span class="list-label-text text-[1.1rem]">Гайды</span>
+                            <span class="list-label-text">Гайды</span>
                         </a>
                         <a class="flex items-center" href="#">
                             <span class="icon icon-faq"></span>
-                            <span class="list-label-text text-[1.1rem]">О Проекте</span>
+                            <span class="list-label-text">О Проекте</span>
                         </a>
                     </div>
                 </div>
@@ -427,38 +436,38 @@
 
                         <a v-if="authStore.isAuthenticated" class="naked-link flex items-center" href="#">
                             <span class="icon icon-bottle"></span>
-                            <span class="list-label-text text-[1.1rem]">Контент-Студия</span>
+                            <span class="list-label-text">Контент-Студия</span>
                         </a>
 
                         <a v-if="authStore.isAuthenticated" class="naked-link flex items-center" href="#">
                             <span class="icon icon-download"></span>
-                            <span class="list-label-text text-[1.1rem]">Создать Материал</span>
+                            <span class="list-label-text">Создать Материал</span>
                         </a>
 
                         <a v-if="authStore.isAuthenticated" class="naked-link flex items-center" href="#">
                             <span class="icon icon-gear"></span>
-                            <span class="list-label-text text-[1.1rem]">Настройки</span>
+                            <span class="list-label-text">Настройки</span>
                         </a>
 
-                        <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="switchHeaderDisplay">
-                            <span v-if="isHeaderFixed" class="quick-settings-icon icon icon-fixed-header"></span>
-                            <span v-if="!isHeaderFixed" class="quick-settings-icon icon icon-free-header"></span>
-                            <span v-if="isHeaderFixed" class="list-label-text text-sm">Фиксированная Шапка</span>
-                            <span v-if="!isHeaderFixed" class="list-label-text text-sm">Свободная Шапка</span>
+                        <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="designManager.switchHeaderFixed()">
+                            <span v-if="designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-fixed-header"></span>
+                            <span v-if="!designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-free-header"></span>
+                            <span v-if="designManager.isHeaderFixedVisible()" class="list-label-text" style="font-size: 0.85rem;">Фиксированная Шапка</span>
+                            <span v-if="!designManager.isHeaderFixedVisible()" class="list-label-text text-sm">Свободная Шапка</span>
                             <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
-                                <span :class="{'off': !isHeaderFixed, 'on': isHeaderFixed}" class="handle icon icon-switcher-handle"></span>
+                                <span :class="{'off': !designManager.isHeaderFixedVisible(), 'on': designManager.isHeaderFixedVisible()}" class="handle icon icon-switcher-handle"></span>
                             </span>
                         </button>
 
                         <div class="line flex self-center"></div>
 
-                        <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="switchDesktopSidebarDisplay">
-                            <span v-if="isDesktopSidebarDisplay" class="quick-settings-icon icon icon-units"></span>
-                            <span v-if="!isDesktopSidebarDisplay" class="quick-settings-icon icon icon-cross"></span>
-                            <span v-if="isDesktopSidebarDisplay" class="list-label-text text-[1.1rem]">Боковое Меню</span>
-                            <span v-if="!isDesktopSidebarDisplay" class="list-label-text text-sm">Без Бокового Меню</span>
+                        <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="designManager.switchDesktopSidebar()">
+                            <span v-if="designManager.isDesktopSidebarVisible()" class="quick-settings-icon icon icon-units"></span>
+                            <span v-if="!designManager.isDesktopSidebarVisible()" class="quick-settings-icon icon icon-cross"></span>
+                            <span v-if="designManager.isDesktopSidebarVisible()" class="list-label-text text-[1.1rem]">Боковое Меню</span>
+                            <span v-if="!designManager.isDesktopSidebarVisible()" class="list-label-text text-[]">Без Бокового Меню</span>
                             <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
-                                <span :class="{'off': !isDesktopSidebarDisplay, 'on': isDesktopSidebarDisplay}" class="handle icon icon-switcher-handle"></span>
+                                <span :class="{'off': !designManager.isDesktopSidebarVisible(), 'on': designManager.isDesktopSidebarVisible()}" class="handle icon icon-switcher-handle"></span>
                             </span>
                         </button>
 
@@ -478,12 +487,12 @@
 
                         <button v-if="!authStore.isAuthenticated" class="button-link naked-link flex items-center">
                             <span class="icon icon-diamond"></span>
-                            <span class="list-label-text text-[1.1rem]">Войти</span>
+                            <span class="list-label-text">Войти</span>
                         </button>
 
                         <a v-if="authStore.isAuthenticated" class="button-link naked-link flex items-center" href="#">
                             <span class="icon icon-left-arrow"></span>
-                            <span class="list-label-text text-[1.1rem]">Выйти</span>
+                            <span class="list-label-text">Выйти</span>
                         </a>
                     </div>
                 </div>
@@ -499,7 +508,6 @@
 /* =============== [ Структура ] =============== */
 
 header {
-    background-color: var(--primary-bg-color);
     user-select: none;
     position: fixed;
     transition: .3s;
@@ -513,24 +521,33 @@ header {
     width: 100%;
 }
 .header-blur {
-    position: absolute;
+    position: fixed;
+    overflow-y: hidden;
     transition: 1s;
-    height: 500vw;
+    height: 100vh;
     width: 100%;
     z-index: 1;
 }
-header .header-blur aside {
+.header-blur aside {
     background-color: var(--primary-bg-color);
-    position: relative;
+    position: absolute;
     overflow-y: scroll;
     max-width: 320px;
     transition: .5s;
-    height: 100vh;
-}
-header .close-header-sidebar-background {
-    width: calc(100% - 320px);
     height: 100%;
 }
+.header-blur aside.fixed { height: calc(100% + 20px); }
+.close-header-sidebar-background {
+    height: 100%;
+    width: 100%;
+}
+.header-blur aside .icon {
+    height: 32px;
+    width: 32px;
+}
+.header-blur aside a .list-label-text,
+.header-blur aside .quick-settings-button .list-label-text,
+.header-blur .sign-in-button .list-label-text { color: var(--primary-text-color); }
 .left-header-sidebar-interaction,
 .right-header-sidebar-interaction {
     height: var(--header-height);
@@ -557,7 +574,7 @@ header .close-header-sidebar-background {
 }
 .left-header-sidebar .sign-in-button .icon,
 .right-header-sidebar .sign-in-button .icon {
-    margin: 0 6px 0 14px;
+    margin: 0 8px 0 14px;
     height: 42px;
     width: 42px;
 }
@@ -585,9 +602,14 @@ header .list-label {
 header .list-label-text,
 .header-dropdown-content .list-label-text {
     color: var(--primary-text-color);
+    font-size: 1.1rem;
     transition: .2s;
     padding: 4px;
 }
+.header-dropdown-content .list-label-text.small { font-size: 1rem; }
+.header-blur aside .list-label-text.small { font-size: 0.9rem; }
+.header-dropdown-content .list-label-text.policy { font-size: 0.9rem; }
+.header-blur aside .list-label-text.policy { font-size: 0.8rem; }
 header .list-label:focus-visible .list-label-text, header .list-label:hover .list-label-text,
 .header-dropdown-content a:focus-visible .list-label-text, .header-dropdown-content a:hover .list-label-text,
 
@@ -641,7 +663,6 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .profile-dropdown-content {
     display: none;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-    background-color: var(--primary-bg-color);
     position: absolute;
     transition: 1s;
     opacity: 1;
@@ -770,14 +791,6 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     animation: none;
 }
 
-/* =============== [ Медиа-Запрос { 1280px > ?px } ] =============== */
-
-@media screen and (min-width: 1280px)
-{
-    .opening-header-sidebar-button { display: none; }
-    .opening-header-sidebar-button.on { display: flex; }
-}
-
 /* =============== [ Медиа-Запрос { ?px < 1280px } ] =============== */
 
 @media screen and (max-width: 1279px)
@@ -787,6 +800,16 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     .desktop-profile-dropdown { display: none; }
 }
 
+/* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
+
+@media screen and (max-width: 767px)
+{
+    .header-wrap .div {
+        justify-content: space-between;
+        width: 100%;
+    }
+    .header-wrap .div .logo-wrap { margin: 0 20% 0 0; }
+}
 /* =============== [ Медиа-Запрос { 500px > ?px } ] =============== */
 
 @media screen and (min-width: 500px)
@@ -801,286 +824,10 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     .desktop-search { display: none; }
 }
 
+/* =============== [ Медиа-Запрос { ?px < 321px } ] =============== */
 
-
-.green { background-color: green; }
-.orange { background-color: orange; }
-.yellowgreen { background-color: yellowgreen; }
-
-
-
-
-
-
-/*
-
-
-backdrop-filter: blur(2px);
-.blurred-background-appear { background-color: rgba(0, 0, 0, .5); }
-
-
-
-.header-profile-dropdown {
-    display: inline-flex;
-    position: relative;
-}
-.header-profile-dropdown-button {
-    display: flex;
-    align-items: center;
-    padding: 5px 10px;
-    color: #ffffff;
-}
-.header-profile-dropdown-button:hover span { color: #00ffff; }
-.header-profile-dropdown-content a:hover .header-profile-span { color: #00ffff; }
-.header-profile-dropdown-button .border, .header-profile-link .border { margin-right: 8px; }
-
-.header-profile-dropdown-content {
-    display: none;
-    background-image: url('/images/elements/base-background.png');
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-    background-color: #005a6a;
-    position: absolute;
-    transition: 1s;
-    width: 300px;
-    opacity: 0;
-    top: 72px;
-    right: 0;
-}
-.header-dropdown-content a, .header-profile-dropdown-content a { height: 72px; }
-.header-logout-form button {
-    display: flex;
-    align-items: center;
-    transition: .2s;
-    height: 72px;
-    width: 100%;
-}
-.header-dropdown-content a .icon,
-.header-profile-dropdown-content a .icon,
-.header-logout-form button .icon {
-    margin-left: 20px;
-    margin-right: 8px;
-    height: 40px;
-}
-.header-logout-form button:hover .icon, .header-logout-form button:focus-visible .icon {
-    animation: icon-trigger-up-animation .3s ease;
-}
-.header-profile-dropdown-content .header-logout-form button:hover span { color: #00ffff; }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.header-profile-link {
-    background: linear-gradient(90deg, rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1));
-    animation: transfusion-animation 10s linear infinite;
-    border: 2px solid rgba(0, 255, 255, .3);
-    background-size: 400% 100%;
-    padding: 4px;
-    margin: 12px;
-}
-
-.header-profile-link:hover { background-color: #00ffff; }
-.header-profile-link .border {
-    background-image: url('/images/items/diamond-border.png');
-    background-size: 100% 100%;
-    min-width: 48px;
-    height: 48px;
-}
-.header-ld-pay-link {
-    background: linear-gradient(90deg, rgba(0, 200, 0, .1), rgba(0, 200, 0, .3), rgba(0, 200, 0, .1), rgba(0, 200, 0, .3), rgba(0, 200, 0, .1));
-    animation: transfusion-animation 10s linear infinite;
-    border: 2px solid rgba(0, 200, 0, .3);
-    background-size: 400% 100%;
-    padding: 4px;
-    margin: 12px;
-}
-.header-ld-pay-link:hover { background-color: #00ca00; }
-
-
-
-
-
-
-
-
-
-
-.header-profile-link .border .avatar { height: 26px; }
-.header-profile-link .meta, .header-ld-pay-link .meta { display: flex; flex-direction: column; }
-.header-profile-dropdown-content .header-profile-link .meta span, .header-profile-dropdown-content .header-ld-pay-link .meta span { line-height: 1.5; }
-.header-profile-link .meta .name, .header-ld-pay-link .meta .name { font-size: 16px; color: #00ffff; }
-.header-profile-link .meta .id, .header-ld-pay-link .meta .ld-pay  {
-    font-size: 12px;
-    color: #dadada;
-}
-.header-profile-dropdown-content a:hover, .header-logout-form button:hover { background-color: rgba(0, 255, 255, .1) }
-.header-profile-dropdown:active .header-profile-dropdown-content,
-.header-profile-dropdown:hover .header-profile-dropdown-content,
-.header-profile-dropdown:focus .header-profile-dropdown-content,
-.header-profile-dropdown:focus-visible .header-profile-dropdown-content,
-.header-profile-dropdown-button:active .header-profile-dropdown-content,
-.header-profile-dropdown-button:hover .header-profile-dropdown-content,
-.header-profile-dropdown-button:focus .header-profile-dropdown-content,
-.header-profile-dropdown-button:focus-visible .header-profile-dropdown-content {
-    display: block;
-    animation: smooth-appear-animation .5s ease;
-    opacity: 1;
-}
-.header-profile-dropdown:active .header-profile-dropdown-button,
-.header-profile-dropdown:hover .header-profile-dropdown-button,
-.header-profile-dropdown:focus .header-profile-dropdown-button,
-.header-profile-dropdown:focus-visible .header-profile-dropdown-button {
-    color: #00ffff;
-}
-.header-profile-dropdown:hover .header-profile-dropdown-button .border,
-.header-profile-dropdown:focus-visible .header-profile-dropdown-button .border,
-.header-profile-dropdown-content a:hover .icon,
-#header-sliding-menu .units a:hover .icon {
-    animation: icon-trigger-up-animation .3s ease;
-}
-.header-dropdown {
-    display: inline-flex;
-    position: relative;
-}
-.header-dropdown-button {
-    display: flex;
-    align-items: center;
-    padding: 5px 10px;
-    color: #ffffff;
-}
-.header-dropdown-button span {
-    font-family: "Minecraft Ten", sans-serif;
-    font-size: 20px;
-}
-.header-dropdown-button .icon { height: 40px; margin-right: 8px; }
-.header-dropdown-button:hover span { color: #00ffff; }
-.header-dropdown-button:hover .icon, .header-dropdown-button:focus-visible .icon {
-    animation: icon-trigger-up-animation .3s ease;
-}
-.header-dropdown-button .border { margin-right: 8px; }
-.header-dropdown-content {
-    display: none;
-    background-image: url('/images/elements/base-background.png');
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-    background-color: #005a6a;
-    position: absolute;
-    transition: 1s;
-    width: 300px;
-    opacity: 1;
-    top: 72px;
-    left: 0;
-}
-.header-dropdown-content a span { line-height: 1.5; }
-.header-dropdown-content a:hover { background-color: rgba(0, 255, 255, .1) }
-.header-dropdown:active .header-dropdown-content,
-.header-dropdown:hover .header-dropdown-content,
-.header-dropdown:focus .header-dropdown-content,
-.header-dropdown:focus-visible .header-dropdown-content,
-.header-dropdown-button:active .header-dropdown-content,
-.header-dropdown-button:hover .header-dropdown-content,
-.header-dropdown-button:focus .header-dropdown-content,
-.header-dropdown-button:focus-visible .header-dropdown-content {
-    display: block;
-    animation: smooth-appear-animation .5s ease;
-    opacity: 1;
-}
-.header-dropdown:active .header-dropdown-button,
-.header-dropdown:hover .header-dropdown-button,
-.header-dropdown:focus .header-dropdown-button,
-.header-dropdown:focus-visible .header-dropdown-button {
-    color: #00ffff;
-}
-.header-dropdown:hover .header-dropdown-button .border,
-.header-dropdown:focus-visible .header-dropdown-button .border,
-.header-profile-dropdown-button:hover .border {
-    animation: icon-trigger-up-animation .3s ease;
-}
-.smooth-disappear-animation { animation: smooth-disappear-animation .3s ease }
-.smooth-appear-animation { animation: smooth-appear-animation .3s ease; }
-.rotate-right-360-animation { animation: rotate-right-360-animation .5s ease; }
-.rotate-left-360-animation { animation: rotate-left-360-animation .5s ease; }
-.rotate-left-360-animation:focus-visible, .rotate-right-360-animation:focus-visible { border-radius: 50%; }
-#header-sliding-menu .units {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-#header-sliding-menu .units a:hover, #header-sliding-menu .units a:focus-visible {
-    background-color: rgba(255, 255, 255, .15);
-    color: #00ffff;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-footer {
-    display: flex;
-    background-image: url('/images/elements/base-background.png');
-    flex-direction: column;
-    align-items: center;
-    user-select: none;
-    width: 100%;
-}
-.footer-general-menu {
-    display: flex;
-    justify-content: space-between;
-    max-width: 1200px;
-    width: 100%;
-}
-.footer-general-menu a { padding: 5px 10px; }
-.footer-general-menu a .logo {
-    height: 50px;
-    margin: 4px;
-}
-
-
-
-
-
- =============== [ Анимации Элементов ] ===============
-@keyframes footer-anchor-icon-animation
+@media screen and (max-width: 320px)
 {
-    0% { margin-top: -10px; }
-    50% { margin-top: 10px; }
-    100% { margin-top: -10px; }
+    .header-wrap .div .logo-wrap { margin: 0 10% 0 0; }
 }
-@keyframes footer-link-icon-animation
-{
-    0% { margin-top: 0; }
-    50% { margin-top: -10px; }
-    100% { margin-top: 0; }
-}
-
-
-
-
-
-*/
 </style>

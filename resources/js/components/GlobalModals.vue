@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import {useModalStore} from '@/stores/modal'
 import {computed, onMounted, onUnmounted, ref, watch} from 'vue'
 import {storeToRefs} from 'pinia'

@@ -3,6 +3,7 @@
     import Header from '@/components/Header.vue'
     import {usePostCategoryStore} from '@/stores/postCategory'
     import {ref} from 'vue'
+    import Footer from '@/components/Footer.vue'
 
     usePostCategoryStore().load()
 </script>
@@ -11,23 +12,11 @@
     <GlobalModals/>
     <div class="surface-ground">
         <Header/>
-        <div class='page-container mb-4'>
+        <div class='page-container'>
             <RouterView></RouterView>
         </div>
+        <Footer/>
     </div>
-    <!--
-    <div class="surface-ground">
-        <Header/>
-        <div class='page-container mb-4'>
-            <RouterView></RouterView>
-        </div>
-    </div>
-    -->
 </template>
 
-<style scoped>
-/*.page-container {
-     Margin to prevent the fixed header from overlapping the beginning of the page content.
-    margin-top: var(--header-with-margin-height);
-}*/
-</style>
+<style/>

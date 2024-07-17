@@ -112,12 +112,10 @@ export function remToPixels(remValue: string) {
 }
 export function lockGlobalScroll() {
     document.body.classList.add('lock-scroll')
-    //document.body.style.setProperty('padding-right', this.calculateBodyScrollbarWidth() + 'px')
 }
 export function unlockGlobalScroll()
 {
     document.body.classList.remove('lock-scroll')
-    //document.body.style.removeProperty('--global-scrollbar-width')
 }
 function calculateBodyScrollbarWidth() {
     return window.innerWidth - document.documentElement.offsetWidth
