@@ -61,11 +61,13 @@ p, span { line-height: 1.5; }
     height: 48px;
     width: 48px;
 }
-body.lock-scroll {
-    padding-right: var(--global-scrollbar-width);
-}
-body.lock-scroll .header-wrap {
-    margin-right: var(--global-scrollbar-width);
+@media (min-width: 1440px) {
+    body.lock-scroll {
+        padding-right: var(--global-scrollbar-width);
+    }
+    body.lock-scroll .header-wrap {
+        margin-right: var(--global-scrollbar-width);
+    }
 }
 .lock-scroll { overflow: hidden; }
 
