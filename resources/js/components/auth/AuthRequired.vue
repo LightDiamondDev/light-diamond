@@ -1,7 +1,7 @@
 <script setup lang='ts'>
-import {useModalStore} from '@/stores/modal'
+import {useGlobalModalStore} from '@/stores/global-modal'
 
-useModalStore().auth = true
+useGlobalModalStore().auth = true
 </script>
 
 <template>

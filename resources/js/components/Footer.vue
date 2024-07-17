@@ -2,13 +2,13 @@
     import {useAuthStore} from '@/stores/auth'
     import useDesignManager from '@/design-manager'
     import {useRouter} from 'vue-router'
-    import {useModalStore} from '@/stores/modal'
+    import {useGlobalModalStore} from '@/stores/global-modal'
     import {usePostCategoryStore} from '@/stores/postCategory'
 
     const router = useRouter()
     const authStore = useAuthStore()
     const categoryStore = usePostCategoryStore()
-    const modalStore = useModalStore()
+    const globalModalStore = useGlobalModalStore()
     const designManager = useDesignManager()
 </script>
 

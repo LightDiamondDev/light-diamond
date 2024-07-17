@@ -13,8 +13,8 @@ body,
 header,
 .header-blur aside,
 .header-dropdown-content,
-.mobile-search-dropdown-content,
 .profile-dropdown-content,
+.search-dropdown-content,
 footer {
     background-image: url('../../images/elements/base-background.png');
     background-color: var(--primary-bg-color);
@@ -91,8 +91,6 @@ input:-webkit-autofill:active {
 .right-header-sidebar::-webkit-scrollbar-thumb { background: rgba(0, 255, 255, .2); }
 .left-header-sidebar::-webkit-scrollbar-track,
 .right-header-sidebar::-webkit-scrollbar-track { background: rgba(0, 0, 0, .3); }
-
-
 ::-webkit-scrollbar-thumb { background: rgba(0, 85, 100, 1); }
 ::-webkit-scrollbar-track { background: rgba(0, 55, 70, 1); }
 
@@ -106,6 +104,7 @@ header .list-label-text,
 footer nav a span {
     font-family: "Minecraft Ten", sans-serif;
 }
+.search-content-form,
 footer .tinted-gradient { background: linear-gradient(rgba(0, 15, 15, .8), transparent); }
 .icon { background-repeat: no-repeat; }
 .header-blur .sign-in-button .list-label-text,

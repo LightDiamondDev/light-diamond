@@ -21,7 +21,7 @@ export function getErrorMessageByCode(code: number) {
         case 403:
             return 'У вас нет доступа для совершения данной операции.'
         case 429:
-            return 'Слишком много запросов. Повторите позже.'
+            return 'Слишком много запросов, повторите позже.'
         default:
             return ''
     }
@@ -110,13 +110,8 @@ export function remToPixels(remValue: string) {
     const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize)
     return parseFloat(remValue) * rootFontSize
 }
-export function lockGlobalScroll() {
-    document.body.classList.add('lock-scroll')
-}
-export function unlockGlobalScroll()
-{
-    document.body.classList.remove('lock-scroll')
-}
+export function lockGlobalScroll() { document.body.classList.add('lock-scroll') }
+export function unlockGlobalScroll() { document.body.classList.remove('lock-scroll') }
 function calculateBodyScrollbarWidth() {
     return window.innerWidth - document.documentElement.offsetWidth
 }

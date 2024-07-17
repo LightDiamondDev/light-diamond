@@ -2,7 +2,7 @@
     import {useAuthStore} from '@/stores/auth'
     import useDesignManager from '@/design-manager'
     import {useRouter} from 'vue-router'
-    import {useModalStore} from '@/stores/modal'
+    import {useGlobalModalStore} from '@/stores/global-modal'
     import {usePostCategoryStore} from '@/stores/postCategory'
     import {getCssVariableValue, lockGlobalScroll, remToPixels, unlockGlobalScroll} from '@/helpers'
     import {onMounted, onUnmounted, ref} from 'vue'
@@ -10,7 +10,7 @@
     const router = useRouter()
     const authStore = useAuthStore()
     const categoryStore = usePostCategoryStore()
-    const modalStore = useModalStore()
+    const globalModalStore = useGlobalModalStore()
     const designManager = useDesignManager()
 
     const headerHeight = remToPixels(getCssVariableValue('--header-height'))
@@ -102,18 +102,16 @@
             <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="designManager.switchHeaderFixed()">
                 <span v-if="designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-fixed-header"></span>
                 <span v-if="!designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-free-header"></span>
-                <span v-if="designManager.isHeaderFixedVisible()" class="list-label-text text-[0.7rem]">Фиксированная Шапка</span>
-                <span v-if="!designManager.isHeaderFixedVisible()" class="list-label-text text-sm">Свободная Шапка</span>
+                <span class="list-label-text text-sm">Свободная Шапка</span>
                 <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
-                        <span :class="{'off': !designManager.isHeaderFixedVisible(), 'on': designManager.isHeaderFixedVisible()}" class="handle icon icon-switcher-handle"></span>
-                    </span>
+                    <span :class="{'off': designManager.isHeaderFixedVisible(), 'on': !designManager.isHeaderFixedVisible()}" class="handle icon icon-switcher-handle"></span>
+                </span>
             </button>
 
             <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="switchLightTheme">
                 <span v-if="isLightTheme" class="quick-settings-icon icon icon-sun"></span>
                 <span v-if="!isLightTheme" class="quick-settings-icon icon icon-moon"></span>
-                <span v-if="isLightTheme" class="list-label-text text-[1.1rem]">Светлая Тема</span>
-                <span v-if="!isLightTheme" class="list-label-text text-[1.1rem]">Тёмная Тема</span>
+                <span class="list-label-text text-[1.1rem]">Тёмная Тема</span>
                 <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
                         <span :class="{'off': isLightTheme, 'on': !isLightTheme}" class="handle icon icon-switcher-handle"></span>
                     </span>
@@ -375,26 +373,17 @@
             </div>
             <div class="flex">
 
-                <form class="desktop-search search-content-form flex items-center">
-                    <label class="flex items-center" for="search-content-input">
-                        <input class="text-sm" id="search-content-input" placeholder="Поиск" type="text">
-                    </label>
-                    <button class="flex items-center" type="button">
-                        <span class="icon icon-magnifier"></span>
-                    </button>
-                </form>
+                <div class="search search-dropdown inline-flex flex-col">
 
-                <div class="mobile-search mobile-search-dropdown inline-flex flex-col">
-
-                    <div class="mobile-search-button flex items-center" style="height: 100%;">
+                    <div class="search-button flex items-center" style="height: 100%;">
                         <button class="flex items-center" type="button">
                             <span class="icon icon-magnifier"></span>
                         </button>
                     </div>
 
-                    <div class="mobile-search-dropdown-content flex justify-center">
+                    <div class="search-dropdown-content flex flex-col items-center">
 
-                        <form class="search-content-form flex items-center">
+                        <form class="search-content-form flex justify-center items-center">
                             <label class="flex items-center" for="search-content-input">
                                 <input class="text-sm" id="search-content-input" placeholder="Поиск" type="text">
                             </label>
@@ -402,6 +391,8 @@
                                 <span class="icon icon-magnifier"></span>
                             </button>
                         </form>
+
+
 
                     </div>
                 </div>
@@ -452,10 +443,9 @@
                         <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="designManager.switchHeaderFixed()">
                             <span v-if="designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-fixed-header"></span>
                             <span v-if="!designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-free-header"></span>
-                            <span v-if="designManager.isHeaderFixedVisible()" class="list-label-text" style="font-size: 0.85rem;">Фиксированная Шапка</span>
-                            <span v-if="!designManager.isHeaderFixedVisible()" class="list-label-text text-sm">Свободная Шапка</span>
+                            <span class="list-label-text text-sm">Свободная Шапка</span>
                             <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
-                                <span :class="{'off': !designManager.isHeaderFixedVisible(), 'on': designManager.isHeaderFixedVisible()}" class="handle icon icon-switcher-handle"></span>
+                                <span :class="{'off': designManager.isHeaderFixedVisible(), 'on': !designManager.isHeaderFixedVisible()}" class="handle icon icon-switcher-handle"></span>
                             </span>
                         </button>
 
@@ -464,8 +454,7 @@
                         <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="designManager.switchDesktopSidebar()">
                             <span v-if="designManager.isDesktopSidebarVisible()" class="quick-settings-icon icon icon-units"></span>
                             <span v-if="!designManager.isDesktopSidebarVisible()" class="quick-settings-icon icon icon-cross"></span>
-                            <span v-if="designManager.isDesktopSidebarVisible()" class="list-label-text text-[1.1rem]">Боковое Меню</span>
-                            <span v-if="!designManager.isDesktopSidebarVisible()" class="list-label-text text-[]">Без Бокового Меню</span>
+                            <span class="list-label-text text-[1.1rem]">Боковое Меню</span>
                             <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
                                 <span :class="{'off': !designManager.isDesktopSidebarVisible(), 'on': designManager.isDesktopSidebarVisible()}" class="handle icon icon-switcher-handle"></span>
                             </span>
@@ -476,8 +465,7 @@
                         <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="switchLightTheme">
                             <span v-if="isLightTheme" class="quick-settings-icon icon icon-sun"></span>
                             <span v-if="!isLightTheme" class="quick-settings-icon icon icon-moon"></span>
-                            <span v-if="isLightTheme" class="list-label-text text-[1.1rem]">Светлая Тема</span>
-                            <span v-if="!isLightTheme" class="list-label-text text-[1.1rem]">Тёмная Тема</span>
+                            <span class="list-label-text text-[1.1rem]">Тёмная Тема</span>
                             <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
                                 <span :class="{'off': isLightTheme, 'on': !isLightTheme}" class="handle icon icon-switcher-handle"></span>
                             </span>
@@ -517,7 +505,7 @@ header {
 .header-hidden { transform: translateY(-100%); }
 .header-wrap {
     height: var(--header-height);
-    max-width: 1200px;
+    max-width: 1250px;
     width: 100%;
 }
 .header-blur {
@@ -635,12 +623,12 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     animation: icon-trigger-up-animation .3s ease;
 }
 .header-dropdown,
-.mobile-search-dropdown,
+.search-dropdown,
 .profile-dropdown {
     position: relative;
     height: 100%;
 }
-.mobile-search-button button {
+.search-button button {
     height: 48px;
     width: 48px;
 }
@@ -659,8 +647,8 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     width: 42px;
 }
 .header-dropdown-content,
-.mobile-search-dropdown-content,
-.profile-dropdown-content {
+.profile-dropdown-content,
+.search-dropdown-content {
     display: none;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     position: absolute;
@@ -669,13 +657,9 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     top: 72px;
 }
 .header-dropdown-content { width: 332px; }
-.mobile-search-dropdown-content {
-    height: 56px;
-    padding: 8px;
-}
 .profile-dropdown-content { width: 320px; }
 .header-dropdown-content { left: 0; }
-.mobile-search-dropdown-content { right: 0; }
+.search-dropdown-content { right: 0; }
 .profile-dropdown-content { right: 0; }
 .header-dropdown-content a,
 .profile-dropdown-content a,
@@ -698,9 +682,9 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .header-dropdown:hover .header-dropdown-content,
 .header-dropdown:focus .header-dropdown-content,
 
-.mobile-search-dropdown:active .mobile-search-dropdown-content,
-.mobile-search-dropdown:hover .mobile-search-dropdown-content,
-.mobile-search-dropdown:focus .mobile-search-dropdown-content,
+.search-dropdown:active .search-dropdown-content,
+.search-dropdown:hover .search-dropdown-content,
+.search-dropdown:focus .search-dropdown-content,
 
 .profile-dropdown:active .profile-dropdown-content,
 .profile-dropdown:hover .profile-dropdown-content,
@@ -710,9 +694,9 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     flex-direction: column;
     opacity: 1;
 }
-.mobile-search-dropdown:active .mobile-search-button,
-.mobile-search-dropdown:hover .mobile-search-button,
-.mobile-search-dropdown:focus .mobile-search-button {
+.search-dropdown:active .search-button,
+.search-dropdown:hover .search-button,
+.search-dropdown:focus .search-button {
     opacity: 0;
 }
 .left-header-sidebar .profile-link,
@@ -762,11 +746,25 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .right-header-sidebar .naked-link .list-label-text {
     line-height: 1.2;
 }
-.search-content-form label { height: 48px; }
+.search-dropdown-content {
+    top: var(--header-height);
+    position: fixed;
+    width: 100vw;
+    z-index: 1;
+}
+.search-content-form {
+    height: 120px;
+    width: 100%;
+}
+.search-content-form label {
+    max-width: 425px;
+    height: 48px;
+    width: 80%;
+}
 .search-content-form label input {
     color: var(--primary-text-color);
     height: 40px;
-    width: 200px;
+    width: 100%;
 }
 .search-content-form button .icon { margin: 6px; }
 .profile-dropdown-content .naked-link .icon { margin-left: 20px; }
@@ -791,13 +789,11 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     animation: none;
 }
 
-/* =============== [ Медиа-Запрос { ?px < 1280px } ] =============== */
+/* =============== [ Медиа-Запрос { ?px < 1025px } ] =============== */
 
-@media screen and (max-width: 1279px)
+@media screen and (max-width: 1024px)
 {
     .header-dropdown { display: none; }
-    .opening-header-sidebar-button { display: flex; }
-    .desktop-profile-dropdown { display: none; }
 }
 
 /* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
