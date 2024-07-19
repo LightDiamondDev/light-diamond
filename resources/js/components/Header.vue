@@ -17,27 +17,33 @@
 
     const isHeaderSidebar = ref(false)
     const isHeaderHidden = ref(false)
+    const isSearchFormVisible = ref(false)
     let isLightTheme = ref(true);
 
     let previousScroll = 0;
     let currentScroll;
+
     function headerScrollEvent()
     {
         currentScroll = window.scrollY;
         isHeaderHidden.value = currentScroll > previousScroll && currentScroll > headerHeight
-
         previousScroll = currentScroll;
     }
+
     function closeHeaderSidebar()
     {
         isHeaderSidebar.value = false
         unlockGlobalScroll();
     }
+
     function openHeaderSidebar()
     {
         isHeaderSidebar.value = true
         lockGlobalScroll()
     }
+
+    function switchSearchForm() { isSearchFormVisible.value = !isSearchFormVisible.value; }
+
     function switchLightTheme()
     {
         isLightTheme.value = !isLightTheme.value
@@ -117,7 +123,7 @@
                     </span>
             </button>
 
-            <button v-if="!authStore.isAuthenticated" class="sign-in-button flex items-center" href="#">
+            <button v-if="!authStore.isAuthenticated" class="sign-in-button flex items-center" @click="globalModalStore.isAuth = !globalModalStore.isAuth">
                 <span class="icon icon-border-profile"></span>
                 <span class="list-label-text text-[1.1rem]">Войти</span>
             </button>
@@ -373,28 +379,10 @@
             </div>
             <div class="flex">
 
-                <div class="search search-dropdown inline-flex flex-col">
-
-                    <div class="search-button flex items-center" style="height: 100%;">
-                        <button class="flex items-center" type="button">
-                            <span class="icon icon-magnifier"></span>
-                        </button>
-                    </div>
-
-                    <div class="search-dropdown-content flex flex-col items-center">
-
-                        <form class="search-content-form flex justify-center items-center">
-                            <label class="flex items-center" for="search-content-input">
-                                <input class="text-sm" id="search-content-input" placeholder="Поиск" type="text">
-                            </label>
-                            <button class="flex items-center" type="button">
-                                <span class="icon icon-magnifier"></span>
-                            </button>
-                        </form>
-
-
-
-                    </div>
+                <div class="flex justify-center items-center mr-2">
+                    <button class="search-button flex justify-center items-center" @click="switchSearchForm" type="button">
+                        <span class="icon icon-magnifier"></span>
+                    </button>
                 </div>
 
                 <div class="profile-dropdown desktop-profile-dropdown inline-flex flex-col">
@@ -473,7 +461,7 @@
 
                         <div class="line flex self-center"></div>
 
-                        <button v-if="!authStore.isAuthenticated" class="button-link naked-link flex items-center">
+                        <button v-if="!authStore.isAuthenticated" class="button-link naked-link flex items-center" @click="globalModalStore.isAuth = !globalModalStore.isAuth">
                             <span class="icon icon-diamond"></span>
                             <span class="list-label-text">Войти</span>
                         </button>
@@ -489,6 +477,21 @@
         </nav>
 
     </header>
+
+    <div :class="{ 'on':isSearchFormVisible }" class="search-form-background flex justify-center">
+        <form action="" class="flex flex-col items-center">
+            <label class="flex items-center" for="search-input">
+                <button class="flex justify-center items-center" id="search-button" type="button">
+                    <span class="icon icon-magnifier"></span>
+                </button>
+                <input class="flex text-[0.9rem]" id="search-input" placeholder="Поиск..." type="text">
+                <button class="flex justify-center items-center" @click="switchSearchForm" type="button">
+                    <span class="icon icon-cross"></span>
+                </button>
+            </label>
+            <fieldset class="flex flex-col"></fieldset>
+        </form>
+    </div>
 </template>
 
 <style scoped>
@@ -543,8 +546,8 @@ header {
 }
 .closing-header-sidebar-button,
 .opening-header-sidebar-button {
+    min-width: 48px;
     height: 48px;
-    width: 48px;
 }
 .left-header-sidebar .left-header-sidebar-interaction,
 .left-header-sidebar .profile-link,
@@ -616,6 +619,7 @@ header .list-label:focus-visible .list-label-text, header .list-label:hover .lis
 button.list-label .icon { transition: .2s; }
 button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .header-dropdown-content a:focus-visible .icon, .header-dropdown-content a:hover .icon,
+.header-wrap .search-button:focus-visible .icon, .header-wrap .search-button:hover .icon,
 .left-header-sidebar .naked-link:focus-visible .icon, .left-header-sidebar .naked-link:hover .icon,
 .right-header-sidebar .naked-link:focus-visible .icon, .right-header-sidebar .naked-link:hover .icon,
 .profile-dropdown-content .naked-link:focus-visible .icon, .profile-dropdown-content .naked-link:hover .icon,
@@ -623,14 +627,9 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     animation: icon-trigger-up-animation .3s ease;
 }
 .header-dropdown,
-.search-dropdown,
 .profile-dropdown {
     position: relative;
     height: 100%;
-}
-.search-button button {
-    height: 48px;
-    width: 48px;
 }
 .profile-dropdown button {
     margin-right: 8px;
@@ -647,8 +646,7 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     width: 42px;
 }
 .header-dropdown-content,
-.profile-dropdown-content,
-.search-dropdown-content {
+.profile-dropdown-content {
     display: none;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     position: absolute;
@@ -659,7 +657,6 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .header-dropdown-content { width: 332px; }
 .profile-dropdown-content { width: 320px; }
 .header-dropdown-content { left: 0; }
-.search-dropdown-content { right: 0; }
 .profile-dropdown-content { right: 0; }
 .header-dropdown-content a,
 .profile-dropdown-content a,
@@ -675,16 +672,10 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     height: 32px;
     width: 32px;
 }
-.profile-dropdown-content .quick-settings-button .icon {
-    margin: 0;
-}
+.profile-dropdown-content .quick-settings-button .icon { margin: 0; }
 .header-dropdown:active .header-dropdown-content,
 .header-dropdown:hover .header-dropdown-content,
 .header-dropdown:focus .header-dropdown-content,
-
-.search-dropdown:active .search-dropdown-content,
-.search-dropdown:hover .search-dropdown-content,
-.search-dropdown:focus .search-dropdown-content,
 
 .profile-dropdown:active .profile-dropdown-content,
 .profile-dropdown:hover .profile-dropdown-content,
@@ -693,11 +684,6 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     animation: smooth-appear-animation .5s ease;
     flex-direction: column;
     opacity: 1;
-}
-.search-dropdown:active .search-button,
-.search-dropdown:hover .search-button,
-.search-dropdown:focus .search-button {
-    opacity: 0;
 }
 .left-header-sidebar .profile-link,
 .right-header-sidebar .profile-link,
@@ -743,30 +729,57 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     margin: 0 8px 0 14px;
 }
 .left-header-sidebar .naked-link .list-label-text,
-.right-header-sidebar .naked-link .list-label-text {
-    line-height: 1.2;
-}
-.search-dropdown-content {
-    top: var(--header-height);
+.right-header-sidebar .naked-link .list-label-text { line-height: 1.2; }
+.search-form-background {
+    background-color: rgba(0, 0, 0, .5);
+    pointer-events: none;
+    transition: .5s;
     position: fixed;
-    width: 100vw;
+    height: 100vh;
+    width: 100%;
+    opacity: 0;
     z-index: 1;
+    top: 0;
 }
-.search-content-form {
-    height: 120px;
+.search-form-background.on {
+    pointer-events: visible;
+    opacity: 1;
+}
+.search-form-background form {
+    transform: translateY(-100%);
+    pointer-events: none;
+    height: fit-content;
+    max-width: 1232px;
+    transition: .5s;
     width: 100%;
 }
-.search-content-form label {
-    max-width: 425px;
+.search-form-background.on form { transform: translateY(0); }
+.search-form-background form label {
+    width: calc(100% - 20px);
+    pointer-events: visible;
+    max-width: 768px;
+    margin: 10px;
+}
+.header-wrap .search-button,
+.search-form-background form label button {
     height: 48px;
-    width: 80%;
+    width: 48px;
 }
-.search-content-form label input {
+.search-form-background form label button { user-select: none; }
+.search-form-background form label button .icon {
+    height: 32px;
+    width: 32px;
+}
+.search-form-background form label input {
     color: var(--primary-text-color);
-    height: 40px;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+}
+.search-form-background form fieldset {
+    min-height: 72px;
     width: 100%;
 }
-.search-content-form button .icon { margin: 6px; }
 .profile-dropdown-content .naked-link .icon { margin-left: 20px; }
 .profile-dropdown-content .line {
     opacity: .2;
@@ -805,19 +818,6 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
         width: 100%;
     }
     .header-wrap .div .logo-wrap { margin: 0 20% 0 0; }
-}
-/* =============== [ Медиа-Запрос { 500px > ?px } ] =============== */
-
-@media screen and (min-width: 500px)
-{
-    .mobile-search { display: none; }
-}
-
-/* =============== [ Медиа-Запрос { ?px < 500px } ] =============== */
-
-@media screen and (max-width: 499px)
-{
-    .desktop-search { display: none; }
 }
 
 /* =============== [ Медиа-Запрос { ?px < 321px } ] =============== */

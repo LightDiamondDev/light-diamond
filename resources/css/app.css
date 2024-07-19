@@ -42,6 +42,7 @@ a {
 }
 button {
     border: 2px solid transparent;
+    user-select: none;
     background: none;
     cursor: pointer;
 }
