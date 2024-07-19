@@ -11,6 +11,8 @@ enum AuthFormType {
 
 const globalModalStore = useGlobalModalStore()
 const authFormType = ref(AuthFormType.LOGIN)
+const container = ref<Element>()
+const isMaskMouseDown = ref(false)
 
 const authDialogTitle = computed(() => {
     switch (authFormType.value) {
@@ -27,11 +29,33 @@ const authDialogTitle = computed(() => {
 
 let successNickname = false
 let authCounter = ref(3)
+
+function isContainerEventTarget(event: MouseEvent) {
+    return container.value && container.value?.contains(event.target)
+}
+
+function onMaskMouseDown(event: MouseEvent) {
+    if (!isContainerEventTarget(event)) {
+        isMaskMouseDown.value = true
+    }
+}
+
+function onMaskMouseUp(event: MouseEvent) {
+    if (isMaskMouseDown.value && !isContainerEventTarget(event)) {
+        globalModalStore.isAuth = false
+    }
+    isMaskMouseDown.value = false
+}
 </script>
 
 <template>
-    <div :class="{ 'on': globalModalStore.isAuth }" class="auth-modal-window flex justify-center items-center">
-        <div class="interface flex">
+    <div
+        :class="{ 'on': globalModalStore.isAuth }"
+        class="auth-modal-window flex justify-center items-center"
+        @mousedown="onMaskMouseDown"
+        @mouseup="onMaskMouseUp"
+    >
+        <div ref="container" class="interface flex">
             <div class="illustration">
                 <div class="background-auth flex justify-center">
                     <a class="logo icon-logo" href="#">
