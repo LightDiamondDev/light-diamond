@@ -6,6 +6,8 @@
     import {usePostCategoryStore} from '@/stores/postCategory'
     import {getCssVariableValue, lockGlobalScroll, remToPixels, unlockGlobalScroll} from '@/helpers'
     import {onMounted, onUnmounted, ref} from 'vue'
+    import Switcher from '@/components/elements/Switcher.vue'
+    import Button from '@/components/elements/Button.vue'
 
     const router = useRouter()
     const authStore = useAuthStore()
@@ -105,14 +107,37 @@
                 <span class="list-label-text">Настройки</span>
             </a>
 
+
+
+
+            <span :class="{'off': designManager.isHeaderFixedVisible(), 'on': !designManager.isHeaderFixedVisible()}" class="handle icon icon-switcher-handle">
+
+            </span>
+
             <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="designManager.switchHeaderFixed()">
                 <span v-if="designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-fixed-header"></span>
                 <span v-if="!designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-free-header"></span>
-                <span class="list-label-text text-sm">Свободная Шапка</span>
-                <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
-                    <span :class="{'off': designManager.isHeaderFixedVisible(), 'on': !designManager.isHeaderFixedVisible()}" class="handle icon icon-switcher-handle"></span>
-                </span>
+                <span class="list-label-text text-[1.1rem]">Свободная Шапка</span>
+
+                <Switcher
+                    active-condition="`${designManager.isHeaderFixedVisible()}`"
+                    inactive-condition="`${!designManager.isHeaderFixedVisible()}`"
+                    icon-switcher-handle="icon-switcher-handle"
+                    icon-switcher-way="icon-switcher-way"
+                    icon-switcher-handle-size="32px"
+                    icon-switcher-way-size="32px"
+                />
+
+
+
             </button>
+
+
+            <Button button-type="submit" icon="icon-bestiary" icon-size="32px" text="Авторизоваться"/>
+
+
+
+
 
             <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="switchLightTheme">
                 <span v-if="isLightTheme" class="quick-settings-icon icon icon-sun"></span>
@@ -654,8 +679,8 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     opacity: 1;
     top: 72px;
 }
-.header-dropdown-content { width: 332px; }
-.profile-dropdown-content { width: 320px; }
+.header-dropdown-content { width: 300px; }
+.profile-dropdown-content { width: 300px; }
 .header-dropdown-content { left: 0; }
 .profile-dropdown-content { right: 0; }
 .header-dropdown-content a,
@@ -665,12 +690,17 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .right-header-sidebar .naked-link {
     height: 72px;
 }
-.profile-dropdown-content .button-link { margin-right: 0; }
+.profile-dropdown-content .button-link {
+    margin-right: 0;
+}
 .header-dropdown-content .icon,
 .profile-dropdown-content .icon {
-    margin: 0 4px 0 12px;
+    margin: 0 8px 0 24px;
     height: 32px;
     width: 32px;
+}
+.header-dropdown-content .list-label-text {
+    max-width: 60%;
 }
 .profile-dropdown-content .quick-settings-button .icon { margin: 0; }
 .header-dropdown:active .header-dropdown-content,
@@ -726,7 +756,12 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 }
 .left-header-sidebar .naked-link .icon,
 .right-header-sidebar .naked-link .icon {
-    margin: 0 8px 0 14px;
+    margin: 0 8px 0 32px;
+}
+.left-header-sidebar .naked-link .list-label-text,
+.right-header-sidebar .naked-link .list-label-text {
+    margin: 0 8px 0 8px;
+    max-width: 60%;
 }
 .left-header-sidebar .naked-link .list-label-text,
 .right-header-sidebar .naked-link .list-label-text { line-height: 1.2; }
@@ -786,19 +821,19 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     height: 1px;
     width: 90%;
 }
-.profile-dropdown-content .quick-settings-button .quick-settings-switcher {
+.profile-dropdown-content .quick-settings-button .settings-switcher {
     margin-right: 20px;
     margin-left: 0;
 }
-.quick-settings-button .quick-settings-switcher .handle {
+.quick-settings-button .settings-switcher .handle {
     position: relative;
     transition: .5s;
     margin: 0;
 }
-.quick-settings-button .quick-settings-switcher .handle.on { transform: translateX(40%); }
-.quick-settings-button .quick-settings-switcher .handle.off { transform: translateX(-40%); }
-.quick-settings-button:focus-visible .quick-settings-switcher, .quick-settings-button:hover .quick-settings-switcher,
-.quick-settings-button:focus-visible .quick-settings-switcher .handle, .quick-settings-button:hover .quick-settings-switcher .handle {
+.settings-switcher .handle.on { transform: translateX(40%); }
+.settings-switcher .handle.off { transform: translateX(-40%); }
+.quick-settings-button:focus-visible .settings-switcher, .quick-settings-button:hover .settings-switcher,
+.quick-settings-button:focus-visible .settings-switcher .handle, .quick-settings-button:hover .settings-switcher .handle {
     animation: none;
 }
 

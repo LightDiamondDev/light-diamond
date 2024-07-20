@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useGlobalModalStore} from '@/stores/global-modal'
 import {computed, ref} from 'vue'
+import Button from '@/components/elements/Button.vue'
 
 enum AuthFormType {
     LOGIN,
@@ -66,7 +67,12 @@ function onMaskMouseUp(event: MouseEvent) {
             </div>
 
             <div
-                :class="{ 'id1': authCounter == 1, 'id2': authCounter == 2, 'id3': authCounter == 3, 'id4': authCounter == 4 }"
+                :class="{
+                    'id1': authCounter == 1,
+                    'id2': authCounter == 2,
+                    'id3': authCounter == 3,
+                    'id4': authCounter == 4
+                }"
                 class="forms"
             >
                 <form action="" :class="{ 'on': authCounter == 1 }" class="recovery flex flex-col items-center">
@@ -75,7 +81,10 @@ function onMaskMouseUp(event: MouseEvent) {
                             <span class="icon icon-long-left-arrow"></span>
                         </button>
                         <h1 class="text-[1.5rem]">Восстановление</h1>
-                        <button class="flex justify-center items-center m-4" @click="globalModalStore.isAuth = false">
+                        <button class="flex justify-center items-center m-4"
+                                @click="globalModalStore.isAuth = false"
+                                type="button"
+                        >
                             <span class="icon icon-cross"></span>
                         </button>
                     </div>
@@ -114,18 +123,8 @@ function onMaskMouseUp(event: MouseEvent) {
                         <div class="animation-agree-creeper"></div>
                     </div>
 
-                    <button
-                        class="auth-button-container button-container flex justify-center items-center"
-                        type="submit"
-                    >
-                        <span class="action-button flex flex-col">
-                            <span class="press flex justify-center items-center">
-                                <span class="icon icon-bestiary mr-2"></span>
-                                <span class="text duration-200">Подтвердить</span>
-                            </span>
-                            <span class="base"></span>
-                        </span>
-                    </button>
+                    <Button button-type="submit" icon="icon-bestiary" size="32px" text="Подтвердить"/>
+
                     <button class="help-button mb-2 mt-2" type="button">
                         <span class="p-2 text-[0.9rem]" @click="authCounter = 3">Вспомнили пароль?</span>
                     </button>
@@ -139,7 +138,8 @@ function onMaskMouseUp(event: MouseEvent) {
                         <h1 class="text-[1.8rem]">Сброс пароля</h1>
                         <button
                             class="flex justify-center items-center m-4"
-                            @click="globalModalStore.isAuth = false" type="button"
+                            @click="globalModalStore.isAuth = false"
+                            type="button"
                         >
                             <span class="icon icon-cross"></span>
                         </button>
@@ -166,18 +166,8 @@ function onMaskMouseUp(event: MouseEvent) {
                         <div class="animation-walking-iron-golem mb-8 ml-10"></div>
                     </div>
 
-                    <button
-                        class="auth-button-container button-container flex justify-center items-center"
-                        type="submit"
-                    >
-                        <span class="action-button flex flex-col">
-                            <span class="press flex justify-center items-center">
-                                <span class="icon icon-bestiary mr-2"></span>
-                                <span class="text duration-200">Получить Письмо</span>
-                            </span>
-                            <span class="base"></span>
-                        </span>
-                    </button>
+                    <Button button-type="submit" icon="icon-bestiary" icon-size="32px" text="Получить Письмо"/>
+
                     <button class="help-button mb-2 mt-2" type="button">
                         <span class="p-2 text-[0.9rem]" @click="authCounter = 3">Вспомнили пароль?</span>
                     </button>
@@ -240,18 +230,8 @@ function onMaskMouseUp(event: MouseEvent) {
                         <div class="animation-dancing-multicoloured-parrot"></div>
                     </div>
 
-                    <button
-                        class="auth-button-container button-container flex justify-center items-center"
-                        type="submit"
-                    >
-                        <span class="action-button flex flex-col">
-                            <span class="press flex justify-center items-center">
-                                <span class="icon icon-bestiary mr-2"></span>
-                                <span class="text duration-200">Авторизоваться</span>
-                            </span>
-                            <span class="base"></span>
-                        </span>
-                    </button>
+                    <Button button-type="submit" icon="icon-bestiary" icon-size="32px" text="Авторизоваться"/>
+
                     <button class="help-button mb-2 mt-2" type="button">
                         <span class="p-2 text-[0.9rem]" @click="authCounter = 4">Ещё нет учётной записи?</span>
                     </button>
@@ -318,18 +298,9 @@ function onMaskMouseUp(event: MouseEvent) {
                             Ошибка текст с ошибкой текст!
                     </span>
                     </fieldset>
-                    <button
-                        class="auth-button-container button-container flex justify-center items-center"
-                        type="submit"
-                    >
-                        <span class="action-button flex flex-col">
-                            <span class="press flex justify-center items-center">
-                                <span class="icon icon-bestiary mr-2"></span>
-                                <span class="text duration-200">Зарегистрироваться</span>
-                            </span>
-                            <span class="base"/>
-                        </span>
-                    </button>
+
+                    <Button button-type="submit" icon="icon-bestiary" icon-size="32px" text="Зарегистрироваться"/>
+
                     <button class="help-button mb-2 mt-2" type="button">
                         <span class="p-2 text-[0.9rem]" @click="authCounter = 3">Уже есть учётная запись?</span>
                     </button>
@@ -396,7 +367,7 @@ function onMaskMouseUp(event: MouseEvent) {
 }
 
 .auth-modal-window form {
-    transition: 1s;
+    transition: .8s;
     opacity: 0;
 }
 
@@ -445,7 +416,6 @@ function onMaskMouseUp(event: MouseEvent) {
 
 .auth-modal-window form fieldset .status {
     line-height: 1.3;
-    height: 12px;
 }
 
 .auth-modal-window form fieldset input::placeholder {
