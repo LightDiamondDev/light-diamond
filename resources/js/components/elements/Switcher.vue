@@ -1,30 +1,37 @@
 <script setup lang="ts">
-const props = defineProps({
-    activeCondition: Boolean,
-    inactiveCondition: Boolean,
-    iconSwitcherHandle: String,
-    iconSwitcherWay: String,
-    iconSwitcherHandleSize: String,
-    iconSwitcherWaySize: String
-});
+    import {computed} from 'vue'
+    const props = defineProps({
+        active: Boolean|undefined
+    });
+    const model = defineModel<boolean>({default: false})
+    const active = computed(() => props.active ?? model.value)
+    function onClick() {
+        if (props.active === undefined) {}
+        model.value = !model.value
+    }
 </script>
 
 <template>
-    <span :class="iconSwitcherWay"
-        class="settings-switcher icon flex justify-center items-center"
-        :style="`height: ` + `${iconSwitcherWaySize}` + `; width: ` + `${iconSwitcherWaySize}`"
+    <button :class="iconSwitcherWay"
+          class="settings-switcher icon-switcher-way icon flex justify-center items-center"
+          @click="onClick"
     >
-        <span :class="{
-            iconSwitcherHandle,
-            'off': activeCondition,
-            'on': inactiveCondition
-            }"
-            class="handle icon icon-switcher-handle"
-            :style="`height: ` + `${iconSwitcherHandleSize}` + `; width: ` + `${iconSwitcherHandleSize}`"
-        />
-    </span>
-</template>
+        <span :class="{ iconSwitcherHandle, 'on': active }"
+            class="handle icon-switcher-handle icon flex justify-center items-center"
+    />
+    </button>
+    </template>
 
-<style scoped>
+    <style scoped>
+    .settings-switcher .handle {
+        background-size: 100% 100%;
+        transform: translateX(40%);
+        position: relative;
+        transition: .5s;
+        height: 32px;
+        width: 32px;
+        margin: 0;
+    }
+    .settings-switcher .handle.on { transform: translateX(-40%); }
 
 </style>

@@ -107,41 +107,18 @@
                 <span class="list-label-text">Настройки</span>
             </a>
 
-
-
-
-            <span :class="{'off': designManager.isHeaderFixedVisible(), 'on': !designManager.isHeaderFixedVisible()}" class="handle icon icon-switcher-handle">
-
-            </span>
-
-            <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="designManager.switchHeaderFixed()">
+            <button class="quick-settings-button button-link naked-link flex justify-between items-center"
+                  @click="designManager.switchHeaderFixed()"
+            >
                 <span v-if="designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-fixed-header"></span>
-                <span v-if="!designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-free-header"></span>
+                <span v-else class="quick-settings-icon icon icon-free-header"></span>
                 <span class="list-label-text text-[1.1rem]">Свободная Шапка</span>
-
-                <Switcher
-                    active-condition="`${designManager.isHeaderFixedVisible()}`"
-                    inactive-condition="`${!designManager.isHeaderFixedVisible()}`"
-                    icon-switcher-handle="icon-switcher-handle"
-                    icon-switcher-way="icon-switcher-way"
-                    icon-switcher-handle-size="32px"
-                    icon-switcher-way-size="32px"
-                />
-
-
-
+                <Switcher :active=designManager.isHeaderFixedVisible() />
             </button>
-
-
-            <Button button-type="submit" icon="icon-bestiary" icon-size="32px" text="Авторизоваться"/>
-
-
-
-
 
             <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="switchLightTheme">
                 <span v-if="isLightTheme" class="quick-settings-icon icon icon-sun"></span>
-                <span v-if="!isLightTheme" class="quick-settings-icon icon icon-moon"></span>
+                <span v-else class="quick-settings-icon icon icon-moon"></span>
                 <span class="list-label-text text-[1.1rem]">Тёмная Тема</span>
                 <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
                         <span :class="{'off': isLightTheme, 'on': !isLightTheme}" class="handle icon icon-switcher-handle"></span>
@@ -455,7 +432,7 @@
 
                         <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="designManager.switchHeaderFixed()">
                             <span v-if="designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-fixed-header"></span>
-                            <span v-if="!designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-free-header"></span>
+                            <span v-else class="quick-settings-icon icon icon-free-header"></span>
                             <span class="list-label-text text-sm">Свободная Шапка</span>
                             <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
                                 <span :class="{'off': designManager.isHeaderFixedVisible(), 'on': !designManager.isHeaderFixedVisible()}" class="handle icon icon-switcher-handle"></span>
@@ -466,7 +443,7 @@
 
                         <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="designManager.switchDesktopSidebar()">
                             <span v-if="designManager.isDesktopSidebarVisible()" class="quick-settings-icon icon icon-units"></span>
-                            <span v-if="!designManager.isDesktopSidebarVisible()" class="quick-settings-icon icon icon-cross"></span>
+                            <span v-else class="quick-settings-icon icon icon-cross"></span>
                             <span class="list-label-text text-[1.1rem]">Боковое Меню</span>
                             <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
                                 <span :class="{'off': !designManager.isDesktopSidebarVisible(), 'on': designManager.isDesktopSidebarVisible()}" class="handle icon icon-switcher-handle"></span>
@@ -477,7 +454,7 @@
 
                         <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="switchLightTheme">
                             <span v-if="isLightTheme" class="quick-settings-icon icon icon-sun"></span>
-                            <span v-if="!isLightTheme" class="quick-settings-icon icon icon-moon"></span>
+                            <span v-else class="quick-settings-icon icon icon-moon"></span>
                             <span class="list-label-text text-[1.1rem]">Тёмная Тема</span>
                             <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
                                 <span :class="{'off': isLightTheme, 'on': !isLightTheme}" class="handle icon icon-switcher-handle"></span>
@@ -820,21 +797,6 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     opacity: .2;
     height: 1px;
     width: 90%;
-}
-.profile-dropdown-content .quick-settings-button .settings-switcher {
-    margin-right: 20px;
-    margin-left: 0;
-}
-.quick-settings-button .settings-switcher .handle {
-    position: relative;
-    transition: .5s;
-    margin: 0;
-}
-.settings-switcher .handle.on { transform: translateX(40%); }
-.settings-switcher .handle.off { transform: translateX(-40%); }
-.quick-settings-button:focus-visible .settings-switcher, .quick-settings-button:hover .settings-switcher,
-.quick-settings-button:focus-visible .settings-switcher .handle, .quick-settings-button:hover .settings-switcher .handle {
-    animation: none;
 }
 
 /* =============== [ Медиа-Запрос { ?px < 1025px } ] =============== */

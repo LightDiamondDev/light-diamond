@@ -32,11 +32,11 @@ class DesignManager {
     }
 
     public loadDesktopSidebar() {
-        this.isDesktopSidebar = localStorage.getItem(DesignManager.isDesktopSidebarKey)
+        this.isDesktopSidebar = localStorage.getItem(DesignManager.isDesktopSidebarKey) === 'true'
     }
 
     public loadHeaderFixed() {
-        this.isHeaderFixed = localStorage.getItem(DesignManager.isHeaderFixedKey)
+        this.isHeaderFixed = localStorage.getItem(DesignManager.isHeaderFixedKey) === 'true'
     }
 
 
