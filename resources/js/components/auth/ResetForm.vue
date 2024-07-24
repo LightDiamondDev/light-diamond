@@ -1,25 +1,11 @@
 <script setup lang="ts">
-
 import Button from '@/components/elements/Button.vue'
 
+let successNickname = false
 </script>
 
 <template>
-
     <form action="" class="reset-form flex flex-col items-center">
-
-        <div class="header flex justify-between items-center">
-            <button class="flex justify-center items-center m-4" @click="AuthFormType.RESET" type="button">
-                <span class="icon icon-long-left-arrow"></span>
-            </button>
-            <h1 class="text-[1.5rem]">Восстановление</h1>
-            <button class="flex justify-center items-center m-4"
-                    @click="globalModalStore.isAuth = false"
-                    type="button"
-            >
-                <span class="icon icon-cross"></span>
-            </button>
-        </div>
         <fieldset class="flex flex-col items-center">
             <span class="task text-[0.8rem] mb-2 mt-2">
                 Придумайте новый пароль. Он должен быть надёжным!

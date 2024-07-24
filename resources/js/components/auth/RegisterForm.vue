@@ -1,23 +1,11 @@
 <script setup lang="ts">
-
 import Button from '@/components/elements/Button.vue'
 
+let successNickname = false
 </script>
 
 <template>
     <form action="" class="register flex flex-col items-center">
-        <div class="header flex justify-between items-center">
-            <button class="flex justify-center items-center m-4" @click="AuthFormType.LOGIN" type="button">
-                <span class="icon icon-long-left-arrow"></span>
-            </button>
-            <h1 class="text-[1.8rem]">Регистрация</h1>
-            <button
-                class="flex justify-center items-center m-4"
-                @click="globalModalStore.isAuth = false" type="button"
-            >
-                <span class="icon icon-cross"></span>
-            </button>
-        </div>
         <fieldset class="flex flex-col items-center">
             <span class="subtitle text-[1.1rem] m-2">Никнейм</span>
             <label for="register-nickname">

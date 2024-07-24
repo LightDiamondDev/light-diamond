@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import {computed, ref} from 'vue'
 import Dialog from '@/components/elements/Dialog.vue'
 import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm.vue'
@@ -8,36 +7,34 @@ import RegisterForm from '@/components/auth/RegisterForm.vue'
 import Button from '@/components/elements/Button.vue'
 
 enum AuthFormType {
-    FORGOT_PASSWORD,
     LOGIN,
-    REGISTER,
-    RESET
+    FORGOT_PASSWORD,
+    REGISTER
 }
 
+const isVisible = defineModel<Boolean>('visible', {required: true})
+const formType = ref(AuthFormType.LOGIN)
+
 const authDialogTitle = computed(() => {
-    switch (authFormType.value) {
+    switch (formType.value) {
+        case AuthFormType.LOGIN:
+            return 'Вход'
         case AuthFormType.FORGOT_PASSWORD:
             return 'Сброс пароля'
-        case AuthFormType.LOGIN:
-            return 'Авторизация'
         case AuthFormType.REGISTER:
             return 'Регистрация'
-        case AuthFormType.RESET:
-            return 'Восстановление'
     }
 })
-
-const authFormType = ref(AuthFormType.LOGIN)
-
-const isVisible = defineModel<Boolean>('visible', {required: true})
-
 </script>
 
 <template>
-
-    <Dialog v-model:visible="isVisible">
-
-        <div class="auth-dialog">
+    <Dialog
+        v-model:visible="isVisible"
+        :title="authDialogTitle"
+        :back-button="formType !== AuthFormType.LOGIN"
+        @back="formType = AuthFormType.LOGIN"
+    >
+        <template v-slot:left-content>
             <div class="illustration">
                 <div class="background-auth flex justify-center">
                     <a class="logo icon-logo" href="#">
@@ -46,20 +43,12 @@ const isVisible = defineModel<Boolean>('visible', {required: true})
                     <div class="back-background background-cherry-blossom-grove"></div>
                 </div>
             </div>
+        </template>
 
-            <div class="forms">
-
-                <ForgotPasswordForm v-if="AuthFormType.FORGOT_PASSWORD"/>
-
-                <LoginForm v-else-if="AuthFormType.LOGIN"/>
-
-                <RegisterForm v-else-if="AuthFormType.REGISTER"/>
-
-            </div>
-        </div>
-
+        <LoginForm v-if="formType === AuthFormType.LOGIN"/>
+        <ForgotPasswordForm v-else-if="formType === AuthFormType.FORGOT_PASSWORD"/>
+        <RegisterForm v-else/>
     </Dialog>
-
 </template>
 
 <style>
@@ -278,19 +267,19 @@ const isVisible = defineModel<Boolean>('visible', {required: true})
     text-decoration: underline;
 }
 
-.auth-dialog .illustration {
+.illustration {
     overflow: hidden;
     max-width: 656px;
     height: 656px;
     width: 100%;
 }
 
-.auth-dialog .illustration .background-auth {
+.illustration .background-auth {
     animation: background-auth-animation 20s infinite;
 }
 
-.auth-dialog .illustration .background-auth,
-.auth-dialog .illustration .background-cherry-blossom-grove {
+.illustration .background-auth,
+.illustration .background-cherry-blossom-grove {
     background-size: 100% 100%;
     height: 652px;
     width: 652px;
