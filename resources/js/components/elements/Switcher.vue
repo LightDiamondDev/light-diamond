@@ -40,5 +40,4 @@ function onClick() {
 .settings-switcher .handle.on {
     transform: translateX(-40%);
 }
-
 </style>

@@ -25,18 +25,20 @@ const authDialogTitle = computed(() => {
             return 'Регистрация'
     }
 })
+
 </script>
 
 <template>
     <Dialog
         v-model:visible="isVisible"
+        class="auth-dialog"
         :title="authDialogTitle"
         :back-button="formType !== AuthFormType.LOGIN"
         @back="formType = AuthFormType.LOGIN"
     >
         <template v-slot:left-content>
-            <div class="illustration">
-                <div class="background-auth flex justify-center">
+            <div class="illustration flex justify-center items-center">
+                <div class="background-auth flex justify-center items-center">
                     <a class="logo icon-logo" href="#">
                         <span class="splash">Я вернулся!</span>
                     </a>
@@ -45,75 +47,45 @@ const authDialogTitle = computed(() => {
             </div>
         </template>
 
-        <LoginForm v-if="formType === AuthFormType.LOGIN"/>
-        <ForgotPasswordForm v-else-if="formType === AuthFormType.FORGOT_PASSWORD"/>
-        <RegisterForm v-else/>
+        <Transition name="smooth-appear">
+
+            <LoginForm
+                v-if="formType === AuthFormType.LOGIN"
+                @switch-to-forgot-password-form="formType = AuthFormType.FORGOT_PASSWORD"
+                @switch-to-register-form="formType = AuthFormType.REGISTER">
+            </LoginForm>
+
+            <ForgotPasswordForm v-else-if="formType === AuthFormType.FORGOT_PASSWORD"/>
+
+            <RegisterForm v-else @switch-to-login-form="formType = AuthFormType.LOGIN"/>
+
+        </Transition>
+
     </Dialog>
 </template>
 
 <style>
 
-.auth-dialog {
+.auth-dialog .dialog-form-container {
     box-shadow: 0 0 10px 10px rgba(0, 0, 0, .5);
     overflow: hidden;
+}
+
+.auth-dialog .dialog-form-container .interface {
+    position: relative;
+    width: 380px;
     transition: .5s;
-    height: 656px;
-    /*
-    margin-top: 200px;
-    opacity: 0;
-    */
 }
 
-.auth-dialog form,
-.auth-dialog .forms {
-    max-width: 380px;
-    height: 656px;
+.auth-dialog .interface .forgot-password,
+.auth-dialog .interface .login,
+.auth-dialog .interface .register {
     width: 100%;
-}
-
-.auth-dialog .forms.id1 form {
-    transform: translateY(0);
-}
-
-.auth-dialog .forms.id2 form {
-    transform: translateY(-100%);
-}
-
-.auth-dialog .forms.id3 form {
-    transform: translateY(-200%);
-}
-
-.auth-dialog .forms.id4 form {
-    transform: translateY(-300%);
-}
-
-.auth-dialog form {
-    transition: .8s;
-    opacity: 0;
-}
-
-.auth-dialog form.on {
-    opacity: 1;
 }
 
 .auth-dialog form fieldset,
 .auth-dialog form .auth-button-container {
     width: 85%;
-}
-
-.auth-dialog form button.m-4 {
-    height: 48px;
-    width: 48px;
-}
-
-.auth-dialog form button .icon {
-    height: 32px;
-    width: 32px;
-}
-
-.auth-dialog-window form h1 {
-    color: var(--primary-text-color);
-    user-select: none;
 }
 
 .auth-dialog form fieldset * {
@@ -208,6 +180,7 @@ const authDialogTitle = computed(() => {
 }
 
 .auth-dialog form .mob {
+    pointer-events: none;
     user-select: none;
     overflow: hidden;
 }
@@ -266,12 +239,10 @@ const authDialogTitle = computed(() => {
     color: var(--hover-text-color);
     text-decoration: underline;
 }
-
-.illustration {
+.auth-dialog .illustration {
+    min-height: 658px;
     overflow: hidden;
-    max-width: 656px;
-    height: 656px;
-    width: 100%;
+    width: 658px;
 }
 
 .illustration .background-auth {
@@ -281,8 +252,9 @@ const authDialogTitle = computed(() => {
 .illustration .background-auth,
 .illustration .background-cherry-blossom-grove {
     background-size: 100% 100%;
-    height: 652px;
-    width: 652px;
+    min-height: 654px;
+    height: 100%;
+    width: 654px;
 }
 
 .back-background {
@@ -312,7 +284,29 @@ const authDialogTitle = computed(() => {
     bottom: 5px;
 }
 
-/* =============== [ Анимации ] =============== */
+.auth-dialog .group {
+    width: 100%;
+}
+
+    /* =============== [ Анимации ] =============== */
+
+.smooth-appear-enter-active,
+.smooth-appear-leave-active {
+    transition: .8s ease;
+    position: absolute;
+}
+
+.smooth-appear-enter-from {
+    transform: translateY(100%);
+    transition: .8s;
+    opacity: 0;
+}
+
+.smooth-appear-leave-to {
+    transform: translateY(-100%);
+    transition: .8s;
+    opacity: 0;
+}
 
 @keyframes background-auth-animation {
     0% {
@@ -380,11 +374,56 @@ const authDialogTitle = computed(() => {
     }
 }
 
-/* =============== [ Медиа-Запрос { ?px < 1024px } ] =============== */
+/* =============== [ Медиа-Запрос { ?px < 1024px + desktop-height } ] =============== */
 
-@media screen and (max-width: 1023px) {
+@media screen and (max-width: 1023px) and (min-height: 654px) {
     .auth-dialog .illustration {
         display: none;
+    }
+    .auth-dialog .dialog-form-container .interface {
+        max-width: 380px;
+    }
+}
+
+/* =============== [ Медиа-Запрос { ?px < 1024px + mobile-height } ] =============== */
+
+@media screen and (max-width: 1023px) and (max-height: 653px) {
+    .auth-dialog .illustration {
+        display: none;
+    }
+    .auth-dialog .dialog-form-container {
+        justify-content: center;
+        align-items: center;
+        max-width: 658px;
+        width: 90%;
+    }
+    .auth-dialog .dialog-form-container .interface {
+        width: 100%;
+    }
+    .auth-dialog .forgot-password,
+    .auth-dialog .login {
+        flex-direction: row;
+        padding: 16px;
+    }
+    .auth-dialog .forgot-password .mob.iron-golem {
+        height: 210px;
+        width: 380px;
+    }
+    .auth-dialog .register fieldset {
+        flex-direction: row;
+        margin-top: -3%;
+    }
+    .auth-dialog .register .group {
+        margin-right: .5rem;
+    }
+    .auth-dialog .register .group.set {
+        margin: 0 0 0 .5rem;
+    }
+    .auth-dialog .register fieldset label {
+        height: 30px;
+    }
+    .auth-dialog .register fieldset span {
+        margin: 0.25rem;
     }
 }
 

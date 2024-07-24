@@ -62,6 +62,12 @@ p, span { line-height: 1.5; }
     height: 48px;
     width: 48px;
 }
+.locked {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    pointer-events: none;
+    user-select: none;
+}
 @media (min-width: 1440px) {
     body.lock-scroll {
         padding-right: var(--global-scrollbar-width);
@@ -246,13 +252,17 @@ p, span { line-height: 1.5; }
 
 
     code {
+        /*
         background-color: var(--surface-50);
+        */
         border-radius: 0.3rem;
         padding: 0.2rem 0.5rem;
     }
 
     pre {
-        background: var(--surface-50);
+        /*
+        background-color: var(--surface-50);
+        */
         border-radius: 0.5rem;
         padding: 0.6rem 0.9rem;
         overflow-x: auto;

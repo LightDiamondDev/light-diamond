@@ -14,7 +14,7 @@
 * { text-shadow: 1px 1px rgba(0, 0, 0, .5); }
 body,
 header,
-.auth-modal-window .forms,
+.dialog-form-container .interface,
 .header-blur aside,
 .header-dropdown-content,
 .profile-dropdown-content,
@@ -137,9 +137,9 @@ input:-webkit-autofill:active {
 .button-container:focus-visible .action-button .press .text, .button-container:hover .action-button .press .text {
     color: var(--hover-text-color);
 }
-.auth-modal-window form fieldset label { border: 2px solid var(--border-color); }
-.auth-modal-window form { border: 2px solid rgba(255, 255, 255, .5); }
-.auth-modal-window .illustration {
+.dialog-form-container .interface { border: 2px solid rgba(255, 255, 255, .2); }
+.auth-dialog form fieldset label { border: 2px solid var(--border-color); }
+.auth-dialog .illustration {
     border-bottom: 2px solid rgba(255, 255, 255, .7);
     border-left: 2px solid rgba(255, 255, 255, .7);
     border-top: 2px solid rgba(255, 255, 255, .7);
@@ -157,19 +157,19 @@ input:-webkit-autofill:active {
     background-color: rgba(0, 255, 255, .1);
     border: 2px solid #00ffff;
 }
-.auth-modal-window form h1,
-.auth-modal-window form fieldset .subtitle,
-.auth-modal-window form .help-button span,
+.auth-dialog form fieldset .subtitle,
+.auth-dialog form .help-button span,
 .auth-remember-line .auth-remember-me,
+.dialog-form-container .interface .header h1,
 header .list-label-text,
 .header-dropdown-content .list-label-text,
 footer nav a span { font-family: "Minecraft Ten", sans-serif; }
 footer .tinted-gradient { background: linear-gradient(rgba(0, 15, 15, .8), transparent); }
-.auth-modal-window form fieldset label input,
+.auth-dialog form fieldset label input,
 .search-form-background form fieldset { background: linear-gradient(rgba(0, 15, 15, .5), transparent); }
 .icon { background-repeat: no-repeat; }
-.auth-modal-window form fieldset .status,
-.auth-modal-window form fieldset .task,
+.auth-dialog form fieldset .status,
+.auth-dialog form fieldset .task,
 .background-auth .logo .splash,
 .header-blur .sign-in-button .list-label-text,
 .left-header-sidebar .naked-link .list-label-text,

@@ -59,38 +59,45 @@ function onMaskMouseUp(event: MouseEvent) {
         @mousedown="onMaskMouseDown"
         @mouseup="onMaskMouseUp"
     >
-        <div ref="container" class="flex">
+        <div class="dialog-form-container flex" ref="container">
+
             <slot name="left-content"/>
-            <div>
-                <div class="flex justify-between items-center">
+
+            <div class="interface">
+
+                <div class="header flex justify-between items-center">
                     <button
                         v-if="backButton"
-                        class="flex justify-center items-center m-4"
+                        class="flex justify-center items-center m-2"
                         type="button"
                         @click="emit('back')"
                     >
                         <span class="icon icon-long-left-arrow"></span>
                     </button>
 
+                    <div v-else class="back-button-replacement m-2"/>
+
                     <h1 class="text-[1.8rem]">{{title}}</h1>
 
                     <button
                         v-if="closeButton"
-                        class="flex justify-center items-center m-4"
+                        class="flex justify-center items-center m-2"
                         type="button"
                         @click="isVisible = false"
                     >
                         <span class="icon icon-cross"></span>
                     </button>
                 </div>
+
                 <slot/>
+
             </div>
         </div>
     </div>
 
 </template>
 
-<style>
+<style scoped>
 
 .dialog-background {
     background-color: rgba(0, 0, 0, .5);
@@ -99,6 +106,20 @@ function onMaskMouseUp(event: MouseEvent) {
     height: 100%;
     width: 100%;
     z-index: 2;
+}
+
+.interface .header .back-button-replacement,
+.interface .header button {
+    height: 48px;
+    width: 48px;
+}
+.interface .header button .icon {
+    height: 32px;
+    width: 32px;
+}
+.interface .header h1 {
+    color: var(--primary-text-color);
+    user-select: none;
 }
 
 </style>
