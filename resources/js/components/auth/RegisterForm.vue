@@ -19,7 +19,6 @@ let successNickname = false
                     class="status text-[0.8rem] m-2"
                 >
                     Ошибка текст с ошибкой текст!
-                    Ошибка текст с ошибкой текст!
                 </span>
                 <span class="subtitle text-[1.1rem] m-2">E-mail</span>
                 <label for="register-email">
@@ -30,7 +29,6 @@ let successNickname = false
                     :class="{ 'error': !successNickname, 'success': successNickname}"
                     class="status text-[0.8rem] m-2"
                 >
-                    Ошибка текст с ошибкой текст!
                     Ошибка текст с ошибкой текст!
                 </span>
             </div>
@@ -43,7 +41,6 @@ let successNickname = false
                     :class="{ 'error': !successNickname, 'success': successNickname}"
                     class="status text-[0.8rem] m-2"
                 >
-                    Ошибка текст с ошибкой текст!
                     Ошибка текст с ошибкой текст!
                 </span>
 
@@ -60,7 +57,6 @@ let successNickname = false
                     :class="{ 'error': !successNickname, 'success': successNickname}"
                     class="status text-[0.8rem] m-2"
                 >
-                        Ошибка текст с ошибкой текст!
                         Ошибка текст с ошибкой текст!
                 </span>
             </div>

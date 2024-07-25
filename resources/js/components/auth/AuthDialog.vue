@@ -4,6 +4,7 @@ import Dialog from '@/components/elements/Dialog.vue'
 import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm.vue'
 import LoginForm from '@/components/auth/LoginForm.vue'
 import RegisterForm from '@/components/auth/RegisterForm.vue'
+import {getRandomSplash} from '@/stores/splashes'
 import Button from '@/components/elements/Button.vue'
 
 enum AuthFormType {
@@ -26,6 +27,8 @@ const authDialogTitle = computed(() => {
     }
 })
 
+const activeSplash = getRandomSplash()
+
 </script>
 
 <template>
@@ -40,14 +43,22 @@ const authDialogTitle = computed(() => {
             <div class="illustration flex justify-center items-center">
                 <div class="background-auth flex justify-center items-center">
                     <a class="logo icon-logo" href="#">
-                        <span class="splash">Я вернулся!</span>
+                        <span
+                            :class="{
+                                'large-splash': activeSplash.length > 30,
+                                'small-splash': activeSplash.length < 30
+                            }"
+                            class="splash"
+                        >
+                            {{ activeSplash }}
+                        </span>
                     </a>
                     <div class="back-background background-cherry-blossom-grove"></div>
                 </div>
             </div>
         </template>
 
-        <Transition name="smooth-appear">
+        <Transition name="smooth-auth-switch">
 
             <LoginForm
                 v-if="formType === AuthFormType.LOGIN"
@@ -273,15 +284,23 @@ const authDialogTitle = computed(() => {
 }
 
 .background-auth .logo .splash {
-    animation: small-splash-animation 1s infinite;
     transform-origin: center center;
     text-shadow: 2px 2px black;
     transform: rotate(-15deg);
     position: absolute;
     text-align: center;
     color: #fff500;
-    right: -30px;
+    width: 250px;
+    right: -80px;
     bottom: 5px;
+}
+
+.large-splash {
+    animation: large-splash-animation 1s infinite;
+}
+
+.small-splash {
+    animation: small-splash-animation 1s infinite;
 }
 
 .auth-dialog .group {
@@ -290,19 +309,19 @@ const authDialogTitle = computed(() => {
 
     /* =============== [ Анимации ] =============== */
 
-.smooth-appear-enter-active,
-.smooth-appear-leave-active {
+.smooth-auth-switch-enter-active,
+.smooth-auth-switch-leave-active {
     transition: .8s ease;
     position: absolute;
 }
 
-.smooth-appear-enter-from {
+.smooth-auth-switch-enter-from {
     transform: translateY(100%);
     transition: .8s;
     opacity: 0;
 }
 
-.smooth-appear-leave-to {
+.smooth-auth-switch-leave-to {
     transform: translateY(-100%);
     transition: .8s;
     opacity: 0;
@@ -350,7 +369,7 @@ const authDialogTitle = computed(() => {
     }
 }
 
-@keyframes big-splash-animation {
+@keyframes large-splash-animation {
     0% {
         font-size: 0.9rem;
     }
@@ -381,6 +400,7 @@ const authDialogTitle = computed(() => {
         display: none;
     }
     .auth-dialog .dialog-form-container .interface {
+        min-height: 658px;
         max-width: 380px;
     }
 }
@@ -398,6 +418,7 @@ const authDialogTitle = computed(() => {
         width: 90%;
     }
     .auth-dialog .dialog-form-container .interface {
+        height: 380px;
         width: 100%;
     }
     .auth-dialog .forgot-password,

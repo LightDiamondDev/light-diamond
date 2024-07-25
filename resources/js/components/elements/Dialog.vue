@@ -53,47 +53,64 @@ function onMaskMouseUp(event: MouseEvent) {
 </script>
 
 <template>
-    <div
-        v-if="isVisible"
-        class="dialog-background flex justify-center items-center"
-        @mousedown="onMaskMouseDown"
-        @mouseup="onMaskMouseUp"
-    >
-        <div class="dialog-form-container flex" ref="container">
 
-            <slot name="left-content"/>
+    <Transition name="smooth-opacity">
 
-            <div class="interface">
+        <div
+            v-if="isVisible"
+            class="dialog-background flex justify-center items-center"
+            @mousedown="onMaskMouseDown"
+            @mouseup="onMaskMouseUp"
+        >
 
-                <div class="header flex justify-between items-center">
-                    <button
-                        v-if="backButton"
-                        class="flex justify-center items-center m-2"
-                        type="button"
-                        @click="emit('back')"
-                    >
-                        <span class="icon icon-long-left-arrow"></span>
-                    </button>
+            <Transition name="smooth-appear">
 
-                    <div v-else class="back-button-replacement m-2"/>
+                <div
+                    class="dialog-form-container flex" ref="container"
+                    :class="{
+                        'smooth-down-disappear-animation': !isVisible,
+                        'smooth-up-appear-animation': isVisible
+                    }"
+                >
 
-                    <h1 class="text-[1.8rem]">{{title}}</h1>
+                    <slot name="left-content"/>
 
-                    <button
-                        v-if="closeButton"
-                        class="flex justify-center items-center m-2"
-                        type="button"
-                        @click="isVisible = false"
-                    >
-                        <span class="icon icon-cross"></span>
-                    </button>
+                    <div class="interface">
+
+                        <div class="header flex justify-between items-center">
+                            <button
+                                v-if="backButton"
+                                class="flex justify-center items-center m-2"
+                                type="button"
+                                @click="emit('back')"
+                            >
+                                <span class="icon icon-long-left-arrow"></span>
+                            </button>
+
+                            <div v-else class="back-button-replacement m-2"/>
+
+                            <h1 class="text-[1.8rem]">{{title}}</h1>
+
+                            <button
+                                v-if="closeButton"
+                                class="flex justify-center items-center m-2"
+                                type="button"
+                                @click="isVisible = false"
+                            >
+                                <span class="icon icon-cross"></span>
+                            </button>
+                        </div>
+
+                        <slot/>
+
+                    </div>
                 </div>
 
-                <slot/>
+            </Transition>
 
-            </div>
         </div>
-    </div>
+
+    </Transition>
 
 </template>
 
@@ -110,6 +127,7 @@ function onMaskMouseUp(event: MouseEvent) {
 
 .interface .header .back-button-replacement,
 .interface .header button {
+    user-select: none;
     height: 48px;
     width: 48px;
 }
@@ -120,6 +138,18 @@ function onMaskMouseUp(event: MouseEvent) {
 .interface .header h1 {
     color: var(--primary-text-color);
     user-select: none;
+}
+
+/* =============== [ Анимации ] =============== */
+
+.smooth-opacity-enter-from {
+    transition: .2s;
+    opacity: 0;
+}
+
+.smooth-opacity-leave-to {
+    transition: .5s;
+    opacity: 0;
 }
 
 </style>

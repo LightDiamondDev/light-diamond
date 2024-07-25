@@ -22,7 +22,6 @@ import Button from '@/components/elements/Button.vue'
                 class="status text-[0.8rem] mt-1"
             >
                 Ошибка текст с ошибкой текст!
-                Ошибка текст с ошибкой текст!
             </span>
         </fieldset>
 

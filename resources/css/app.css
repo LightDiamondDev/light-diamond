@@ -68,6 +68,12 @@ p, span { line-height: 1.5; }
     pointer-events: none;
     user-select: none;
 }
+.smooth-down-disappear-animation {
+    animation: smooth-down-disappear-animation .5s ease;
+}
+.smooth-up-appear-animation {
+    animation: smooth-up-appear-animation .5s ease;
+}
 @media (min-width: 1440px) {
     body.lock-scroll {
         padding-right: var(--global-scrollbar-width);
@@ -95,6 +101,28 @@ p, span { line-height: 1.5; }
 {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+@keyframes smooth-down-disappear-animation
+{
+    from {
+        margin-top: 0;
+        opacity: 1;
+    }
+    to {
+        margin-top: 300px;
+        opacity: 0;
+    }
+}
+@keyframes smooth-up-appear-animation
+{
+    from {
+        margin-top: 300px;
+        opacity: 0;
+    }
+    to {
+        margin-top: 0;
+        opacity: 1;
+    }
 }
 @keyframes transfusion-animation
 {
