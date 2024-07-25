@@ -1,11 +1,8 @@
 <script setup lang="ts">
 
-import {ref} from 'vue'
+import {onMounted, onUnmounted, ref, watch} from 'vue'
 import Button from '@/components/elements/Button.vue'
-
-const container = ref<Element>()
-const isMaskMouseDown = ref(false)
-const isVisible = defineModel<Boolean>('visible', {required: true})
+import {lockGlobalScroll, unlockGlobalScroll} from '@/helpers'
 
 const props = defineProps({
     position: {
@@ -32,6 +29,32 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['back'])
+
+const container = ref<Element>()
+const isMaskMouseDown = ref(false)
+const isVisible = defineModel<Boolean>('visible', {required: true})
+
+watch(isVisible, (value: boolean) => {
+    if (value) {
+        lockGlobalScroll()
+    } else {
+        unlockGlobalScroll()
+    }
+})
+
+onMounted(() => {
+    document.addEventListener('keydown', onKeyDown)
+})
+
+onUnmounted(() => {
+    document.removeEventListener('keydown', onKeyDown)
+})
+
+function onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+        isVisible.value = false
+    }
+}
 
 function isContainerEventTarget(event: MouseEvent) {
     return container.value && container.value?.contains(event.target)
@@ -66,7 +89,8 @@ function onMaskMouseUp(event: MouseEvent) {
             <Transition name="smooth-appear">
 
                 <div
-                    class="dialog-form-container flex" ref="container"
+                    ref="container"
+                    class="dialog-form-container flex"
                     :class="{
                         'smooth-down-disappear-animation': !isVisible,
                         'smooth-up-appear-animation': isVisible
@@ -89,7 +113,7 @@ function onMaskMouseUp(event: MouseEvent) {
 
                             <div v-else class="back-button-replacement m-2"/>
 
-                            <h1 class="text-[1.8rem]">{{title}}</h1>
+                            <h1 class="text-[1.8rem]">{{ title }}</h1>
 
                             <button
                                 v-if="closeButton"
@@ -131,10 +155,12 @@ function onMaskMouseUp(event: MouseEvent) {
     height: 48px;
     width: 48px;
 }
+
 .interface .header button .icon {
     height: 32px;
     width: 32px;
 }
+
 .interface .header h1 {
     color: var(--primary-text-color);
     user-select: none;
