@@ -46,7 +46,7 @@ const activeSplash = getRandomSplash()
                         <span
                             :class="{
                                 'large-splash': activeSplash.length > 30,
-                                'small-splash': activeSplash.length < 30
+                                'small-splash': activeSplash.length < 31
                             }"
                             class="splash"
                         >

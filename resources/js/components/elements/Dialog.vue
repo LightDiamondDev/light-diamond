@@ -5,6 +5,15 @@ import Button from '@/components/elements/Button.vue'
 import {lockGlobalScroll, unlockGlobalScroll} from '@/helpers'
 
 const props = defineProps({
+    animation: {
+        type: String,
+        validator: (val) => [ 'smooth', 'top-translate' ].includes(val),
+        default: 'smooth'
+    },
+    header: {
+        type: Boolean,
+        default: true
+    },
     position: {
         type: String,
         validator: (val) => [
@@ -77,31 +86,30 @@ function onMaskMouseUp(event: MouseEvent) {
 
 <template>
 
-    <Transition name="smooth-opacity">
+    <Transition :name="animation">
 
         <div
             v-if="isVisible"
-            class="dialog-background flex justify-center items-center"
+            class="dialog-background outer flex"
+            :class="{
+                'justify-center items-center': position === 'center',
+                'justify-center items-start': position === 'top-center',
+            }"
             @mousedown="onMaskMouseDown"
             @mouseup="onMaskMouseUp"
         >
 
-            <Transition name="smooth-appear">
-
                 <div
+                    v-if="isVisible"
+                    class="dialog-form-container inner flex"
                     ref="container"
-                    class="dialog-form-container flex"
-                    :class="{
-                        'smooth-down-disappear-animation': !isVisible,
-                        'smooth-up-appear-animation': isVisible
-                    }"
                 >
 
                     <slot name="left-content"/>
 
                     <div class="interface">
 
-                        <div class="header flex justify-between items-center">
+                        <div v-if="header" class="header flex justify-between items-center">
                             <button
                                 v-if="backButton"
                                 class="flex justify-center items-center m-2"
@@ -129,8 +137,6 @@ function onMaskMouseUp(event: MouseEvent) {
 
                     </div>
                 </div>
-
-            </Transition>
 
         </div>
 
@@ -168,14 +174,38 @@ function onMaskMouseUp(event: MouseEvent) {
 
 /* =============== [ Анимации ] =============== */
 
-.smooth-opacity-enter-from {
-    transition: .2s;
+.smooth-enter-active, .smooth-leave-active {
+    transition: all 0.5s ease-in-out;
+}
+.smooth-enter-from,
+.smooth-leave-to {
     opacity: 0;
 }
+.smooth-enter-active .inner,
+.smooth-leave-active .inner {
+    transition: all 0.5s ease-in-out;
+}
+.smooth-enter-from .inner,
+.smooth-leave-to .inner {
+    transform: translateY(200px);
+    opacity: 0.001;
+}
 
-.smooth-opacity-leave-to {
-    transition: .5s;
+.top-translate-enter-active, .top-translate-leave-active {
+    transition: all 0.5s ease-in-out;
+}
+.top-translate-enter-from,
+.top-translate-leave-to {
     opacity: 0;
+}
+.top-translate-enter-active .inner,
+.top-translate-leave-active .inner {
+    transition: all 0.5s ease-in-out;
+}
+.top-translate-enter-from .inner,
+.top-translate-leave-to .inner {
+    transform: translateY(-100%);
+    opacity: 0.001;
 }
 
 </style>

@@ -12,6 +12,8 @@ class DesignManager {
 
     private isDesktopSidebar = false
     private isHeaderFixed = false
+    private isLightTheme = true
+    private isSearchForm = false
 
     public isDesktopSidebarVisible() {
         return this.isDesktopSidebar
@@ -19,6 +21,14 @@ class DesignManager {
 
     public isHeaderFixedVisible() {
         return this.isHeaderFixed
+    }
+
+    public isLightThemeVisible() {
+        return this.isLightTheme
+    }
+
+    public isSearchFormVisible() {
+        return this.isLightTheme
     }
 
     public switchDesktopSidebar() {
@@ -29,6 +39,14 @@ class DesignManager {
     public switchHeaderFixed() {
         this.isHeaderFixed = !this.isHeaderFixed
         localStorage.setItem(DesignManager.isHeaderFixedKey, this.isHeaderFixed)
+    }
+
+    public switchLightTheme() {
+        this.isLightTheme = !this.isLightTheme
+    }
+
+    public switchSearchForm() {
+        this.isSearchForm = !this.isSearchForm
     }
 
     public loadDesktopSidebar() {

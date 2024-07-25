@@ -8,6 +8,9 @@
     import {onMounted, onUnmounted, ref} from 'vue'
     import Switcher from '@/components/elements/Switcher.vue'
     import Button from '@/components/elements/Button.vue'
+    import Dialog from '@/components/elements/Dialog.vue'
+    import DesignSettingsForm from '@/components/modals/DesignSettingsForm.vue'
+    import SearchForm from '@/components/modals/SearchForm.vue'
 
     const router = useRouter()
     const authStore = useAuthStore()
@@ -17,10 +20,11 @@
 
     const headerHeight = remToPixels(getCssVariableValue('--header-height'))
 
+    const isDesignSettingsDialog = ref(false)
     const isHeaderSidebar = ref(false)
     const isHeaderHidden = ref(false)
-    const isSearchFormVisible = ref(false)
-    let isLightTheme = ref(true);
+    const isProfileDropdownVisible = ref(false)
+    const isSearchDialog = ref(false)
 
     let previousScroll = 0;
     let currentScroll;
@@ -44,12 +48,7 @@
         lockGlobalScroll()
     }
 
-    function switchSearchForm() { isSearchFormVisible.value = !isSearchFormVisible.value; }
-
-    function switchLightTheme()
-    {
-        isLightTheme.value = !isLightTheme.value
-    }
+    function switchProfileDropdownVisible() { isProfileDropdownVisible.value = !isProfileDropdownVisible.value; }
 
     onMounted(() => document.addEventListener('scroll', headerScrollEvent))
 
@@ -57,6 +56,25 @@
 </script>
 
 <template>
+
+    <Dialog
+        v-model:visible="isDesignSettingsDialog"
+        class="design-settings-form"
+        title="Оформление"
+    >
+        <DesignSettingsForm/>
+    </Dialog>
+
+    <Dialog
+        v-model:visible="isSearchDialog"
+        animation="top-translate"
+        class="search-dialog outer"
+        :header=false
+        position="top-center"
+        title="Поиск"
+    >
+        <SearchForm/>
+    </Dialog>
 
     <div
         class="header-blur flex visible"
@@ -107,27 +125,14 @@
                 <span class="list-label-text">Настройки</span>
             </a>
 
-            <button class="quick-settings-button button-link naked-link flex justify-between items-center"
-                  @click="designManager.switchHeaderFixed()"
-            >
-                <span v-if="designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-fixed-header"></span>
-                <span v-else class="quick-settings-icon icon icon-free-header"></span>
-                <span class="list-label-text text-[1.1rem]">Свободная Шапка</span>
-                <Switcher :active=designManager.isHeaderFixedVisible() />
+            <button class="button-link naked-link flex items-center" @click="isDesignSettingsDialog = !isDesignSettingsDialog">
+                <span class="icon icon-eye"></span>
+                <span class="list-label-text">Оформление</span>
             </button>
 
-            <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="switchLightTheme">
-                <span v-if="isLightTheme" class="quick-settings-icon icon icon-sun"></span>
-                <span v-else class="quick-settings-icon icon icon-moon"></span>
-                <span class="list-label-text text-[1.1rem]">Тёмная Тема</span>
-                <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
-                        <span :class="{'off': isLightTheme, 'on': !isLightTheme}" class="handle icon icon-switcher-handle"></span>
-                    </span>
-            </button>
-
-            <button v-if="!authStore.isAuthenticated" class="sign-in-button flex items-center" @click="globalModalStore.isAuth = !globalModalStore.isAuth">
+            <button v-if="!authStore.isAuthenticated" class="button-link naked-link flex items-center" @click="globalModalStore.isAuth = !globalModalStore.isAuth">
                 <span class="icon icon-border-profile"></span>
-                <span class="list-label-text text-[1.1rem]">Войти</span>
+                <span class="list-label-text">Войти</span>
             </button>
 
             <div class="unit-title flex justify-center text-[1.1rem]">Контент</div>
@@ -382,7 +387,11 @@
             <div class="flex">
 
                 <div class="flex justify-center items-center mr-2">
-                    <button class="search-button flex justify-center items-center" @click="switchSearchForm" type="button">
+                    <button
+                        class="search-button flex justify-center items-center"
+                        @click="isSearchDialog = !isSearchDialog"
+                        type="button"
+                    >
                         <span class="icon icon-magnifier"></span>
                     </button>
                 </div>
@@ -390,20 +399,28 @@
                 <div class="profile-dropdown desktop-profile-dropdown inline-flex flex-col">
 
                     <div v-if="!authStore.isAuthenticated" class="flex items-center" style="height: 100%;">
-                        <button class="sign-in flex list-label items-center" type="button">
+                        <button
+                            class="sign-in flex list-label items-center"
+                            @click="switchProfileDropdownVisible"
+                            type="button"
+                        >
                             <span class="icon icon-border-profile"></span>
                         </button>
                     </div>
 
                     <div v-if="authStore.isAuthenticated" class="flex items-center" style="height: 100%;">
-                        <button class="flex list-label items-center" type="button">
+                        <button
+                            class="flex list-label items-center"
+                            @click="switchProfileDropdownVisible"
+                            type="button"
+                        >
                             <span class="profile-border flex justify-center items-center icon icon-border">
                                 <img alt="" src="/images/users/content/funny-girl.png" style="height: 26px;">
                             </span>
                         </button>
                     </div>
 
-                    <div class="profile-dropdown-content">
+                    <div class="profile-dropdown-content" :class="{'on': isProfileDropdownVisible}">
 
                         <a v-if="authStore.isAuthenticated" class="profile-link laminated-link flex items-center" href="#">
                             <span class="icon-outline flex justify-center items-center icon icon-border">
@@ -430,35 +447,11 @@
                             <span class="list-label-text">Настройки</span>
                         </a>
 
-                        <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="designManager.switchHeaderFixed()">
-                            <span v-if="designManager.isHeaderFixedVisible()" class="quick-settings-icon icon icon-fixed-header"></span>
-                            <span v-else class="quick-settings-icon icon icon-free-header"></span>
-                            <span class="list-label-text text-sm">Свободная Шапка</span>
-                            <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
-                                <span :class="{'off': designManager.isHeaderFixedVisible(), 'on': !designManager.isHeaderFixedVisible()}" class="handle icon icon-switcher-handle"></span>
-                            </span>
-                        </button>
+                        <div v-if="authStore.isAuthenticated" class="line flex self-center"></div>
 
-                        <div class="line flex self-center"></div>
-
-                        <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="designManager.switchDesktopSidebar()">
-                            <span v-if="designManager.isDesktopSidebarVisible()" class="quick-settings-icon icon icon-units"></span>
-                            <span v-else class="quick-settings-icon icon icon-cross"></span>
-                            <span class="list-label-text text-[1.1rem]">Боковое Меню</span>
-                            <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
-                                <span :class="{'off': !designManager.isDesktopSidebarVisible(), 'on': designManager.isDesktopSidebarVisible()}" class="handle icon icon-switcher-handle"></span>
-                            </span>
-                        </button>
-
-                        <div class="line flex self-center"></div>
-
-                        <button class="quick-settings-button button-link naked-link flex justify-between items-center" @click="switchLightTheme">
-                            <span v-if="isLightTheme" class="quick-settings-icon icon icon-sun"></span>
-                            <span v-else class="quick-settings-icon icon icon-moon"></span>
-                            <span class="list-label-text text-[1.1rem]">Тёмная Тема</span>
-                            <span class="quick-settings-switcher icon icon-switcher-way flex justify-center items-center">
-                                <span :class="{'off': isLightTheme, 'on': !isLightTheme}" class="handle icon icon-switcher-handle"></span>
-                            </span>
+                        <button class="button-link naked-link flex items-center" @click="isDesignSettingsDialog = !isDesignSettingsDialog">
+                            <span class="icon icon-eye"></span>
+                            <span class="list-label-text">Оформление</span>
                         </button>
 
                         <div class="line flex self-center"></div>
@@ -480,20 +473,6 @@
 
     </header>
 
-    <div :class="{ 'on':isSearchFormVisible }" class="search-form-background flex justify-center">
-        <form action="" class="flex flex-col items-center">
-            <label class="flex items-center" for="search-input">
-                <button class="flex justify-center items-center" id="search-button" type="button">
-                    <span class="icon icon-magnifier"></span>
-                </button>
-                <input class="flex text-[0.9rem]" id="search-input" placeholder="Поиск..." type="text">
-                <button class="flex justify-center items-center" @click="switchSearchForm" type="button">
-                    <span class="icon icon-cross"></span>
-                </button>
-            </label>
-            <fieldset class="flex flex-col"></fieldset>
-        </form>
-    </div>
 </template>
 
 <style scoped>
@@ -539,7 +518,6 @@ header {
     width: 32px;
 }
 .header-blur aside a .list-label-text,
-.header-blur aside .quick-settings-button .list-label-text,
 .header-blur .sign-in-button .list-label-text { color: var(--primary-text-color); }
 .left-header-sidebar-interaction,
 .right-header-sidebar-interaction {
@@ -553,23 +531,15 @@ header {
 }
 .left-header-sidebar .left-header-sidebar-interaction,
 .left-header-sidebar .profile-link,
-.left-header-sidebar .sign-in-button,
 .left-header-sidebar .naked-link,
 .right-header-sidebar-interaction,
 .right-header-sidebar .profile-link,
-.right-header-sidebar .sign-in-button,
 .right-header-sidebar .naked-link {
     min-height: 72px;
 }
 .left-header-sidebar .profile-link,
 .right-header-sidebar .profile-link {
     min-height: 56px;
-}
-.left-header-sidebar .sign-in-button .icon,
-.right-header-sidebar .sign-in-button .icon {
-    margin: 0 8px 0 14px;
-    height: 42px;
-    width: 42px;
 }
 .closing-header-sidebar-button { margin-right: 16px; }
 .logo {
@@ -608,11 +578,9 @@ header .list-label:focus-visible .list-label-text, header .list-label:hover .lis
 
 .left-header-sidebar .naked-link:focus-visible .list-label-text, .left-header-sidebar .naked-link:hover .list-label-text,
 .left-header-sidebar .profile-link:focus-visible .list-label-text, .left-header-sidebar .profile-link:hover .list-label-text,
-.left-header-sidebar .sign-in-button:focus-visible .list-label-text, .left-header-sidebar .sign-in-button:hover .list-label-text,
 
 .right-header-sidebar .naked-link:focus-visible .list-label-text, .right-header-sidebar .naked-link:hover .list-label-text,
 .right-header-sidebar .profile-link:focus-visible .list-label-text, .right-header-sidebar .profile-link:hover .list-label-text,
-.right-header-sidebar .sign-in-button:focus-visible .list-label-text, .right-header-sidebar .sign-in-button:hover .list-label-text,
 
 .profile-dropdown-content a:focus-visible .list-label-text, .profile-dropdown-content a:hover .list-label-text,
 .profile-dropdown-content .button-link:focus-visible .list-label-text, .profile-dropdown-content .button-link:hover .list-label-text {
@@ -651,13 +619,21 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .profile-dropdown-content {
     display: none;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    top: var(--header-height);
     position: absolute;
     transition: 1s;
+    width: 300px;
     opacity: 1;
-    top: 72px;
 }
-.header-dropdown-content { width: 300px; }
-.profile-dropdown-content { width: 300px; }
+.profile-dropdown-content {
+    z-index: 1;
+}
+.profile-dropdown-content.on {
+    display: flex;
+    animation: smooth-appear-animation .5s ease;
+    flex-direction: column;
+    opacity: 1;
+}
 .header-dropdown-content { left: 0; }
 .profile-dropdown-content { right: 0; }
 .header-dropdown-content a,
@@ -679,14 +655,9 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .header-dropdown-content .list-label-text {
     max-width: 60%;
 }
-.profile-dropdown-content .quick-settings-button .icon { margin: 0; }
 .header-dropdown:active .header-dropdown-content,
 .header-dropdown:hover .header-dropdown-content,
-.header-dropdown:focus .header-dropdown-content,
-
-.profile-dropdown:active .profile-dropdown-content,
-.profile-dropdown:hover .profile-dropdown-content,
-.profile-dropdown:focus .profile-dropdown-content {
+.header-dropdown:focus .header-dropdown-content {
     display: flex;
     animation: smooth-appear-animation .5s ease;
     flex-direction: column;
@@ -742,56 +713,6 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 }
 .left-header-sidebar .naked-link .list-label-text,
 .right-header-sidebar .naked-link .list-label-text { line-height: 1.2; }
-.search-form-background {
-    background-color: rgba(0, 0, 0, .5);
-    pointer-events: none;
-    transition: .5s;
-    position: fixed;
-    height: 100vh;
-    width: 100%;
-    opacity: 0;
-    z-index: 1;
-    top: 0;
-}
-.search-form-background.on {
-    pointer-events: visible;
-    opacity: 1;
-}
-.search-form-background form {
-    transform: translateY(-100%);
-    pointer-events: none;
-    height: fit-content;
-    max-width: 1232px;
-    transition: .5s;
-    width: 100%;
-}
-.search-form-background.on form { transform: translateY(0); }
-.search-form-background form label {
-    width: calc(100% - 20px);
-    pointer-events: visible;
-    max-width: 768px;
-    margin: 10px;
-}
-.header-wrap .search-button,
-.search-form-background form label button {
-    height: 48px;
-    width: 48px;
-}
-.search-form-background form label button { user-select: none; }
-.search-form-background form label button .icon {
-    height: 32px;
-    width: 32px;
-}
-.search-form-background form label input {
-    color: var(--primary-text-color);
-    height: 100%;
-    width: 100%;
-    padding: 0;
-}
-.search-form-background form fieldset {
-    min-height: 72px;
-    width: 100%;
-}
 .profile-dropdown-content .naked-link .icon { margin-left: 20px; }
 .profile-dropdown-content .line {
     opacity: .2;
