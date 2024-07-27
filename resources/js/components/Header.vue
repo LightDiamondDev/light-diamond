@@ -69,7 +69,7 @@
         v-model:visible="isSearchDialog"
         animation="top-translate"
         class="search-dialog outer"
-        :header=false
+        :header="false"
         position="top-center"
         title="Поиск"
     >

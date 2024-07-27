@@ -8,6 +8,30 @@ interface ImportMeta {
     }
 }
 
+export class ToastHelper {
+    private static readonly lifeTime = 3000
+
+    private toast: ToastServiceMethods
+
+    constructor(toast: ToastServiceMethods) {
+        this.toast = toast
+    }
+
+    public success(message?: string) {
+        this.toast.add({severity: 'success', summary: 'Успех', detail: message || '', life: ToastHelper.lifeTime})
+    }
+
+    public error(message?: string) {
+        this.toast.add({severity: 'error', summary: 'Ошибка', detail: message || '', life: ToastHelper.lifeTime})
+    }
+}
+interface ImportMeta {
+    env: {
+        VITE_APP_NAME: string
+        VITE_APP_URL: string
+    }
+}
+
 export function getAppUrl(): string {
     return import.meta.env.VITE_APP_URL
 }

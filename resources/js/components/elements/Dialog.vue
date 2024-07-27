@@ -7,8 +7,8 @@ import {lockGlobalScroll, unlockGlobalScroll} from '@/helpers'
 const props = defineProps({
     animation: {
         type: String,
-        validator: (val) => [ 'smooth', 'top-translate' ].includes(val),
-        default: 'smooth'
+        validator: (val) => [ 'smooth-opacity', 'top-translate' ].includes(val),
+        default: 'smooth-opacity'
     },
     header: {
         type: Boolean,
@@ -149,10 +149,9 @@ function onMaskMouseUp(event: MouseEvent) {
 .dialog-background {
     background-color: rgba(0, 0, 0, .5);
     position: fixed;
-    transition: 1s;
     height: 100%;
     width: 100%;
-    z-index: 2;
+    z-index: 3;
 }
 
 .interface .header .back-button-replacement,
@@ -174,25 +173,25 @@ function onMaskMouseUp(event: MouseEvent) {
 
 /* =============== [ Анимации ] =============== */
 
-.smooth-enter-active, .smooth-leave-active {
-    transition: all 0.5s ease-in-out;
+.smooth-opacity-enter-active, .smooth-opacity-leave-active {
+    transition: all 0.4s ease-in-out;
 }
-.smooth-enter-from,
-.smooth-leave-to {
+.smooth-opacity-enter-from,
+.smooth-opacity-leave-to {
     opacity: 0;
 }
-.smooth-enter-active .inner,
-.smooth-leave-active .inner {
-    transition: all 0.5s ease-in-out;
+.smooth-opacity-enter-active .inner,
+.smooth-opacity-leave-active .inner {
+    transition: all 0.4s ease-in-out;
 }
-.smooth-enter-from .inner,
-.smooth-leave-to .inner {
+.smooth-opacity-enter-from .inner,
+.smooth-opacity-leave-to .inner {
     transform: translateY(200px);
     opacity: 0.001;
 }
 
 .top-translate-enter-active, .top-translate-leave-active {
-    transition: all 0.5s ease-in-out;
+    transition: all 0.4s ease-in-out;
 }
 .top-translate-enter-from,
 .top-translate-leave-to {
@@ -200,7 +199,7 @@ function onMaskMouseUp(event: MouseEvent) {
 }
 .top-translate-enter-active .inner,
 .top-translate-leave-active .inner {
-    transition: all 0.5s ease-in-out;
+    transition: all 0.4s ease-in-out;
 }
 .top-translate-enter-from .inner,
 .top-translate-leave-to .inner {

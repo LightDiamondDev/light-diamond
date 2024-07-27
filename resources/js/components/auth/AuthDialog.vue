@@ -43,14 +43,16 @@ const activeSplash = getRandomSplash()
             <div class="illustration flex justify-center items-center">
                 <div class="background-auth flex justify-center items-center">
                     <a class="logo icon-logo" href="#">
-                        <span
-                            :class="{
-                                'large-splash': activeSplash.length > 30,
-                                'small-splash': activeSplash.length < 31
-                            }"
-                            class="splash"
-                        >
-                            {{ activeSplash }}
+                        <span class="base">
+                            <span
+                                class="splash"
+                                :class="{
+                                    'large-splash': activeSplash.length > 30,
+                                    'small-splash': activeSplash.length < 31
+                                }"
+                            >
+                                {{ activeSplash }}
+                            </span>
                         </span>
                     </a>
                     <div class="back-background background-cherry-blossom-grove"></div>
@@ -283,24 +285,31 @@ const activeSplash = getRandomSplash()
     top: 12%;
 }
 
-.background-auth .logo .splash {
+.background-auth .logo .base {
     transform-origin: center center;
-    text-shadow: 2px 2px black;
     transform: rotate(-15deg);
+    position: absolute;
+    height: 10px;
+    bottom: -15%;
+    width: 10px;
+    right: 55%;
+}
+
+.background-auth .logo .splash {
+    animation: splash-animation 1s infinite;
+    text-shadow: 2px 2px black;
     position: absolute;
     text-align: center;
     color: #fff500;
     width: 250px;
-    right: -80px;
-    bottom: 5px;
 }
 
 .large-splash {
-    animation: large-splash-animation 1s infinite;
+    font-size: .8rem;
 }
 
 .small-splash {
-    animation: small-splash-animation 1s infinite;
+    font-size: .9rem;
 }
 
 .auth-dialog .group {
@@ -369,27 +378,15 @@ const activeSplash = getRandomSplash()
     }
 }
 
-@keyframes large-splash-animation {
+@keyframes splash-animation {
     0% {
-        font-size: 0.9rem;
+        transform: scale(1.1);
     }
     50% {
-        font-size: 0.8rem;
+        transform: scale(1);
     }
     100% {
-        font-size: 0.9rem;
-    }
-}
-
-@keyframes small-splash-animation {
-    0% {
-        font-size: 1rem;
-    }
-    50% {
-        font-size: 0.9rem;
-    }
-    100% {
-        font-size: 1rem;
+        transform: scale(1.1);
     }
 }
 

@@ -19,6 +19,8 @@ header,
 .header-dropdown-content,
 .profile-dropdown-content,
 .search-form-background form,
+.toaster .achievement,
+.toaster .toast,
 footer {
     background-image: url('../../images/elements/base-background.png');
     background-color: var(--primary-bg-color);
@@ -163,7 +165,17 @@ input:-webkit-autofill:active {
 .button-container:focus-visible .action-button .press .text, .button-container:hover .action-button .press .text {
     color: var(--hover-text-color);
 }
-.dialog-form-container .interface { border: 2px solid rgba(255, 255, 255, .2); }
+.toaster .achievement .indicator,
+.toaster .toast .indicator,
+.dialog-form-container .interface { border: 2px solid rgba(255, 255, 255, .3); }
+
+.toaster .achievement .content,
+.toaster .toast .content {
+    border-bottom: 2px solid rgba(255, 255, 255, .3);
+    border-right: 2px solid rgba(255, 255, 255, .3);
+    border-top: 2px solid rgba(255, 255, 255, .3);
+}
+
 .auth-dialog form fieldset label { border: 2px solid var(--border-color); }
 .auth-dialog .illustration {
     border-bottom: 2px solid rgba(255, 255, 255, .6);
@@ -185,6 +197,8 @@ input:-webkit-autofill:active {
 .dialog-form-container .interface .header h1,
 header .list-label-text,
 .header-dropdown-content .list-label-text,
+.achievement .content h1,
+.toast .content h1,
 footer nav a span { font-family: "Minecraft Ten", sans-serif; }
 footer .tinted-gradient { background: linear-gradient(rgba(0, 15, 15, .8), transparent); }
 .auth-dialog form fieldset label input,
@@ -204,6 +218,8 @@ footer .tinted-gradient { background: linear-gradient(rgba(0, 15, 15, .8), trans
 .profile-dropdown-content .profile-link .subtitle,
 .profile-dropdown-content .ld-pay-link .title,
 .profile-dropdown-content .ld-pay-link .subtitle,
+.toaster .achievement .content p,
+.toaster .toast .content p,
 footer .row { font-family: "Monocraft", sans-serif; }
 
 .animation-agree-creeper { background-image: url('../../images/mobs/agree-creeper-animation.gif'); }
@@ -220,6 +236,7 @@ footer .row { font-family: "Monocraft", sans-serif; }
 .background-auth { background-image: url('../../images/elements/auth-background.png'); }
 .background-cherry-blossom-grove { background-image: url('../../images/elements/cherry-blossom-grove-background.png'); }
 
+.icon-achievement { background-image: url('../../images/items/diamond-achievement.png'); }
 .icon-apple { background-image: url('../../images/items/diamond-apple.png'); }
 .icon-axolotl-bucket { background-image: url('../../images/items/diamond-axolotl-bucket.png'); }
 .icon-bedrock-dev-small { background-image: url('../../images/items/bedrock-dev-small.png'); }
@@ -254,6 +271,7 @@ footer .row { font-family: "Monocraft", sans-serif; }
 .icon-right-arrow { background-image: url('../../images/items/diamond-right-arrow.png'); }
 .icon-script { background-image: url('../../images/items/diamond-script.png'); }
 .icon-skin { background-image: url('../../images/items/diamond-skin.png'); }
+.icon-small-cross { background-image: url('../../images/items/diamond-small-cross.png'); }
 .icon-spawn-egg { background-image: url('../../images/items/diamond-spawn-egg.png'); }
 .icon-sun { background-image: url('../../images/items/diamond-sun.svg'); }
 .icon-switcher-handle { background-image: url('../../images/items/diamond-switcher-handle.png'); }

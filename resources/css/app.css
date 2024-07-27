@@ -62,10 +62,15 @@ p, span { line-height: 1.5; }
     height: 48px;
     width: 48px;
 }
-.locked {
+.full-locked {
     -webkit-user-select: none;
     -moz-user-select: none;
     pointer-events: none;
+    user-select: none;
+}
+.locked {
+    -webkit-user-select: none;
+    -moz-user-select: none;
     user-select: none;
 }
 .smooth-down-disappear-animation {
@@ -73,14 +78,6 @@ p, span { line-height: 1.5; }
 }
 .smooth-up-appear-animation {
     animation: smooth-up-appear-animation .5s ease;
-}
-@media (min-width: 1440px) {
-    body.lock-scroll {
-        padding-right: var(--global-scrollbar-width);
-    }
-    body.lock-scroll .header-wrap {
-        margin-right: var(--global-scrollbar-width);
-    }
 }
 .lock-scroll { overflow: hidden; }
 
@@ -143,14 +140,16 @@ p, span { line-height: 1.5; }
     to { transform: rotate(0deg); }
 }
 
-/* =============== [ Медиа-Запрос { ?px < 1441px } ] =============== */
+/* =============== [ Медиа-Запрос { 1024px > ?px } ] =============== */
 
-@media screen and (min-width: 1440px)
+@media screen and (min-width: 1024px)
 {
     body.lock-scroll { padding-right: var(--global-scrollbar-width); }
     body.lock-scroll .header-wrap { margin-right: var(--global-scrollbar-width); }
+    body.lock-scroll .dialog-background {
+        padding-right: var(--global-scrollbar-width);
+    }
 }
-
 
 @layer tailwind {
     @tailwind base;

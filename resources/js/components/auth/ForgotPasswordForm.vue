@@ -2,6 +2,47 @@
 
 import Button from '@/components/elements/Button.vue'
 
+import {reactive} from 'vue'
+import {ref} from 'vue'
+import axios, {type AxiosError} from 'axios'
+import {getErrorMessageByCode, ToastHelper} from '@/helpers'
+
+//const toastHelper = new ToastHelper(useToast())
+const isProcessing = ref(false)
+const errors = ref([])
+const forgotPasswordData = reactive({
+    email: '',
+})
+
+let message;
+
+function submitForgotPassword() {
+    isProcessing.value = true
+    errors.value = []
+
+    axios.post('/api/auth/forgot-password', forgotPasswordData).then((response) => {
+        if (response.data.success) {
+            // toastHelper.success(`Ссылка для сброса пароля отправлена на ${forgotPasswordData.email}.`)
+            message = `Ссылка для сброса пароля отправлена на ${forgotPasswordData.email}.`
+            console.log(message)
+        } else {
+            if (response.data.errors) {
+                errors.value = response.data.errors
+            }
+            if (response.data.message) {
+                //toastHelper.error(response.data.message)
+                console.log(response.data.message)
+            }
+            return
+        }
+    }).catch((error: AxiosError) => {
+        //toastHelper.error(getErrorMessageByCode(error.response!.status))
+        console.log(getErrorMessageByCode(error.response!.status))
+    }).finally(() => {
+        isProcessing.value = false
+    })
+}
+
 </script>
 
 <template>
@@ -13,15 +54,30 @@ import Button from '@/components/elements/Button.vue'
                 Укажите свой E-mail адрес, к которому привязана учётная запись,
                 и мы отправим на него письмо с подтверждением сброса пароля:
             </span>
-            <span class="subtitle text-[1.1rem] m-2">E-mail</span>
-            <label for="reset-email">
-                <input class="text-[0.9rem]" id="reset-email" placeholder="steve@minecraft.net" type="email">
-            </label>
             <span
-                :class="{ 'error': !successNickname, 'success': successNickname}"
+                :class="{ 'error': errors['email'], 'success': !errors['email']}"
+                class="subtitle text-[1.1rem] m-2"
+            >
+                E-mail
+            </span>
+
+            <label for="reset-email">
+                <input
+                    v-model="forgotPasswordData.email"
+                    aria-describedby="email-error"
+                    autocomplete="email"
+                    class="text-[0.9rem]"
+                    id="reset-email"
+                    placeholder="steve@minecraft.net"
+                    type="email"
+                >
+            </label>
+
+            <span
+                :class="{ 'error': errors['email'], 'success': !errors['email']}"
                 class="status text-[0.8rem] mt-1"
             >
-                Ошибка текст с ошибкой текст!
+                {{ errors['email']?.[0] || '&nbsp;' }}
             </span>
         </fieldset>
 
@@ -30,7 +86,15 @@ import Button from '@/components/elements/Button.vue'
                 <div class="animation-walking-iron-golem mb-8 ml-10"></div>
             </div>
 
-            <Button button-type="submit" icon="icon-bestiary" icon-size="32px" text="Получить Письмо"/>
+            <Button
+                button-type="submit"
+                icon="icon-bestiary"
+                icon-size="32px"
+                text="Получить Письмо"
+                :loading="isProcessing"
+                @click.prevent="submitForgotPassword"
+            />
+
         </div>
 
     </form>
