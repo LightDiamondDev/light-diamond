@@ -46,6 +46,8 @@ export function getErrorMessageByCode(code: number) {
             return 'У вас нет доступа для совершения данной операции.'
         case 429:
             return 'Слишком много запросов, повторите позже.'
+        case 500:
+            return 'Произошла внутренняя ошибка...'
         default:
             return ''
     }

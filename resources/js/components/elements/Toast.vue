@@ -1,20 +1,37 @@
 <script setup lang="ts">
-const props = defineProps({
-    icon: String,
-    title: String,
-    text: String,
-    type: {
-        type: String,
-        validator: (val) => [ 'error', 'info', 'success', 'warning' ].includes(val),
-        default: 'info'
+import {useToastStore, ToastType} from '@/stores/toast'
+import type {Toast} from '@/stores/toast'
+import {computed, type PropType} from 'vue'
+
+const toastStore = useToastStore()
+
+const props = defineProps ({
+    toast: {
+        type: Object as PropType<Toast>,
+        required: true
     }
-});
+})
+
+const icon = computed(() => props.toast.icon || getTypeIcon())
+
+function getTypeIcon() {
+    switch(props.toast.icon) {
+        case ToastType.ERROR:
+            return 'icon-small-cross'
+        case ToastType.INFO:
+            return 'icon-eye'
+        case ToastType.SUCCESS:
+            return 'icon-tick'
+        case ToastType.WARNING:
+            return 'icon-hand'
+    }
+}
 </script>
 
 <template>
     <div
         class="toast flex locked"
-        :class="type"
+        :class="toast.type"
     >
         <div class="indicator">
             <div class="set icon icon-border flex justify-center items-center">
@@ -23,10 +40,13 @@ const props = defineProps({
         </div>
         <div class="content flex justify-between pl-2 pt-1">
             <div class="description flex flex-col">
-                <h1>{{ title }}</h1>
-                <p>{{ text }}</p>
+                <h1>{{ toast.title }}</h1>
+                <p>{{ toast.message }}</p>
             </div>
-            <button class="close flex justify-center items-center">
+            <button
+                class="close flex justify-center items-center"
+                @click="toastStore.remove(toast.id)"
+            >
                 <span class="icon icon-cross"></span>
             </button>
         </div>
@@ -85,7 +105,6 @@ const props = defineProps({
 .toast p {
     color: var(--primary-text-color);
     font-size: .8rem;
-    opacity: .8;
 }
 
 /* =============== [ Анимации Элементов ] =============== */

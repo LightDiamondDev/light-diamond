@@ -1,34 +1,75 @@
 <script setup lang="ts">
 import Toast from '@/components/elements/Toast.vue'
 import Achievement from '@/components/elements/Achievement.vue'
+import {useToastStore} from '@/stores/toast'
+
+const toastStore = useToastStore()
+
 </script>
 
 <template>
     <div class="toaster flex flex-col">
 
-        <Transition name="toast-sliding">
-            <Toast icon="icon-download" title="Скачивание началось..." text="Благодарим за скачивание!" type="info"/>
-        </Transition>
+        <TransitionGroup name="toast-sliding">
 
-        <Transition name="toast-sliding">
-            <Toast icon="icon-small-cross" title="Ошибка!" text="Что-то пошло не так... Запись не опубликована!" type="error"/>
-        </Transition>
+            <Toast
+                v-for="toast of toastStore.toasts"
+                :key="toast.id"
+                :toast="toast"
+            />
 
-        <Transition name="toast-sliding">
-            <Toast icon="icon-tick" title="Успех!" text="Ваша запись успешно опубликована!" type="success"/>
-        </Transition>
+                <!--
+                icon="icon-download"
+                title="Скачивание началось..."
+                text="Благодарим за скачивание!"
+                type="info"
+                -->
 
-        <Transition name="toast-sliding">
-            <Toast icon="icon-hand" title="Предупреждение!" text="Вам отправили предупреждение в связи с нарушением Авторских Прав!" type="warning"/>
-        </Transition>
 
-        <Transition name="toast-sliding">
+
+
+            <!--
+
+            <Toast
+                @close="remove($event)"
+                icon="icon-small-cross"
+                title="Ошибка!"
+                text="Что-то пошло не так... Запись не опубликована!"
+                type="error"
+            />
+
+            <Toast
+                @close="remove($event)"
+                icon="icon-tick"
+                title="Успех!"
+                text="Ваша запись успешно опубликована!"
+                type="success"
+            />
+
+            <Toast
+                @close="remove($event)"
+                icon="icon-hand"
+                title="Предупреждение!"
+                text="Вам отправили предупреждение в связи с нарушением Авторских Прав!"
+                type="warning"
+            />
+
+
+            -->
+
+
+
+            <!--
             <Achievement
+                @close="remove($event)"
                 achievement-title="Признание I"
                 achievement-description="заработать 50 лайков за публикации"
                 icon="icon-achievement"
+                :key="achievement.id"
             />
-        </Transition>
+            -->
+
+        </TransitionGroup>
 
     </div>
 </template>
@@ -38,8 +79,8 @@ import Achievement from '@/components/elements/Achievement.vue'
     top: var(--header-height);
     max-width: 360px;
     position: fixed;
-    height: 90vh;
     width: 100%;
+    z-index: 3;
     right: 0;
 }
 

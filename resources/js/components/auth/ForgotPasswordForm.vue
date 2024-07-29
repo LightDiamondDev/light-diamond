@@ -5,16 +5,17 @@ import Button from '@/components/elements/Button.vue'
 import {reactive} from 'vue'
 import {ref} from 'vue'
 import axios, {type AxiosError} from 'axios'
-import {getErrorMessageByCode, ToastHelper} from '@/helpers'
 
-//const toastHelper = new ToastHelper(useToast())
+import {getErrorMessageByCode} from '@/helpers'
+import {useToastStore} from '@/stores/toast'
+
+const toastStore = useToastStore()
+
 const isProcessing = ref(false)
 const errors = ref([])
 const forgotPasswordData = reactive({
     email: '',
 })
-
-let message;
 
 function submitForgotPassword() {
     isProcessing.value = true
@@ -22,22 +23,21 @@ function submitForgotPassword() {
 
     axios.post('/api/auth/forgot-password', forgotPasswordData).then((response) => {
         if (response.data.success) {
-            // toastHelper.success(`Ссылка для сброса пароля отправлена на ${forgotPasswordData.email}.`)
-            message = `Ссылка для сброса пароля отправлена на ${forgotPasswordData.email}.`
-            console.log(message)
+
+            toastStore.success(`Ссылка для сброса пароля отправлена на ${forgotPasswordData.email}.`)
+
         } else {
             if (response.data.errors) {
                 errors.value = response.data.errors
             }
             if (response.data.message) {
-                //toastHelper.error(response.data.message)
+                toastStore.error(`${response.data.message}`)
                 console.log(response.data.message)
             }
             return
         }
     }).catch((error: AxiosError) => {
-        //toastHelper.error(getErrorMessageByCode(error.response!.status))
-        console.log(getErrorMessageByCode(error.response!.status))
+        toastStore.error(`${getErrorMessageByCode(error.response!.status)}`)
     }).finally(() => {
         isProcessing.value = false
     })

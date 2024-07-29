@@ -1,14 +1,23 @@
 import {defineStore} from 'pinia'
 
-interface Toast {
-    id: bigint,
-    message: string,
-    duration: number,
-    type: 'success'|'error'|'warning'|'info'
+export enum ToastType {
+    ERROR,
+    INFO,
+    SUCCESS,
+    WARNING
+}
+
+export interface Toast {
+    id: bigint
+    type: ToastType
+    message: string
+    title: string
+    duration: number
+    icon?: string
 }
 
 interface ToastStore {
-    currentId: bigint,
+    currentId: bigint
     toasts: Toast[]
 }
 
@@ -18,30 +27,42 @@ export const useToastStore = defineStore('toast', {
         toasts: []
     }),
     actions: {
-        add(type: string, message: string, duration: number = 5000) {
+        remove(id: bigint) {
+            this.toasts.filter((toast) => toast.id !== id)
+        },
+
+        add(
+            type: ToastType,
+            message: string,
+            title: string,
+            duration: number = 8000,
+            icon?: string = undefined
+        ) {
             this.toasts.push({
                 id: this.currentId,
+                type: ToastType,
                 message: message,
+                title: title,
                 duration: duration,
-                type: type
+                icon: icon
             })
             this.currentId++
         },
 
-        success(message: string, duration: number = 5000) {
-            this.add('success', message, duration)
+        error(message: string, title: string = 'Ошибка!', duration: number = 8000, icon?: string = undefined) {
+            this.add(ToastType.ERROR, message, title, duration, icon)
         },
 
-        error(message: string, duration: number = 5000) {
-            this.add('error', message, duration)
+        info(message: string, title: string = 'Уведомление', duration: number = 8000, icon?: string = undefined) {
+            this.add(ToastType.INFO, message, title, duration, icon)
         },
 
-        warning(message: string, duration: number = 5000) {
-            this.add('warning', message, duration)
+        success(message: string, title: string = 'Успех!', duration: number = 8000, icon?: string = undefined) {
+            this.add(ToastType.SUCCESS, message, title, duration, icon)
         },
 
-        info(message: string, duration: number = 5000) {
-            this.add('info', message, duration)
+        warning(message: string, title: string = 'Внимание!', duration: number = 8000, icon?: string = undefined) {
+            this.add(ToastType.WARNING, message, title, duration, icon)
         }
     }
 })
