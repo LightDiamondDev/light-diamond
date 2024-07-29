@@ -28,7 +28,7 @@ export const useToastStore = defineStore('toast', {
     }),
     actions: {
         remove(id: bigint) {
-            this.toasts.filter((toast) => toast.id !== id)
+            this.toasts = this.toasts.filter((toast) => toast.id !== id)
         },
 
         add(
