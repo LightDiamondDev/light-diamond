@@ -270,7 +270,8 @@
 
     .toaster .achievement .indicator,
     .toaster .toast .indicator,
-    .dialog-form-container .interface {
+    .dialog-form-container .interface,
+    .global-error-container {
         border: 2px solid rgba(255, 255, 255, .3);
     }
 
@@ -306,6 +307,7 @@
     .auth-dialog form .help-button span,
     .auth-remember-line .auth-remember-me,
     .dialog-form-container .interface .header h1,
+    .global-error-container h1,
     header .list-label-text,
     .header-dropdown-content .list-label-text,
     .achievement .content h1,
@@ -330,6 +332,7 @@
     .auth-dialog form fieldset .status,
     .auth-dialog form fieldset .task,
     .background-auth .logo .splash,
+    .global-error-container p,
     .header-blur .sign-in-button .list-label-text,
     .left-header-sidebar .naked-link .list-label-text,
     .left-header-sidebar .profile-link .title,
@@ -347,46 +350,6 @@
         font-family: "Monocraft", sans-serif;
     }
 
-    .animation-agree-creeper {
-        background-image: url('/images/mobs/agree-creeper-animation.gif');
-    }
-
-    .animation-angry-warden {
-        background-image: url('/images/mobs/angry-warden-animation.gif');
-    }
-
-    .animation-dancing-blue-parrot {
-        background-image: url('/images/mobs/dancing-blue-parrot-animation.gif');
-    }
-
-    .animation-dancing-lime-parrot {
-        background-image: url('/images/mobs/dancing-lime-parrot-animation.gif');
-    }
-
-    .animation-dancing-piglin {
-        background-image: url('/images/mobs/dancing-piglin-animation.gif');
-    }
-
-    .animation-dancing-red-parrot {
-        background-image: url('/images/mobs/dancing-red-parrot-animation.gif');
-    }
-
-    .animation-dancing-multicoloured-parrot {
-        background-image: url('/images/mobs/dancing-multicoloured-parrot-animation.gif');
-    }
-
-    .animation-elder-guardian {
-        background-image: url('/images/mobs/elder-guardian-animation.gif');
-    }
-
-    .animation-flying-phantom {
-        background-image: url('/images/mobs/flying-phantom-animation.gif');
-    }
-
-    .animation-walking-iron-golem {
-        background-image: url('/images/mobs/walking-iron-golem-animation.gif');
-    }
-
     .background-auth {
         background-image: url('/images/elements/auth-background.png');
     }
@@ -396,99 +359,99 @@
     }
 
     .icon-achievement {
-        background-image: url('/images/items/diamond-achievement.png');
+        background-image: url('/public/images/icons/diamond-achievement.png');
     }
 
     .icon-apple {
-        background-image: url('/images/items/diamond-apple.png');
+        background-image: url('/images/icons/diamond-apple.png');
     }
 
     .icon-axolotl-bucket {
-        background-image: url('/images/items/diamond-axolotl-bucket.png');
+        background-image: url('/images/icons/diamond-axolotl-bucket.png');
     }
 
     .icon-bedrock-dev-small {
-        background-image: url('/images/items/bedrock-dev-small.png');
+        background-image: url('/images/icons/bedrock-dev-small.png');
     }
 
     .icon-bedrock-wiki {
-        background-image: url('/images/items/bedrock-wiki.png');
+        background-image: url('/images/icons/bedrock-wiki.png');
     }
 
     .icon-bestiary {
-        background-image: url('/images/items/bestiary.png');
+        background-image: url('/images/icons/bestiary.png');
     }
 
     .icon-book {
-        background-image: url('/images/items/diamond-book.png');
+        background-image: url('/images/icons/diamond-book.png');
     }
 
     .icon-border-profile {
-        background-image: url('/images/items/diamond-border-profile.png');
+        background-image: url('/images/icons/diamond-border-profile.png');
     }
 
     .icon-border {
-        background-image: url('/images/items/diamond-border.png');
+        background-image: url('/images/icons/diamond-border.png');
     }
 
     .icon-bottle {
-        background-image: url('/images/items/diamond-bottle.png');
+        background-image: url('/images/icons/diamond-bottle.png');
     }
 
     .icon-cross {
-        background-image: url('/images/items/diamond-cross.png');
+        background-image: url('/images/icons/diamond-cross.png');
     }
 
     .icon-diamond-pickaxe {
-        background-image: url('/images/items/diamond-pickaxe-icon.png');
+        background-image: url('/images/icons/diamond-pickaxe-icon.png');
     }
 
     .icon-diamond-sword {
-        background-image: url('/images/items/diamond-sword-icon.png');
+        background-image: url('/images/icons/diamond-sword-icon.png');
     }
 
     .icon-diamond {
-        background-image: url('/images/items/diamond.png');
+        background-image: url('/images/icons/diamond.png');
     }
 
     .icon-documentary {
-        background-image: url('/images/items/documentary.png');
+        background-image: url('/images/icons/documentary.png');
     }
 
     .icon-down-arrow {
-        background-image: url('/images/items/diamond-down-arrow.png');
+        background-image: url('/images/icons/diamond-down-arrow.png');
     }
 
     .icon-download {
-        background-image: url('/images/items/diamond-download.png');
+        background-image: url('/images/icons/diamond-download.png');
     }
 
     .icon-eye {
-        background-image: url('/images/items/diamond-eye.png');
+        background-image: url('/images/icons/diamond-eye.png');
     }
 
     .icon-faq {
-        background-image: url('/images/items/diamond-faq.png');
+        background-image: url('/images/icons/diamond-faq.png');
     }
 
     .icon-fixed-header {
-        background-image: url('/images/items/diamond-fixed-header.png');
+        background-image: url('/images/icons/diamond-fixed-header.png');
     }
 
     .icon-free-header {
-        background-image: url('/images/items/diamond-free-header.png');
+        background-image: url('/images/icons/diamond-free-header.png');
     }
 
     .icon-gear {
-        background-image: url('/images/items/diamond-gear.png');
+        background-image: url('/images/icons/diamond-gear.png');
     }
 
     .icon-hand {
-        background-image: url('/images/items/diamond-hand.png');
+        background-image: url('/images/icons/diamond-hand.png');
     }
 
     .icon-left-arrow {
-        background-image: url('/images/items/diamond-left-arrow.png');
+        background-image: url('/images/icons/diamond-left-arrow.png');
     }
 
     .icon-logo {
@@ -496,86 +459,86 @@
     }
 
     .icon-long-left-arrow {
-        background-image: url('/images/items/diamond-long-left-arrow.png');
+        background-image: url('/images/icons/diamond-long-left-arrow.png');
     }
 
     .icon-long-right-arrow {
-        background-image: url('/images/items/diamond-long-right-arrow.png');
+        background-image: url('/images/icons/diamond-long-right-arrow.png');
     }
 
     .icon-magnifier {
-        background-image: url('/images/items/diamond-magnifier.png');
+        background-image: url('/images/icons/diamond-magnifier.png');
     }
 
     .icon-map {
-        background-image: url('/images/items/diamond-map.png');
+        background-image: url('/images/icons/diamond-map.png');
     }
 
     .icon-moon {
-        background-image: url('/images/items/diamond-moon.png');
+        background-image: url('/images/icons/diamond-moon.png');
     }
 
     .icon-microsoft-small {
-        background-image: url('/images/items/microsoft-small.png');
+        background-image: url('/images/icons/microsoft-small.png');
     }
 
     .icon-minecraft-materials {
-        background-image: url('/images/items/minecraft-materials.png');
+        background-image: url('/images/icons/minecraft-materials.png');
     }
 
     .icon-right-arrow {
-        background-image: url('/images/items/diamond-right-arrow.png');
+        background-image: url('/images/icons/diamond-right-arrow.png');
     }
 
     .icon-script {
-        background-image: url('/images/items/diamond-script.png');
+        background-image: url('/images/icons/diamond-script.png');
     }
 
     .icon-skin {
-        background-image: url('/images/items/diamond-skin.png');
+        background-image: url('/images/icons/diamond-skin.png');
     }
 
     .icon-small-cross {
-        background-image: url('/images/items/diamond-small-cross.png');
+        background-image: url('/images/icons/diamond-small-cross.png');
     }
 
     .icon-spawn-egg {
-        background-image: url('/images/items/diamond-spawn-egg.png');
+        background-image: url('/images/icons/diamond-spawn-egg.png');
     }
 
     .icon-sun {
-        background-image: url('/images/items/diamond-sun.svg');
+        background-image: url('/images/icons/diamond-sun.svg');
     }
 
     .icon-switcher-handle {
-        background-image: url('/images/items/diamond-switcher-handle.png');
+        background-image: url('/images/icons/diamond-switcher-handle.png');
     }
 
     .icon-switcher-way {
-        background-image: url('/images/items/diamond-switcher-way.png');
+        background-image: url('/images/icons/diamond-switcher-way.png');
     }
 
     .icon-telegram {
-        background-image: url('/images/items/diamond-telegram.png');
+        background-image: url('/images/icons/diamond-telegram.png');
     }
 
     .icon-tick {
-        background-image: url('/images/items/diamond-tick.png');
+        background-image: url('/images/icons/diamond-tick.png');
     }
 
     .icon-top-arrow {
-        background-image: url('/images/items/diamond-top-arrow.png');
+        background-image: url('/images/icons/diamond-top-arrow.png');
     }
 
     .icon-units {
-        background-image: url('/images/items/diamond-units.png');
+        background-image: url('/images/icons/diamond-units.png');
     }
 
     .icon-vk {
-        background-image: url('/images/items/diamond-vk.png');
+        background-image: url('/images/icons/diamond-vk.png');
     }
 
     .icon-youtube {
-        background-image: url('/images/items/diamond-youtube.png');
+        background-image: url('/images/icons/diamond-youtube.png');
     }
 }

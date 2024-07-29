@@ -21,6 +21,8 @@ function submitForgotPassword() {
     isProcessing.value = true
     errors.value = []
 
+    toastStore.error('Тестовая ошибка!')
+
     axios.post('/api/auth/forgot-password', forgotPasswordData).then((response) => {
         if (response.data.success) {
 

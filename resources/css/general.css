@@ -57,6 +57,21 @@
     }
     .lock-scroll { overflow: hidden; }
 
+    .animation-agree-creeper { background-image: url('/public/images/mobs/agree-creeper-animation.gif'); }
+    .animation-angry-warden { background-image: url('/public/images/mobs/angry-warden-animation.gif'); }
+    .animation-dancing-blue-parrot { background-image: url('/public/images/mobs/dancing-blue-parrot-animation.gif'); }
+    .animation-dancing-lime-parrot { background-image: url('/public/images/mobs/dancing-lime-parrot-animation.gif'); }
+    .animation-dancing-piglin { background-image: url('/public/images/mobs/dancing-piglin-animation.gif'); }
+    .animation-dancing-red-parrot { background-image: url('/public/images/mobs/dancing-red-parrot-animation.gif'); }
+    .animation-dancing-multicoloured-parrot { background-image: url('/public/images/mobs/dancing-multicoloured-parrot-animation.gif'); }
+    .animation-elder-guardian { background-image: url('/public/images/mobs/elder-guardian-animation.gif'); }
+    .animation-flying-phantom { background-image: url('/public/images/mobs/flying-phantom-animation.gif'); }
+    .animation-walking-iron-golem { background-image: url('/public/images/mobs/walking-iron-golem-animation.gif'); }
+
+    .item-diamond { background-image: url('/public/images/items/diamond.png'); }
+    .item-ender-pearl { background-image: url('/public/images/items/ender-pearl.png'); }
+    .item-gold-ingot { background-image: url('/public/images/items/gold-ingot.png'); }
+
     /* =============== [ Анимации ] =============== */
 
     @keyframes icon-trigger-up-animation

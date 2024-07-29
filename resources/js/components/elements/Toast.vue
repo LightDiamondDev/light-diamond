@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type {Toast} from '@/stores/toast'
 import {ToastType, useToastStore} from '@/stores/toast'
-import {computed, onMounted, onUnmounted, type PropType} from 'vue'
+import {computed, type PropType} from 'vue'
 
 const toastStore = useToastStore()
 
-const props = defineProps({
+const props = defineProps ({
     toast: {
         type: Object as PropType<Toast>,
         required: true
@@ -25,7 +25,7 @@ onUnmounted(() => {
 })
 
 function getTypeIcon() {
-    switch (props.toast!.type) {
+    switch(props.toast!.type) {
         case ToastType.ERROR:
             return 'icon-small-cross'
         case ToastType.INFO:
@@ -138,6 +138,18 @@ function close() {
 .toast h1 {
     color: var(--primary-text-color);
     font-size: 1.1rem;
+}
+.toast.error h1 {
+    color: rgb(200, 30, 60);
+}
+.toast.info h1 {
+    color: rgb(0, 200, 220);
+}
+.toast.success h1 {
+    color: rgb(30, 180, 30);
+}
+.toast.warning h1 {
+    color: rgb(200, 180, 0);
 }
 
 .toast p {

@@ -82,15 +82,19 @@ const toastStore = useToastStore()
     width: 100%;
     z-index: 3;
     right: 0;
+
+    transition:all 2s;
 }
 
 /* =============== [ Анимации ] =============== */
 
-.toast-sliding-enter-active, .top-translate-leave-active {
+.toast-sliding-enter-active, .toast-sliding-leave-active {
     transition: all .8s ease-in-out;
 }
 .toast-sliding-enter-from,
 .toast-sliding-leave-to {
     transform: translateX(110%);
 }
+
+
 </style>

@@ -18,7 +18,7 @@ const props = defineProps({
         <div class="content flex justify-between pl-2 pt-1">
             <div class="description flex flex-col">
                 <h1 class="title">Получено Достижение</h1>
-                <h1 class="name">{{ achievementTitle }}</h1>
+                <h2 class="name">{{ achievementTitle }}</h2>
                 <p>
                     Поздравляем, Вы заработали Достижение
                     «<span>{{ achievementTitle }}</span>»
@@ -89,9 +89,9 @@ const props = defineProps({
     opacity: .8;
 }
 .achievement h1.title {
-    color: var(--primary-text-color);
+    animation: achievement-name-animation 8s infinite ease;
 }
-.achievement h1.name,
+.achievement h2.name,
 .achievement p span {
     animation: achievement-name-animation 10s infinite ease;
 }

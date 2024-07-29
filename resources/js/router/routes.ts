@@ -2,6 +2,8 @@ import Home from '@/components/Home.vue'
 import NotFound from '@/components/NotFound.vue'
 import type {RouteRecordRaw} from 'vue-router'
 import type {Component} from 'vue'
+import NoPermission from '@/components/NoPermission.vue'
+import AuthRequired from '@/components/auth/AuthRequired.vue'
 
 declare module 'vue-router' {
     interface RouteMeta {
