@@ -8,7 +8,7 @@
     <title>{{ config('app.name') }}</title>
 
     @vite('resources/css/app.css')
-    <link id="theme-link" rel="stylesheet" href="{{ asset('themes/ld-light-cyan/theme.css') }}">
+    <link id="theme-link" rel="stylesheet" href="{{ asset('themes/ld-cyan-light/theme.css') }}">
     @vite('resources/js/app.ts')
 </head>
 
