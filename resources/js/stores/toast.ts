@@ -40,7 +40,7 @@ export const useToastStore = defineStore('toast', {
         ) {
             this.toasts.push({
                 id: this.currentId,
-                type: ToastType,
+                type: type,
                 message: message,
                 title: title,
                 duration: duration,

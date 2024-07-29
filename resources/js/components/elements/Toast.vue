@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {useToastStore, ToastType} from '@/stores/toast'
 import type {Toast} from '@/stores/toast'
+import {ToastType, useToastStore} from '@/stores/toast'
 import {computed, type PropType} from 'vue'
 
 const toastStore = useToastStore()
@@ -15,7 +15,7 @@ const props = defineProps ({
 const icon = computed(() => props.toast.icon || getTypeIcon())
 
 function getTypeIcon() {
-    switch(props.toast.icon) {
+    switch(props.toast!.type) {
         case ToastType.ERROR:
             return 'icon-small-cross'
         case ToastType.INFO:
@@ -31,7 +31,12 @@ function getTypeIcon() {
 <template>
     <div
         class="toast flex locked"
-        :class="toast.type"
+        :class="{
+            'error': toast.type === ToastType.ERROR,
+            'info': toast.type === ToastType.INFO,
+            'success': toast.type === ToastType.SUCCESS,
+            'warning': toast.type === ToastType.WARNING,
+        }"
     >
         <div class="indicator">
             <div class="set icon icon-border flex justify-center items-center">
