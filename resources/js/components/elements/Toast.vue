@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {Toast} from '@/stores/toast'
 import {ToastType, useToastStore} from '@/stores/toast'
-import {computed, type PropType} from 'vue'
+import {computed, onMounted, onUnmounted, type PropType} from 'vue'
 
 const toastStore = useToastStore()
 

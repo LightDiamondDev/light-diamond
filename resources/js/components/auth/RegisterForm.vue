@@ -1,9 +1,54 @@
 <script setup lang="ts">
+import axios, {type AxiosError} from 'axios'
+import {reactive} from 'vue'
+import {ref} from 'vue'
+
+import {getErrorMessageByCode} from '@/helpers'
+import {useToastStore} from '@/stores/toast'
+import {useRouter, useRoute} from 'vue-router'
+
 import Button from '@/components/elements/Button.vue'
+import Input from '@/components/elements/Input.vue'
+
+const toastStore = useToastStore()
+
+const registerData = reactive({
+    username: '',
+    email: '',
+    password: '',
+    password_confirmation: ''
+})
+
+const isProcessing = ref(false)
+const errors = ref([])
+const router = useRouter()
+const route = useRoute()
 
 const emit = defineEmits([ 'switch-to-login-form' ])
 
-let successNickname = false
+function submitRegister() {
+    isProcessing.value = true
+    errors.value = []
+
+    axios.post('/api/auth/register', registerData).then((response) => {
+        if (response.data.success) {
+            router.replace({ path: route.path, query: { ...route.query, registered: true } }).then(() => {
+                router.go(0)
+            })
+        } else {
+            if (response.data.errors) {
+                errors.value = response.data.errors
+            }
+            if (response.data.message) {
+                toastStore.error(response.data.message)
+            }
+        }
+    }).catch((error: AxiosError) => {
+        toastStore.error(getErrorMessageByCode(error.response!.status))
+    }).finally(() => {
+        isProcessing.value = false
+    })
+}
 </script>
 
 <template>
@@ -11,58 +56,78 @@ let successNickname = false
         <fieldset class="flex flex-col items-center">
             <div class="group flex flex-col items-center">
                 <span class="subtitle text-[1.1rem] m-2">Никнейм</span>
-                <label for="register-nickname">
-                    <input class="text-[0.9rem]" id="register-nickname" placeholder="Steve" type="text">
-                </label>
+
+                <Input
+                    v-model="registerData.username"
+                    id="register-nickname"
+                    placeholder="Steve"
+                />
+
                 <span
-                    :class="{ 'error': !successNickname, 'success': successNickname}"
+                    :class="{ 'error': errors['username'], 'success': !errors['username']}"
                     class="status text-[0.8rem] m-2"
                 >
-                    Ошибка текст с ошибкой текст!
+                    {{ errors['username']?.[0] || '&nbsp;' }}
                 </span>
                 <span class="subtitle text-[1.1rem] m-2">E-mail</span>
-                <label for="register-email">
-                    <input class="text-[0.9rem]" id="register-email" placeholder="steve@minecraft.net"
-                           type="email">
-                </label>
+
+                <Input
+                    v-model="registerData.email"
+                    id="register-email"
+                    placeholder="steve@minecraft.net"
+                    type="email"
+                />
+
                 <span
-                    :class="{ 'error': !successNickname, 'success': successNickname}"
+                    :class="{ 'error': errors['email'], 'success': !errors['email']}"
                     class="status text-[0.8rem] m-2"
                 >
-                    Ошибка текст с ошибкой текст!
+                    {{ errors['email']?.[0] || '&nbsp;' }}
                 </span>
             </div>
             <div class="group set flex flex-col items-center">
                 <span class="subtitle text-[1.1rem] m-2">Пароль</span>
-                <label for="register-password">
-                    <input class="text-[0.9rem]" id="register-password" placeholder="Пароль" type="password">
-                </label>
+
+                <Input
+                    v-model="registerData.password"
+                    id="register-password"
+                    placeholder="Пароль"
+                    type="password"
+                />
+
                 <span
-                    :class="{ 'error': !successNickname, 'success': successNickname}"
+                    :class="{ 'error': errors['password'], 'success': !errors['password']}"
                     class="status text-[0.8rem] m-2"
                 >
-                    Ошибка текст с ошибкой текст!
+                    {{ errors['password']?.[0] || '&nbsp;' }}
                 </span>
 
                 <span class="subtitle text-[1.1rem] m-2">Повторный пароль</span>
-                <label for="register-repeat-password">
-                    <input
-                        class="text-[0.9rem]"
-                        id="register-repeat-password"
-                        placeholder="Повторный пароль"
-                        type="password"
-                    >
-                </label>
+
+                <Input
+                    v-model="registerData.password_confirmation"
+                    id="register-repeat-password"
+                    placeholder="Повторный пароль"
+                    type="password"
+                />
+
                 <span
-                    :class="{ 'error': !successNickname, 'success': successNickname}"
+                    :class="{ 'error': errors['password_confirmation'], 'success': !errors['password_confirmation']}"
                     class="status text-[0.8rem] m-2"
                 >
-                        Ошибка текст с ошибкой текст!
+                        {{ errors['password_confirmation']?.[0] || '&nbsp;' }}
                 </span>
             </div>
         </fieldset>
 
-        <Button button-type="submit" icon="icon-bestiary" icon-size="32px" text="Зарегистрироваться"/>
+        <Button
+            button-type="submit"
+            icon="icon-bestiary"
+            icon-size="32px"
+            text="Зарегистрироваться"
+            :loading="isProcessing"
+            @click.prevent="submitRegister"
+        />
 
         <button class="help-button mb-2 mt-2" type="button">
             <span class="p-2 text-[0.9rem]" @click="emit('switch-to-login-form')">Уже есть учётная запись?</span>

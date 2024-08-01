@@ -1,13 +1,55 @@
 <script setup lang="ts">
-import Button from '@/components/elements/Button.vue'
+import axios, {type AxiosError} from 'axios'
+import {ref} from 'vue'
 
-let successNickname = false
+import {getErrorMessageByCode} from '@/helpers'
+import {useToastStore} from '@/stores/toast'
+import {useRouter, useRoute} from 'vue-router'
+
+import Button from '@/components/elements/Button.vue'
+import Input from '@/components/elements/Input.vue'
+
+const toastStore = useToastStore()
+
+const loginData = ref({
+    username: '',
+    password: '',
+    remember: true
+})
+
+const isProcessing = ref(false)
+const errors = ref([])
+const router = useRouter()
+const route = useRoute()
 
 const emit = defineEmits([
     'switch-to-forgot-password-form',
     'switch-to-register-form'
 ])
+// errors.value['password'][0] = 'Тест'
+function submitLogin() {
+    isProcessing.value = true
+    errors.value = []
 
+    axios.post('/api/auth/login', loginData.value).then((response) => {
+        if (response.data.success) {
+            router.replace({ path: route.path, query: { ...route.query, authorized: true } }).then(() => {
+                router.go(0)
+            })
+        } else {
+            if (response.data.errors) {
+                errors.value = response.data.errors
+            }
+            if (response.data.message) {
+                toastStore.error(response.data.message)
+            }
+        }
+    }).catch((error: AxiosError) => {
+        toastStore.error(getErrorMessageByCode(error.response!.status))
+    }).finally(() => {
+        isProcessing.value = false
+    })
+}
 </script>
 
 <template>
@@ -20,28 +62,45 @@ const emit = defineEmits([
                 E-mail
                 -->
             </span>
-            <label for="login-nickname">
-                <input class="text-[0.9rem]" id="login-nickname" placeholder="Steve или steve@minecraft.net" type="text">
-            </label>
+
+            <!-- Steve или steve@minecraft.net -->
+            <Input
+                v-model="loginData.username"
+                id="login-nickname"
+                placeholder="Steve"
+            />
+
             <span
-                :class="{ 'error': !successNickname, 'success': successNickname}"
+                :class="{ 'error': errors['username'], 'success': !errors['username']}"
                 class="status text-[0.8rem] m-2"
             >
-                Ошибка текст с ошибкой текст!
+                {{ errors['username']?.[0] || '&nbsp;' }}
             </span>
             <span class="subtitle text-[1.1rem] m-2">Пароль</span>
-            <label for="login-password">
-                <input class="text-[0.9rem]" id="login-password" placeholder="Пароль" type="password">
-            </label>
+
+            <Input
+                v-model="loginData.password"
+                id="login-password"
+                placeholder="Пароль"
+                type="password"
+            />
+
             <span
-                :class="{ 'error': !successNickname, 'success': successNickname}"
+                :class="{ 'error': errors['password'], 'success': !errors['password']}"
                 class="status text-[0.8rem] m-2"
             >
-                Ошибка текст с ошибкой текст!
+                {{ errors['password']?.[0] || '&nbsp;' }}
             </span>
             <div class="auth-options flex justify-between mt-2">
                 <label class="auth-remember-line flex items-center" for="auth-remember-checkbox">
-                    <input id="auth-remember-checkbox" name="remember" type="checkbox" value="false">
+                    <input
+                        v-model="loginData.remember"
+                        class="text-[0.9rem]"
+                        id="auth-remember-checkbox"
+                        name="remember"
+                        type="checkbox"
+                        value="true"
+                    >
                     <span class="ld-checkbox icon-border flex justify-center items-center">
                         <span class="icon-tick"></span>
                     </span>
@@ -58,7 +117,14 @@ const emit = defineEmits([
                 <div class="animation-dancing-multicoloured-parrot"></div>
             </div>
 
-            <Button button-type="submit" icon="icon-bestiary" icon-size="32px" text="Войти"/>
+            <Button
+                button-type="submit"
+                icon="icon-bestiary"
+                icon-size="32px"
+                text="Войти"
+                :loading="isProcessing"
+                @click.prevent="submitLogin"
+            />
 
             <button class="help-button mb-2 mt-2" type="button">
                 <span class="p-2 text-[0.9rem]" @click="emit('switch-to-register-form')">Ещё нет учётной записи?</span>
@@ -70,5 +136,5 @@ const emit = defineEmits([
 </template>
 
 <style scoped>
-
+.auth-remember-line { background: none; }
 </style>

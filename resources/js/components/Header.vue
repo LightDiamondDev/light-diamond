@@ -1,58 +1,57 @@
 <script setup lang='ts'>
-    import {useAuthStore} from '@/stores/auth'
-    import useDesignManager from '@/design-manager'
-    import {useRouter} from 'vue-router'
-    import {useGlobalModalStore} from '@/stores/global-modal'
-    import {usePostCategoryStore} from '@/stores/postCategory'
-    import {getCssVariableValue, lockGlobalScroll, remToPixels, unlockGlobalScroll} from '@/helpers'
-    import {onMounted, onUnmounted, ref} from 'vue'
-    import Switcher from '@/components/elements/Switcher.vue'
-    import Button from '@/components/elements/Button.vue'
-    import Dialog from '@/components/elements/Dialog.vue'
-    import DesignSettingsForm from '@/components/modals/DesignSettingsForm.vue'
-    import SearchForm from '@/components/modals/SearchForm.vue'
+import {useAuthStore} from '@/stores/auth'
+import useDesignManager from '@/design-manager'
+import {useRouter} from 'vue-router'
+import {useGlobalModalStore} from '@/stores/global-modal'
+import {usePostCategoryStore} from '@/stores/postCategory'
+import {getCssVariableValue, lockGlobalScroll, remToPixels, unlockGlobalScroll} from '@/helpers'
+import {onMounted, onUnmounted, ref} from 'vue'
+import axios from 'axios'
+import Button from '@/components/elements/Button.vue'
+import Dialog from '@/components/elements/Dialog.vue'
+import DesignSettingsForm from '@/components/modals/DesignSettingsForm.vue'
+import SearchForm from '@/components/modals/SearchForm.vue'
 
-    const router = useRouter()
-    const authStore = useAuthStore()
-    const categoryStore = usePostCategoryStore()
-    const globalModalStore = useGlobalModalStore()
-    const designManager = useDesignManager()
+const router = useRouter()
+const authStore = useAuthStore()
+const categoryStore = usePostCategoryStore()
+const globalModalStore = useGlobalModalStore()
+const designManager = useDesignManager()
 
-    const headerHeight = remToPixels(getCssVariableValue('--header-height'))
+const headerHeight = remToPixels(getCssVariableValue('--header-height'))
 
-    const isDesignSettingsDialog = ref(false)
-    const isHeaderSidebar = ref(false)
-    const isHeaderHidden = ref(false)
-    const isProfileDropdownVisible = ref(false)
-    const isSearchDialog = ref(false)
+const isDesignSettingsDialog = ref(false)
+const isHeaderSidebar = ref(false)
+const isHeaderHidden = ref(false)
+const isProfileDropdownVisible = ref(false)
+const isSearchDialog = ref(false)
 
-    let previousScroll = 0;
-    let currentScroll;
+let previousScroll = 0
+let currentScroll
 
-    function headerScrollEvent()
-    {
-        currentScroll = window.scrollY;
-        isHeaderHidden.value = currentScroll > previousScroll && currentScroll > headerHeight
-        previousScroll = currentScroll;
-    }
+function headerScrollEvent() {
+    currentScroll = window.scrollY
+    isHeaderHidden.value = currentScroll > previousScroll && currentScroll > headerHeight
+    previousScroll = currentScroll
+}
 
-    function closeHeaderSidebar()
-    {
-        isHeaderSidebar.value = false
-        unlockGlobalScroll();
-    }
+function closeHeaderSidebar() {
+    isHeaderSidebar.value = false
+    unlockGlobalScroll()
+}
 
-    function openHeaderSidebar()
-    {
-        isHeaderSidebar.value = true
-        lockGlobalScroll()
-    }
+function openHeaderSidebar() {
+    isHeaderSidebar.value = true
+    lockGlobalScroll()
+}
 
-    function switchProfileDropdownVisible() { isProfileDropdownVisible.value = !isProfileDropdownVisible.value; }
+function switchProfileDropdownVisible() {
+    isProfileDropdownVisible.value = !isProfileDropdownVisible.value
+}
 
-    onMounted(() => document.addEventListener('scroll', headerScrollEvent))
+onMounted(() => document.addEventListener('scroll', headerScrollEvent))
 
-    onUnmounted(() => document.removeEventListener('scroll', headerScrollEvent))
+onUnmounted(() => document.removeEventListener('scroll', headerScrollEvent))
 </script>
 
 <template>
@@ -98,39 +97,14 @@
                 </button>
             </div>
 
-            <div class="unit-title flex justify-center text-[1.1rem]">Действия</div>
-
-            <a v-if="authStore.isAuthenticated" class="profile-link laminated-link flex items-center" href="#">
-                    <span class="icon-outline flex justify-center items-center icon icon-border">
-                        <img alt="" src="/images/users/content/funny-girl.png" style="height: 26px;">
-                    </span>
-                <div class="flex flex-col">
-                    <span class="title list-label-text text-sm">S3V3N1ce</span>
-                    <span class="subtitle list-label-text text-[0.75rem]">Профиль</span>
-                </div>
-            </a>
-
-            <a v-if="authStore.isAuthenticated" class="naked-link flex items-center" href="#">
-                <span class="icon icon-bottle"></span>
-                <span class="list-label-text">Контент-Студия</span>
-            </a>
-
-            <a v-if="authStore.isAuthenticated" class="naked-link flex items-center" href="#">
-                <span class="icon icon-download"></span>
-                <span class="list-label-text">Создать Материал</span>
-            </a>
-
-            <a v-if="authStore.isAuthenticated" class="naked-link flex items-center" href="#">
-                <span class="icon icon-gear"></span>
-                <span class="list-label-text">Настройки</span>
-            </a>
-
-            <button class="button-link naked-link flex items-center" @click="isDesignSettingsDialog = !isDesignSettingsDialog">
+            <button v-if="!authStore.isAuthenticated" class="button-link naked-link flex items-center"
+                    @click="isDesignSettingsDialog = !isDesignSettingsDialog">
                 <span class="icon icon-eye"></span>
                 <span class="list-label-text">Оформление</span>
             </button>
 
-            <button v-if="!authStore.isAuthenticated" class="button-link naked-link flex items-center" @click="globalModalStore.isAuth = !globalModalStore.isAuth">
+            <button v-if="!authStore.isAuthenticated" class="button-link naked-link flex items-center"
+                    @click="globalModalStore.isAuth = !globalModalStore.isAuth">
                 <span class="icon icon-border-profile"></span>
                 <span class="list-label-text">Войти</span>
             </button>
@@ -176,7 +150,8 @@
                 <span class="icon icon-documentary"></span>
                 <span class="list-label-text small">Документация Light Diamond</span>
             </a>
-            <a class="naked-link flex items-center" href="https://learn.microsoft.com/en-us/minecraft/creator/reference/content/entityreference/examples/componentlist">
+            <a class="naked-link flex items-center"
+               href="https://learn.microsoft.com/en-us/minecraft/creator/reference/content/entityreference/examples/componentlist">
                 <span class="icon icon-microsoft-small"></span>
                 <span class="list-label-text small">Документация Microsoft</span>
             </a>
@@ -240,7 +215,8 @@
 
     <div class="h-[var(--header-height)]" id="header" :class="{'header-hidden': isHeaderHidden}">></div>
 
-    <header class="h-[var(--header-height)] flex justify-center" :class="{'header-hidden': !designManager.isHeaderFixedVisible() && isHeaderHidden}">
+    <header class="h-[var(--header-height)] flex justify-center"
+            :class="{'header-hidden': !designManager.isHeaderFixedVisible() && isHeaderHidden}">
 
         <nav class="header-wrap flex justify-between">
             <div class="div flex items-center">
@@ -311,7 +287,8 @@
                             <span class="icon icon-documentary"></span>
                             <span class="list-label-text small">Документация Light Diamond</span>
                         </a>
-                        <a class="flex items-center" href="https://learn.microsoft.com/en-us/minecraft/creator/reference/content/entityreference/examples/componentlist">
+                        <a class="flex items-center"
+                           href="https://learn.microsoft.com/en-us/minecraft/creator/reference/content/entityreference/examples/componentlist">
                             <span class="icon icon-microsoft-small"></span>
                             <span class="list-label-text small">Документация Microsoft</span>
                         </a>
@@ -416,19 +393,30 @@
                         >
                             <span class="profile-border flex justify-center items-center icon icon-border">
                                 <img alt="" src="/images/users/content/funny-girl.png" style="height: 26px;">
+                                <span class="notifications-counter flex justify-center items-center">15</span>
                             </span>
                         </button>
                     </div>
 
                     <div class="profile-dropdown-content" :class="{'on': isProfileDropdownVisible}">
 
-                        <a v-if="authStore.isAuthenticated" class="profile-link laminated-link flex items-center" href="#">
+                        <a v-if="authStore.isAuthenticated" class="profile-link laminated-link flex items-center"
+                           href="#">
                             <span class="icon-outline flex justify-center items-center icon icon-border">
                                 <img alt="" src="/images/users/content/funny-girl.png" style="height: 26px;">
+                                <span class="notifications-counter flex justify-center items-center">15</span>
                             </span>
                             <div class="flex flex-col">
-                                <span class="title list-label-text text-sm">S3V3N1ce</span>
-                                <span class="subtitle list-label-text text-[0.75rem]">Профиль</span>
+                                <span
+                                    :class="{
+                                        'short': authStore.username.length < 16,
+                                        'long': authStore.username.length > 15
+                                    }"
+                                    class="title list-label-text long"
+                                >
+                                    {{ authStore.username }}
+                                </span>
+                                <span class="subtitle list-label-text short">Профиль</span>
                             </div>
                         </a>
 
@@ -449,22 +437,31 @@
 
                         <div v-if="authStore.isAuthenticated" class="line flex self-center"></div>
 
-                        <button class="button-link naked-link flex items-center" @click="isDesignSettingsDialog = !isDesignSettingsDialog">
+                        <button class="button-link naked-link flex items-center"
+                                @click="isDesignSettingsDialog = !isDesignSettingsDialog">
                             <span class="icon icon-eye"></span>
                             <span class="list-label-text">Оформление</span>
                         </button>
 
                         <div class="line flex self-center"></div>
 
-                        <button v-if="!authStore.isAuthenticated" class="button-link naked-link flex items-center" @click="globalModalStore.isAuth = !globalModalStore.isAuth">
+                        <button
+                            v-if="authStore.isAuthenticated"
+                            class="button-link naked-link flex items-center"
+                            @click="axios.post('/api/auth/logout').then(() => { router.go(0) })"
+                        >
+                            <span class="icon icon-left-arrow"></span>
+                            <span class="list-label-text">Выйти</span>
+                        </button>
+
+                        <button
+                            v-if="!authStore.isAuthenticated"
+                            class="button-link naked-link flex items-center"
+                            @click="globalModalStore.isAuth = !globalModalStore.isAuth"
+                        >
                             <span class="icon icon-diamond"></span>
                             <span class="list-label-text">Войти</span>
                         </button>
-
-                        <a v-if="authStore.isAuthenticated" class="button-link naked-link flex items-center" href="#">
-                            <span class="icon icon-left-arrow"></span>
-                            <span class="list-label-text">Выйти</span>
-                        </a>
                     </div>
                 </div>
 
@@ -486,12 +483,17 @@ header {
     width: 100%;
     top: 0;
 }
-.header-hidden { transform: translateY(-100%); }
+
+.header-hidden {
+    transform: translateY(-100%);
+}
+
 .header-wrap {
     height: var(--header-height);
     max-width: 1250px;
     width: 100%;
 }
+
 .header-blur {
     position: fixed;
     overflow-y: hidden;
@@ -500,6 +502,7 @@ header {
     width: 100%;
     z-index: 1;
 }
+
 .header-blur aside {
     background-color: var(--primary-bg-color);
     position: absolute;
@@ -508,27 +511,38 @@ header {
     transition: .5s;
     height: 100%;
 }
-.header-blur aside.fixed { height: calc(100% + 20px); }
+
+.header-blur aside.fixed {
+    height: calc(100% + 20px);
+}
+
 .close-header-sidebar-background {
     height: 100%;
     width: 100%;
 }
+
 .header-blur aside .icon {
     height: 32px;
     width: 32px;
 }
+
 .header-blur aside a .list-label-text,
-.header-blur .sign-in-button .list-label-text { color: var(--primary-text-color); }
+.header-blur .sign-in-button .list-label-text {
+    color: var(--primary-text-color);
+}
+
 .left-header-sidebar-interaction,
 .right-header-sidebar-interaction {
     height: var(--header-height);
     width: 100%;
 }
+
 .closing-header-sidebar-button,
 .opening-header-sidebar-button {
     min-width: 48px;
     height: 48px;
 }
+
 .left-header-sidebar .left-header-sidebar-interaction,
 .left-header-sidebar .profile-link,
 .left-header-sidebar .naked-link,
@@ -537,31 +551,43 @@ header {
 .right-header-sidebar .naked-link {
     min-height: 72px;
 }
+
 .left-header-sidebar .profile-link,
 .right-header-sidebar .profile-link {
     min-height: 56px;
 }
-.closing-header-sidebar-button { margin-right: 16px; }
+
+.closing-header-sidebar-button {
+    margin-right: 16px;
+}
+
 .logo {
     background-image: url('/images/logo.png');
     background-size: 100% 100%;
     height: 48px;
     width: 162px;
 }
+
 .header-wrap .logo-wrap {
     margin: 0 12px 0 8px;
     height: 100%;
 }
+
 header .icon,
 .header-dropdown .icon {
     height: 32px;
     width: 32px;
 }
-.header-dropdown .icon { margin-left: 4px; }
+
+.header-dropdown .icon {
+    margin-left: 4px;
+}
+
 header .list-label {
     cursor: pointer;
     height: 100%;
 }
+
 header .list-label-text,
 .header-dropdown-content .list-label-text {
     color: var(--primary-text-color);
@@ -569,24 +595,38 @@ header .list-label-text,
     transition: .2s;
     padding: 4px;
 }
-.header-dropdown-content .list-label-text.small { font-size: 1rem; }
-.header-blur aside .list-label-text.small { font-size: 0.9rem; }
-.header-dropdown-content .list-label-text.policy { font-size: 0.9rem; }
-.header-blur aside .list-label-text.policy { font-size: 0.8rem; }
+
+.header-dropdown-content .list-label-text.small {
+    font-size: 1rem;
+}
+
+.header-blur aside .list-label-text.small {
+    font-size: 0.9rem;
+}
+
+.header-dropdown-content .list-label-text.policy {
+    font-size: 0.9rem;
+}
+
+.header-blur aside .list-label-text.policy {
+    font-size: 0.8rem;
+}
+
 header .list-label:focus-visible .list-label-text, header .list-label:hover .list-label-text,
 .header-dropdown-content a:focus-visible .list-label-text, .header-dropdown-content a:hover .list-label-text,
-
 .left-header-sidebar .naked-link:focus-visible .list-label-text, .left-header-sidebar .naked-link:hover .list-label-text,
 .left-header-sidebar .profile-link:focus-visible .list-label-text, .left-header-sidebar .profile-link:hover .list-label-text,
-
 .right-header-sidebar .naked-link:focus-visible .list-label-text, .right-header-sidebar .naked-link:hover .list-label-text,
 .right-header-sidebar .profile-link:focus-visible .list-label-text, .right-header-sidebar .profile-link:hover .list-label-text,
-
 .profile-dropdown-content a:focus-visible .list-label-text, .profile-dropdown-content a:hover .list-label-text,
 .profile-dropdown-content .button-link:focus-visible .list-label-text, .profile-dropdown-content .button-link:hover .list-label-text {
     color: var(--hover-text-color);
 }
-button.list-label .icon { transition: .2s; }
+
+button.list-label .icon {
+    transition: .2s;
+}
+
 button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .header-dropdown-content a:focus-visible .icon, .header-dropdown-content a:hover .icon,
 .header-wrap .search-button:focus-visible .icon, .header-wrap .search-button:hover .icon,
@@ -596,25 +636,33 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .search-content-form button:focus-visible, .search-content-form button:hover {
     animation: icon-trigger-up-animation .3s ease;
 }
+
 .header-dropdown,
 .profile-dropdown {
     position: relative;
     height: 100%;
 }
+
 .profile-dropdown button {
     margin-right: 8px;
     height: 48px;
 }
+
 .profile-dropdown button .profile-border {
     height: 42px;
     width: 42px;
     margin: 0;
 }
-.profile-dropdown .sign-in { margin-left: -4px; }
+
+.profile-dropdown .sign-in {
+    margin-left: -4px;
+}
+
 .profile-dropdown .sign-in .icon {
     height: 42px;
     width: 42px;
 }
+
 .header-dropdown-content,
 .profile-dropdown-content {
     display: none;
@@ -625,17 +673,26 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     width: 300px;
     opacity: 1;
 }
+
 .profile-dropdown-content {
     z-index: 1;
 }
+
 .profile-dropdown-content.on {
     display: flex;
     animation: smooth-appear-animation .5s ease;
     flex-direction: column;
     opacity: 1;
 }
-.header-dropdown-content { left: 0; }
-.profile-dropdown-content { right: 0; }
+
+.header-dropdown-content {
+    left: 0;
+}
+
+.profile-dropdown-content {
+    right: 0;
+}
+
 .header-dropdown-content a,
 .profile-dropdown-content a,
 .profile-dropdown-content .button-link,
@@ -643,18 +700,34 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .right-header-sidebar .naked-link {
     height: 72px;
 }
+
 .profile-dropdown-content .button-link {
     margin-right: 0;
 }
+
+.profile-dropdown-content .profile-link .list-label-text.long {
+    font-size: .75rem;
+}
+
+.profile-dropdown-content .profile-link .list-label-text.short {
+    font-size: .85rem;
+}
+
 .header-dropdown-content .icon,
-.profile-dropdown-content .icon {
+.profile-dropdown-content .naked-link .icon {
     margin: 0 8px 0 24px;
     height: 32px;
     width: 32px;
 }
+
+.profile-dropdown-content .laminated-link .icon {
+    margin: 0 8px 0 6px;
+}
+
 .header-dropdown-content .list-label-text {
     max-width: 60%;
 }
+
 .header-dropdown:active .header-dropdown-content,
 .header-dropdown:hover .header-dropdown-content,
 .header-dropdown:focus .header-dropdown-content {
@@ -663,6 +736,7 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     flex-direction: column;
     opacity: 1;
 }
+
 .left-header-sidebar .profile-link,
 .right-header-sidebar .profile-link,
 .profile-dropdown-content .profile-link,
@@ -671,12 +745,31 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     height: 56px;
     margin: 8px;
 }
+
 .left-header-sidebar .profile-link .icon-outline,
 .profile-dropdown-content .profile-link .icon-outline {
     height: 42px;
     width: 42px;
 }
-.left-header-sidebar .profile-link .icon-outline { margin: 0 6px 0 6px; }
+
+.left-header-sidebar .profile-link .icon-outline {
+    position: relative;
+    background-color: green;
+}
+
+button .profile-border .notifications-counter,
+.profile-dropdown-content .profile-link .notifications-counter {
+    background-color: rgb(210, 10, 30);
+    color: var(--primary-text-color);
+    margin: 0 0 32px 32px;
+    position: absolute;
+    text-align: center;
+    padding-left: 2px;
+    font-size: .5rem;
+    height: 16px;
+    width: 16px;
+}
+
 .left-header-sidebar .profile-link .title,
 .left-header-sidebar .profile-link .subtitle,
 .right-header-sidebar .profile-link .title,
@@ -688,32 +781,46 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     margin-left: 4px;
     padding: 0;
 }
+
 .left-header-sidebar .profile-link .subtitle,
 .right-header-sidebar .profile-link .subtitle,
 .profile-dropdown-content .profile-link .subtitle,
-.profile-dropdown-content .ld-pay-link .subtitle { opacity: .7; }
+.profile-dropdown-content .ld-pay-link .subtitle {
+    opacity: .7;
+}
+
 .profile-dropdown-content .ld-pay-link .icon-diamond {
     height: 42px;
     width: 42px;
 }
+
 .left-header-sidebar .unit-title,
 .right-header-sidebar .unit-title {
     color: var(--primary-text-color);
     background-size: 400% 100%;
     padding: 4px 0;
 }
+
 .left-header-sidebar .naked-link .icon,
 .right-header-sidebar .naked-link .icon {
     margin: 0 8px 0 32px;
 }
+
 .left-header-sidebar .naked-link .list-label-text,
 .right-header-sidebar .naked-link .list-label-text {
     margin: 0 8px 0 8px;
     max-width: 60%;
 }
+
 .left-header-sidebar .naked-link .list-label-text,
-.right-header-sidebar .naked-link .list-label-text { line-height: 1.2; }
-.profile-dropdown-content .naked-link .icon { margin-left: 20px; }
+.right-header-sidebar .naked-link .list-label-text {
+    line-height: 1.2;
+}
+
+.profile-dropdown-content .naked-link .icon {
+    margin-left: 20px;
+}
+
 .profile-dropdown-content .line {
     opacity: .2;
     height: 1px;
@@ -722,26 +829,30 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 
 /* =============== [ Медиа-Запрос { ?px < 1025px } ] =============== */
 
-@media screen and (max-width: 1024px)
-{
-    .header-dropdown { display: none; }
+@media screen and (max-width: 1024px) {
+    .header-dropdown {
+        display: none;
+    }
 }
 
 /* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
 
-@media screen and (max-width: 767px)
-{
+@media screen and (max-width: 767px) {
     .header-wrap .div {
         justify-content: space-between;
         width: 100%;
     }
-    .header-wrap .div .logo-wrap { margin: 0 20% 0 0; }
+
+    .header-wrap .div .logo-wrap {
+        margin: 0 20% 0 0;
+    }
 }
 
 /* =============== [ Медиа-Запрос { ?px < 321px } ] =============== */
 
-@media screen and (max-width: 320px)
-{
-    .header-wrap .div .logo-wrap { margin: 0 10% 0 0; }
+@media screen and (max-width: 320px) {
+    .header-wrap .div .logo-wrap {
+        margin: 0 10% 0 0;
+    }
 }
 </style>

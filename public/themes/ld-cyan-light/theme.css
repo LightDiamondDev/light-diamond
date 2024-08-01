@@ -156,6 +156,10 @@
         -webkit-background-clip: text;
     }
 
+    input:-webkit-autofill + button {
+        background-color: var(--autofill-color);
+    }
+
     .left-header-sidebar::-webkit-scrollbar,
     .right-header-sidebar::-webkit-scrollbar {
         width: var(--bar-scrollbar-width);
@@ -268,6 +272,8 @@
         color: var(--hover-text-color);
     }
 
+    button .profile-border .notifications-counter,
+    .profile-dropdown-content .profile-link .notifications-counter,
     .toaster .achievement .indicator,
     .toaster .toast .indicator,
     .dialog-form-container .interface,
@@ -282,7 +288,7 @@
         border-top: 2px solid rgba(255, 255, 255, .3);
     }
 
-    .auth-dialog form fieldset label {
+    form fieldset label  {
         border: 2px solid var(--border-color);
     }
 
@@ -320,7 +326,7 @@
         background: linear-gradient(rgba(0, 15, 15, .8), transparent);
     }
 
-    .auth-dialog form fieldset label input,
+    form fieldset label,
     .search-form form fieldset {
         background: linear-gradient(rgba(0, 15, 15, .5), transparent);
     }
@@ -332,7 +338,9 @@
     .auth-dialog form fieldset .status,
     .auth-dialog form fieldset .task,
     .background-auth .logo .splash,
+    button .profile-border .notifications-counter,
     .global-error-container p,
+    .global-error-window form fieldset span,
     .header-blur .sign-in-button .list-label-text,
     .left-header-sidebar .naked-link .list-label-text,
     .left-header-sidebar .profile-link .title,
@@ -342,6 +350,7 @@
     .right-header-sidebar .profile-link .subtitle,
     .profile-dropdown-content .profile-link .title,
     .profile-dropdown-content .profile-link .subtitle,
+    .profile-dropdown-content .profile-link .notifications-counter,
     .profile-dropdown-content .ld-pay-link .title,
     .profile-dropdown-content .ld-pay-link .subtitle,
     .toaster .achievement .content p,
@@ -428,6 +437,10 @@
 
     .icon-eye {
         background-image: url('/images/icons/diamond-eye.png');
+    }
+
+    .icon-eye-cross {
+        background-image: url('/images/icons/diamond-eye-cross.png');
     }
 
     .icon-faq {

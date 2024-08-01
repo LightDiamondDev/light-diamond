@@ -1,45 +1,38 @@
 <script setup lang="ts">
-
-import Button from '@/components/elements/Button.vue'
-
+import axios, {type AxiosError} from 'axios'
 import {reactive} from 'vue'
 import {ref} from 'vue'
-import axios, {type AxiosError} from 'axios'
 
 import {getErrorMessageByCode} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
 
+import Button from '@/components/elements/Button.vue'
+import Input from '@/components/elements/Input.vue'
+
 const toastStore = useToastStore()
 
+const forgotPasswordData = reactive({ email: '' })
 const isProcessing = ref(false)
 const errors = ref([])
-const forgotPasswordData = reactive({
-    email: '',
-})
 
 function submitForgotPassword() {
     isProcessing.value = true
     errors.value = []
 
-    toastStore.error('Тестовая ошибка!')
-
     axios.post('/api/auth/forgot-password', forgotPasswordData).then((response) => {
         if (response.data.success) {
-
             toastStore.success(`Ссылка для сброса пароля отправлена на ${forgotPasswordData.email}.`)
-
         } else {
             if (response.data.errors) {
                 errors.value = response.data.errors
             }
             if (response.data.message) {
                 toastStore.error(`${response.data.message}`)
-                console.log(response.data.message)
             }
             return
         }
     }).catch((error: AxiosError) => {
-        toastStore.error(`${getErrorMessageByCode(error.response!.status)}`)
+        toastStore.error(getErrorMessageByCode(error.response!.status))
     }).finally(() => {
         isProcessing.value = false
     })
@@ -63,17 +56,12 @@ function submitForgotPassword() {
                 E-mail
             </span>
 
-            <label for="reset-email">
-                <input
-                    v-model="forgotPasswordData.email"
-                    aria-describedby="email-error"
-                    autocomplete="email"
-                    class="text-[0.9rem]"
-                    id="reset-email"
-                    placeholder="steve@minecraft.net"
-                    type="email"
-                >
-            </label>
+            <Input
+                v-model="forgotPasswordData.email"
+                id="reset-email"
+                placeholder="steve@minecraft.net"
+                type="email"
+            />
 
             <span
                 :class="{ 'error': errors['email'], 'success': !errors['email']}"
