@@ -23,7 +23,7 @@ interface ToastStore {
 
 export const useToastStore = defineStore('toast', {
     state: (): ToastStore => ({
-        currentId: 0,
+        currentId: 0n,
         toasts: []
     }),
     actions: {
@@ -36,7 +36,7 @@ export const useToastStore = defineStore('toast', {
             message: string,
             title: string,
             duration: number = 8000,
-            icon?: string = undefined
+            icon?: string
         ) {
             this.toasts.push({
                 id: this.currentId,
@@ -49,19 +49,19 @@ export const useToastStore = defineStore('toast', {
             this.currentId++
         },
 
-        error(message: string, title: string = 'Ошибка!', duration: number = 8000, icon?: string = undefined) {
+        error(message: string, title: string = 'Ошибка!', duration: number = 8000, icon?: string) {
             this.add(ToastType.ERROR, message, title, duration, icon)
         },
 
-        info(message: string, title: string = 'Уведомление', duration: number = 8000, icon?: string = undefined) {
+        info(message: string, title: string = 'Уведомление', duration: number = 8000, icon?: string) {
             this.add(ToastType.INFO, message, title, duration, icon)
         },
 
-        success(message: string, title: string = 'Успех!', duration: number = 8000, icon?: string = undefined) {
+        success(message: string, title: string = 'Успех!', duration: number = 8000, icon?: string) {
             this.add(ToastType.SUCCESS, message, title, duration, icon)
         },
 
-        warning(message: string, title: string = 'Внимание!', duration: number = 8000, icon?: string = undefined) {
+        warning(message: string, title: string = 'Внимание!', duration: number = 8000, icon?: string) {
             this.add(ToastType.WARNING, message, title, duration, icon)
         }
     }
