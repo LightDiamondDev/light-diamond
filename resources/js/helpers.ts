@@ -1,30 +1,5 @@
 import {PostVersionStatus} from '@/types'
-import {ref} from 'vue'
 
-interface ImportMeta {
-    env: {
-        VITE_APP_NAME: string
-        VITE_APP_URL: string
-    }
-}
-
-export class ToastHelper {
-    private static readonly lifeTime = 3000
-
-    private toast: ToastServiceMethods
-
-    constructor(toast: ToastServiceMethods) {
-        this.toast = toast
-    }
-
-    public success(message?: string) {
-        this.toast.add({severity: 'success', summary: 'Успех', detail: message || '', life: ToastHelper.lifeTime})
-    }
-
-    public error(message?: string) {
-        this.toast.add({severity: 'error', summary: 'Ошибка', detail: message || '', life: ToastHelper.lifeTime})
-    }
-}
 interface ImportMeta {
     env: {
         VITE_APP_NAME: string
@@ -38,6 +13,10 @@ export function getAppUrl(): string {
 
 export function changeTitle(title: string) {
     document.title = title + ' - ' + import.meta.env.VITE_APP_NAME
+}
+
+export function getHeaderHeight() {
+    return remToPixels(getCssVariableValue('--header-height'))
 }
 
 export function getErrorMessageByCode(code: number) {
@@ -132,12 +111,85 @@ export function getPostVersionStatusInfo(status: PostVersionStatus) {
 export function getCssVariableValue(variable: string) {
     return getComputedStyle(document.documentElement).getPropertyValue(variable).trim()
 }
+
 export function remToPixels(remValue: string) {
     const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize)
     return parseFloat(remValue) * rootFontSize
 }
-export function lockGlobalScroll() { document.body.classList.add('lock-scroll') }
-export function unlockGlobalScroll() { document.body.classList.remove('lock-scroll') }
-function calculateBodyScrollbarWidth() {
-    return window.innerWidth - document.documentElement.offsetWidth
+
+export function lockGlobalScroll() {
+    document.body.classList.add('lock-scroll')
 }
+
+export function unlockGlobalScroll() {
+    document.body.classList.remove('lock-scroll')
+}
+
+export function absolutePosition(
+    element: HTMLElement,
+    target: HTMLElement,
+    useTargetContext: boolean = false,
+    alignRight: boolean = false
+) {
+    const targetViewportInfo = target.getBoundingClientRect()
+    const targetPosition = useTargetContext
+        ? {top: target.offsetTop, left: target.offsetLeft}
+        : {top: targetViewportInfo.top + window.scrollY, left: targetViewportInfo.left + window.scrollX}
+    const viewportWidth = document.documentElement.clientWidth
+    const viewportHeight = document.documentElement.clientHeight
+    const headerHeight = getHeaderHeight()
+
+    let top: number
+    let left: number
+    let transformOrigin: string
+
+    const isYOverflow = targetViewportInfo.top + target.offsetHeight + element.offsetHeight > viewportHeight
+    if (isYOverflow) {
+        top = targetPosition.top - Math.min(element.offsetHeight, targetViewportInfo.top - headerHeight)
+        transformOrigin = 'bottom'
+    } else {
+        top = targetPosition.top + target.offsetHeight
+        transformOrigin = 'top'
+    }
+
+    const isXOverflow = targetViewportInfo.left + element.offsetWidth > viewportWidth
+    if (isXOverflow || alignRight) {
+        left = targetPosition.left + target.offsetWidth - element.offsetWidth
+        const scrollX = targetPosition.left - targetViewportInfo.left
+        if (left < scrollX) {
+            left = scrollX
+        }
+    } else {
+        left = targetPosition.left
+    }
+
+    if (element.offsetWidth < target.offsetWidth) {
+        element.style.width = target.offsetWidth + 'px'
+    }
+    element.style.maxWidth = viewportWidth + 'px'
+    element.style.maxHeight = viewportHeight - headerHeight + 'px'
+
+    element.style.top = top + 'px'
+    element.style.left = left + 'px'
+    element.style.transformOrigin = transformOrigin
+}
+
+export function isElementInOverflowedContainer(element: HTMLElement) {
+    let currentElement = element.parentElement
+
+    while (currentElement && currentElement !== document.body) {
+        const overflowX = window.getComputedStyle(currentElement).overflowX;
+        const overflowY = window.getComputedStyle(currentElement).overflowY;
+
+        if ((overflowX !== 'visible' && currentElement.scrollWidth > currentElement.clientWidth) ||
+            (overflowY !== 'visible' && currentElement.scrollHeight > currentElement.clientHeight)
+        ) {
+            return true;
+        }
+
+        currentElement = currentElement.parentElement;
+    }
+
+    return false
+}
+

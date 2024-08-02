@@ -6,11 +6,11 @@ export default {
     theme: {
         extend: {
             colors: {
-                'border-default': 'var(--surface-border)'
+                'border': 'var(--surface-border)'
             },
             borderColor: theme => ({
                 ...theme('colors'),
-                DEFAULT: theme('colors.border-default', 'currentColor')
+                DEFAULT: theme('colors.border', 'currentColor')
             })
         },
         screens: {

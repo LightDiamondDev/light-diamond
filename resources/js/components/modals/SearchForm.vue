@@ -21,7 +21,7 @@ const designManager = useDesignManager()
     </div>
 </template>
 
-<style>
+<style scoped>
 .search-dialog .dialog-form-container {
     max-width: 1232px;
     transition: .5s;
@@ -42,7 +42,6 @@ const designManager = useDesignManager()
     max-width: 768px;
     margin: 10px;
 }
-.header-wrap .search-button,
 .search-form form label button {
     height: 48px;
     width: 48px;

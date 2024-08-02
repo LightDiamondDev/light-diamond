@@ -11,16 +11,17 @@ const props = defineProps({
     id: String,
     type: {
         type: String,
-        validator: (val) => [ 'email', 'password', 'text' ].includes(val),
+        validator: (val) => ['email', 'password', 'text'].includes(val),
         default: 'text'
     },
     placeholder: String
-});
+})
 </script>
 
 <template>
     <label class="flex items-center" :for="id">
         <input
+            v-model="model"
             class="text-[0.9rem]"
             :id="id"
             :placeholder="placeholder"
@@ -32,7 +33,10 @@ const props = defineProps({
             @click="isPasswordHidden = !isPasswordHidden"
             type="button"
         >
-            <span :class="{ 'icon-eye-cross': isPasswordHidden, 'icon-eye': !isPasswordHidden }" class="flex icon"></span>
+            <span
+                :class="{ 'icon-eye-cross': isPasswordHidden, 'icon-eye': !isPasswordHidden }"
+                class="flex icon"
+            />
         </button>
     </label>
 </template>
@@ -42,10 +46,12 @@ label input {
     height: 100%;
     width: 100%;
 }
+
 label button {
     height: 36px;
     width: 40px;
 }
+
 label button .icon {
     height: 28px;
     width: 28px;

@@ -35,6 +35,10 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
+    class: {
+        type: String,
+        default: ''
+    },
 })
 
 const emit = defineEmits(['back'])
@@ -102,14 +106,15 @@ function onMaskMouseUp(event: MouseEvent) {
                 <div
                     v-if="isVisible"
                     class="dialog-form-container inner flex"
+                    :class="props.class"
                     ref="container"
                 >
 
                     <slot name="left-content"/>
 
-                    <div class="interface">
+                    <div class="interface w-full">
 
-                        <div v-if="header" class="header flex justify-between items-center">
+                        <div v-if="header" class="dialog-header flex justify-between items-center">
                             <button
                                 v-if="backButton"
                                 class="flex justify-center items-center m-2"
@@ -154,19 +159,19 @@ function onMaskMouseUp(event: MouseEvent) {
     z-index: 3;
 }
 
-.interface .header .back-button-replacement,
-.interface .header button {
+.interface .dialog-header .back-button-replacement,
+.interface .dialog-header button {
     user-select: none;
     height: 48px;
     width: 48px;
 }
 
-.interface .header button .icon {
+.interface .dialog-header button .icon {
     height: 32px;
     width: 32px;
 }
 
-.interface .header h1 {
+.interface .dialog-header h1 {
     color: var(--primary-text-color);
     user-select: none;
 }

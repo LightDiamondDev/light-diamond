@@ -1,16 +1,25 @@
 <script setup lang='ts'>
 import {useAuthStore} from '@/stores/auth'
 import useDesignManager from '@/design-manager'
-import {useRouter} from 'vue-router'
+import {type RouteLocation, useRouter} from 'vue-router'
 import {useGlobalModalStore} from '@/stores/global-modal'
 import {usePostCategoryStore} from '@/stores/postCategory'
-import {getCssVariableValue, lockGlobalScroll, remToPixels, unlockGlobalScroll} from '@/helpers'
-import {onMounted, onUnmounted, ref} from 'vue'
-import axios from 'axios'
+import {getHeaderHeight, lockGlobalScroll, unlockGlobalScroll} from '@/helpers'
+import {computed, onMounted, onUnmounted, ref} from 'vue'
 import Button from '@/components/elements/Button.vue'
 import Dialog from '@/components/elements/Dialog.vue'
 import DesignSettingsForm from '@/components/modals/DesignSettingsForm.vue'
 import SearchForm from '@/components/modals/SearchForm.vue'
+import Menu, {type MenuItem} from '@/components/elements/Menu.vue'
+import axios from 'axios'
+
+interface NavigationSection {
+    label: string
+    icon?: string
+    url?: string
+    route?: RouteLocation
+    children?: NavigationSection[]
+}
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -18,21 +27,175 @@ const categoryStore = usePostCategoryStore()
 const globalModalStore = useGlobalModalStore()
 const designManager = useDesignManager()
 
-const headerHeight = remToPixels(getCssVariableValue('--header-height'))
+const headerHeight = getHeaderHeight()
 
 const isDesignSettingsDialog = ref(false)
 const isHeaderSidebar = ref(false)
 const isHeaderHidden = ref(false)
-const isProfileDropdownVisible = ref(false)
 const isSearchDialog = ref(false)
 
-let previousScroll = 0
-let currentScroll
+const userMenu = ref<InstanceType<typeof Menu>>()
 
-function headerScrollEvent() {
-    currentScroll = window.scrollY
-    isHeaderHidden.value = currentScroll > previousScroll && currentScroll > headerHeight
-    previousScroll = currentScroll
+const userMenuItems = computed<MenuItem[]>(() => [
+    {
+        label: 'Контент-студия',
+        icon: 'icon-bottle',
+        visible: authStore.isAuthenticated,
+    },
+    {
+        label: 'Создать материал',
+        icon: 'icon-download',
+        visible: authStore.isAuthenticated,
+    },
+    {
+        label: 'Настройки',
+        icon: 'icon-gear',
+        visible: authStore.isAuthenticated,
+    },
+    {
+        separator: true,
+        visible: authStore.isAuthenticated,
+    },
+    {
+        label: 'Оформление',
+        icon: 'icon-eye',
+        action: () => isDesignSettingsDialog.value = true,
+    },
+    {
+        separator: true,
+    },
+    {
+        label: 'Войти',
+        icon: 'icon-right-arrow',
+        visible: !authStore.isAuthenticated,
+        action: () => globalModalStore.isAuth = true,
+    },
+    {
+        label: 'Выйти',
+        icon: 'icon-left-arrow',
+        visible: authStore.isAuthenticated,
+        action: logout
+    },
+])
+
+const navigationSections = computed<NavigationSection[]>(() => [
+    {
+        label: 'Контент',
+        children: [
+            {
+                label: 'Каталог',
+                icon: 'icon-book',
+            },
+            {
+                label: 'Аддон LD',
+                icon: 'icon-apple',
+            },
+            {
+                label: 'Ресурс-паки',
+                icon: 'icon-axolotl-bucket',
+            },
+            {
+                label: 'Аддоны',
+                icon: 'icon-spawn-egg',
+            },
+            {
+                label: 'Скины',
+                icon: 'icon-skin',
+            },
+            {
+                label: 'Карты',
+                icon: 'icon-map',
+            },
+            {
+                label: 'Статьи',
+                icon: 'icon-script',
+            },
+        ]
+    },
+    {
+        label: 'Полезное',
+        children: [
+            {
+                label: 'Бестиарий Light Diamond',
+                icon: 'icon-bestiary',
+            },
+            {
+                label: 'Документация Light Diamond',
+                icon: 'icon-documentary',
+            },
+            {
+                label: 'Документация Microsoft',
+                icon: 'icon-microsoft-small',
+                url: 'https://learn.microsoft.com/en-us/minecraft/creator/reference/content/entityreference/examples/componentlist',
+            },
+            {
+                label: 'Документация Bedrock.Dev',
+                icon: 'icon-bedrock-dev-small',
+                url: 'https://bedrock.dev',
+            },
+            {
+                label: 'Материалы Minecraft',
+                icon: 'icon-minecraft-materials',
+                url: 'https://github.com/Mojang/bedrock-samples/releases',
+            },
+        ]
+    },
+    {
+        label: 'Соц. сети',
+        children: [
+            {
+                label: 'ВКонтакте',
+                icon: 'icon-vk',
+                url: 'https://vk.com/light.diamond',
+            },
+            {
+                label: 'Телеграм',
+                icon: 'icon-telegram',
+                url: 'https://t.me/light_diamond_channel',
+            },
+            {
+                label: 'YouTube',
+                icon: 'icon-youtube',
+                url: 'https://www.youtube.com/@grostlight3303',
+            },
+        ]
+    },
+    {
+        label: 'Инфо',
+        children: [
+            {
+                label: 'Правила пользования',
+                icon: 'icon-hand',
+            },
+            {
+                label: 'Политика конфиденциальности',
+                icon: 'icon-script',
+            },
+            {
+                label: 'О проекте',
+                icon: 'icon-faq',
+            },
+        ]
+    },
+])
+
+let previousScroll = 0
+let currentScroll = 0
+
+onMounted(() => document.addEventListener('scroll', onPageScroll))
+
+onUnmounted(() => document.removeEventListener('scroll', onPageScroll))
+
+function onPageScroll() {
+    if (!designManager.isHeaderFixedVisible()) {
+        currentScroll = window.scrollY
+        isHeaderHidden.value = currentScroll > previousScroll && currentScroll > headerHeight
+        previousScroll = currentScroll
+
+        if (isHeaderHidden.value) {
+            userMenu.value?.hide()
+        }
+    }
 }
 
 function closeHeaderSidebar() {
@@ -45,13 +208,11 @@ function openHeaderSidebar() {
     lockGlobalScroll()
 }
 
-function switchProfileDropdownVisible() {
-    isProfileDropdownVisible.value = !isProfileDropdownVisible.value
+function logout() {
+    axios.post('/api/auth/logout').then(() => {
+        router.go(0)
+    })
 }
-
-onMounted(() => document.addEventListener('scroll', headerScrollEvent))
-
-onUnmounted(() => document.removeEventListener('scroll', headerScrollEvent))
 </script>
 
 <template>
@@ -67,7 +228,7 @@ onUnmounted(() => document.removeEventListener('scroll', headerScrollEvent))
     <Dialog
         v-model:visible="isSearchDialog"
         animation="top-translate"
-        class="search-dialog outer"
+        class="search-dialog outer page-container"
         :header="false"
         position="top-center"
         title="Поиск"
@@ -75,20 +236,53 @@ onUnmounted(() => document.removeEventListener('scroll', headerScrollEvent))
         <SearchForm/>
     </Dialog>
 
+    <Menu ref="userMenu" :items="userMenuItems" align-right class="user-menu">
+        <template v-slot:header>
+            <a
+                v-if="authStore.isAuthenticated" class="profile-link laminated-link flex items-center"
+                href="#"
+            >
+                <span class="icon icon-outline flex justify-center items-center icon-border h-[42px] w-[42px]">
+                    <img alt="" src="/images/users/content/funny-girl.png" class="h-[26px]">
+                    <span class="notifications-counter flex justify-center items-center">15</span>
+                </span>
+                <div class="flex flex-col">
+                    <span
+                        :class="{
+                            'text-sm': authStore.username!.length > 15
+                        }"
+                        class="title"
+                    >
+                        {{ authStore.username }}
+                    </span>
+                    <span class="subtitle text-sm opacity-70">Профиль</span>
+                </div>
+            </a>
+        </template>
+    </Menu>
+
     <div
-        class="header-blur flex visible"
-        :class="{'header-blur-on': isHeaderSidebar, 'header-blur-off': !isHeaderSidebar}">
+        class="header-blur fixed overflow-y-hidden transition duration-500 h-[100vh] w-full z-[3] flex visible"
+        :class="{'header-blur-on': isHeaderSidebar, 'header-blur-off': !isHeaderSidebar}"
+    >
         <aside
-            class="left-header-sidebar flex flex-col"
+            class="left-header-sidebar bg-[var(--primary-bg-color)] overflow-y-scroll max-w-[320px] transition duration-500 h-full flex flex-col"
             :class="{'xl:hidden': !designManager.isDesktopSidebarVisible(),
             'translate-x-0': isHeaderSidebar,
             '-translate-x-full': !isHeaderSidebar,
-            'fixed': designManager.isHeaderFixedVisible()}">
-            <div class="left-header-sidebar-interaction flex justify-between items-center">
-                <div></div>
-                <a class="logo-wrap flex items-center" href="#">
-                    <span class="logo"></span>
-                </a>
+            'fixed': designManager.isHeaderFixedVisible()}"
+        >
+            <div
+                class="left-header-sidebar-interaction flex h-[var(--header-height)] w-full justify-between items-center px-3"
+            >
+                <div class="w-[32px]"></div>
+                <RouterLink
+                    :to="{name: 'home'}"
+                    class="logo-wrap flex items-center transition-opacity duration-200 h-[70%]"
+                    :class="{'opacity-0': !isHeaderSidebar}"
+                >
+                    <img src="/images/logo.png" alt="Logo" class="h-full"/>
+                </RouterLink>
                 <button
                     class="closing-header-sidebar-button flex justify-center items-center"
                     :class="{'closing-button': !isHeaderSidebar, 'opening-button': isHeaderSidebar}"
@@ -97,529 +291,115 @@ onUnmounted(() => document.removeEventListener('scroll', headerScrollEvent))
                 </button>
             </div>
 
-            <button v-if="!authStore.isAuthenticated" class="button-link naked-link flex items-center"
-                    @click="isDesignSettingsDialog = !isDesignSettingsDialog">
-                <span class="icon icon-eye"></span>
-                <span class="list-label-text">Оформление</span>
-            </button>
+            <template v-for="section of navigationSections">
+                <div class="unit-title flex justify-center text-[1.1rem]">{{ section.label }}</div>
 
-            <button v-if="!authStore.isAuthenticated" class="button-link naked-link flex items-center"
-                    @click="globalModalStore.isAuth = !globalModalStore.isAuth">
-                <span class="icon icon-border-profile"></span>
-                <span class="list-label-text">Войти</span>
-            </button>
-
-            <div class="unit-title flex justify-center text-[1.1rem]">Контент</div>
-
-            <a class="naked-link flex items-center" href="#">
-                <span class="icon icon-book"></span>
-                <span class="list-label-text">Каталог</span>
-            </a>
-            <a class="naked-link flex items-center" href="#">
-                <span class="icon icon-apple flex"></span>
-                <span class="list-label-text">Аддон LD</span>
-            </a>
-            <a class="naked-link flex items-center" href="#">
-                <span class="icon icon-axolotl-bucket"></span>
-                <span class="list-label-text">Ресурс-Паки</span>
-            </a>
-            <a class="naked-link flex items-center" href="#">
-                <span class="icon icon-spawn-egg"></span>
-                <span class="list-label-text">Аддоны</span>
-            </a>
-            <a class="naked-link flex items-center" href="#">
-                <span class="icon icon-skin"></span>
-                <span class="list-label-text">Скины</span>
-            </a>
-            <a class="naked-link flex items-center" href="#">
-                <span class="icon icon-map"></span>
-                <span class="list-label-text">Карты</span>
-            </a>
-            <a class="naked-link flex items-center" href="#">
-                <span class="icon icon-script"></span>
-                <span class="list-label-text">Статьи</span>
-            </a>
-
-            <div class="unit-title flex justify-center text-[1.1rem]">Материалы</div>
-
-            <a class="naked-link flex items-center" href="#">
-                <span class="icon icon-bestiary"></span>
-                <span class="list-label-text small">Бестиарий Light Diamond</span>
-            </a>
-            <a class="naked-link flex items-center" href="https://github.com/Mojang/bedrock-samples/releases">
-                <span class="icon icon-documentary"></span>
-                <span class="list-label-text small">Документация Light Diamond</span>
-            </a>
-            <a class="naked-link flex items-center"
-               href="https://learn.microsoft.com/en-us/minecraft/creator/reference/content/entityreference/examples/componentlist">
-                <span class="icon icon-microsoft-small"></span>
-                <span class="list-label-text small">Документация Microsoft</span>
-            </a>
-            <a class="naked-link flex items-center" href="https://bedrock.dev/">
-                <span class="icon icon-bedrock-dev-small"></span>
-                <span class="list-label-text small">Документация Bedrock.Dev</span>
-            </a>
-            <a class="naked-link flex items-center" href="https://wiki.bedrock.dev/">
-                <span class="icon icon-bedrock-wiki"></span>
-                <span class="list-label-text small">Документация Bedrock Wiki</span>
-            </a>
-            <a class="naked-link flex items-center" href="https://github.com/Mojang/bedrock-samples/releases">
-                <span class="icon icon-minecraft-materials"></span>
-                <span class="list-label-text small">Материалы Minecraft</span>
-            </a>
-
-            <div class="unit-title flex justify-center text-[1.1rem]">Ссылки</div>
-
-            <a class="naked-link flex items-center" href="https://vk.com/light.diamond">
-                <span class="icon icon-vk"></span>
-                <span class="list-label-text text-base">ВКонтакте</span>
-            </a>
-            <a class="naked-link flex items-center" href="https://t.me/light_diamond_channel">
-                <span class="icon icon-telegram"></span>
-                <span class="list-label-text text-base">Телеграм</span>
-            </a>
-            <a class="naked-link flex items-center" href="https://www.youtube.com/@grostlight3303">
-                <span class="icon icon-youtube"></span>
-                <span class="list-label-text text-base">YouTube</span>
-            </a>
-            <a class="naked-link flex items-center" href="#">
-                <span class="icon icon-diamond"></span>
-                <span class="list-label-text text-base">Обновления</span>
-            </a>
-            <a class="naked-link flex items-center" href="#">
-                <span class="icon icon-hand"></span>
-                <span class="list-label-text text-base">Правила Пользования</span>
-            </a>
-            <a class="naked-link flex items-center" href="#">
-                <span class="icon icon-script"></span>
-                <span class="list-label-text policy">Политика Конфиденциальности</span>
-            </a>
-
-            <div class="unit-title flex justify-center text-[1.1rem]">Поддержка</div>
-
-            <a class="naked-link flex items-center" href="#">
-                <span class="icon icon-diamond-sword"></span>
-                <span class="list-label-text text-[1.1rem]">Помощь</span>
-            </a>
-            <a class="naked-link flex items-center" href="#">
-                <span class="icon icon-diamond-pickaxe"></span>
-                <span class="list-label-text text-[1.1rem]">Гайды</span>
-            </a>
-            <a class="naked-link flex items-center" href="#">
-                <span class="icon icon-faq"></span>
-                <span class="list-label-text text-[1.1rem]">О Проекте</span>
-            </a>
+                <component
+                    v-for="childSection of section.children"
+                    :is="childSection.route ? 'RouterLink' : 'a'"
+                    :to="childSection.route"
+                    :href="childSection.url || '#'"
+                    class="naked-link flex items-center min-h-[72px]"
+                >
+                    <span :class="`icon ${childSection.icon}`"/>
+                    <span class="list-label-text">{{ childSection.label }}</span>
+                </component>
+            </template>
         </aside>
-        <div class="close-header-sidebar-background" @click="closeHeaderSidebar"></div>
+        <div class="close-header-sidebar-background h-full w-full" @click="closeHeaderSidebar"></div>
     </div>
 
-    <div class="h-[var(--header-height)]" id="header" :class="{'header-hidden': isHeaderHidden}">></div>
+    <div
+        class="h-[var(--header-height)]"
+        :class="{'-translate-y-full': !designManager.isHeaderFixedVisible() && isHeaderHidden}"
+    />
 
-    <header class="h-[var(--header-height)] flex justify-center"
-            :class="{'header-hidden': !designManager.isHeaderFixedVisible() && isHeaderHidden}">
-
-        <nav class="header-wrap flex justify-between">
-            <div class="div flex items-center">
-
+    <header
+        class="fixed transition-transform duration-300 top-0 left-0 w-full select-none h-[var(--header-height)] z-[1] flex"
+        :class="{'-translate-y-full': !designManager.isHeaderFixedVisible() && isHeaderHidden}"
+    >
+        <nav class="header page-container flex justify-between">
+            <div class="flex items-center gap-4">
                 <button
-                    :class="{'xl:hidden': !designManager.isDesktopSidebarVisible(), 'sm:opacity-0': isHeaderSidebar}"
-                    class="opening-header-sidebar-button opacity-100 duration-1 flex justify-center items-center"
+                    class="duration-100 flex justify-center items-center h-full p-2 md:-ml-3"
+                    :class="{'xl:hidden': !designManager.isDesktopSidebarVisible(), 'opacity-0': isHeaderSidebar}"
+                    type="button"
                     @click="openHeaderSidebar"
-                    type="button">
+                >
                     <span class="icon icon-units"></span>
                 </button>
 
-                <a
+                <RouterLink
+                    :to="{name: 'home'}"
+                    class="logo-wrap flex items-center duration-200 h-[70%]"
                     :class="{'opacity-0': isHeaderSidebar}"
-                    class="logo-wrap flex items-center duration-200"
-                    href="#">
-                    <span class="logo"></span>
-                </a>
+                >
+                    <img src="/images/logo.png" alt="Logo" class="h-full"/>
+                </RouterLink>
 
-                <div class="header-dropdown inline-flex flex-col">
-                    <button class="flex list-label items-center" type="button">
-                        <span class="icon icon-down-arrow"></span>
-                        <span class="list-label-text">Контент</span>
-                    </button>
-                    <div class="header-dropdown-content">
-                        <a class="flex items-center" href="#">
-                            <span class="icon icon-book"></span>
-                            <span class="list-label-text">Каталог</span>
-                        </a>
-                        <a class="flex items-center" href="#">
-                            <span class="icon icon-apple flex"></span>
-                            <span class="list-label-text">Аддон LD</span>
-                        </a>
-                        <a class="flex items-center" href="#">
-                            <span class="icon icon-axolotl-bucket"></span>
-                            <span class="list-label-text">Ресурс-Паки</span>
-                        </a>
-                        <a class="flex items-center" href="#">
-                            <span class="icon icon-spawn-egg"></span>
-                            <span class="list-label-text">Аддоны</span>
-                        </a>
-                        <a class="flex items-center" href="#">
-                            <span class="icon icon-skin"></span>
-                            <span class="list-label-text">Скины</span>
-                        </a>
-                        <a class="flex items-center" href="#">
-                            <span class="icon icon-map"></span>
-                            <span class="list-label-text">Карты</span>
-                        </a>
-                        <a class="flex items-center" href="#">
-                            <span class="icon icon-script"></span>
-                            <span class="list-label-text">Статьи</span>
-                        </a>
-                    </div>
-                </div>
+                <div class="hidden lg:flex items-center gap-2 h-full">
+                    <div v-for="section of navigationSections" class="header-dropdown inline-flex flex-col">
+                        <button class="list-label flex h-full items-center gap-1" type="button">
+                            <span class="icon icon-down-arrow"/>
+                            <span class="list-label-text">{{ section.label }}</span>
+                        </button>
 
-                <div class="header-dropdown inline-flex flex-col">
-                    <button class="flex list-label items-center" type="button">
-                        <span class="icon icon-down-arrow"></span>
-                        <span class="list-label-text">Материалы</span>
-                    </button>
-                    <div class="header-dropdown-content">
-                        <a class="flex items-center" href="#">
-                            <span class="icon icon-bestiary"></span>
-                            <span class="list-label-text small">Бестиарий Light Diamond</span>
-                        </a>
-                        <a class="flex items-center" href="https://github.com/Mojang/bedrock-samples/releases">
-                            <span class="icon icon-documentary"></span>
-                            <span class="list-label-text small">Документация Light Diamond</span>
-                        </a>
-                        <a class="flex items-center"
-                           href="https://learn.microsoft.com/en-us/minecraft/creator/reference/content/entityreference/examples/componentlist">
-                            <span class="icon icon-microsoft-small"></span>
-                            <span class="list-label-text small">Документация Microsoft</span>
-                        </a>
-                        <a class="flex items-center" href="https://bedrock.dev/">
-                            <span class="icon icon-bedrock-dev-small"></span>
-                            <span class="list-label-text small">Документация Bedrock.Dev</span>
-                        </a>
-                        <a class="flex items-center" href="https://wiki.bedrock.dev/">
-                            <span class="icon icon-bedrock-wiki"></span>
-                            <span class="list-label-text small">Документация Bedrock Wiki</span>
-                        </a>
-                        <a class="flex items-center" href="https://github.com/Mojang/bedrock-samples/releases">
-                            <span class="icon icon-minecraft-materials"></span>
-                            <span class="list-label-text small">Материалы Minecraft</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="header-dropdown inline-flex flex-col">
-                    <button class="flex list-label items-center" type="button">
-                        <span class="icon icon-down-arrow"></span>
-                        <span class="list-label-text">Ссылки</span>
-                    </button>
-                    <div class="header-dropdown-content">
-                        <a class="flex items-center" href="https://vk.com/light.diamond">
-                            <span class="icon icon-vk"></span>
-                            <span class="list-label-text">ВКонтакте</span>
-                        </a>
-                        <a class="flex items-center" href="https://t.me/light_diamond_channel">
-                            <span class="icon icon-telegram"></span>
-                            <span class="list-label-text">Телеграм</span>
-                        </a>
-                        <a class="flex items-center" href="https://www.youtube.com/@grostlight3303">
-                            <span class="icon icon-youtube"></span>
-                            <span class="list-label-text">YouTube</span>
-                        </a>
-                        <a class="flex items-center" href="#">
-                            <span class="icon icon-diamond"></span>
-                            <span class="list-label-text">Обновления</span>
-                        </a>
-                        <a class="flex items-center" href="#">
-                            <span class="icon icon-hand"></span>
-                            <span class="list-label-text">Правила Пользования</span>
-                        </a>
-                        <a class="flex items-center" href="#">
-                            <span class="icon icon-script"></span>
-                            <span class="list-label-text policy">Политика Конфиденциальности</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="header-dropdown inline-flex flex-col">
-                    <button class="flex list-label items-center" type="button">
-                        <span class="icon icon-down-arrow"></span>
-                        <span class="list-label-text">Поддержка</span>
-                    </button>
-                    <div class="header-dropdown-content">
-                        <a class="flex items-center" href="#">
-                            <span class="icon icon-diamond-sword"></span>
-                            <span class="list-label-text">Помощь</span>
-                        </a>
-                        <a class="flex items-center" href="#">
-                            <span class="icon icon-diamond-pickaxe"></span>
-                            <span class="list-label-text">Гайды</span>
-                        </a>
-                        <a class="flex items-center" href="#">
-                            <span class="icon icon-faq"></span>
-                            <span class="list-label-text">О Проекте</span>
-                        </a>
+                        <div class="header-dropdown-content absolute hidden top-[var(--header-height)] w-[300px]">
+                            <component
+                                v-for="childSection of section.children"
+                                :is="childSection.route ? 'RouterLink' : 'a'"
+                                :to="childSection.route"
+                                :href="childSection.url || '#'"
+                                class="flex items-center"
+                            >
+                                <span :class="`icon ${childSection.icon}`"></span>
+                                <span class="list-label-text">{{ childSection.label }}</span>
+                            </component>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="flex">
 
-                <div class="flex justify-center items-center mr-2">
-                    <button
-                        class="search-button flex justify-center items-center"
-                        @click="isSearchDialog = !isSearchDialog"
-                        type="button"
+            <div class="flex md:-mr-2">
+                <button
+                    class="search-button flex justify-center items-center p-2"
+                    @click="isSearchDialog = true"
+                    type="button"
+                >
+                    <span class="icon icon-magnifier"></span>
+                </button>
+
+                <button
+                    class="user-menu-button flex list-label justify-center items-center p-2"
+                    type="button"
+                    @click="userMenu?.toggle"
+                >
+                    <span
+                        v-if="authStore.isAuthenticated"
+                        class="profile-border icon icon-border flex justify-center items-center h-[42px] w-[42px]"
                     >
-                        <span class="icon icon-magnifier"></span>
-                    </button>
-                </div>
+                        <img alt="" src="/images/users/content/funny-girl.png" class="h-[26px]">
+                    </span>
 
-                <div class="profile-dropdown desktop-profile-dropdown inline-flex flex-col">
-
-                    <div v-if="!authStore.isAuthenticated" class="flex items-center" style="height: 100%;">
-                        <button
-                            class="sign-in flex list-label items-center"
-                            @click="switchProfileDropdownVisible"
-                            type="button"
-                        >
-                            <span class="icon icon-border-profile"></span>
-                        </button>
-                    </div>
-
-                    <div v-if="authStore.isAuthenticated" class="flex items-center" style="height: 100%;">
-                        <button
-                            class="flex list-label items-center"
-                            @click="switchProfileDropdownVisible"
-                            type="button"
-                        >
-                            <span class="profile-border flex justify-center items-center icon icon-border">
-                                <img alt="" src="/images/users/content/funny-girl.png" style="height: 26px;">
-                                <span class="notifications-counter flex justify-center items-center">15</span>
-                            </span>
-                        </button>
-                    </div>
-
-                    <div class="profile-dropdown-content" :class="{'on': isProfileDropdownVisible}">
-
-                        <a v-if="authStore.isAuthenticated" class="profile-link laminated-link flex items-center"
-                           href="#">
-                            <span class="icon-outline flex justify-center items-center icon icon-border">
-                                <img alt="" src="/images/users/content/funny-girl.png" style="height: 26px;">
-                                <span class="notifications-counter flex justify-center items-center">15</span>
-                            </span>
-                            <div class="flex flex-col">
-                                <span
-                                    :class="{
-                                        'short': authStore.username.length < 16,
-                                        'long': authStore.username.length > 15
-                                    }"
-                                    class="title list-label-text long"
-                                >
-                                    {{ authStore.username }}
-                                </span>
-                                <span class="subtitle list-label-text short">Профиль</span>
-                            </div>
-                        </a>
-
-                        <a v-if="authStore.isAuthenticated" class="naked-link flex items-center" href="#">
-                            <span class="icon icon-bottle"></span>
-                            <span class="list-label-text">Контент-Студия</span>
-                        </a>
-
-                        <a v-if="authStore.isAuthenticated" class="naked-link flex items-center" href="#">
-                            <span class="icon icon-download"></span>
-                            <span class="list-label-text">Создать Материал</span>
-                        </a>
-
-                        <a v-if="authStore.isAuthenticated" class="naked-link flex items-center" href="#">
-                            <span class="icon icon-gear"></span>
-                            <span class="list-label-text">Настройки</span>
-                        </a>
-
-                        <div v-if="authStore.isAuthenticated" class="line flex self-center"></div>
-
-                        <button class="button-link naked-link flex items-center"
-                                @click="isDesignSettingsDialog = !isDesignSettingsDialog">
-                            <span class="icon icon-eye"></span>
-                            <span class="list-label-text">Оформление</span>
-                        </button>
-
-                        <div class="line flex self-center"></div>
-
-                        <button
-                            v-if="authStore.isAuthenticated"
-                            class="button-link naked-link flex items-center"
-                            @click="axios.post('/api/auth/logout').then(() => { router.go(0) })"
-                        >
-                            <span class="icon icon-left-arrow"></span>
-                            <span class="list-label-text">Выйти</span>
-                        </button>
-
-                        <button
-                            v-if="!authStore.isAuthenticated"
-                            class="button-link naked-link flex items-center"
-                            @click="globalModalStore.isAuth = !globalModalStore.isAuth"
-                        >
-                            <span class="icon icon-diamond"></span>
-                            <span class="list-label-text">Войти</span>
-                        </button>
-                    </div>
-                </div>
-
+                    <span v-else class="icon icon-border-profile h-[42px] w-[42px]"></span>
+                </button>
             </div>
         </nav>
-
     </header>
-
 </template>
 
 <style scoped>
-
-/* =============== [ Структура ] =============== */
-
-header {
-    user-select: none;
-    position: fixed;
-    transition: .3s;
-    width: 100%;
-    top: 0;
-}
-
-.header-hidden {
-    transform: translateY(-100%);
-}
-
-.header-wrap {
-    height: var(--header-height);
-    max-width: 1250px;
-    width: 100%;
-}
-
-.header-blur {
-    position: fixed;
-    overflow-y: hidden;
-    transition: 1s;
-    height: 100vh;
-    width: 100%;
-    z-index: 1;
-}
-
-.header-blur aside {
-    background-color: var(--primary-bg-color);
-    position: absolute;
-    overflow-y: scroll;
-    max-width: 320px;
-    transition: .5s;
-    height: 100%;
-}
-
-.header-blur aside.fixed {
-    height: calc(100% + 20px);
-}
-
-.close-header-sidebar-background {
-    height: 100%;
-    width: 100%;
-}
-
-.header-blur aside .icon {
-    height: 32px;
-    width: 32px;
-}
-
-.header-blur aside a .list-label-text,
-.header-blur .sign-in-button .list-label-text {
-    color: var(--primary-text-color);
-}
-
-.left-header-sidebar-interaction,
-.right-header-sidebar-interaction {
-    height: var(--header-height);
-    width: 100%;
-}
-
-.closing-header-sidebar-button,
-.opening-header-sidebar-button {
-    min-width: 48px;
-    height: 48px;
-}
-
-.left-header-sidebar .left-header-sidebar-interaction,
-.left-header-sidebar .profile-link,
-.left-header-sidebar .naked-link,
-.right-header-sidebar-interaction,
-.right-header-sidebar .profile-link,
-.right-header-sidebar .naked-link {
-    min-height: 72px;
-}
-
-.left-header-sidebar .profile-link,
-.right-header-sidebar .profile-link {
-    min-height: 56px;
-}
-
-.closing-header-sidebar-button {
-    margin-right: 16px;
-}
-
-.logo {
-    background-image: url('/images/logo.png');
-    background-size: 100% 100%;
-    height: 48px;
-    width: 162px;
-}
-
-.header-wrap .logo-wrap {
-    margin: 0 12px 0 8px;
-    height: 100%;
-}
-
-header .icon,
-.header-dropdown .icon {
-    height: 32px;
-    width: 32px;
-}
-
-.header-dropdown .icon {
-    margin-left: 4px;
-}
-
-header .list-label {
-    cursor: pointer;
-    height: 100%;
-}
-
 header .list-label-text,
 .header-dropdown-content .list-label-text {
-    color: var(--primary-text-color);
     font-size: 1.1rem;
     transition: .2s;
     padding: 4px;
 }
 
-.header-dropdown-content .list-label-text.small {
-    font-size: 1rem;
-}
-
-.header-blur aside .list-label-text.small {
-    font-size: 0.9rem;
-}
-
-.header-dropdown-content .list-label-text.policy {
-    font-size: 0.9rem;
-}
-
-.header-blur aside .list-label-text.policy {
-    font-size: 0.8rem;
-}
-
 header .list-label:focus-visible .list-label-text, header .list-label:hover .list-label-text,
 .header-dropdown-content a:focus-visible .list-label-text, .header-dropdown-content a:hover .list-label-text,
 .left-header-sidebar .naked-link:focus-visible .list-label-text, .left-header-sidebar .naked-link:hover .list-label-text,
-.left-header-sidebar .profile-link:focus-visible .list-label-text, .left-header-sidebar .profile-link:hover .list-label-text,
-.right-header-sidebar .naked-link:focus-visible .list-label-text, .right-header-sidebar .naked-link:hover .list-label-text,
-.right-header-sidebar .profile-link:focus-visible .list-label-text, .right-header-sidebar .profile-link:hover .list-label-text,
-.profile-dropdown-content a:focus-visible .list-label-text, .profile-dropdown-content a:hover .list-label-text,
-.profile-dropdown-content .button-link:focus-visible .list-label-text, .profile-dropdown-content .button-link:hover .list-label-text {
+.left-header-sidebar .profile-link:focus-visible .list-label-text, .left-header-sidebar .profile-link:hover .list-label-text {
     color: var(--hover-text-color);
 }
 
@@ -629,99 +409,41 @@ button.list-label .icon {
 
 button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .header-dropdown-content a:focus-visible .icon, .header-dropdown-content a:hover .icon,
-.header-wrap .search-button:focus-visible .icon, .header-wrap .search-button:hover .icon,
+.search-button:focus-visible .icon, .search-button:hover .icon,
 .left-header-sidebar .naked-link:focus-visible .icon, .left-header-sidebar .naked-link:hover .icon,
-.right-header-sidebar .naked-link:focus-visible .icon, .right-header-sidebar .naked-link:hover .icon,
-.profile-dropdown-content .naked-link:focus-visible .icon, .profile-dropdown-content .naked-link:hover .icon,
 .search-content-form button:focus-visible, .search-content-form button:hover {
     animation: icon-trigger-up-animation .3s ease;
 }
 
-.header-dropdown,
-.profile-dropdown {
+.header-dropdown {
     position: relative;
     height: 100%;
 }
 
-.profile-dropdown button {
-    margin-right: 8px;
-    height: 48px;
-}
-
-.profile-dropdown button .profile-border {
-    height: 42px;
-    width: 42px;
-    margin: 0;
-}
-
-.profile-dropdown .sign-in {
-    margin-left: -4px;
-}
-
-.profile-dropdown .sign-in .icon {
-    height: 42px;
-    width: 42px;
-}
-
-.header-dropdown-content,
-.profile-dropdown-content {
-    display: none;
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-    top: var(--header-height);
+.user-menu-button .notifications-counter,
+.user-menu .notifications-counter {
+    background-color: rgb(210, 10, 30);
+    color: var(--primary-text-color);
+    margin: 0 0 32px 32px;
     position: absolute;
-    transition: 1s;
-    width: 300px;
-    opacity: 1;
-}
-
-.profile-dropdown-content {
-    z-index: 1;
-}
-
-.profile-dropdown-content.on {
-    display: flex;
-    animation: smooth-appear-animation .5s ease;
-    flex-direction: column;
-    opacity: 1;
+    text-align: center;
+    padding-left: 2px;
+    font-size: .5rem;
+    height: 16px;
+    width: 16px;
 }
 
 .header-dropdown-content {
-    left: 0;
-}
-
-.profile-dropdown-content {
-    right: 0;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 .header-dropdown-content a,
-.profile-dropdown-content a,
-.profile-dropdown-content .button-link,
-.left-header-sidebar .naked-link,
-.right-header-sidebar .naked-link {
+.left-header-sidebar .naked-link {
     height: 72px;
 }
 
-.profile-dropdown-content .button-link {
-    margin-right: 0;
-}
-
-.profile-dropdown-content .profile-link .list-label-text.long {
-    font-size: .75rem;
-}
-
-.profile-dropdown-content .profile-link .list-label-text.short {
-    font-size: .85rem;
-}
-
-.header-dropdown-content .icon,
-.profile-dropdown-content .naked-link .icon {
+.header-dropdown-content .icon {
     margin: 0 8px 0 24px;
-    height: 32px;
-    width: 32px;
-}
-
-.profile-dropdown-content .laminated-link .icon {
-    margin: 0 8px 0 6px;
 }
 
 .header-dropdown-content .list-label-text {
@@ -737,122 +459,23 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     opacity: 1;
 }
 
-.left-header-sidebar .profile-link,
-.right-header-sidebar .profile-link,
-.profile-dropdown-content .profile-link,
-.profile-dropdown-content .ld-pay-link {
-    background-size: 400% 100%;
-    height: 56px;
-    margin: 8px;
-}
 
-.left-header-sidebar .profile-link .icon-outline,
-.profile-dropdown-content .profile-link .icon-outline {
-    height: 42px;
-    width: 42px;
-}
-
-.left-header-sidebar .profile-link .icon-outline {
-    position: relative;
-    background-color: green;
-}
-
-button .profile-border .notifications-counter,
-.profile-dropdown-content .profile-link .notifications-counter {
-    background-color: rgb(210, 10, 30);
-    color: var(--primary-text-color);
-    margin: 0 0 32px 32px;
-    position: absolute;
-    text-align: center;
-    padding-left: 2px;
-    font-size: .5rem;
-    height: 16px;
-    width: 16px;
-}
-
-.left-header-sidebar .profile-link .title,
-.left-header-sidebar .profile-link .subtitle,
-.right-header-sidebar .profile-link .title,
-.right-header-sidebar .profile-link .subtitle,
-.profile-dropdown-content .profile-link .title,
-.profile-dropdown-content .profile-link .subtitle,
-.profile-dropdown-content .ld-pay-link .title,
-.profile-dropdown-content .ld-pay-link .subtitle {
-    margin-left: 4px;
-    padding: 0;
-}
-
-.left-header-sidebar .profile-link .subtitle,
-.right-header-sidebar .profile-link .subtitle,
-.profile-dropdown-content .profile-link .subtitle,
-.profile-dropdown-content .ld-pay-link .subtitle {
-    opacity: .7;
-}
-
-.profile-dropdown-content .ld-pay-link .icon-diamond {
-    height: 42px;
-    width: 42px;
-}
-
-.left-header-sidebar .unit-title,
-.right-header-sidebar .unit-title {
+.left-header-sidebar .unit-title {
     color: var(--primary-text-color);
     background-size: 400% 100%;
     padding: 4px 0;
 }
 
-.left-header-sidebar .naked-link .icon,
-.right-header-sidebar .naked-link .icon {
+.left-header-sidebar .naked-link .icon {
     margin: 0 8px 0 32px;
 }
 
-.left-header-sidebar .naked-link .list-label-text,
-.right-header-sidebar .naked-link .list-label-text {
+.left-header-sidebar .naked-link .list-label-text {
     margin: 0 8px 0 8px;
     max-width: 60%;
 }
 
-.left-header-sidebar .naked-link .list-label-text,
-.right-header-sidebar .naked-link .list-label-text {
+.left-header-sidebar .naked-link .list-label-text {
     line-height: 1.2;
-}
-
-.profile-dropdown-content .naked-link .icon {
-    margin-left: 20px;
-}
-
-.profile-dropdown-content .line {
-    opacity: .2;
-    height: 1px;
-    width: 90%;
-}
-
-/* =============== [ Медиа-Запрос { ?px < 1025px } ] =============== */
-
-@media screen and (max-width: 1024px) {
-    .header-dropdown {
-        display: none;
-    }
-}
-
-/* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
-
-@media screen and (max-width: 767px) {
-    .header-wrap .div {
-        justify-content: space-between;
-        width: 100%;
-    }
-
-    .header-wrap .div .logo-wrap {
-        margin: 0 20% 0 0;
-    }
-}
-
-/* =============== [ Медиа-Запрос { ?px < 321px } ] =============== */
-
-@media screen and (max-width: 320px) {
-    .header-wrap .div .logo-wrap {
-        margin: 0 10% 0 0;
-    }
 }
 </style>

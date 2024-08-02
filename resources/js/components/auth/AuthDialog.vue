@@ -79,21 +79,15 @@ const activeSplash = getRandomSplash()
 
 <style>
 
-.auth-dialog .dialog-form-container {
+.auth-dialog {
     box-shadow: 0 0 10px 10px rgba(0, 0, 0, .5);
     overflow: hidden;
 }
 
-.auth-dialog .dialog-form-container .interface {
+.auth-dialog .interface {
     position: relative;
     width: 380px;
     transition: .5s;
-}
-
-.auth-dialog .interface .forgot-password,
-.auth-dialog .interface .login,
-.auth-dialog .interface .register {
-    width: 100%;
 }
 
 .auth-dialog form fieldset,
@@ -396,7 +390,7 @@ const activeSplash = getRandomSplash()
     .auth-dialog .illustration {
         display: none;
     }
-    .auth-dialog .dialog-form-container .interface {
+    .auth-dialog .interface {
         min-height: 658px;
         max-width: 380px;
     }
@@ -408,13 +402,13 @@ const activeSplash = getRandomSplash()
     .auth-dialog .illustration {
         display: none;
     }
-    .auth-dialog .dialog-form-container {
+    .auth-dialog {
         justify-content: center;
         align-items: center;
         max-width: 658px;
         width: 90%;
     }
-    .auth-dialog .dialog-form-container .interface {
+    .auth-dialog .interface {
         height: 380px;
         width: 100%;
     }

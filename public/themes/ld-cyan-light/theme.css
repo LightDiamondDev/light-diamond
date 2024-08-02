@@ -1,16 +1,19 @@
 @layer light-diamond {
     :root {
         --primary-bg-color: #005565;
-        --primary-text-color: #eaeaea;
         --secondary-bg-color: #eaeaea;
+        --primary-text-color: #eaeaea;
         --secondary-text-color: #005565;
         --hover-text-color: #00ffff;
-        --surface-border: #eaeaea;
+        --surface-border: #4d848f;
         --primary-color: #5aedda;
         --border-color: #dadada;
         --autofill-color: rgba(0, 125, 125, .5);
         --global-scrollbar-width: 12px;
         --bar-scrollbar-width: 8px;
+
+        font-family: "Monocraft", sans-serif;
+        color: var(--primary-text-color);
     }
 
     /* Шрифт Minecraft Ten */
@@ -45,7 +48,7 @@
     .global-error-container,
     .header-blur aside,
     .header-dropdown-content,
-    .profile-dropdown-content,
+    .menu,
     .search-form-background form,
     .toaster .achievement,
     .toaster .toast,
@@ -78,48 +81,64 @@
     .header-dropdown-content a:hover,
     .left-header-sidebar a:hover,
     .left-header-sidebar .sign-in-button:hover,
-    .right-header-sidebar a:hover,
-    .right-header-sidebar .sign-in-button:hover,
-    .profile-dropdown-content a:hover,
-    .profile-dropdown-content .button-link:hover {
+    .menu-item:hover {
         background-color: rgba(0, 255, 255, .1)
     }
 
-    .left-header-sidebar .profile-link,
-    .right-header-sidebar .profile-link,
-    .profile-dropdown-content .profile-link {
+    .user-menu .profile-link {
         background: linear-gradient(90deg, rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1));
         animation: transfusion-animation 10s linear infinite;
         border: 2px solid rgba(0, 255, 255, .3);
     }
 
-    .left-header-sidebar .unit-title,
-    .right-header-sidebar .unit-title {
+    .left-header-sidebar .unit-title {
         background: linear-gradient(90deg, rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1));
         animation: transfusion-animation 10s linear infinite;
         font-family: "Minecraft Ten", sans-serif;
     }
 
-    .profile-dropdown-content .ld-pay-link {
+    .user-menu .ld-pay-link {
         background: linear-gradient(90deg, rgba(0, 200, 0, .1), rgba(0, 200, 0, .3), rgba(0, 200, 0, .1), rgba(0, 200, 0, .3), rgba(0, 200, 0, .1));
         animation: transfusion-animation 10s linear infinite;
         border: 2px solid rgba(0, 200, 0, .3);
     }
 
-    .left-header-sidebar .logo-wrap:hover,
-    .right-header-sidebar .logo-wrap:hover {
+    .left-header-sidebar .logo-wrap:hover {
         background-color: rgba(0, 255, 255, 0);
     }
 
     .left-header-sidebar .profile-link:focus-visible,
-    .right-header-sidebar .profile-link:focus-visible,
-    .profile-dropdown-content .profile-link:focus-visible,
-    .profile-dropdown-content .ld-pay-link:focus-visible {
+    .user-menu .profile-link:focus-visible,
+    .user-menu .ld-pay-link:focus-visible {
         border: 2px solid #00ffff;
     }
 
-    .profile-dropdown-content .line {
-        background-color: #ffffff;
+    .menu {
+        min-width: 200px;
+        border: 1px solid var(--surface-border);
+    }
+
+    .menu-item {
+        padding: 0.25rem;
+        gap: 0.5rem;
+    }
+
+    .user-menu {
+        min-width: 250px;
+    }
+
+    .user-menu .profile-link {
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
+
+    .user-menu .menu-item {
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
+
+    .user-menu .menu-item-label {
+        font-size: 1.1rem;
     }
 
     a:focus-visible, button:focus-visible {
@@ -160,8 +179,7 @@
         background-color: var(--autofill-color);
     }
 
-    .left-header-sidebar::-webkit-scrollbar,
-    .right-header-sidebar::-webkit-scrollbar {
+    .left-header-sidebar::-webkit-scrollbar {
         width: var(--bar-scrollbar-width);
     }
 
@@ -169,13 +187,11 @@
         width: var(--global-scrollbar-width);
     }
 
-    .left-header-sidebar::-webkit-scrollbar-thumb,
-    .right-header-sidebar::-webkit-scrollbar-thumb {
+    .left-header-sidebar::-webkit-scrollbar-thumb {
         background: rgba(0, 255, 255, .2);
     }
 
-    .left-header-sidebar::-webkit-scrollbar-track,
-    .right-header-sidebar::-webkit-scrollbar-track {
+    .left-header-sidebar::-webkit-scrollbar-track {
         background: rgba(0, 0, 0, .3);
     }
 
@@ -235,14 +251,12 @@
         width: 100%;
     }
 
-    .left-header-sidebar .button-link:hover,
-    .right-header-sidebar .button-link:hover {
+    .left-header-sidebar .button-link:hover {
         background-color: rgba(0, 255, 255, .1);
     }
 
     .design-settings-form div .settings-button span,
     .left-header-sidebar .button-link,
-    .right-header-sidebar .button-link,
     .action-button .text {
         font-family: "Minecraft Ten", sans-serif;
         color: var(--primary-text-color);
@@ -273,7 +287,7 @@
     }
 
     button .profile-border .notifications-counter,
-    .profile-dropdown-content .profile-link .notifications-counter,
+    .user-menu .profile-link .notifications-counter,
     .toaster .achievement .indicator,
     .toaster .toast .indicator,
     .dialog-form-container .interface,
@@ -312,9 +326,10 @@
     .auth-dialog form fieldset .subtitle,
     .auth-dialog form .help-button span,
     .auth-remember-line .auth-remember-me,
-    .dialog-form-container .interface .header h1,
+    .dialog-header h1,
     .global-error-container h1,
     header .list-label-text,
+    .user-menu .menu-item-label,
     .header-dropdown-content .list-label-text,
     .achievement .content h1,
     .toast .content h1,
@@ -333,30 +348,6 @@
 
     .icon {
         background-repeat: no-repeat;
-    }
-
-    .auth-dialog form fieldset .status,
-    .auth-dialog form fieldset .task,
-    .background-auth .logo .splash,
-    button .profile-border .notifications-counter,
-    .global-error-container p,
-    .global-error-window form fieldset span,
-    .header-blur .sign-in-button .list-label-text,
-    .left-header-sidebar .naked-link .list-label-text,
-    .left-header-sidebar .profile-link .title,
-    .left-header-sidebar .profile-link .subtitle,
-    .right-header-sidebar .naked-link .list-label-text,
-    .right-header-sidebar .profile-link .title,
-    .right-header-sidebar .profile-link .subtitle,
-    .profile-dropdown-content .profile-link .title,
-    .profile-dropdown-content .profile-link .subtitle,
-    .profile-dropdown-content .profile-link .notifications-counter,
-    .profile-dropdown-content .ld-pay-link .title,
-    .profile-dropdown-content .ld-pay-link .subtitle,
-    .toaster .achievement .content p,
-    .toaster .toast .content p,
-    footer .row {
-        font-family: "Monocraft", sans-serif;
     }
 
     .background-auth {

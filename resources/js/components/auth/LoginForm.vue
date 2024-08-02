@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
-import {ref} from 'vue'
+import {reactive, ref} from 'vue'
 
 import {getErrorMessageByCode} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
-import {useRouter, useRoute} from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 
 import Button from '@/components/elements/Button.vue'
 import Input from '@/components/elements/Input.vue'
 
 const toastStore = useToastStore()
 
-const loginData = ref({
+const loginData = reactive({
     username: '',
     password: '',
     remember: true
@@ -26,14 +26,14 @@ const emit = defineEmits([
     'switch-to-forgot-password-form',
     'switch-to-register-form'
 ])
-// errors.value['password'][0] = 'Тест'
+
 function submitLogin() {
     isProcessing.value = true
     errors.value = []
 
-    axios.post('/api/auth/login', loginData.value).then((response) => {
+    axios.post('/api/auth/login', loginData).then((response) => {
         if (response.data.success) {
-            router.replace({ path: route.path, query: { ...route.query, authorized: true } }).then(() => {
+            router.replace({path: route.path, query: {...route.query, authorized: true}}).then(() => {
                 router.go(0)
             })
         } else {
@@ -63,7 +63,6 @@ function submitLogin() {
                 -->
             </span>
 
-            <!-- Steve или steve@minecraft.net -->
             <Input
                 v-model="loginData.username"
                 id="login-nickname"
@@ -136,5 +135,7 @@ function submitLogin() {
 </template>
 
 <style scoped>
-.auth-remember-line { background: none; }
+.auth-remember-line {
+    background: none;
+}
 </style>
