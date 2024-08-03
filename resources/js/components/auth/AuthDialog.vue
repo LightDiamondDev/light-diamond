@@ -186,6 +186,10 @@ const activeSplash = getRandomSplash()
     opacity: 1;
 }
 
+.auth-dialog .interface form {
+    width: 100%;
+}
+
 .auth-dialog form .mob {
     pointer-events: none;
     user-select: none;

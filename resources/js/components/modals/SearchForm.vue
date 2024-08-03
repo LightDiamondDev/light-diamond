@@ -43,13 +43,17 @@ const designManager = useDesignManager()
     margin: 10px;
 }
 .search-form form label button {
+    min-width: 48px;
     height: 48px;
-    width: 48px;
 }
 .search-form form label button { user-select: none; }
-.search-form form label button .icon {
+.search-form form label button .icon-magnifier {
     height: 32px;
     width: 32px;
+}
+.search-form form label button .icon-cross {
+    height: 24px;
+    width: 24px;
 }
 .search-form form label input {
     color: var(--primary-text-color);

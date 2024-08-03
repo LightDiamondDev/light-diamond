@@ -80,7 +80,7 @@ const userMenuItems = computed<MenuItem[]>(() => [
 
 const navigationSections = computed<NavigationSection[]>(() => [
     {
-        label: 'Контент',
+        label: 'Материалы',
         children: [
             {
                 label: 'Каталог',
@@ -141,7 +141,7 @@ const navigationSections = computed<NavigationSection[]>(() => [
         ]
     },
     {
-        label: 'Соц. сети',
+        label: 'Медиа',
         children: [
             {
                 label: 'ВКонтакте',
@@ -161,7 +161,7 @@ const navigationSections = computed<NavigationSection[]>(() => [
         ]
     },
     {
-        label: 'Инфо',
+        label: 'Справки',
         children: [
             {
                 label: 'Правила пользования',
@@ -266,11 +266,16 @@ function logout() {
         :class="{'header-blur-on': isHeaderSidebar, 'header-blur-off': !isHeaderSidebar}"
     >
         <aside
-            class="left-header-sidebar bg-[var(--primary-bg-color)] overflow-y-scroll max-w-[320px] transition duration-500 h-full flex flex-col"
-            :class="{'xl:hidden': !designManager.isDesktopSidebarVisible(),
-            'translate-x-0': isHeaderSidebar,
-            '-translate-x-full': !isHeaderSidebar,
-            'fixed': designManager.isHeaderFixedVisible()}"
+            class="
+                left-header-sidebar bg-[var(--primary-bg-color)]
+                overflow-y-scroll max-w-[320px]
+                transition duration-500 h-full
+                flex flex-col fixed"
+            :class="{
+                'xl:hidden': !designManager.isDesktopSidebarVisible(),
+                'translate-x-0': isHeaderSidebar,
+                '-translate-x-full': !isHeaderSidebar
+            }"
         >
             <div
                 class="left-header-sidebar-interaction flex h-[var(--header-height)] w-full justify-between items-center px-3"
@@ -299,7 +304,7 @@ function logout() {
                     :is="childSection.route ? 'RouterLink' : 'a'"
                     :to="childSection.route"
                     :href="childSection.url || '#'"
-                    class="naked-link flex items-center min-h-[72px]"
+                    class="naked-link flex items-center"
                 >
                     <span :class="`icon ${childSection.icon}`"/>
                     <span class="list-label-text">{{ childSection.label }}</span>
@@ -344,7 +349,7 @@ function logout() {
                             <span class="list-label-text">{{ section.label }}</span>
                         </button>
 
-                        <div class="header-dropdown-content absolute hidden top-[var(--header-height)] w-[300px]">
+                        <div class="header-dropdown-content absolute hidden top-[var(--header-height)] min-w-[260px]">
                             <component
                                 v-for="childSection of section.children"
                                 :is="childSection.route ? 'RouterLink' : 'a'"
@@ -389,6 +394,19 @@ function logout() {
 </template>
 
 <style scoped>
+.header .logo-wrap img {
+    min-width: 152px;
+}
+
+.header-dropdown {
+    position: relative;
+    height: 100%;
+}
+
+.header-dropdown-content {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
 header .list-label-text,
 .header-dropdown-content .list-label-text {
     font-size: 1.1rem;
@@ -399,7 +417,7 @@ header .list-label-text,
 header .list-label:focus-visible .list-label-text, header .list-label:hover .list-label-text,
 .header-dropdown-content a:focus-visible .list-label-text, .header-dropdown-content a:hover .list-label-text,
 .left-header-sidebar .naked-link:focus-visible .list-label-text, .left-header-sidebar .naked-link:hover .list-label-text,
-.left-header-sidebar .profile-link:focus-visible .list-label-text, .left-header-sidebar .profile-link:hover .list-label-text {
+.user-menu .profile-link:focus-visible .title, .user-menu .profile-link:hover .title {
     color: var(--hover-text-color);
 }
 
@@ -415,11 +433,6 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     animation: icon-trigger-up-animation .3s ease;
 }
 
-.header-dropdown {
-    position: relative;
-    height: 100%;
-}
-
 .user-menu-button .notifications-counter,
 .user-menu .notifications-counter {
     background-color: rgb(210, 10, 30);
@@ -431,15 +444,6 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     font-size: .5rem;
     height: 16px;
     width: 16px;
-}
-
-.header-dropdown-content {
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-}
-
-.header-dropdown-content a,
-.left-header-sidebar .naked-link {
-    height: 72px;
 }
 
 .header-dropdown-content .icon {
@@ -478,4 +482,5 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .left-header-sidebar .naked-link .list-label-text {
     line-height: 1.2;
 }
+
 </style>

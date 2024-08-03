@@ -25,22 +25,22 @@ const props = defineProps({
     width: 50%;
 }
 .block1 {
-    animation: processing-cycle-animation1 1s infinite ease;
+    animation: processing-cycle-animation1 .5s infinite ease;
     left: 0;
     top: 0;
 }
 .block2 {
-    animation: processing-cycle-animation2 1s infinite ease;
+    animation: processing-cycle-animation2 .5s infinite ease;
     right: 0;
     top: 0;
 }
 .block3 {
-    animation: processing-cycle-animation3 1s infinite ease;
+    animation: processing-cycle-animation3 .5s infinite ease;
     bottom: 0;
     left: 0;
 }
 .block4 {
-    animation: processing-cycle-animation4 1s infinite ease;
+    animation: processing-cycle-animation4 .5s infinite ease;
     bottom: 0;
     right: 0;
 }

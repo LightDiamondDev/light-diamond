@@ -103,14 +103,15 @@ function onItemClick(item: MenuItem) {
             <div
                 v-if="isVisible && target"
                 ref="container"
-                class="menu absolute z-0 flex flex-col overflow-auto drop-shadow-[0_0px_4px_rgba(0,0,0,0.3)]"
+                class="menu absolute z-0 flex flex-col overflow-auto"
                 :class="props.class"
                 @mousedown="isContainerMouseDown = true"
             >
                 <slot name="header"/>
 
                 <template v-for="item in visibleItems">
-                    <div v-if="item.separator" class="menu-separator self-center h-[1px] w-[90%] bg-border"/>
+
+                    <div v-if="item.separator" class="menu-separator self-center h-[1px] w-[90%]"/>
 
                     <Component
                         v-else
@@ -135,5 +136,10 @@ function onItemClick(item: MenuItem) {
 
 .smooth-opacity-enter-from, .smooth-opacity-leave-to {
     opacity: 0;
+}
+
+.user-menu .menu-item:focus-visible .icon,
+.user-menu .menu-item:hover .icon {
+    animation: icon-trigger-up-animation .3s ease;
 }
 </style>
