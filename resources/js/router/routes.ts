@@ -1,5 +1,4 @@
 import Home from '@/components/Home.vue'
-import Settings from '@/components/Settings.vue'
 import type {RouteRecordRaw} from 'vue-router'
 import type {Component} from 'vue'
 import Processing from '@/components/elements/Processing.vue'
@@ -7,6 +6,9 @@ import NoPermission from '@/components/NoPermission.vue'
 import AuthRequired from '@/components/auth/AuthRequired.vue'
 import VerifyEmail from '@/components/auth/VerifyEmail.vue'
 import ResetForm from '@/components/auth/ResetForm.vue'
+import Settings from '@/components/settings/Settings.vue'
+import ProfileSettings from '@/components/settings/ProfileSettings.vue'
+import SecuritySettings from '@/components/settings/SecuritySettings.vue'
 import NotFound from '@/components/NotFound.vue'
 
 declare module 'vue-router' {
@@ -29,14 +31,6 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
-        path: '/settings',
-        name: 'settings',
-        component: Settings,
-        meta: {
-            title: 'Настройки'
-        }
-    },
-    {
         path: '/email/verify/:id/:hash',
         name: 'verify-email',
         component: VerifyEmail,
@@ -51,6 +45,35 @@ const routes: RouteRecordRaw[] = [
         meta: {
             title: 'Сброс пароля',
         },
+    },
+    {
+        path: '/settings',
+        name: 'settings',
+        component: Settings,
+        redirect: {name: 'settings.profile'},
+        meta: {
+            title: 'Настройки',
+            requiresAuth: true,
+        },
+        children:
+        [
+            {
+                path: 'profile',
+                name: 'settings.profile',
+                component: ProfileSettings,
+                meta: {
+                    title: 'Настройки профиля',
+                }
+            },
+            {
+                path: 'security',
+                name: 'settings.security',
+                component: SecuritySettings,
+                meta: {
+                    title: 'Настройки безопасности',
+                }
+            }
+        ]
     },
     {
         path: '/:pathMatch(.*)*',

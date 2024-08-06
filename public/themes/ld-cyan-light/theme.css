@@ -99,8 +99,13 @@
 
     .item-button:hover,
     .left-header-sidebar a:hover,
-    .left-header-sidebar .sign-in-button:hover {
+    .left-header-sidebar .sign-in-button:hover,
+    .settings .units a:hover {
         background-color: rgba(0, 255, 255, .1)
+    }
+
+    .settings .units a .item-button {
+        background: none;
     }
 
     .settings .current-data-field,
@@ -120,7 +125,7 @@
 
     .left-header-sidebar .unit-title,
     .settings .container form .section-title,
-    .settings .units .item-button.active {
+    .settings .units a.active {
         background: linear-gradient(90deg, rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1));
         animation: transfusion-animation 10s linear infinite;
         font-family: "Minecraft Ten", sans-serif;
@@ -246,6 +251,14 @@
         background-color: rgba(10, 120, 10, .8);
     }
 
+    .button-container.warning .action-button {
+        background-color: rgba(200, 150, 10, .8);
+    }
+
+    .message.warning {
+        color: rgb(255, 200, 0);
+    }
+
     .action-button .base {
         border-bottom: 3px solid rgba(235, 235, 235, .2);
         border-right: 3px solid rgba(235, 235, 235, .2);
@@ -265,6 +278,13 @@
     .design-settings-form div .settings-button:hover {
         background: linear-gradient(90deg, rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05));
         animation: transfusion-animation 10s linear infinite;
+        background-size: 400% 100%;
+    }
+
+    .message {
+        background: linear-gradient(90deg, rgba(255, 255, 0, .1), rgba(255, 255, 0, .3), rgba(255, 255, 0, .1), rgba(255, 255, 0, .3), rgba(255, 255, 0, .1));
+        animation: transfusion-animation 10s linear infinite;
+        border: 2px solid rgba(255, 255, 0, .5);
         background-size: 400% 100%;
     }
 
@@ -322,7 +342,8 @@
     }
 
     .button-container.cancel .action-button:hover .press .text,
-    .button-container.confirm .action-button:hover .press .text {
+    .button-container.confirm .action-button:hover .press .text,
+    .button-container.warning .action-button:hover .press .text {
         color: var(--primary-text-color);
     }
 
@@ -558,6 +579,10 @@
 
     .icon-script {
         background-image: url('/images/icons/diamond-script.png');
+    }
+
+    .icon-share {
+        background-image: url('/images/icons/diamond-share.png');
     }
 
     .icon-skin {

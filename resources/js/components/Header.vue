@@ -52,6 +52,7 @@ const userMenuItems = computed<MenuItem[]>(() => [
         label: 'Настройки',
         icon: 'icon-gear',
         visible: authStore.isAuthenticated,
+        route: {name: 'settings'}
     },
     {
         separator: true,

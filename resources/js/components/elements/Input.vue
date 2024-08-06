@@ -8,6 +8,11 @@ const currentType = computed(
 )
 
 const props = defineProps({
+    autocomplete: {
+        type: String,
+        validator: (val) => ['off', 'on'].includes(val),
+        default: 'on'
+    },
     id: String,
     type: {
         type: String,
@@ -22,6 +27,7 @@ const props = defineProps({
     <label class="flex items-center" :for="id">
         <input
             v-model="model"
+            :autocomplete="autocomplete"
             class="text-[0.9rem]"
             :id="id"
             :placeholder="placeholder"
