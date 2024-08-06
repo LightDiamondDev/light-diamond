@@ -50,6 +50,9 @@
     .header-dropdown-content,
     .menu,
     .search-form-background form,
+    .settings aside,
+    .settings .container,
+    .settings .title,
     .toaster .achievement,
     .toaster .toast,
     footer {
@@ -66,6 +69,11 @@
         border-right: 2px solid rgba(0, 255, 255, .2);
         border-left: 2px solid rgba(0, 255, 255, .2);
         margin-top: -2px;
+    }
+
+    footer,
+    footer .tinted-gradient {
+        border-top: 2px solid rgba(0, 255, 255, .2);
     }
 
     .surface-ground {
@@ -89,13 +97,13 @@
         animation: rotate-right-360-animation .5s ease
     }
 
-    .header-dropdown-content a:hover,
+    .item-button:hover,
     .left-header-sidebar a:hover,
-    .left-header-sidebar .sign-in-button:hover,
-    .menu-item:hover {
+    .left-header-sidebar .sign-in-button:hover {
         background-color: rgba(0, 255, 255, .1)
     }
 
+    .settings .current-data-field,
     .user-menu .profile-link {
         background: linear-gradient(90deg, rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1));
         animation: transfusion-animation 10s linear infinite;
@@ -103,7 +111,16 @@
         background-size: 400% 100%;
     }
 
-    .left-header-sidebar .unit-title {
+    .settings .current-data-field .edit-button {
+        border-left: 2px solid rgba(0, 255, 255, .3);
+    }
+    .settings .current-data-field .edit-button:focus-visible {
+        border-left: 2px solid var(--hover-text-color);
+    }
+
+    .left-header-sidebar .unit-title,
+    .settings .container form .section-title,
+    .settings .units .item-button.active {
         background: linear-gradient(90deg, rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1));
         animation: transfusion-animation 10s linear infinite;
         font-family: "Minecraft Ten", sans-serif;
@@ -133,13 +150,9 @@
         min-width: 200px;
     }
 
-    .menu-item {
-        padding: 0.25rem;
-        gap: 0.5rem;
-    }
-
     .menu-separator {
         background-color: rgba(0, 255, 255, .2);
+        min-height: 2px;
     }
 
     .user-menu {
@@ -148,7 +161,7 @@
 
     .user-menu .menu-item,
     .user-menu .profile-link {
-        padding: 0 1rem;
+        padding: 0 .5rem;
         gap: 0.75rem;
     }
 
@@ -225,6 +238,14 @@
         width: 100%;
     }
 
+    .button-container.cancel .action-button {
+        background-color: rgba(180, 30, 50, .8);
+    }
+
+    .button-container.confirm .action-button {
+        background-color: rgba(10, 120, 10, .8);
+    }
+
     .action-button .base {
         border-bottom: 3px solid rgba(235, 235, 235, .2);
         border-right: 3px solid rgba(235, 235, 235, .2);
@@ -283,7 +304,6 @@
     }
 
     .button-container:focus-visible .action-button, .button-container:hover .action-button {
-        background-color: var(--primary-bg-color);
         justify-content: flex-end;
         margin-top: 5%;
         height: 80%;
@@ -301,8 +321,17 @@
         color: var(--hover-text-color);
     }
 
+    .button-container.cancel .action-button:hover .press .text,
+    .button-container.confirm .action-button:hover .press .text {
+        color: var(--primary-text-color);
+    }
+
     .dialog-form-container .interface,
-    .global-error-container {
+    .global-error-container,
+    .settings aside,
+    .settings form .description p,
+    .settings form,
+    .settings .title {
         border: 2px solid rgba(0, 255, 255, .3);
     }
 
@@ -311,6 +340,12 @@
     .toaster .achievement .indicator,
     .toaster .toast .indicator {
         border: 2px solid rgba(255, 255, 255, .3);
+    }
+
+    .settings .banner {
+        border-right: 2px solid rgba(255, 255, 255, .5);
+        border-left: 2px solid rgba(255, 255, 255, .5);
+        border-top: 2px solid rgba(255, 255, 255, .5);
     }
 
     .toaster .achievement .content,
@@ -341,18 +376,22 @@
         opacity: .8;
     }
 
+    .achievement .content h1,
     .auth-dialog form fieldset .subtitle,
     .auth-dialog form .help-button span,
     .auth-remember-line .auth-remember-me,
     .dialog-header h1,
     .global-error-container h1,
-    header .list-label-text,
-    .user-menu .menu-item-label,
-    .header-dropdown-content .list-label-text,
-    .achievement .content h1,
+    .item-button,
+    .list-label-text,
+    .settings .title,
     .toast .content h1,
     footer nav a span {
         font-family: "Minecraft Ten", sans-serif;
+    }
+
+    .left-header-sidebar .item-button {
+        font-family: Monocraft, sans-serif;
     }
 
     footer .tinted-gradient {
@@ -360,7 +399,8 @@
     }
 
     form fieldset label,
-    .search-form form fieldset {
+    .search-form form fieldset,
+    .settings form .description p {
         background: linear-gradient(rgba(0, 15, 15, .5), transparent);
     }
 
@@ -508,6 +548,10 @@
         background-image: url('/images/icons/minecraft-materials.png');
     }
 
+    .icon-news {
+        background-image: url('/images/icons/diamond-news.png');
+    }
+
     .icon-right-arrow {
         background-image: url('/images/icons/diamond-right-arrow.png');
     }
@@ -560,13 +604,14 @@
         background-image: url('/images/icons/diamond-vk.png');
     }
 
+    .icon-white-pencil {
+        background-image: url('/images/icons/white-pencil.png');
+    }
+
     .icon-youtube {
         background-image: url('/images/icons/diamond-youtube.png');
     }
 
-    .header-dropdown-content a,
-    .left-header-sidebar .naked-link,
-    .user-menu .menu-item,
     .user-menu .profile-link {
         min-height: 72px;
     }
@@ -574,9 +619,6 @@
     /* =============== [ Медиа-Запрос { ?px < 1024px } ] =============== */
 
     @media screen and (max-width: 1023px) {
-        .header-dropdown-content a,
-        .left-header-sidebar .naked-link,
-        .user-menu .menu-item,
         .user-menu .profile-link {
             min-height: 64px;
         }

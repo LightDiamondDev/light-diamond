@@ -92,7 +92,6 @@ function submitResetPassword() {
                     button-type="submit"
                     class="mb-8"
                     icon="icon-bestiary"
-                    icon-size="32px"
                     text="Подтвердить"
                     :loading="isProcessing"
                     @click.prevent="submitResetPassword"

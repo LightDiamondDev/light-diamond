@@ -57,7 +57,6 @@
     }
     .lock-scroll { overflow: hidden; }
 
-    .animation-agree-creeper { background-image: url('/public/images/mobs/agree-creeper-animation.gif'); }
     .animation-angry-warden { background-image: url('/public/images/mobs/angry-warden-animation.gif'); }
     .animation-dancing-blue-parrot { background-image: url('/public/images/mobs/dancing-blue-parrot-animation.gif'); }
     .animation-dancing-lime-parrot { background-image: url('/public/images/mobs/dancing-lime-parrot-animation.gif'); }

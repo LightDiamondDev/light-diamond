@@ -6,6 +6,7 @@ import {useGlobalModalStore} from '@/stores/global-modal'
 import {usePostCategoryStore} from '@/stores/postCategory'
 import {getHeaderHeight, lockGlobalScroll, unlockGlobalScroll} from '@/helpers'
 import {computed, onMounted, onUnmounted, ref} from 'vue'
+import ItemButton from '@/components/elements/ItemButton.vue'
 import Button from '@/components/elements/Button.vue'
 import Dialog from '@/components/elements/Dialog.vue'
 import DesignSettingsForm from '@/components/modals/DesignSettingsForm.vue'
@@ -87,11 +88,11 @@ const navigationSections = computed<NavigationSection[]>(() => [
                 icon: 'icon-book',
             },
             {
-                label: 'Аддон LD',
-                icon: 'icon-apple',
+                label: 'Новости',
+                icon: 'icon-news',
             },
             {
-                label: 'Ресурс-паки',
+                label: 'Ресурс-Паки',
                 icon: 'icon-axolotl-bucket',
             },
             {
@@ -110,6 +111,10 @@ const navigationSections = computed<NavigationSection[]>(() => [
                 label: 'Статьи',
                 icon: 'icon-script',
             },
+            {
+                label: 'Аддон LD',
+                icon: 'icon-apple',
+            }
         ]
     },
     {
@@ -161,7 +166,7 @@ const navigationSections = computed<NavigationSection[]>(() => [
         ]
     },
     {
-        label: 'Справки',
+        label: 'Помощь',
         children: [
             {
                 label: 'Правила пользования',
@@ -172,7 +177,7 @@ const navigationSections = computed<NavigationSection[]>(() => [
                 icon: 'icon-script',
             },
             {
-                label: 'О проекте',
+                label: 'О Проекте',
                 icon: 'icon-faq',
             },
         ]
@@ -242,8 +247,8 @@ function logout() {
                 v-if="authStore.isAuthenticated" class="profile-link laminated-link flex items-center"
                 href="#"
             >
-                <span class="icon icon-outline flex justify-center items-center icon-border h-[42px] w-[42px]">
-                    <img alt="" src="/images/users/content/funny-girl.png" class="h-[26px]">
+                <span class="icon icon-outline flex justify-center items-center icon-border h-[48px] w-[48px]">
+                    <img alt="" src="/images/users/content/funny-girl.png" class="h-[32px]">
                     <span class="notifications-counter flex justify-center items-center">15</span>
                 </span>
                 <div class="flex flex-col">
@@ -299,16 +304,16 @@ function logout() {
             <template v-for="section of navigationSections">
                 <div class="unit-title flex justify-center text-[1.1rem]">{{ section.label }}</div>
 
-                <component
+                <ItemButton
                     v-for="childSection of section.children"
-                    :is="childSection.route ? 'RouterLink' : 'a'"
+                    :as="childSection.route ? 'RouterLink' : (childSection.url ? 'a' : 'button')"
+                    :text="childSection.label"
+                    :icon="childSection.icon"
+                    :href="childSection.url"
                     :to="childSection.route"
-                    :href="childSection.url || '#'"
-                    class="naked-link flex items-center"
-                >
-                    <span :class="`icon ${childSection.icon}`"/>
-                    <span class="list-label-text">{{ childSection.label }}</span>
-                </component>
+                    class="pl-8 pr-4"
+                />
+
             </template>
         </aside>
         <div class="close-header-sidebar-background h-full w-full" @click="closeHeaderSidebar"></div>
@@ -350,16 +355,17 @@ function logout() {
                         </button>
 
                         <div class="header-dropdown-content absolute hidden top-[var(--header-height)] min-w-[260px]">
-                            <component
+
+                            <ItemButton
                                 v-for="childSection of section.children"
-                                :is="childSection.route ? 'RouterLink' : 'a'"
+                                :as="childSection.route ? 'RouterLink' : (childSection.url ? 'a' : 'button')"
+                                :text="childSection.label"
+                                :icon="childSection.icon"
+                                :href="childSection.url"
                                 :to="childSection.route"
-                                :href="childSection.url || '#'"
-                                class="flex items-center"
-                            >
-                                <span :class="`icon ${childSection.icon}`"></span>
-                                <span class="list-label-text">{{ childSection.label }}</span>
-                            </component>
+                                class="pl-6 pr-4"
+                            />
+
                         </div>
                     </div>
                 </div>
@@ -381,9 +387,9 @@ function logout() {
                 >
                     <span
                         v-if="authStore.isAuthenticated"
-                        class="profile-border icon icon-border flex justify-center items-center h-[42px] w-[42px]"
+                        class="profile-border icon icon-border flex justify-center items-center h-[48px] w-[48px]"
                     >
-                        <img alt="" src="/images/users/content/funny-girl.png" class="h-[26px]">
+                        <img alt="" src="/images/users/content/funny-girl.png" class="h-[32px]">
                     </span>
 
                     <span v-else class="icon icon-border-profile h-[42px] w-[42px]"></span>
@@ -407,16 +413,13 @@ function logout() {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
-header .list-label-text,
-.header-dropdown-content .list-label-text {
+header .list-label-text {
     font-size: 1.1rem;
     transition: .2s;
     padding: 4px;
 }
 
 header .list-label:focus-visible .list-label-text, header .list-label:hover .list-label-text,
-.header-dropdown-content a:focus-visible .list-label-text, .header-dropdown-content a:hover .list-label-text,
-.left-header-sidebar .naked-link:focus-visible .list-label-text, .left-header-sidebar .naked-link:hover .list-label-text,
 .user-menu .profile-link:focus-visible .title, .user-menu .profile-link:hover .title {
     color: var(--hover-text-color);
 }
@@ -426,9 +429,7 @@ button.list-label .icon {
 }
 
 button.list-label:focus-visible .icon, button.list-label:hover .icon,
-.header-dropdown-content a:focus-visible .icon, .header-dropdown-content a:hover .icon,
 .search-button:focus-visible .icon, .search-button:hover .icon,
-.left-header-sidebar .naked-link:focus-visible .icon, .left-header-sidebar .naked-link:hover .icon,
 .search-content-form button:focus-visible, .search-content-form button:hover {
     animation: icon-trigger-up-animation .3s ease;
 }
@@ -463,24 +464,10 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     opacity: 1;
 }
 
-
 .left-header-sidebar .unit-title {
     color: var(--primary-text-color);
     background-size: 400% 100%;
     padding: 4px 0;
-}
-
-.left-header-sidebar .naked-link .icon {
-    margin: 0 8px 0 32px;
-}
-
-.left-header-sidebar .naked-link .list-label-text {
-    margin: 0 8px 0 8px;
-    max-width: 60%;
-}
-
-.left-header-sidebar .naked-link .list-label-text {
-    line-height: 1.2;
 }
 
 </style>

@@ -2,6 +2,7 @@
 import {computed, nextTick, type PropType, ref} from 'vue'
 import {absolutePosition, isElementInOverflowedContainer} from '@/helpers'
 import type {RouteLocation} from 'vue-router'
+import ItemButton from '@/components/elements/ItemButton.vue'
 
 export interface MenuItem {
     label?: string
@@ -111,19 +112,20 @@ function onItemClick(item: MenuItem) {
 
                 <template v-for="item in visibleItems">
 
-                    <div v-if="item.separator" class="menu-separator self-center h-[1px] w-[90%]"/>
+                    <div v-if="item.separator" class="menu-separator self-center w-[90%]"/>
 
-                    <Component
+                    <ItemButton
                         v-else
-                        :is="item.route ? 'RouterLink' : 'button'"
-                        :to="item.route"
-                        class="menu-item flex items-center w-full hover:text-[var(--hover-text-color)]"
+                        :as="item.route ? 'RouterLink' : 'button'"
                         @click="onItemClick(item)"
-                    >
-                        <span v-if="item.icon" class="menu-item-icon icon" :class="item.icon"></span>
-                        <span class="menu-item-label text-start">{{ item.label }}</span>
-                    </Component>
+                        :text="item.label"
+                        :icon="item.icon"
+                        :to="item.route"
+                        class="pl-6 pr-4"
+                    />
+
                 </template>
+
             </div>
         </Transition>
     </Teleport>

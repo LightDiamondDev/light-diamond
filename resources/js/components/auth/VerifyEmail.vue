@@ -55,7 +55,7 @@ function tryVerifyEmail() {
             <Processing v-if="isProcessing" class="mb-9 mt-4" height="64px" width="64px"/>
 
             <RouterLink v-if="isSuccess" class="flex justify-center mb-8" :to="{ name: 'home' }">
-                <Button button-type="submit" icon="icon-diamond" icon-size="32px" text="Отлично, вперёд!"/>
+                <Button button-type="submit" icon="icon-diamond" text="Отлично, вперёд!"/>
             </RouterLink>
         </div>
     </div>

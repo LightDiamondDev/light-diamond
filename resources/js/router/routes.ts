@@ -1,4 +1,5 @@
 import Home from '@/components/Home.vue'
+import Settings from '@/components/Settings.vue'
 import type {RouteRecordRaw} from 'vue-router'
 import type {Component} from 'vue'
 import Processing from '@/components/elements/Processing.vue'
@@ -25,6 +26,14 @@ const routes: RouteRecordRaw[] = [
         component: Home,
         meta: {
             title: 'Добро пожаловать'
+        }
+    },
+    {
+        path: '/settings',
+        name: 'settings',
+        component: Settings,
+        meta: {
+            title: 'Настройки'
         }
     },
     {

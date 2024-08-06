@@ -119,7 +119,6 @@ function submitLogin() {
             <Button
                 button-type="submit"
                 icon="icon-bestiary"
-                icon-size="32px"
                 text="Войти"
                 :loading="isProcessing"
                 @click.prevent="submitLogin"

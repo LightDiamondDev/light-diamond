@@ -3,8 +3,10 @@
 
     const props = defineProps({
         buttonType: String,
-        icon: String,
-        iconSize: String,
+        icon: {
+            type: String,
+            default: ''
+        },
         loading: {
             type: Boolean,
             default: false
@@ -14,15 +16,14 @@
 </script>
 
 <template>
-    <button class="auth-button-container button-container flex justify-center items-center" :type="buttonType">
+    <button class="button-container flex justify-center items-center" :type="buttonType">
         <span class="action-button flex flex-col">
             <span class="press flex justify-center items-center">
                 <Processing v-if="loading" class="mr-4" height="28px" width="28px"/>
                 <span
-                    v-if="!loading"
+                    v-if="!loading && icon !== ''"
                     :class="icon"
                     class="icon mr-2"
-                    :style="`height: ` + `${iconSize}` + `; width: ` + `${iconSize}`"
                 />
                 <span class="text duration-200">{{ text }}</span>
             </span>

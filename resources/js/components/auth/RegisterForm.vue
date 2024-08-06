@@ -123,7 +123,6 @@ function submitRegister() {
         <Button
             button-type="submit"
             icon="icon-bestiary"
-            icon-size="32px"
             text="Зарегистрироваться"
             :loading="isProcessing"
             @click.prevent="submitRegister"

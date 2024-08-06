@@ -5,7 +5,6 @@ import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm.vue'
 import LoginForm from '@/components/auth/LoginForm.vue'
 import RegisterForm from '@/components/auth/RegisterForm.vue'
 import {getRandomSplash} from '@/stores/splashes'
-import Button from '@/components/elements/Button.vue'
 
 enum AuthFormType {
     LOGIN,
@@ -91,7 +90,7 @@ const activeSplash = getRandomSplash()
 }
 
 .auth-dialog form fieldset,
-.auth-dialog form .auth-button-container {
+.auth-dialog form .button-container {
     width: 85%;
 }
 
@@ -229,7 +228,7 @@ const activeSplash = getRandomSplash()
     animation: parrot-flip-animation 10s infinite;
 }
 
-.auth-button-container {
+.button-container {
     height: 80px;
     width: 80%;
 }
@@ -314,7 +313,7 @@ const activeSplash = getRandomSplash()
     width: 100%;
 }
 
-    /* =============== [ Анимации ] =============== */
+/* =============== [ Анимации ] =============== */
 
 .smooth-auth-switch-enter-active,
 .smooth-auth-switch-leave-active {
@@ -450,7 +449,7 @@ const activeSplash = getRandomSplash()
         font-size: 1.2rem;
     }
 
-    .auth-button-container .action-button .text {
+    .button-container .action-button .text {
         font-size: 0.8rem;
     }
 

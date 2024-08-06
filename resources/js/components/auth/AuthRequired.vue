@@ -25,7 +25,6 @@ onMounted(() => {
                     @click="globalModalStore.isAuth = !globalModalStore.isAuth"
                     type="button"
                     icon="item-diamond"
-                    icon-size="32px"
                     text="Войти"
                 />
             </RouterLink>
