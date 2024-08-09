@@ -21,7 +21,7 @@ class NotVerifiedEmailRule implements ValidationRule
         }
 
         if ($verified->exists()) {
-            $fail('Данный E-mail уже используется и подтвержден на другом аккаунте.');
+            $fail('Данный E-mail уже используется и подтвержден на одном из аккаунтов.');
         }
     }
 

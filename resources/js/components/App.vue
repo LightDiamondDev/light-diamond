@@ -29,7 +29,7 @@
                 `Мы отправили Вам письмо со ссылкой для подтверждения Вашей электронной почты!`,
                 'Подтверждение E-Mail',
                 '15000',
-                'icon-script'
+                'icon-letter'
             )
             const {registered, ...newQuery} = to.query
             router.replace({path: to.path, query: newQuery})
@@ -43,9 +43,9 @@
     <Toaster/>
     <div class="surface-ground">
         <Header/>
-        <div class='page-container'>
+        <main class="flex flex-col items-center">
             <RouterView></RouterView>
-        </div>
+        </main>
         <Footer/>
     </div>
 </template>

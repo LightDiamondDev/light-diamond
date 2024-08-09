@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
-import {computed, reactive, ref} from 'vue'
+import {computed, ref} from 'vue'
 import {useAuthStore} from '@/stores/auth'
 import {getErrorMessageByCode} from '@/helpers'
 
 import Input from '@/components/elements/Input.vue'
 import Button from '@/components/elements/Button.vue'
 import {useToastStore} from '@/stores/toast'
-
-// import Divider from 'primevue/divider' ???
 
 const authStore = useAuthStore()
 const toastStore = useToastStore()
@@ -74,7 +72,7 @@ function submitChangeEmail() {
                 `Мы отправили Вам письмо со ссылкой для подтверждения Вашей НОВОЙ электронной почты!`,
                 'Подтверждение E-Mail',
                 '15000',
-                'icon-script'
+                'icon-letter'
             )
             authStore.fetchUser()
         } else {
@@ -142,7 +140,7 @@ function submitChangePassword() {
         </div>
         <form action="" class="flex flex-col h-full w-full">
 
-            <div class="section-title flex justify-center text-[1.5rem] mt-4">Email</div>
+            <div class="section-title flex justify-center transfusion text-[1.5rem] mt-4">Email</div>
 
             <fieldset class="flex flex-col m-4">
                 <div class="flex flex-col">
@@ -157,11 +155,12 @@ function submitChangePassword() {
                             <div
                                 class="
                                     current-data-field
+                                    transfusion bordered
                                     flex
                                     items-center
                                     h-[48px]"
                             >
-                                <div class="flex text-[14px] w-full pl-3 ">
+                                <div class="flex text-[14px] w-full pl-3">
                                     {{ isEmailHidden ? hiddenEmail : authStore.email }}
                                 </div>
                                 <button
@@ -189,7 +188,7 @@ function submitChangePassword() {
                                 v-model="emailData.email"
                                 id="settings-security-email"
                                 :placeholder="hiddenEmail"
-                                autocomplete="off"
+                                autocomplete="email"
                             />
                             <span
                                 :class="{ 'error': emailErrors['email'], 'success': !emailErrors['email']}"
@@ -202,7 +201,7 @@ function submitChangePassword() {
                                 v-model="emailData.email_confirmation"
                                 id="settings-security-email-confirmation"
                                 :placeholder="hiddenEmail"
-                                autocomplete="off"
+                                autocomplete="email"
                             />
                             <span
                                 :class="{ 'error': emailErrors['email_confirmation'], 'success': !emailErrors['email_confirmation']}"
@@ -214,10 +213,11 @@ function submitChangePassword() {
                     </div>
                     <div v-if="isEditingEmail" class="flex gap-2">
                         <Button
+                            :disabled="emailData.email === authStore.email || emailData.email !== emailData.email_confirmation || !emailData.email"
                             class="confirm max-h-[64px] max-w-[200px]"
                             button-type="submit"
-                            text="Подтвердить"
                             :loading="isProcessingEmail"
+                            text="Подтвердить"
                             @click.prevent="submitChangeEmail()"
                         />
                         <Button
@@ -249,7 +249,7 @@ function submitChangePassword() {
                 </div>
             </fieldset>
 
-            <div class="section-title flex justify-center text-[1.5rem]">Пароль</div>
+            <div class="section-title flex justify-center transfusion text-[1.5rem]">Пароль</div>
 
             <fieldset class="flex flex-col m-4">
                 <div class="flex flex-col">
@@ -265,6 +265,7 @@ function submitChangePassword() {
                             <div
                                 class="
                                     current-data-field
+                                    transfusion bordered
                                     flex
                                     justify-between
                                     items-center
@@ -285,8 +286,8 @@ function submitChangePassword() {
                             <Input
                                 v-model="passwordData.password"
                                 id="settings-security-password"
+                                autocomplete="password"
                                 placeholder="Пароль"
-                                autocomplete="off"
                             />
                             <span
                                 :class="{ 'error': passwordErrors['password'], 'success': !passwordErrors['password']}"
@@ -299,7 +300,7 @@ function submitChangePassword() {
                                 v-model="passwordData.password_confirmation"
                                 id="settings-security-password-confirmation"
                                 placeholder="Повторный пароль"
-                                autocomplete="off"
+                                autocomplete="password"
                             />
                             <span
                                 :class="{ 'error': passwordErrors['password_confirmation'], 'success': !passwordErrors['password_confirmation']}"
@@ -311,6 +312,7 @@ function submitChangePassword() {
                     </div>
                     <div v-if="isEditingPassword" class="flex gap-2">
                         <Button
+                            :disabled="passwordData.password !== passwordData.password_confirmation || !passwordData.password"
                             class="confirm max-h-[64px] max-w-[200px]"
                             button-type="submit"
                             text="Подтвердить"

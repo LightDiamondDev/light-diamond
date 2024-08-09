@@ -1,5 +1,9 @@
 <script setup lang="ts">
 const props = defineProps({
+    item: {
+        type: String,
+        default: 'item-diamond'
+    },
     height: String,
     width: String
 });
@@ -7,10 +11,10 @@ const props = defineProps({
 
 <template>
     <div class="processing flex flex-wrap" :style="{ 'height': height, 'width': width, }">
-        <div class="block1 block-diamond-block"></div>
-        <div class="block2 block-diamond-block"></div>
-        <div class="block3 block-diamond-block"></div>
-        <div class="block4 block-diamond-block"></div>
+        <div :class="item" class="block1"></div>
+        <div :class="item" class="block2"></div>
+        <div :class="item" class="block3"></div>
+        <div :class="item" class="block4"></div>
     </div>
 </template>
 

@@ -50,7 +50,7 @@ updateCurrentSectionByRoute()
 </script>
 
 <template>
-    <div class="settings flex flex-col pb-2 pt-2">
+    <div class="settings flex flex-col w-full p-2">
         <div class="title flex items-center mb-2 pl-2 pr-2">
             <button
                 class="h-[48px] w-[48px] justify-center items-center arrow locked"
@@ -71,7 +71,7 @@ updateCurrentSectionByRoute()
                 <div class="units">
 
                     <RouterLink
-                        :class="{ 'active': currentSection === Section.PROFILE }"
+                        :class="{ 'transfusion': currentSection === Section.PROFILE }"
                         class="h-fit flex"
                         :to="{name: 'settings.profile'}"
                     >
@@ -85,7 +85,7 @@ updateCurrentSectionByRoute()
                     </RouterLink>
 
                     <RouterLink
-                        :class="{ 'active': currentSection === Section.SECURITY }"
+                        :class="{ 'transfusion': currentSection === Section.SECURITY }"
                         class="h-fit flex"
                         :to="{name: 'settings.security'}"
                     >
@@ -103,7 +103,7 @@ updateCurrentSectionByRoute()
 
             <div
                 :class="{ 'on': !isMobileMenu }"
-                class="container flex flex-col"
+                class="settings-container flex flex-col"
             >
 
                 <RouterView v-slot="{ Component }">
@@ -118,6 +118,9 @@ updateCurrentSectionByRoute()
 </template>
 
 <style>
+.settings {
+    max-width: 1280px;
+}
 .settings aside {
     margin-right: .5rem;
     min-width: 280px;
@@ -132,7 +135,10 @@ updateCurrentSectionByRoute()
 .settings .title .arrow {
     display: none;
 }
-.settings .container {
+.settings .interface {
+    overflow: hidden;
+}
+.settings .settings-container {
     position: relative;
     min-height: 800px;
     overflow: hidden;
@@ -160,6 +166,14 @@ updateCurrentSectionByRoute()
 .settings form fieldset label input {
     height: 100%;
     width: 100%;
+}
+
+.settings form fieldset .status.error {
+    color: #ff3050;
+}
+
+.settings form fieldset .status.success {
+    color: var(--hover-text-color);
 }
 
 /* =============== [ Анимации ] =============== */
@@ -213,7 +227,6 @@ updateCurrentSectionByRoute()
         margin-right: 0;
         min-width: 0;
         opacity: 0;
-        border: 0;
         width: 0;
     }
     .settings .interface aside.on {
@@ -222,7 +235,7 @@ updateCurrentSectionByRoute()
         width: 100%;
         opacity: 1;
     }
-    .settings .interface .container {
+    .settings .interface .settings-container {
         transform: translateX(100%);
         min-height: 1024px;
         transition: .5s;
@@ -230,11 +243,11 @@ updateCurrentSectionByRoute()
         border: 0;
         width: 0;
     }
-    .settings .interface .container.on {
+    .settings .interface .settings-container.on {
         transform: translateX(0);
-        max-width: 100%;
         width: 100%;
         opacity: 1;
+        right: 2px;
     }
     .settings .banner {
         height: fit-content;
@@ -254,7 +267,9 @@ updateCurrentSectionByRoute()
         transition: none;
     }
 }
+
 /* =============== [ Медиа-Запрос { ?px < 350px } ] =============== */
+
 @media screen and (max-width: 349px) {
     .settings {
         margin: 0 .5rem;

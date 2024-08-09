@@ -1,8 +1,12 @@
 <script setup lang="ts">
-    import Processing from '@/components/elements/Processing.vue'
+    import ProcessingMovingItems from '@/components/elements/ProcessingMovingItems.vue'
 
     const props = defineProps({
         buttonType: String,
+        disabled: {
+            type: Boolean,
+            default: false
+        },
         icon: {
             type: String,
             default: ''
@@ -11,15 +15,24 @@
             type: Boolean,
             default: false
         },
+        loadingItem: {
+            type: String,
+            default: 'item-diamond'
+        },
         text: String
     });
 </script>
 
 <template>
-    <button class="button-container flex justify-center items-center" :type="buttonType">
+    <button
+        class="button-container flex justify-center items-center"
+        :class="{ 'disabled': disabled }"
+        :disabled="disabled"
+        :type="buttonType"
+    >
         <span class="action-button flex flex-col">
             <span class="press flex justify-center items-center">
-                <Processing v-if="loading" class="mr-4" height="28px" width="28px"/>
+                <ProcessingMovingItems v-if="loading" class="mr-4" :item="loadingItem" height="28px" width="28px"/>
                 <span
                     v-if="!loading && icon !== ''"
                     :class="icon"
@@ -33,5 +46,7 @@
 </template>
 
 <style scoped>
-
+.disabled {
+    opacity: .5;
+}
 </style>

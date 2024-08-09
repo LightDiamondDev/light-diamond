@@ -67,8 +67,10 @@
     .animation-flying-phantom { background-image: url('/public/images/mobs/flying-phantom-animation.gif'); }
     .animation-walking-iron-golem { background-image: url('/public/images/mobs/walking-iron-golem-animation.gif'); }
 
+    .block-diamond-ore-block { background-image: url('/public/images/blocks/diamond-ore.png'); }
     .block-diamond-block { background-image: url('/public/images/blocks/diamond-block.png'); }
 
+    .item-diamond-pickaxe { background-image: url('/public/images/items/diamond-pickaxe.png'); }
     .item-diamond { background-image: url('/public/images/items/diamond.png'); }
     .item-ender-pearl { background-image: url('/public/images/items/ender-pearl.png'); }
     .item-gold-ingot { background-image: url('/public/images/items/gold-ingot.png'); }
@@ -143,13 +145,11 @@
         }
     }
 
-
     :root {
         --header-height: 4.5rem;
         /* --header-margin: 1rem;
         --header-with-margin-height: calc(var(--header-height) + var(--header-margin)); */
     }
-
 
     .page-container {
         width: 100%;

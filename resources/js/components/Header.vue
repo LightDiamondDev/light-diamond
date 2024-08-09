@@ -87,6 +87,7 @@ const navigationSections = computed<NavigationSection[]>(() => [
             {
                 label: 'Каталог',
                 icon: 'icon-book',
+                url: '/catalog',
             },
             {
                 label: 'Новости',
@@ -245,7 +246,8 @@ function logout() {
     <Menu ref="userMenu" :items="userMenuItems" align-right class="user-menu">
         <template v-slot:header>
             <a
-                v-if="authStore.isAuthenticated" class="profile-link laminated-link flex items-center"
+                v-if="authStore.isAuthenticated"
+                class="profile-link laminated-link transfusion bordered flex items-center m-1"
                 href="#"
             >
                 <span class="icon icon-outline flex justify-center items-center icon-border h-[48px] w-[48px]">
@@ -303,7 +305,7 @@ function logout() {
             </div>
 
             <template v-for="section of navigationSections">
-                <div class="unit-title flex justify-center text-[1.1rem]">{{ section.label }}</div>
+                <div class="unit-title flex justify-center transfusion text-[1.1rem]">{{ section.label }}</div>
 
                 <ItemButton
                     v-for="childSection of section.children"
@@ -330,7 +332,7 @@ function logout() {
         :class="{'-translate-y-full': !designManager.isHeaderFixedVisible() && isHeaderHidden}"
     >
         <nav class="header page-container flex justify-between">
-            <div class="flex items-center gap-4">
+            <div class="flex items-center xs:gap-4">
                 <button
                     class="duration-100 flex justify-center items-center h-full p-2 md:-ml-3"
                     :class="{'xl:hidden': !designManager.isDesktopSidebarVisible(), 'opacity-0': isHeaderSidebar}"
@@ -401,6 +403,11 @@ function logout() {
 </template>
 
 <style scoped>
+.list-label:focus-visible + .header-dropdown-content {
+    display: flex;
+    flex-direction: column;
+}
+
 .header .logo-wrap img {
     min-width: 152px;
 }

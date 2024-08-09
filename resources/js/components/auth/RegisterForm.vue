@@ -52,7 +52,7 @@ function submitRegister() {
 </script>
 
 <template>
-    <form action="" class="register flex flex-col items-center">
+    <form action="" class="register flex flex-col items-center" name="register">
         <fieldset class="flex flex-col items-center">
             <div class="group flex flex-col items-center">
                 <span class="subtitle text-[1.1rem] m-2">Никнейм</span>
@@ -61,6 +61,7 @@ function submitRegister() {
                     v-model="registerData.username"
                     id="register-nickname"
                     placeholder="Steve"
+                    autocomplete="off"
                 />
 
                 <span
@@ -75,6 +76,7 @@ function submitRegister() {
                     v-model="registerData.email"
                     id="register-email"
                     placeholder="steve@minecraft.net"
+                    autocomplete="off"
                     type="email"
                 />
 
@@ -92,6 +94,7 @@ function submitRegister() {
                     v-model="registerData.password"
                     id="register-password"
                     placeholder="Пароль"
+                    autocomplete="off"
                     type="password"
                 />
 
@@ -108,6 +111,7 @@ function submitRegister() {
                     v-model="registerData.password_confirmation"
                     id="register-repeat-password"
                     placeholder="Повторный пароль"
+                    autocomplete="off"
                     type="password"
                 />
 

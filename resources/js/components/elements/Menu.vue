@@ -121,7 +121,7 @@ function onItemClick(item: MenuItem) {
                         :text="item.label"
                         :icon="item.icon"
                         :to="item.route"
-                        class="pl-6 pr-4"
+                        class="pl-6 pr-4 lg:text-[1.1rem]"
                     />
 
                 </template>

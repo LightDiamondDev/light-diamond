@@ -53,7 +53,7 @@ function submitLogin() {
 </script>
 
 <template>
-    <form action="" class="login flex flex-col items-center">
+    <form action="" class="login flex flex-col items-center" name="login">
         <fieldset class="flex flex-col items-center">
             <span class="subtitle text-[1.1rem] m-2">
                 Никнейм

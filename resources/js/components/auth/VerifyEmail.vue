@@ -6,7 +6,7 @@ import {onMounted, ref} from 'vue'
 import {useToastStore} from '@/stores/toast'
 
 import Button from '@/components/elements/Button.vue'
-import Processing from '@/components/elements/Processing.vue'
+import ProcessingMovingItems from '@/components/elements/ProcessingMovingItems.vue'
 
 const toastStore = useToastStore()
 
@@ -52,7 +52,7 @@ function tryVerifyEmail() {
                 <div class="animation-flying-phantom"></div>
             </div>
 
-            <Processing v-if="isProcessing" class="mb-9 mt-4" height="64px" width="64px"/>
+            <ProcessingMovingItems v-if="isProcessing" class="mb-9 mt-4" height="64px" width="64px"/>
 
             <RouterLink v-if="isSuccess" class="flex justify-center mb-8" :to="{ name: 'home' }">
                 <Button button-type="submit" icon="icon-diamond" text="Отлично, вперёд!"/>

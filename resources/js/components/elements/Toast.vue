@@ -58,12 +58,12 @@ function close() {
             'error': toast.type === ToastType.ERROR,
             'info': toast.type === ToastType.INFO,
             'success': toast.type === ToastType.SUCCESS,
-            'warning': toast.type === ToastType.WARNING,
+            'warning': toast.type === ToastType.WARNING
         }"
         @mouseenter="clearCloseTimeout"
         @mouseleave="startCloseTimeout"
     >
-        <div class="indicator">
+        <div class="indicator flex justify-center">
             <div class="set icon icon-border flex justify-center items-center">
                 <span class="icon" :class="icon"></span>
             </div>
@@ -91,7 +91,7 @@ function close() {
 
 .toast .indicator {
     background-image: url('/images/elements/base-background.png');
-    width: 48px;
+    width: 72px;
 }
 
 .toast.error .indicator {
@@ -112,16 +112,14 @@ function close() {
 
 .toast .indicator .set {
     animation: icon-set-animation 1s infinite;
-    margin-right: .5rem;
-    margin-left: .4rem;
     transition: .5s;
-    height: 32px;
-    width: 32px;
+    height: 48px;
+    width: 48px;
 }
 
 .toast .set span.icon {
-    height: 24px;
-    width: 24px;
+    height: 32px;
+    width: 32px;
 }
 
 .toast button.close {

@@ -12,7 +12,7 @@ const designManager = useDesignManager()
                     <span class="icon icon-magnifier"></span>
                 </button>
                 <input class="flex text-[0.9rem]" id="search-input" placeholder="Поиск..." type="text">
-                <button class="flex justify-center items-center" @click="isVisible = false" type="button">
+                <button class="flex justify-center items-center" @click="isVisible = false" type="reset">
                     <span class="icon icon-cross"></span>
                 </button>
             </label>
@@ -52,8 +52,8 @@ const designManager = useDesignManager()
     width: 32px;
 }
 .search-form form label button .icon-cross {
-    height: 24px;
-    width: 24px;
+    height: 32px;
+    width: 32px;
 }
 .search-form form label input {
     color: var(--primary-text-color);

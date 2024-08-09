@@ -1,7 +1,10 @@
-import Home from '@/components/Home.vue'
 import type {RouteRecordRaw} from 'vue-router'
 import type {Component} from 'vue'
-import Processing from '@/components/elements/Processing.vue'
+
+import Home from '@/components/Home.vue'
+import Catalog from '@/components/Catalog.vue'
+
+import Processing from '@/components/elements/ProcessingMovingItems.vue'
 import NoPermission from '@/components/NoPermission.vue'
 import AuthRequired from '@/components/auth/AuthRequired.vue'
 import VerifyEmail from '@/components/auth/VerifyEmail.vue'
@@ -29,6 +32,14 @@ const routes: RouteRecordRaw[] = [
         meta: {
             title: 'Добро пожаловать'
         }
+    },
+    {
+        path: '/catalog',
+        name: 'catalog',
+        component: Catalog,
+        meta: {
+            title: 'Каталог',
+        },
     },
     {
         path: '/email/verify/:id/:hash',

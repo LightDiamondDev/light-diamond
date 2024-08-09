@@ -50,7 +50,7 @@ function submitResetPassword() {
             <h1 class="text-4xl text-center mt-8">Сброс пароля</h1>
             <p class="text-muted text-center text-[0.9rem] mb-2 mt-4">Придумайте новый пароль. Он должен быть надёжным!</p>
 
-            <form action="" class="reset-form flex flex-col items-center">
+            <form action="" class="reset-form flex flex-col items-center" name="reset">
                 <fieldset class="flex flex-col items-center">
                     <span class="subtitle text-[0.9rem] m-2">Новый пароль</span>
 

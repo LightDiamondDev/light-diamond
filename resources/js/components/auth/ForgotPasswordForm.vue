@@ -42,7 +42,7 @@ function submitForgotPassword() {
 
 <template>
 
-    <form action="" class="forgot-password flex flex-col items-center">
+    <form action="" class="forgot-password flex flex-col items-center" name="forgot-password">
 
         <fieldset class="flex flex-col items-center">
             <span class="task text-[0.8rem] mb-2 mt-2">

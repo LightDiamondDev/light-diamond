@@ -10,7 +10,6 @@ const currentType = computed(
 const props = defineProps({
     autocomplete: {
         type: String,
-        validator: (val) => ['off', 'on'].includes(val),
         default: 'on'
     },
     id: String,

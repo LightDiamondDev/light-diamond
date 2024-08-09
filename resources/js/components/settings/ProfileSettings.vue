@@ -89,7 +89,7 @@ function submitChangeAvatar() {
         </div>
         <form action="" class="flex flex-col h-full w-full">
 
-            <div class="section-title flex justify-center text-[1.5rem] mt-4">Аватар</div>
+            <div class="section-title flex justify-center transfusion text-[1.5rem] mt-4">Аватар</div>
 
             <fieldset class="flex flex-col m-4">
                 <div class="flex flex-col-reverse md:flex-row">
@@ -111,7 +111,7 @@ function submitChangeAvatar() {
                 </div>
             </fieldset>
 
-            <div class="section-title flex justify-center text-[1.5rem]">Никнейм</div>
+            <div class="section-title flex justify-center transfusion text-[1.5rem]">Никнейм</div>
 
             <fieldset class="flex flex-col m-4">
                 <div class="flex flex-col">
@@ -127,6 +127,7 @@ function submitChangeAvatar() {
                             <div
                                 class="
                                     current-data-field
+                                    transfusion bordered
                                     flex
                                     justify-between
                                     items-center
@@ -148,7 +149,7 @@ function submitChangeAvatar() {
                                 v-model="usernameData.username"
                                 id="settings-profile-nickname"
                                 :placeholder="authStore.username"
-                                autocomplete="off"
+                                autocomplete="username"
                             />
                         </div>
                         <span
@@ -160,6 +161,7 @@ function submitChangeAvatar() {
                     </div>
                     <div v-if="isEditingUsername" class="flex gap-2">
                         <Button
+                            :disabled="usernameData.username === authStore.username || !usernameData.username"
                             class="confirm max-h-[64px] max-w-[200px]"
                             button-type="submit"
                             text="Подтвердить"
