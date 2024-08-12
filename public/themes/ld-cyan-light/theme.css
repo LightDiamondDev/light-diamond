@@ -50,6 +50,7 @@
     .header-blur aside,
     .header-dropdown-content,
     .menu,
+    .post-card,
     .search-form-background form,
     .settings aside,
     .settings .settings-container,
@@ -316,6 +317,11 @@
         transform: translateY(2px);
     }
 
+    .catalog-panel .line a.active .press,
+    .catalog-panel .line button.active .press {
+        background: radial-gradient(100% 100% at 100% 0, rgba(50, 200, 200, .3) 0, rgba(0, 255, 255, .3) 100%);
+    }
+
     .catalog-panel .line a.edition .press,
     .catalog-panel .line button.edition .press {
         background: radial-gradient(100% 100% at 100% 0, rgba(50, 200, 50, .3) 0, rgba(30, 120, 30, .3) 100%);
@@ -391,6 +397,28 @@
     .search-form form fieldset,
     .settings form .description p {
         background: linear-gradient(rgba(0, 15, 15, .5), transparent);
+    }
+
+    /*
+    .post-card .actions {
+        background: linear-gradient(rgba(0, 15, 15, .5), transparent);
+    }
+    */
+
+    .post-card .description-wrap {
+        border: 2px solid rgba(0, 255, 255, .3);
+    }
+
+    .post-card .preview-wrap {
+        border-right: 2px solid rgba(255, 255, 255, .3);
+        border-left: 2px solid rgba(255, 255, 255, .3);
+        border-top: 2px solid rgba(255, 255, 255, .3);
+        border-bottom: none;
+    }
+
+    .post-card .author-avatar-frame,
+    .post-card .progress-bar {
+        border: 2px solid rgba(255, 255, 255, .8);
     }
 
     .search-form-background form {
@@ -477,6 +505,7 @@
     .auth-dialog form fieldset .subtitle,
     .auth-dialog form .help-button span,
     .auth-remember-line .auth-remember-me,
+    .catalog-panel .filters-button,
     .catalog-panel .line a span,
     .catalog-panel .line button span,
     .design-settings-form div,
@@ -493,6 +522,7 @@
         font-family: "Minecraft Ten", sans-serif;
     }
 
+    .catalog-banner .splash,
     .user-menu .profile-link .title,
     .left-header-sidebar .item-button {
         font-family: Monocraft, sans-serif;
@@ -552,6 +582,10 @@
 
     .icon-clock {
         background-image: url('/images/icons/diamond-clock.png');
+    }
+
+    .icon-comment {
+        background-image: url('/images/icons/diamond-comment.png');
     }
 
     .icon-cross {
@@ -614,6 +648,10 @@
         background-image: url('/images/icons/diamond-hand.png');
     }
 
+    .icon-heart {
+        background-image: url('/images/icons/diamond-heart.png');
+    }
+
     .icon-left-arrow {
         background-image: url('/images/icons/diamond-left-arrow.png');
     }
@@ -624,10 +662,6 @@
 
     .icon-like {
         background-image: url('/images/icons/diamond-heart.png');
-    }
-
-    .icon-logo {
-        background-image: url('/images/elements/light-diamond-logo.png');
     }
 
     .icon-long-left-arrow {

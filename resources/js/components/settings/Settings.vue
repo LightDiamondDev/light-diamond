@@ -73,7 +73,7 @@ updateCurrentSectionByRoute()
                     <RouterLink
                         :class="{ 'transfusion': currentSection === Section.PROFILE }"
                         class="h-fit flex"
-                        :to="{name: 'settings.profile'}"
+                        :to="{ name: 'settings.profile' }"
                     >
                         <ItemButton
                             class="pl-8 pr-4 w-full text-[1.1rem]"

@@ -72,7 +72,6 @@ function scrollToTop() {
 <style scoped>
 
 /* =============== [ Структура ] =============== */
-
 footer {
     background-color: var(--primary-bg-color);
     user-select: none;

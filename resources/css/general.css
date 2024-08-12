@@ -70,6 +70,10 @@
     .block-diamond-ore-block { background-image: url('/public/images/blocks/diamond-ore.png'); }
     .block-diamond-block { background-image: url('/public/images/blocks/diamond-block.png'); }
 
+    .element-light-diamond-logo { background-image: url('/public/images/elements/light-diamond-logo.png'); }
+    .element-light-diamond-logo-mobile { background-image: url('/public/images/elements/light-diamond-logo-mobile.png'); }
+    .element-light-diamond-materials-logo { background-image: url('/public/images/elements/light-diamond-materials-logo.png'); }
+
     .item-diamond-pickaxe { background-image: url('/public/images/items/diamond-pickaxe.png'); }
     .item-diamond { background-image: url('/public/images/items/diamond.png'); }
     .item-ender-pearl { background-image: url('/public/images/items/ender-pearl.png'); }
@@ -132,6 +136,18 @@
     {
         from { transform: rotate(360deg); }
         to { transform: rotate(0deg); }
+    }
+
+    @keyframes splash-animation {
+        0% {
+            transform: scale(1.1);
+        }
+        50% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(1.1);
+        }
     }
 
     /* =============== [ Медиа-Запрос { 1024px > ?px } ] =============== */

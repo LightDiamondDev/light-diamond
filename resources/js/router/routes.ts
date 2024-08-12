@@ -2,11 +2,12 @@ import type {RouteRecordRaw} from 'vue-router'
 import type {Component} from 'vue'
 
 import Home from '@/components/Home.vue'
-import Catalog from '@/components/Catalog.vue'
+import Catalog from '@/components/catalog/Catalog.vue'
 
-import Processing from '@/components/elements/ProcessingMovingItems.vue'
-import NoPermission from '@/components/NoPermission.vue'
-import AuthRequired from '@/components/auth/AuthRequired.vue'
+// import Processing from '@/components/elements/ProcessingMovingItems.vue'
+// import NoPermission from '@/components/NoPermission.vue'
+// import AuthRequired from '@/components/auth/AuthRequired.vue'
+
 import VerifyEmail from '@/components/auth/VerifyEmail.vue'
 import ResetForm from '@/components/auth/ResetForm.vue'
 import Settings from '@/components/settings/Settings.vue'
@@ -61,7 +62,7 @@ const routes: RouteRecordRaw[] = [
         path: '/settings',
         name: 'settings',
         component: Settings,
-        redirect: {name: 'settings.profile'},
+        redirect: { name: 'settings.profile' },
         meta: {
             title: 'Настройки',
             requiresAuth: true,

@@ -294,7 +294,7 @@ function logout() {
                     class="logo-wrap flex items-center transition-opacity duration-200 h-[70%]"
                     :class="{'opacity-0': !isHeaderSidebar}"
                 >
-                    <img src="/images/logo.png" alt="Logo" class="h-full"/>
+                    <img src="/images/elements/light-diamond-logo.png" alt="Logo" class="h-full"/>
                 </RouterLink>
                 <button
                     class="closing-header-sidebar-button flex justify-center items-center"
@@ -328,13 +328,13 @@ function logout() {
     />
 
     <header
-        class="fixed transition-transform duration-300 top-0 left-0 w-full select-none h-[var(--header-height)] z-[1] flex"
+        class="transition-transform flex justify-center duration-300 select-none h-[var(--header-height)] z-[1] w-full top-0 fixed"
         :class="{'-translate-y-full': !designManager.isHeaderFixedVisible() && isHeaderHidden}"
     >
-        <nav class="header page-container flex justify-between">
+        <nav class="header flex justify-between">
             <div class="flex items-center xs:gap-4">
                 <button
-                    class="duration-100 flex justify-center items-center h-full p-2 md:-ml-3"
+                    class="burger duration-100 flex justify-center items-center h-full p-2 md:-ml-3"
                     :class="{'xl:hidden': !designManager.isDesktopSidebarVisible(), 'opacity-0': isHeaderSidebar}"
                     type="button"
                     @click="openHeaderSidebar"
@@ -347,7 +347,8 @@ function logout() {
                     class="logo-wrap flex items-center duration-200 h-[70%]"
                     :class="{'opacity-0': isHeaderSidebar}"
                 >
-                    <img src="/images/logo.png" alt="Logo" class="h-full"/>
+                    <img alt="Logo" class="hidden xs:flex h-full min-w-152" src="/images/elements/light-diamond-logo.png"/>
+                    <img alt="Logo" class="flex xs:hidden h-full" src="/images/elements/light-diamond-logo-mobile.png"/>
                 </RouterLink>
 
                 <div class="hidden lg:flex items-center gap-2 h-full">
@@ -374,7 +375,7 @@ function logout() {
                 </div>
             </div>
 
-            <div class="flex md:-mr-2">
+            <div class="flex items-center">
                 <button
                     class="search-button flex justify-center items-center p-2"
                     @click="isSearchDialog = true"
@@ -384,7 +385,7 @@ function logout() {
                 </button>
 
                 <button
-                    class="user-menu-button flex list-label justify-center items-center p-2"
+                    class="user-menu-button flex list-label justify-center items-center"
                     type="button"
                     @click="userMenu?.toggle"
                 >
@@ -408,8 +409,10 @@ function logout() {
     flex-direction: column;
 }
 
-.header .logo-wrap img {
-    min-width: 152px;
+.header {
+    max-width: 1312px;
+    padding: 0 1rem;
+    width: 100%;
 }
 
 .header-dropdown {
@@ -442,8 +445,14 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     animation: icon-trigger-up-animation .3s ease;
 }
 
-.user-menu-button .notifications-counter,
-.user-menu .notifications-counter {
+.header .burger,
+.header .search-button,
+.header .user-menu-button {
+    height: 52px;
+    width: 52px;
+}
+.header .user-menu-button .notifications-counter,
+.header .user-menu .notifications-counter {
     background-color: rgb(210, 10, 30);
     color: var(--primary-text-color);
     margin: 0 0 32px 32px;
@@ -476,6 +485,14 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     color: var(--primary-text-color);
     background-size: 400% 100%;
     padding: 4px 0;
+}
+
+/* =============== [ Медиа-Запрос { ?px < 426px } ] =============== */
+
+@media screen and (max-width: 450px) {
+    .header {
+        padding: 0 4px;
+    }
 }
 
 </style>

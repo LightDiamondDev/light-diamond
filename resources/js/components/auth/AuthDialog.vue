@@ -41,7 +41,7 @@ const activeSplash = getRandomSplash()
         <template v-slot:left-content>
             <div class="illustration flex justify-center items-center">
                 <div class="background-auth flex justify-center items-center">
-                    <a class="logo icon-logo" href="#">
+                    <a class="logo element-light-diamond-logo" href="#">
                         <span class="base">
                             <span
                                 class="splash"
@@ -372,18 +372,6 @@ const activeSplash = getRandomSplash()
     }
     100% {
         transform: rotate(360deg);
-    }
-}
-
-@keyframes splash-animation {
-    0% {
-        transform: scale(1.1);
-    }
-    50% {
-        transform: scale(1);
-    }
-    100% {
-        transform: scale(1.1);
     }
 }
 
