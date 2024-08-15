@@ -35,12 +35,20 @@ const activeColor = getRandomColor()
 <div class="catalog-banner flex justify-center w-full">
     <div class="banner flex justify-center items-end">
         <div class="title flex flex-col justify-center items-center">
+            <h1 class="text-center absolute opacity-0">Каталог Light Diamond</h1>
+        </div>
+    </div>
+</div>
+<div class="catalog-container flex justify-center w-full">
+    <section class="catalog flex flex-col items-center w-full">
+
+        <div class="title flex flex-col justify-center items-center w-full">
             <RouterLink
-                class="logo-wrap flex items-center full-locked"
+                class="logo-wrap flex items-center full-locked relative orange"
                 :to="{ name: 'catalog' }"
             >
-                <img alt="Logo" class="h-[48px] xs:h-full md:h-[100px]" src="/images/elements/light-diamond-materials-logo.png"/>
-                <span v-if="authStore.isAuthenticated" class="base">
+                <img alt="Logo" class="materials-logo h-[48px] md:h-[100px]" src="/images/elements/light-diamond-materials-logo.png"/>
+                <span v-if="authStore.isAuthenticated" class="base flex justify-center items-center">
                     <span
                         class="splash flex justify-center"
                         :class="{
@@ -54,12 +62,8 @@ const activeColor = getRandomColor()
                     </span>
                 </span>
             </RouterLink>
-            <h1 class="text-center absolute opacity-0">Каталог Light Diamond</h1>
         </div>
-    </div>
-</div>
-<div class="catalog-container flex justify-center w-full">
-    <section class="catalog flex flex-col items-center w-full">
+
         <form class="catalog-panel flex flex-col w-full self-center" name="catalog">
 
             <nav class="flex flex-col">
@@ -68,7 +72,7 @@ const activeColor = getRandomColor()
                     <div class="sub-line flex flex-wrap gap-4">
                         <button
                             :class="{ 'active': isFresh }"
-                            class="flex items-center option"
+                            class="shine-button flex items-center option"
                             type="button"
                             @click="isFresh = true"
                         >
@@ -81,7 +85,7 @@ const activeColor = getRandomColor()
                         </button>
                         <button
                             :class="{ 'active': !isFresh }"
-                            class="flex items-center option"
+                            class="shine-button flex items-center option"
                             type="button"
                             @click="isFresh = false"
                         >
@@ -94,7 +98,7 @@ const activeColor = getRandomColor()
                         </button>
                         <button
                             v-if="!isFresh"
-                            class="active flex items-center option w-[200px]"
+                            class="shine-button active flex items-center option w-[200px]"
                             type="button"
                             @click="switchTimePeriod()"
                         >
@@ -107,7 +111,7 @@ const activeColor = getRandomColor()
                         </button>
                     </div>
                     <div class="sub-line flex flex-wrap justify-center gap-4">
-                        <button class="flex items-center option edition" type="button" @click="isBedrock = !isBedrock">
+                        <button class="shine-button flex items-center option edition" type="button" @click="isBedrock = !isBedrock">
                             <span class="press flex">
                                 <span class="preset flex items-center gap-1 min-w-[172px]">
                                     <span
@@ -125,7 +129,7 @@ const activeColor = getRandomColor()
 
                 <div class="line flex flex-wrap gap-4 p-4">
 
-                    <RouterLink class="flex items-center" :to="{ name: 'home' }">
+                    <RouterLink class="shine-button flex items-center" :to="{ name: 'home' }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-news"/>
@@ -133,7 +137,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="flex items-center" :to="{name: 'home'}">
+                    <RouterLink class="shine-button flex items-center" :to="{name: 'home'}">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-axolotl-bucket"/>
@@ -141,7 +145,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="flex items-center" :to="{name: 'home'}">
+                    <RouterLink class="shine-button flex items-center" :to="{name: 'home'}">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-spawn-egg"/>
@@ -149,7 +153,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="flex items-center" :to="{name: 'home'}">
+                    <RouterLink class="shine-button flex items-center" :to="{name: 'home'}">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-skin"/>
@@ -157,7 +161,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="flex items-center" :to="{name: 'home'}">
+                    <RouterLink class="shine-button flex items-center" :to="{name: 'home'}">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-map"/>
@@ -165,7 +169,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="flex items-center" :to="{name: 'home'}">
+                    <RouterLink class="shine-button flex items-center" :to="{name: 'home'}">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-script"/>
@@ -175,7 +179,7 @@ const activeColor = getRandomColor()
                     </RouterLink>
                 </div>
 
-                <div class="menu-separator"></div>
+                <div class="menu-separator flex self-center"></div>
 
                 <button
                     class="filters-button line flex items-center gap-4 p-4"
@@ -205,6 +209,12 @@ const activeColor = getRandomColor()
 </template>
 
 <style scoped>
+footer {
+    margin-top: 208px;
+}
+</style>
+
+<style scoped>
 .catalog-container {
     position: relative;
     margin-top: 208px;
@@ -221,34 +231,44 @@ const activeColor = getRandomColor()
     height: 280px;
     width: 1920px;
 }
-.banner .title {
+.banner .title,
+.catalog-container .title {
     position: relative;
     line-height: 1.1;
     font-size: 3rem;
     height: 208px
 }
+.banner .title .title {
+    line-height: 1.1;
+    font-size: 3rem;
+}
 .banner .title h1 {
     text-shadow: 4px 4px 48px black;
 }
-.catalog-banner .base {
+.catalog-container .title {
+    margin-top: -208px;
+    overflow: hidden;
+    height: 208px
+}
+.catalog-container .base {
     transform: rotate(-15deg);
+    transform-origin: center;
     position: absolute;
     height: 10px;
     width: 10px;
-    right: 35%;
-    bottom: 0;
+    bottom: -8%;
+    right: 5%;
 }
-
-.catalog-banner .splash {
+.catalog-container .splash {
     animation: splash-animation 1s infinite;
     text-shadow: 2px 2px black;
     position: absolute;
     text-align: center;
-    width: 250px;
-    bottom: 10px;
+    width: 240px;
 }
-.catalog-banner .splash.bottom-splash {
-    bottom: 0;
+.catalog-container .splash.bottom-splash {
+    bottom: -1.5rem;
+    width: 230px;
 }
 .large-splash {
     font-size: .8rem;
@@ -322,6 +342,19 @@ section.catalog {
 /* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
 
 @media screen and (max-width: 767px) {
+    .logo-wrap .materials-logo {
+        height: 72px;
+    }
+    .catalog-container .base {
+        bottom: -12%;
+        right: 5%;
+    }
+    .catalog-container .splash {
+        width: 230px;
+    }
+    .catalog-container .splash.bottom-splash {
+        bottom: -2rem;
+    }
     .catalog-panel .line .option,
     .catalog-panel .sub-line {
         flex-grow: 1;
@@ -334,12 +367,9 @@ section.catalog {
     }
 }
 
-/* =============== [ Медиа-Запрос { ?px < 426px } ] =============== */
+/* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
 
 @media screen and (max-width: 450px) {
-    .catalog-container {
-        margin-top: 102px;
-    }
     .catalog-banner {
         height: 178px;
     }
@@ -351,12 +381,18 @@ section.catalog {
         max-width: 214px;
         height: 126px
     }
-    .catalog-banner .splash {
-        max-width: 150px;
-        bottom: 18px;
+    .catalog-container .title {
+        height: 104px;
     }
-    .catalog-banner .splash.bottom-splash {
-        bottom: 0;
+    .catalog-container .splash {
+        max-width: 150px;
+    }
+    .catalog-container .splash.bottom-splash {
+        bottom: -1rem;
+        right: -80px;
+    }
+    .logo-wrap .materials-logo {
+        height: 48px;
     }
     .large-splash {
         font-size: .5rem;

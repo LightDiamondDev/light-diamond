@@ -11,9 +11,14 @@ function scrollToTop() {
 
             <div class="sm:hidden ml-4 w-12"></div>
 
-            <a class="sm:ml-4 logo-wrap flex items-center" href="#">
-                <span class="logo"></span>
-            </a>
+            <RouterLink
+                :to="{name: 'home'}"
+                class="logo-wrap flex items-center duration-200 h-[72px] sm:ml-4"
+            >
+                <img alt="Logo" class="hidden xs:flex h-[52px] min-w-152" src="/images/elements/light-diamond-logo.png"/>
+                <img alt="Logo" class="flex xs:hidden h-[52px]" src="/images/elements/light-diamond-logo-mobile.png"/>
+            </RouterLink>
+
             <a class="xl:flex hidden items-center" href="#">
                 <span class="icon icon-apple"></span>
                 <span class="text-[1.1rem]">Аддон LD</span>
@@ -70,7 +75,6 @@ function scrollToTop() {
 </template>
 
 <style scoped>
-
 /* =============== [ Структура ] =============== */
 footer {
     background-color: var(--primary-bg-color);
@@ -83,13 +87,6 @@ footer nav {
     height: var(--header-height);
     max-width: 1200px;
     width: 100%;
-}
-
-.logo {
-    background-image: url('/images/logo.png');
-    background-size: 100% 100%;
-    height: 48px;
-    width: 162px;
 }
 
 footer nav .logo-wrap {

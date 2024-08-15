@@ -27,15 +27,6 @@ function subscribe() {
         <RouterLink class="post-title-wrap transfusion p-2" :to="{ name: 'catalog' }">
             <h1 class="post-title text-base">Light Diamond Addon: Craft & Survive [0.1.0]</h1>
         </RouterLink>
-        <div class="author-info info flex justify-between">
-            <RouterLink class="author-wrap flex flex-wrap gap-2" :to="{ name: 'catalog' }">
-                <div class="author-avatar-frame flex min-w-[36px]">
-                    <img alt="" class="author-avatar flex min-w-[32px] h-[32px]" src="/images/elements/cherry-blossom-grove-background.png">
-                </div>
-                <p class="author-username flex items-center">GrostLight15</p>
-            </RouterLink>
-            <p class="type flex items-center text-end">Неделю назад</p>
-        </div>
         <p class="description flex text-[0.8rem] p-2">
             Глобальный Аддон Light Diamond призван улучшить многие аспекты игрового процесса и обновить Ваши
             представления о Ванильной Игре!
@@ -52,6 +43,17 @@ function subscribe() {
                 </div>
             </div>
         </div>
+        <div class="author-info info flex justify-between">
+            <RouterLink class="author-wrap flex flex-wrap gap-2" :to="{ name: 'catalog' }">
+                <div class="author-avatar-frame flex min-w-[36px]">
+                    <img alt="" class="author-avatar flex min-w-[32px] h-[32px]" src="/images/elements/cherry-blossom-grove-background.png">
+                </div>
+                <p class="author-username flex items-center">GrostLight15</p>
+            </RouterLink>
+            <p class="type flex items-center text-end">Неделю назад</p>
+        </div>
+
+
         <div class="menu-separator flex self-center w-[95%]"></div>
         <div class="actions flex flex-wrap gap-2 p-2 text-[0.7rem]">
             <div class="line flex flex-wrap gap-2">
@@ -69,10 +71,10 @@ function subscribe() {
                 </button>
             </div>
             <div class="line flex flex-wrap gap-2">
-                <button class="flex items-center active">
+                <RouterLink class="flex items-center" :to="{ name: 'catalog' }">
                     <span class="icon icon-eye flex"/>
                     <span class="counter flex p-1">1,5K</span>
-                </button>
+                </RouterLink>
                 <button class="flex items-center">
                     <span class="icon icon-download flex"/>
                     <span class="counter flex p-1">1,1K</span>

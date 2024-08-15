@@ -11,6 +11,8 @@
         --autofill-color: rgba(0, 125, 125, .5);
         --global-scrollbar-width: 12px;
         --bar-scrollbar-width: 8px;
+        --variable-full-width: 100%;
+        --variable-fit-width: fit-content;
 
         font-family: "Monocraft", sans-serif;
         color: var(--primary-text-color);
@@ -45,13 +47,21 @@
     body,
     header,
     .catalog-panel,
+    .content-studio .content-studio-container,
+    .content-studio .title,
+    .content-studio aside,
     .dialog-form-container .interface,
     .global-error-container,
     .header-blur aside,
     .header-dropdown-content,
     .menu,
     .post-card,
+    .post-version .interface,
+    .post-version .description,
+    .post-version .post-interaction,
+    .post-version .title,
     .search-form-background form,
+    .select,
     .settings aside,
     .settings .settings-container,
     .settings .title,
@@ -133,7 +143,8 @@
         min-width: 200px;
     }
 
-    .menu-separator {
+    .menu-separator,
+    .separator {
         background-color: rgba(0, 255, 255, .2);
         min-height: 2px;
     }
@@ -172,6 +183,10 @@
     select:-webkit-autofill:focus,
     select:-webkit-autofill:focus-visible,
     select:-webkit-autofill:hover,
+
+    textarea {
+        background: none;
+    }
 
     textarea:-webkit-autofill,
     textarea:-webkit-autofill:active,
@@ -281,50 +296,14 @@
         background-color: var(--secondary-bg-color);
     }
 
-    .catalog-panel .line a .press,
-    .catalog-panel .line button .press {
-        background: radial-gradient(100% 100% at 100% 0, rgba(0, 200, 255, .3) 0, rgba(0, 70, 100, .3) 100%);
-        transition: box-shadow .1s, transform .1s;
+    .content-studio .content-studio-container,
+    .content-studio .title,
+    .content-studio aside {
         border: 2px solid rgba(0, 255, 255, .3);
-        will-change: box-shadow,transform;
-        touch-action: manipulation;
-        white-space: nowrap;
-        appearance: none;
     }
 
-    .catalog-panel .line a:focus-visible .press,
-    .catalog-panel .line a:hover .press,
-    .catalog-panel .line button:focus-visible .press,
-    .catalog-panel .line button:hover .press {
-        box-shadow: rgba(0, 55, 65, .5) 0 4px 8px, rgba(10, 35, 65, .5) 0 7px 13px -3px, rgba(0, 120, 150, .5) 0 4px 8px 0 inset;
-        transform: translateY(-2px);
-    }
-
-    .catalog-panel .line a:focus-visible .press,
-    .catalog-panel .line button:focus-visible .press {
-        border: 2px solid rgba(0, 255, 255, .5);
-    }
-
-    .catalog-panel .line .press:hover .preset {
-        background: linear-gradient(90deg, rgba(0, 255, 255, .15), rgba(10, 35, 65, .15), rgba(0, 255, 255, .15), rgba(10, 35, 65, .15), rgba(0, 255, 255, .15));
-        animation: transfusion-animation 10s linear infinite;
-        background-size: 400% 100%;
-    }
-
-    .catalog-panel .line a:active .press,
-    .catalog-panel .line button:active .press {
-        box-shadow: rgba(0, 255, 255, .2) 0 4px 8px inset;
-        transform: translateY(2px);
-    }
-
-    .catalog-panel .line a.active .press,
-    .catalog-panel .line button.active .press {
-        background: radial-gradient(100% 100% at 100% 0, rgba(50, 200, 200, .3) 0, rgba(0, 255, 255, .3) 100%);
-    }
-
-    .catalog-panel .line a.edition .press,
-    .catalog-panel .line button.edition .press {
-        background: radial-gradient(100% 100% at 100% 0, rgba(50, 200, 50, .3) 0, rgba(30, 120, 30, .3) 100%);
+    .content-studio .material-line .cover-wrap {
+        border: 2px solid rgba(255, 255, 255, .8);
     }
 
     .left-header-sidebar .button-link:hover {
@@ -399,12 +378,6 @@
         background: linear-gradient(rgba(0, 15, 15, .5), transparent);
     }
 
-    /*
-    .post-card .actions {
-        background: linear-gradient(rgba(0, 15, 15, .5), transparent);
-    }
-    */
-
     .post-card .description-wrap {
         border: 2px solid rgba(0, 255, 255, .3);
     }
@@ -421,6 +394,13 @@
         border: 2px solid rgba(255, 255, 255, .8);
     }
 
+    .post-version .interface,
+    .post-version .description,
+    .post-version .post-interaction,
+    .post-version .title {
+        border: 2px solid rgba(0, 255, 255, .3);
+    }
+
     .search-form-background form {
         border-bottom: 2px solid rgba(255, 255, 255, .5);
         border-right: 2px solid rgba(255, 255, 255, .5);
@@ -430,6 +410,16 @@
     .search-form form label {
         border: 2px solid var(--border-color);
         opacity: .8;
+    }
+
+    .select .select-button {
+        border: 2px solid rgba(0, 255, 255, .3);
+    }
+
+    .select .options {
+        border-bottom: 2px solid rgba(0, 255, 255, .3);
+        border-right: 2px solid rgba(0, 255, 255, .3);
+        border-left: 2px solid rgba(0, 255, 255, .3);
     }
 
     .settings .banner {
@@ -447,6 +437,51 @@
 
     .settings .units a .item-button {
         background: none;
+    }
+
+    .shine-button .press {
+        background: radial-gradient(100% 100% at 100% 0, rgba(0, 200, 255, .3) 0, rgba(0, 70, 100, .3) 100%);
+        transition: box-shadow .1s, transform .1s;
+        border: 2px solid rgba(0, 255, 255, .3);
+        will-change: box-shadow,transform;
+        touch-action: manipulation;
+        white-space: nowrap;
+        appearance: none;
+    }
+
+    .shine-button:focus-visible .press,
+    .shine-button:hover .press {
+        box-shadow: rgba(0, 55, 65, .5) 0 4px 8px, rgba(10, 35, 65, .5) 0 7px 13px -3px, rgba(0, 120, 150, .5) 0 4px 8px 0 inset;
+        transform: translateY(-2px);
+    }
+
+    .shine-button:focus-visible .press {
+        border: 2px solid rgba(0, 255, 255, .5);
+    }
+
+    .shine-button:focus-visible {
+        border: none;
+    }
+
+    .shine-button .press:hover .preset,
+    .shine-button .press:hover .preset {
+        background: linear-gradient(90deg, rgba(0, 255, 255, .15), rgba(10, 35, 65, .15), rgba(0, 255, 255, .15), rgba(10, 35, 65, .15), rgba(0, 255, 255, .15));
+        animation: transfusion-animation 10s linear infinite;
+        background-size: 400% 100%;
+    }
+
+    .shine-button:active .press,
+    .shine-button:active .press {
+        box-shadow: rgba(0, 255, 255, .2) 0 4px 8px inset;
+        transform: translateY(2px);
+    }
+
+    .shine-button.active .press {
+        background: radial-gradient(100% 100% at 100% 0, rgba(50, 200, 200, .3) 0, rgba(0, 255, 255, .3) 100%);
+    }
+
+    .shine-button.edition .press {
+        background: radial-gradient(100% 100% at 100% 0, rgba(50, 200, 50, .3) 0, rgba(30, 120, 30, .3) 100%);
     }
 
     .surface-ground {
@@ -469,6 +504,19 @@
         border-bottom: 2px solid rgba(255, 255, 255, .3);
         border-right: 2px solid rgba(255, 255, 255, .3);
         border-top: 2px solid rgba(255, 255, 255, .3);
+    }
+
+    .upload-image-container {
+        border: 2px dashed rgba(255, 255, 255, .5);
+        transition: .5s;
+    }
+
+    .upload-image-container:hover {
+        border: 2px dashed rgb(0, 255, 255);
+    }
+
+    .upload-image-container.dragover {
+        border: 8px dashed rgba(0, 255, 255, 1);
     }
 
     .user-menu {
@@ -511,6 +559,7 @@
     .design-settings-form div,
     .dialog-header h1,
     .global-error-container h1,
+    .head-font,
     .item-button,
     .left-header-sidebar .unit-title,
     .list-label-text,
@@ -522,7 +571,7 @@
         font-family: "Minecraft Ten", sans-serif;
     }
 
-    .catalog-banner .splash,
+    .catalog .splash,
     .user-menu .profile-link .title,
     .left-header-sidebar .item-button {
         font-family: Monocraft, sans-serif;
@@ -578,6 +627,10 @@
 
     .icon-bottle {
         background-image: url('/images/icons/diamond-bottle.png');
+    }
+
+    .icon-brilliant {
+        background-image: url('/images/icons/diamond-brilliant.png');
     }
 
     .icon-clock {

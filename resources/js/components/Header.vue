@@ -42,17 +42,19 @@ const userMenuItems = computed<MenuItem[]>(() => [
         label: 'Контент-студия',
         icon: 'icon-bottle',
         visible: authStore.isAuthenticated,
+        route: { name: 'content-studio' }
     },
     {
         label: 'Создать материал',
         icon: 'icon-download',
         visible: authStore.isAuthenticated,
+        route: { name: 'post-create' }
     },
     {
         label: 'Настройки',
         icon: 'icon-gear',
         visible: authStore.isAuthenticated,
-        route: {name: 'settings'}
+        route: { name: 'settings' }
     },
     {
         separator: true,
@@ -448,9 +450,10 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .header .burger,
 .header .search-button,
 .header .user-menu-button {
-    height: 52px;
+    height: 70px;
     width: 52px;
 }
+
 .header .user-menu-button .notifications-counter,
 .header .user-menu .notifications-counter {
     background-color: rgb(210, 10, 30);

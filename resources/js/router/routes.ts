@@ -3,6 +3,11 @@ import type {Component} from 'vue'
 
 import Home from '@/components/Home.vue'
 import Catalog from '@/components/catalog/Catalog.vue'
+import ContentStudio from '@/components/post/ContentStudio.vue'
+import ContentStudioMaterials from '@/components/post/ContentStudioMaterials.vue'
+import ContentStudioRequests from '@/components/post/ContentStudioRequests.vue'
+import Editor from '@/components/post/Editor.vue'
+import PostVersion from '@/components/post/PostVersion.vue'
 
 // import Processing from '@/components/elements/ProcessingMovingItems.vue'
 // import NoPermission from '@/components/NoPermission.vue'
@@ -40,6 +45,43 @@ const routes: RouteRecordRaw[] = [
         component: Catalog,
         meta: {
             title: 'Каталог',
+        },
+    },
+    {
+        path: '/content-studio',
+        name: 'content-studio',
+        component: ContentStudio,
+        redirect: { name: 'content-studio.materials' },
+        meta: {
+            title: 'Контент-Студия',
+            requiresAuth: true,
+        },
+        children:
+            [
+                {
+                    path: 'materials',
+                    name: 'content-studio.materials',
+                    component: ContentStudioMaterials,
+                    meta: {
+                        title: 'Контент-Студия — Материалы',
+                    }
+                },
+                {
+                    path: 'requests',
+                    name: 'content-studio.requests',
+                    component: ContentStudioRequests,
+                    meta: {
+                        title: 'Контент-Студия — Заявки на публикацию',
+                    }
+                }
+            ]
+    },
+    {
+        path: '/post/create',
+        name: 'post-create',
+        component: PostVersion,
+        meta: {
+            title: 'Редактор Материала',
         },
     },
     {

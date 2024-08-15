@@ -4,7 +4,7 @@ import Dialog from '@/components/elements/Dialog.vue'
 import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm.vue'
 import LoginForm from '@/components/auth/LoginForm.vue'
 import RegisterForm from '@/components/auth/RegisterForm.vue'
-import {getRandomSplash} from '@/stores/splashes'
+import {getRandomAuthSplash} from '@/stores/splashes'
 
 enum AuthFormType {
     LOGIN,
@@ -26,7 +26,7 @@ const authDialogTitle = computed(() => {
     }
 })
 
-const activeSplash = getRandomSplash()
+const activeSplash = getRandomAuthSplash()
 
 </script>
 
@@ -286,10 +286,10 @@ const activeSplash = getRandomSplash()
     transform-origin: center center;
     transform: rotate(-15deg);
     position: absolute;
+    bottom: -35%;
     height: 10px;
-    bottom: -15%;
     width: 10px;
-    right: 55%;
+    right: 50%;
 }
 
 .background-auth .logo .splash {
