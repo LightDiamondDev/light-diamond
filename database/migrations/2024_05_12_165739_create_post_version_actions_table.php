@@ -19,7 +19,7 @@ return new class extends Migration {
                 ->nullable()
                 ->constrained('users')
                 ->nullOnDelete();
-            $table->smallInteger('type');
+            $table->enum('type', ['SUBMIT', 'REQUEST_CHANGES', 'ACCEPT', 'REJECT', 'ASSIGN_MODERATOR']);
             $table->json('details');
             $table->timestamps();
         });

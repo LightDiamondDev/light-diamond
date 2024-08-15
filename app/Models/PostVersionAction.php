@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Enums\PostVersionActionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $version_id
  * @property int|null $user_id
- * @property \App\Models\PostVersionActionType $type
+ * @property \App\Models\Enums\PostVersionActionType $type
  * @property array $details
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

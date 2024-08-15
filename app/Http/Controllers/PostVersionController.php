@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Enums\PostVersionActionType;
+use App\Models\Enums\PostVersionStatus;
 use App\Models\PostCategory;
 use App\Models\PostVersion;
 use App\Models\PostVersionAction;
-use App\Models\PostVersionActionType;
-use App\Models\PostVersionStatus;
 use App\Models\User;
 use App\Rules\ColumnExistsRule;
 use App\Services\Dto\NewPostVersionDto;

@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Enums\PostVersionActionType;
+use App\Models\Enums\PostVersionStatus;
 use App\Models\PostCategory;
 use App\Models\PostVersion;
-use App\Models\PostVersionActionType;
-use App\Models\PostVersionStatus;
 use App\Models\User;
 use App\Services\Dto\NewPostVersionDto;
 use App\Services\Dto\PostVersionActionDto;

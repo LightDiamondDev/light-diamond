@@ -2,8 +2,8 @@
 
 namespace App\Services\Dto;
 
+use App\Models\Enums\PostVersionActionType;
 use App\Models\PostVersion;
-use App\Models\PostVersionActionType;
 use App\Models\User;
 
 class PostVersionActionDto

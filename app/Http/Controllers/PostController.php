@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Enums\PostVersionStatus;
 use App\Models\Post;
 use App\Models\PostCategory;
-use App\Models\PostVersionStatus;
 use App\Models\PostView;
 use App\Rules\ColumnExistsRule;
 use Illuminate\Database\Eloquent\Builder as Builder;

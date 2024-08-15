@@ -1,7 +1,7 @@
 export enum UserRole {
-    USER,
-    MODERATOR,
-    ADMIN,
+    USER = 'USER',
+    MODERATOR = 'MODERATOR',
+    ADMIN = 'ADMIN',
 }
 
 export interface User {
@@ -50,10 +50,10 @@ export interface PostComment {
 }
 
 export enum PostVersionStatus {
-    DRAFT,
-    PENDING,
-    ACCEPTED,
-    REJECTED,
+    DRAFT = 'DRAFT',
+    PENDING = 'PENDING',
+    ACCEPTED = 'ACCEPTED',
+    REJECTED = 'REJECTED',
 }
 
 export interface PostVersion {
@@ -79,11 +79,11 @@ export interface PostVersion {
 }
 
 export enum PostVersionActionType {
-    SUBMIT,
-    REQUEST_CHANGES,
-    ACCEPT,
-    REJECT,
-    ASSIGN_MODERATOR,
+    SUBMIT = 'SUBMIT',
+    REQUEST_CHANGES = 'REQUEST_CHANGES',
+    ACCEPT = 'ACCEPT',
+    REJECT = 'REJECT',
+    ASSIGN_MODERATOR = 'ASSIGN_MODERATOR',
 }
 
 export interface PostVersionActionRequestChanges {

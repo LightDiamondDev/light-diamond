@@ -31,7 +31,7 @@ return new class extends Migration {
             $table->string('title');
             $table->string('description');
             $table->text('content');
-            $table->smallInteger('status');
+            $table->enum('status', ['DRAFT', 'PENDING', 'ACCEPTED', 'REJECTED'])->default('DRAFT');
             $table->timestamps();
         });
     }
