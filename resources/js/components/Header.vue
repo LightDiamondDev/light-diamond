@@ -42,19 +42,19 @@ const userMenuItems = computed<MenuItem[]>(() => [
         label: 'Контент-студия',
         icon: 'icon-bottle',
         visible: authStore.isAuthenticated,
-        route: { name: 'content-studio' }
+        route: {name: 'content-studio'}
     },
     {
         label: 'Создать материал',
         icon: 'icon-download',
         visible: authStore.isAuthenticated,
-        route: { name: 'post-create' }
+        route: {name: 'post-create'}
     },
     {
         label: 'Настройки',
         icon: 'icon-gear',
         visible: authStore.isAuthenticated,
-        route: { name: 'settings' }
+        route: {name: 'settings'}
     },
     {
         separator: true,
@@ -89,7 +89,7 @@ const navigationSections = computed<NavigationSection[]>(() => [
             {
                 label: 'Каталог',
                 icon: 'icon-book',
-                url: '/catalog',
+                route: {name: 'catalog'},
             },
             {
                 label: 'Новости',
@@ -309,15 +309,24 @@ function logout() {
             <template v-for="section of navigationSections">
                 <div class="unit-title flex justify-center transfusion text-[1.1rem]">{{ section.label }}</div>
 
-                <ItemButton
-                    v-for="childSection of section.children"
-                    :as="childSection.route ? 'RouterLink' : (childSection.url ? 'a' : 'button')"
-                    :text="childSection.label"
-                    :icon="childSection.icon"
-                    :href="childSection.url"
-                    :to="childSection.route"
-                    class="pl-8 pr-4"
-                />
+                <template v-for="childSection of section.children">
+                    <ItemButton
+                        v-if="childSection.route"
+                        as="RouterLink"
+                        :text="childSection.label"
+                        :icon="childSection.icon"
+                        :to="childSection.route"
+                        class="pl-8 pr-4"
+                    />
+                    <ItemButton
+                        v-else
+                        :as="childSection.url ? 'a' : 'button'"
+                        :text="childSection.label"
+                        :icon="childSection.icon"
+                        :href="childSection.url"
+                        class="pl-8 pr-4"
+                    />
+                </template>
 
             </template>
         </aside>
@@ -349,7 +358,8 @@ function logout() {
                     class="logo-wrap flex items-center duration-200 h-[70%]"
                     :class="{'opacity-0': isHeaderSidebar}"
                 >
-                    <img alt="Logo" class="hidden xs:flex h-full min-w-152" src="/images/elements/light-diamond-logo.png"/>
+                    <img alt="Logo" class="hidden xs:flex h-full min-w-152"
+                         src="/images/elements/light-diamond-logo.png"/>
                     <img alt="Logo" class="flex xs:hidden h-full" src="/images/elements/light-diamond-logo-mobile.png"/>
                 </RouterLink>
 
@@ -361,17 +371,24 @@ function logout() {
                         </button>
 
                         <div class="header-dropdown-content absolute hidden top-[var(--header-height)] min-w-[260px]">
-
-                            <ItemButton
-                                v-for="childSection of section.children"
-                                :as="childSection.route ? 'RouterLink' : (childSection.url ? 'a' : 'button')"
-                                :text="childSection.label"
-                                :icon="childSection.icon"
-                                :href="childSection.url"
-                                :to="childSection.route"
-                                class="pl-6 pr-4"
-                            />
-
+                            <template v-for="childSection of section.children">
+                                <ItemButton
+                                    v-if="childSection.route"
+                                    as="RouterLink"
+                                    :text="childSection.label"
+                                    :icon="childSection.icon"
+                                    :to="childSection.route"
+                                    class="pl-8 pr-4"
+                                />
+                                <ItemButton
+                                    v-else
+                                    :as="childSection.url ? 'a' : 'button'"
+                                    :text="childSection.label"
+                                    :icon="childSection.icon"
+                                    :href="childSection.url"
+                                    class="pl-8 pr-4"
+                                />
+                            </template>
                         </div>
                     </div>
                 </div>
