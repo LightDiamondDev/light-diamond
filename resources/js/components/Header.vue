@@ -1,7 +1,7 @@
 <script setup lang='ts'>
 import {useAuthStore} from '@/stores/auth'
-import useDesignManager from '@/design-manager'
-import {type RouteLocation, useRouter} from 'vue-router'
+import usePreferenceManager from '@/preference-manager'
+import {type RouteLocationRaw, useRouter} from 'vue-router'
 import {useGlobalModalStore} from '@/stores/global-modal'
 import {usePostCategoryStore} from '@/stores/postCategory'
 import {getHeaderHeight, lockGlobalScroll, unlockGlobalScroll} from '@/helpers'
@@ -19,7 +19,7 @@ interface NavigationSection {
     label: string
     icon?: string
     url?: string
-    route?: RouteLocation
+    route?: RouteLocationRaw
     children?: NavigationSection[]
 }
 
@@ -27,7 +27,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 const categoryStore = usePostCategoryStore()
 const globalModalStore = useGlobalModalStore()
-const designManager = useDesignManager()
+const preferenceManager = usePreferenceManager()
 
 const headerHeight = getHeaderHeight()
 
@@ -90,7 +90,7 @@ const navigationSections = computed<NavigationSection[]>(() => [
             {
                 label: 'Каталог',
                 icon: 'icon-book',
-                route: {name: 'catalog'},
+                route: {name: `catalog.${preferenceManager.getEdition().toLowerCase()}`},
             },
             {
                 label: 'Новости',
@@ -197,7 +197,7 @@ onMounted(() => document.addEventListener('scroll', onPageScroll))
 onUnmounted(() => document.removeEventListener('scroll', onPageScroll))
 
 function onPageScroll() {
-    if (!designManager.isHeaderFixedVisible()) {
+    if (!preferenceManager.isHeaderFixedVisible()) {
         currentScroll = window.scrollY
         isHeaderHidden.value = currentScroll > previousScroll && currentScroll > headerHeight
         previousScroll = currentScroll
@@ -280,7 +280,7 @@ function logout() {
                 transition duration-500 h-full
                 flex flex-col fixed"
             :class="{
-                'xl:hidden': !designManager.isDesktopSidebarVisible(),
+                'xl:hidden': !preferenceManager.isDesktopSidebarVisible(),
                 'translate-x-0': isHeaderSidebar,
                 '-translate-x-full': !isHeaderSidebar
             }"
@@ -333,18 +333,18 @@ function logout() {
 
     <div
         class="h-[var(--header-height)]"
-        :class="{'-translate-y-full': !designManager.isHeaderFixedVisible() && isHeaderHidden}"
+        :class="{'-translate-y-full': !preferenceManager.isHeaderFixedVisible() && isHeaderHidden}"
     />
 
     <header
         class="transition-transform flex justify-center duration-300 select-none h-[var(--header-height)] z-[1] w-full top-0 fixed"
-        :class="{'-translate-y-full': !designManager.isHeaderFixedVisible() && isHeaderHidden}"
+        :class="{'-translate-y-full': !preferenceManager.isHeaderFixedVisible() && isHeaderHidden}"
     >
         <nav class="header flex justify-between">
             <div class="flex items-center xs:gap-4">
                 <button
                     class="burger duration-100 flex justify-center items-center h-full p-2 md:-ml-3"
-                    :class="{'xl:hidden': !designManager.isDesktopSidebarVisible(), 'opacity-0': isHeaderSidebar}"
+                    :class="{'xl:hidden': !preferenceManager.isDesktopSidebarVisible(), 'opacity-0': isHeaderSidebar}"
                     type="button"
                     @click="openHeaderSidebar"
                 >

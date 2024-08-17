@@ -21,11 +21,11 @@ function subscribe() {
 
 <template>
 <div class="post-card flex flex-col">
-    <RouterLink class="preview-wrap flex" :to="{ name: 'catalog' }">
+    <RouterLink class="preview-wrap flex" :to="{ name: 'home' }">
         <img alt="" class="preview flex w-full full-locked" src="/images/users/boba.png">
     </RouterLink>
     <div class="description-wrap flex flex-col text-[0.9rem] w-full">
-        <RouterLink class="post-title-wrap transfusion p-2" :to="{ name: 'catalog' }">
+        <RouterLink class="post-title-wrap transfusion p-2" :to="{ name: 'home' }">
             <h1 class="post-title text-base">Light Diamond Addon: Craft & Survive [0.1.0]</h1>
         </RouterLink>
         <p class="description flex text-[0.8rem] p-2">
@@ -45,7 +45,7 @@ function subscribe() {
             </div>
         </div>
         <div class="author-info info flex justify-between">
-            <RouterLink class="author-wrap flex flex-wrap gap-2" :to="{ name: 'catalog' }">
+            <RouterLink class="author-wrap flex flex-wrap gap-2" :to="{ name: 'home' }">
                 <div class="author-avatar-frame flex min-w-[36px]">
                     <img alt="" class="author-avatar flex min-w-[32px] h-[32px]" src="/images/elements/cherry-blossom-grove-background.png">
                 </div>
@@ -66,17 +66,17 @@ function subscribe() {
                     <EffectIcon icon="icon-diamond"/>
                     <span class="counter flex p-1">{{ subscribes }}</span>
                 </button>
-                <RouterLink class="set-mark flex items-center" :to="{ name: 'catalog' }">
+                <RouterLink class="set-mark flex items-center" :to="{ name: 'home' }">
                     <span class="icon icon-comment flex"/>
                     <span class="counter flex p-1">78</span>
                 </RouterLink>
             </div>
             <div class="line flex flex-wrap gap-2">
-                <RouterLink class="set-mark flex items-center" :to="{ name: 'catalog' }">
+                <RouterLink class="set-mark flex items-center" :to="{ name: 'home' }">
                     <span class="icon icon-eye flex"/>
                     <span class="counter flex p-1">1,5K</span>
                 </RouterLink>
-                <RouterLink class="set-mark flex items-center" :to="{ name: 'catalog' }">
+                <RouterLink class="set-mark flex items-center" :to="{ name: 'home' }">
                     <span class="icon icon-download flex"/>
                     <span class="counter flex p-1">1,1K</span>
                 </RouterLink>

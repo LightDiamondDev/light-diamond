@@ -57,11 +57,11 @@ function subscribe() {
 
 <template>
     <div class="material-line flex items-center">
-        <RouterLink class="cover-wrap flex" :to="{ name: 'catalog' }">
+        <RouterLink class="cover-wrap flex" :to="{ name: 'home' }">
             <img alt="" class="cover flex w-full full-locked" :src="cover">
         </RouterLink>
         <div class="material-info flex flex-col w-full gap-2">
-            <RouterLink class="name flex h-[40px] pt-2" :to="{ name: 'catalog' }">
+            <RouterLink class="name flex h-[40px] pt-2" :to="{ name: 'home' }">
                 <p class="text-[1.1rem] duration-200">{{ title }}</p>
             </RouterLink>
             <div class="line flex justify-between gap-2 pb-2">
@@ -74,18 +74,18 @@ function subscribe() {
                         <EffectIcon class="set-mark" icon="icon-diamond"/>
                         <span class="counter flex p-1">{{ subscribes }}</span>
                     </button>
-                    <RouterLink class="set-mark flex items-center" :to="{ name: 'catalog' }">
+                    <RouterLink class="set-mark flex items-center" :to="{ name: 'home' }">
                         <span class="icon icon-comment flex"/>
                         <span class="counter flex p-1">{{ comments }}</span>
                     </RouterLink>
-                    <RouterLink class="set-mark flex items-center" :to="{ name: 'catalog' }">
+                    <RouterLink class="set-mark flex items-center" :to="{ name: 'home' }">
                         <span class="icon icon-download flex"/>
                         <span class="counter flex p-1">{{ downloads }}</span>
                     </RouterLink>
                 </div>
                 <div class="sub-line flex flex-wrap gap-4">
                     <p class="time flex items-center text-end">{{ time }}</p>
-                    <RouterLink class="set-mark flex items-center" :to="{ name: 'catalog' }">
+                    <RouterLink class="set-mark flex items-center" :to="{ name: 'home' }">
                         <span class="icon icon-eye flex"/>
                         <span class="counter flex p-1">{{ views }}</span>
                     </RouterLink>

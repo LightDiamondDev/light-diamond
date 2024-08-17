@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('slug')->unique();
             $table->string('name');
+            $table->enum('edition', ['BEDROCK', 'JAVA'])->nullable()->default(null);
+            $table->boolean('is_article')->default(false);
             $table->timestamps();
         });
     }

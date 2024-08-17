@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Enums\UserRole;
 use App\Models\User;
 use App\Rules\ColumnExistsRule;
 use App\Rules\NotVerifiedEmailRule;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -18,7 +20,7 @@ class UserController extends Controller
     public function get(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'roles.*' => ['integer'],
+            'roles.*' => [Rule::enum(UserRole::class)],
             'page' => ['integer'],
             'per_page' => ['integer'],
             'sort_field' => ['string', new ColumnExistsRule(User::getModel()->getTable())],
@@ -69,7 +71,7 @@ class UserController extends Controller
             'username' => $this->getUsernameRules(),
             'email' => ['required', 'email', (new NotVerifiedEmailRule())],
             'password' => $this->getPasswordRules(false),
-            'role' => ['required', 'integer', 'min:0', 'max:2'],
+            'role' => ['required', Rule::enum(UserRole::class)],
             'first_name' => ['string', 'nullable'],
             'last_name' => ['string', 'nullable'],
         ]);
@@ -96,7 +98,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'username' => $this->getUsernameRules(false, $user),
             'email' => ['email', (new NotVerifiedEmailRule())->ignore($user->id)],
-            'role' => ['integer', 'min:0', 'max:2'],
+            'role' => [Rule::enum(UserRole::class)],
             'first_name' => ['string', 'nullable'],
             'last_name' => ['string', 'nullable'],
         ]);

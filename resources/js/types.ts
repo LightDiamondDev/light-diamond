@@ -16,10 +16,17 @@ export interface User {
     updated_at?: string
 }
 
+export enum GameEdition {
+    BEDROCK = 'BEDROCK',
+    JAVA = 'JAVA'
+}
+
 export interface PostCategory {
     id?: bigint
     slug?: string
     name?: string
+    edition?: GameEdition | null
+    is_article?: boolean
 }
 
 export interface Post {

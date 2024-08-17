@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Enums\PostLoadPeriod;
+use App\Http\Controllers\Enums\PostSortType;
 use App\Models\Enums\PostVersionStatus;
 use App\Models\Post;
 use App\Models\PostCategory;
@@ -26,8 +28,8 @@ class PostController extends Controller
             'term' => ['string', 'nullable'],
             'page' => ['integer'],
             'per_page' => ['integer'],
-            'sort_type' => ['integer', 'min:0', 'max:1'],
-            'period' => ['integer', 'min:0', 'max:4'],
+            'sort_type' => [Rule::enum(PostSortType::class)],
+            'period' => [Rule::enum(PostLoadPeriod::class)],
         ]);
 
         if ($validator->fails()) {
@@ -35,8 +37,8 @@ class PostController extends Controller
         }
 
         $perPage = $request->integer('per_page', 10);
-        $sortType = PostSortType::from($request->integer('sort_type'));
-        $period = PostLoadPeriod::from($request->integer('period'));
+        $sortType = $request->enum('sort_type', PostSortType::class) ?? PostSortType::Latest;
+        $period = $request->enum('period', PostLoadPeriod::class) ?? PostLoadPeriod::Day;
 
         $postsQuery = match ($sortType) {
             PostSortType::Latest => Post::orderBy('updated_at', 'desc'),

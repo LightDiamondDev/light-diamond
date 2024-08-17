@@ -18,6 +18,7 @@ import Settings from '@/components/settings/Settings.vue'
 import ProfileSettings from '@/components/settings/ProfileSettings.vue'
 import SecuritySettings from '@/components/settings/SecuritySettings.vue'
 import NotFound from '@/components/NotFound.vue'
+import {GameEdition} from '@/types'
 
 declare module 'vue-router' {
     interface RouteMeta {
@@ -39,11 +40,37 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
-        path: '/catalog',
-        name: 'catalog',
+        path: '/bedrock',
+        name: 'catalog.bedrock',
         component: Catalog,
+        props: {edition: GameEdition.BEDROCK},
         meta: {
-            title: 'Каталог',
+            title: 'Каталог Bedrock',
+        },
+    },
+    {
+        path: '/bedrock/:category',
+        component: Catalog,
+        props: ({params}) => ({edition: GameEdition.BEDROCK, categorySlug: params.category as string}),
+        meta: {
+            title: 'Категория Bedrock',
+        },
+    },
+    {
+        path: '/java',
+        name: 'catalog.java',
+        component: Catalog,
+        props: {edition: GameEdition.JAVA},
+        meta: {
+            title: 'Каталог Java',
+        },
+    },
+    {
+        path: '/java/:category',
+        component: Catalog,
+        props: ({params}) => ({edition: GameEdition.BEDROCK, categorySlug: params.category as string}),
+        meta: {
+            title: 'Категория Java',
         },
     },
     {

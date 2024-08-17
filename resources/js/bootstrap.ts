@@ -1,6 +1,6 @@
 /**
- * Load theme (light/dark) from local storage.
+ * Load user preferences from local storage.
  */
-import useDesignManager from '@/design-manager'
+import usePreferenceManager from '@/preference-manager'
 
-useDesignManager().load()
+usePreferenceManager().load()

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed, type PropType, ref} from 'vue'
-import type {RouteLocation} from 'vue-router'
+import type {RouteLocationRaw} from 'vue-router'
 import ItemButton from '@/components/elements/ItemButton.vue'
 import OverlayPanel from '@/components/elements/OverlayPanel.vue'
 
@@ -9,7 +9,7 @@ export interface MenuItem {
     icon?: string
     visible?: boolean
     separator?: boolean
-    route?: RouteLocation
+    route?: RouteLocationRaw
     action?: () => void
     closesMenu?: boolean
 }

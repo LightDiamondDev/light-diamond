@@ -37,7 +37,7 @@ class PostVersionController extends Controller
     public function get(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'status' => ['integer', "min:0", "max:3"],
+            'status' => [Rule::enum(PostVersionStatus::class)],
             'page' => ['integer'],
             'per_page' => ['integer'],
             'sort_field' => ['string', new ColumnExistsRule(PostVersion::getModel()->getTable())],
@@ -48,7 +48,7 @@ class PostVersionController extends Controller
             return $this->errorJsonResponse('', $validator->errors());
         }
 
-        $status = PostVersionStatus::from($request->integer('status', PostVersionStatus::Pending->value));
+        $status = $request->enum('status', PostVersionStatus::class) ?? PostVersionStatus::Pending;
 
         $defaultSortOrder = $status == PostVersionStatus::Pending ? 1 : -1;
         $defaultSortField = 'updated_at';
@@ -128,7 +128,7 @@ class PostVersionController extends Controller
     public function getByUser(Request $request, int $userId): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'status' => ['integer', "min:0", "max:3"],
+            'status' => [Rule::enum(PostVersionStatus::class)],
             'page' => ['integer'],
             'per_page' => ['integer'],
             'sort_field' => ['string', new ColumnExistsRule(PostVersion::getModel()->getTable())],
@@ -155,7 +155,8 @@ class PostVersionController extends Controller
         $defaultSortOrder = -1;
         $defaultSortField = 'updated_at';
 
-        $status = PostVersionStatus::from($request->integer('status', PostVersionStatus::Pending->value));
+
+        $status = $request->enum('status', PostVersionStatus::class) ?? PostVersionStatus::Pending;
         $perPage = $request->integer('per_page', 10);
         $sortOrder = $request->integer('sort_order', $defaultSortOrder);
         if ($sortOrder === 0) {

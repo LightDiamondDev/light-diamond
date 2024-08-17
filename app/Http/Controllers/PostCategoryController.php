@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Enums\GameEdition;
 use App\Models\PostCategory;
 use App\Rules\ColumnExistsRule;
 use App\Rules\SlugSyntaxRule;
@@ -61,13 +62,15 @@ class PostCategoryController extends Controller
         $validator = Validator::make($request->all(), [
             'slug' => ['required', 'string', Rule::unique(PostCategory::class, 'slug'), new SlugSyntaxRule()],
             'name' => ['required', 'string'],
+            'edition' => ['required', Rule::enum(GameEdition::class), 'nullable'],
+            'is_article' => ['required', 'boolean'],
         ]);
 
         if ($validator->fails()) {
             return $this->errorJsonResponse('', $validator->errors());
         }
 
-        PostCategory::create($request->only(['slug', 'name']));
+        PostCategory::create($request->only(['slug', 'name', 'edition', 'is_article']));
         return $this->successJsonResponse();
     }
 
@@ -82,13 +85,15 @@ class PostCategoryController extends Controller
         $validator = Validator::make($request->all(), [
             'slug' => ['string', Rule::unique(PostCategory::class, 'slug')->ignore($category->id), new SlugSyntaxRule()],
             'name' => ['string'],
+            'edition' => [Rule::enum(GameEdition::class), 'nullable'],
+            'is_article' => ['boolean'],
         ]);
 
         if ($validator->fails()) {
             return $this->errorJsonResponse('', $validator->errors());
         }
 
-        $category->update($request->only(['slug', 'name']));
+        $category->update($request->only(['slug', 'name', 'edition', 'is_article']));
         return $this->successJsonResponse();
     }
 

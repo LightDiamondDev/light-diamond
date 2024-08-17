@@ -1,27 +1,37 @@
 <script setup lang="ts">
-import {ref} from 'vue'
+import {type PropType, ref} from 'vue'
 import {getRandomColor, getRandomSplash} from '@/stores/splashes'
 import {useAuthStore} from '@/stores/auth'
 import Posts from '@/components/catalog/Posts.vue'
+import {GameEdition} from '@/types'
+import {useRouter} from 'vue-router'
+import usePreferenceManager from '@/preference-manager'
+
+const props = defineProps({
+    edition: {
+        type: String as PropType<GameEdition>,
+        required: true
+    },
+    categorySlug: String
+})
 
 const authStore = useAuthStore()
+const router = useRouter()
 
-const isBedrock = ref(true)
 const isFresh = ref(true)
 const isFilters = ref(false)
 
 const timePeriod = [
-    'За всё время',
     'За сутки',
     'За неделю',
-    'За 2 недели',
     'За месяц',
-    'За 3 месяца',
-    'За 6 месяцев',
-    'За год'
+    'За год',
+    'За всё время'
 ]
 let timePeriodCounter = 0;
-let currentTimePeriod = ref('За всё время');
+let currentTimePeriod = ref('За всё время')
+const activeSplash = getRandomSplash()
+const activeColor = getRandomColor()
 
 function switchTimePeriod() {
     timePeriodCounter++
@@ -29,8 +39,12 @@ function switchTimePeriod() {
     currentTimePeriod.value = timePeriod[timePeriodCounter]
 }
 
-const activeSplash = getRandomSplash()
-const activeColor = getRandomColor()
+function switchEdition() {
+    const edition = props.edition === GameEdition.BEDROCK ? GameEdition.JAVA : GameEdition.BEDROCK
+
+    router.push({name: `catalog.${edition.toLowerCase()}`})
+    usePreferenceManager().setEdition(edition)
+}
 </script>
 
 <template>
@@ -47,7 +61,7 @@ const activeColor = getRandomColor()
         <div class="title flex flex-col justify-center items-center w-full">
             <RouterLink
                 class="logo-wrap flex items-center full-locked relative orange"
-                :to="{ name: 'catalog' }"
+                :to="{ name: `catalog.${edition?.toLowerCase()}` }"
             >
                 <img alt="Logo" class="materials-logo h-[48px] md:h-[100px]" src="/images/elements/light-diamond-materials-logo.png"/>
                 <span v-if="authStore.isAuthenticated" class="base flex justify-center items-center">
@@ -113,14 +127,15 @@ const activeColor = getRandomColor()
                         </button>
                     </div>
                     <div class="sub-line flex flex-wrap justify-center gap-4">
-                        <button class="shine-button flex items-center option edition" type="button" @click="isBedrock = !isBedrock">
+                        <button class="shine-button flex items-center option edition" type="button" @click="switchEdition">
                             <span class="press flex">
                                 <span class="preset flex items-center gap-1 min-w-[172px]">
                                     <span
-                                        :class="{ 'icon-bedrock-dev-small': isBedrock, 'icon-minecraft-materials': !isBedrock }"
+                                        :class="{ 'icon-bedrock-dev-small': edition === GameEdition.BEDROCK,
+                                        'icon-minecraft-materials': edition === GameEdition.JAVA }"
                                         class="icon"
                                     />
-                                    <span>{{ isBedrock ? 'Bedrock' : 'Java' }}</span>
+                                    <span>{{ edition === GameEdition.BEDROCK ? 'Bedrock' : 'Java' }}</span>
                                 </span>
                             </span>
                         </button>
@@ -131,7 +146,7 @@ const activeColor = getRandomColor()
 
                 <div class="line flex flex-wrap gap-4 p-4">
 
-                    <RouterLink class="shine-button flex items-center" :to="{ name: 'catalog' }">
+                    <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-brilliant"/>
@@ -139,7 +154,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{ name: 'catalog' }">
+                    <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-news"/>
@@ -147,7 +162,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{ name: 'catalog' }">
+                    <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-axolotl-bucket"/>
@@ -155,7 +170,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{ name: 'catalog' }">
+                    <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-spawn-egg"/>
@@ -163,7 +178,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{ name: 'catalog' }">
+                    <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-skin"/>
@@ -171,7 +186,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{ name: 'catalog' }">
+                    <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-map"/>
@@ -179,7 +194,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{ name: 'catalog' }">
+                    <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-script"/>
