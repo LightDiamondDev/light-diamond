@@ -61,6 +61,7 @@
     .post-version .post-interaction,
     .post-version .title,
     .search-form-background form,
+    .select .options,
     .select,
     .settings aside,
     .settings .settings-container,
@@ -365,8 +366,8 @@
         color: rgb(255, 200, 0);
     }
 
-    button .profile-border .notifications-counter,
-    .user-menu .profile-link .notifications-counter,
+    .notifications-counter,
+    .notifications-counter,
     .toaster .achievement .indicator,
     .toaster .toast .indicator {
         border: 2px solid rgba(255, 255, 255, .3);
@@ -378,6 +379,7 @@
         background: linear-gradient(rgba(0, 15, 15, .5), transparent);
     }
 
+    .overlay-panel,
     .post-card .description-wrap {
         border: 2px solid rgba(0, 255, 255, .3);
     }
@@ -392,6 +394,10 @@
     .post-card .author-avatar-frame,
     .post-card .progress-bar {
         border: 2px solid rgba(255, 255, 255, .8);
+    }
+
+    .post-title {
+        font-weight: normal;
     }
 
     .post-version .interface,
@@ -416,10 +422,34 @@
         border: 2px solid rgba(0, 255, 255, .3);
     }
 
+    .select .select-button:focus-visible {
+        border: 2px solid #00ffff;
+    }
+
     .select .options {
         border-bottom: 2px solid rgba(0, 255, 255, .3);
         border-right: 2px solid rgba(0, 255, 255, .3);
         border-left: 2px solid rgba(0, 255, 255, .3);
+    }
+
+    .set-mark .icon {
+        background-size: 100% 100%;
+        height: 32px;
+        width: 32px;
+    }
+    .set-mark .counter,
+    .set-mark .icon {
+        color: var(--primary-color);
+        filter: grayscale(100%);
+        transition: .2s;
+    }
+    .set-mark:hover .counter,
+    .set-mark:hover .icon {
+        filter: grayscale(60%);
+    }
+    .set-mark.active .counter,
+    .set-mark.active .icon {
+        filter: grayscale(0);
     }
 
     .settings .banner {
@@ -431,6 +461,7 @@
     .settings .current-data-field .edit-button {
         border-left: 2px solid rgba(0, 255, 255, .3);
     }
+
     .settings .current-data-field .edit-button:focus-visible {
         border-left: 2px solid var(--hover-text-color);
     }
@@ -480,6 +511,7 @@
         background: radial-gradient(100% 100% at 100% 0, rgba(50, 200, 200, .3) 0, rgba(0, 255, 255, .3) 100%);
     }
 
+    .shine-button.confirm .press,
     .shine-button.edition .press {
         background: radial-gradient(100% 100% at 100% 0, rgba(50, 200, 50, .3) 0, rgba(30, 120, 30, .3) 100%);
     }
@@ -563,6 +595,7 @@
     .item-button,
     .left-header-sidebar .unit-title,
     .list-label-text,
+    .select .text,
     .settings .settings-container form .section-title,
     .settings-button span,
     .title,

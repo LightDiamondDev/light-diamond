@@ -3,11 +3,10 @@ import type {Component} from 'vue'
 
 import Home from '@/components/Home.vue'
 import Catalog from '@/components/catalog/Catalog.vue'
-import ContentStudio from '@/components/post/ContentStudio.vue'
-import ContentStudioMaterials from '@/components/post/ContentStudioMaterials.vue'
-import ContentStudioRequests from '@/components/post/ContentStudioRequests.vue'
-import Editor from '@/components/post/Editor.vue'
-import PostVersion from '@/components/post/PostVersion.vue'
+import ContentStudio from '@/components/studio/Studio.vue'
+import ContentStudioMaterials from '@/components/studio/StudioMaterials.vue'
+import ContentStudioRequests from '@/components/studio/StudioRequests.vue'
+import CreatePost from '@/components/post/editor/CreatePost.vue'
 
 // import Processing from '@/components/elements/ProcessingMovingItems.vue'
 // import NoPermission from '@/components/NoPermission.vue'
@@ -77,9 +76,9 @@ const routes: RouteRecordRaw[] = [
             ]
     },
     {
-        path: '/post/create',
-        name: 'post-create',
-        component: PostVersion,
+        path: '/create-post',
+        name: 'create-post',
+        component: CreatePost,
         meta: {
             title: 'Редактор Материала',
         },

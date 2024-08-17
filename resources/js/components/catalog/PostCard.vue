@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {ref} from 'vue'
+import EffectIcon from '@/components/elements/EffectIcon.vue'
 
 const isLiked = ref(false)
 const isSubscribed = ref(false)
@@ -57,28 +58,28 @@ function subscribe() {
         <div class="menu-separator flex self-center w-[95%]"></div>
         <div class="actions flex flex-wrap gap-2 p-2 text-[0.7rem]">
             <div class="line flex flex-wrap gap-2">
-                <button :class="{ 'active': isLiked }" class="flex items-center" @click="like">
-                    <span class="icon icon-heart flex"/>
+                <button :class="{ 'active': isLiked }" class="set-mark flex items-center" @click="like">
+                    <EffectIcon icon="icon-heart"/>
                     <span class="counter flex p-1">{{ likes }}</span>
                 </button>
-                <button :class="{ 'active': isSubscribed }" class="flex items-center" @click="subscribe">
-                    <span class="icon icon-diamond flex"/>
+                <button :class="{ 'active': isSubscribed }" class="set-mark flex items-center" @click="subscribe">
+                    <EffectIcon icon="icon-diamond"/>
                     <span class="counter flex p-1">{{ subscribes }}</span>
                 </button>
-                <button class="flex items-center">
+                <RouterLink class="set-mark flex items-center" :to="{ name: 'catalog' }">
                     <span class="icon icon-comment flex"/>
                     <span class="counter flex p-1">78</span>
-                </button>
+                </RouterLink>
             </div>
             <div class="line flex flex-wrap gap-2">
-                <RouterLink class="flex items-center" :to="{ name: 'catalog' }">
+                <RouterLink class="set-mark flex items-center" :to="{ name: 'catalog' }">
                     <span class="icon icon-eye flex"/>
                     <span class="counter flex p-1">1,5K</span>
                 </RouterLink>
-                <button class="flex items-center">
+                <RouterLink class="set-mark flex items-center" :to="{ name: 'catalog' }">
                     <span class="icon icon-download flex"/>
                     <span class="counter flex p-1">1,1K</span>
-                </button>
+                </RouterLink>
             </div>
         </div>
     </div>
@@ -136,25 +137,6 @@ function subscribe() {
 .progress-bar {
     height: 24px;
     width: 64px;
-}
-.actions button .icon {
-    background-size: 100% 100%;
-    height: 32px;
-    width: 32px;
-}
-.actions button .counter,
-.actions button .icon {
-    color: var(--primary-color);
-    filter: grayscale(100%);
-    transition: .2s;
-}
-.actions button:hover .counter,
-.actions button:hover .icon {
-    filter: grayscale(60%);
-}
-.actions button.active .counter,
-.actions button.active .icon {
-    filter: grayscale(0);
 }
 
 /* =============== [ Медиа-Запрос { < 1281px } ] =============== */

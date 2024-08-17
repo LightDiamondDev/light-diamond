@@ -2,7 +2,11 @@
     import ProcessingMovingItems from '@/components/elements/ProcessingMovingItems.vue'
 
     const props = defineProps({
-        buttonType: String,
+        buttonType: {
+            type: String,
+            validator: (val) => [ 'button', 'submit', 'reset' ].includes(val),
+            default: 'button'
+        },
         disabled: {
             type: Boolean,
             default: false

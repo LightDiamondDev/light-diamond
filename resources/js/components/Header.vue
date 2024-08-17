@@ -13,6 +13,7 @@ import DesignSettingsForm from '@/components/modals/DesignSettingsForm.vue'
 import SearchForm from '@/components/modals/SearchForm.vue'
 import Menu, {type MenuItem} from '@/components/elements/Menu.vue'
 import axios from 'axios'
+import UserAvatar from '@/components/user/UserAvatar.vue'
 
 interface NavigationSection {
     label: string
@@ -48,7 +49,7 @@ const userMenuItems = computed<MenuItem[]>(() => [
         label: 'Создать материал',
         icon: 'icon-download',
         visible: authStore.isAuthenticated,
-        route: {name: 'post-create'}
+        route: {name: 'create-post'}
     },
     {
         label: 'Настройки',
@@ -146,7 +147,7 @@ const navigationSections = computed<NavigationSection[]>(() => [
                 label: 'Материалы Minecraft',
                 icon: 'icon-minecraft-materials',
                 url: 'https://github.com/Mojang/bedrock-samples/releases',
-            },
+            }
         ]
     },
     {
@@ -166,7 +167,7 @@ const navigationSections = computed<NavigationSection[]>(() => [
                 label: 'YouTube',
                 icon: 'icon-youtube',
                 url: 'https://www.youtube.com/@grostlight3303',
-            },
+            }
         ]
     },
     {
@@ -183,7 +184,7 @@ const navigationSections = computed<NavigationSection[]>(() => [
             {
                 label: 'О Проекте',
                 icon: 'icon-faq',
-            },
+            }
         ]
     },
 ])
@@ -252,10 +253,7 @@ function logout() {
                 class="profile-link laminated-link transfusion bordered flex items-center m-1"
                 href="#"
             >
-                <span class="icon icon-outline flex justify-center items-center icon-border h-[48px] w-[48px]">
-                    <img alt="" src="/images/users/content/funny-girl.png" class="h-[32px]">
-                    <span class="notifications-counter flex justify-center items-center">15</span>
-                </span>
+                <UserAvatar :user="authStore.user!"/>
                 <div class="flex flex-col">
                     <span
                         :class="{
@@ -469,19 +467,6 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .header .user-menu-button {
     height: 70px;
     width: 52px;
-}
-
-.header .user-menu-button .notifications-counter,
-.header .user-menu .notifications-counter {
-    background-color: rgb(210, 10, 30);
-    color: var(--primary-text-color);
-    margin: 0 0 32px 32px;
-    position: absolute;
-    text-align: center;
-    padding-left: 2px;
-    font-size: .5rem;
-    height: 16px;
-    width: 16px;
 }
 
 .header-dropdown-content .icon {

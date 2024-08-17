@@ -11,11 +11,15 @@ const props = defineProps({
 
 <template>
     <Component
-        class="item-button flex items-center"
+        class="item-button flex items-center gap-3"
         type="button"
         :is="as"
     >
-        <span :class="icon" class="icon min-w-[2rem] mr-3"/>
+        <div>
+            <slot name="icon">
+                <span v-if="icon" :class="icon" class="icon flex min-w-[2rem]"/>
+            </slot>
+        </div>
         <span class="text text-start duration-200">{{ text }}</span>
 
     </Component>

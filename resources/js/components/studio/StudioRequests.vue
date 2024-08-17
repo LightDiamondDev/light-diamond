@@ -3,7 +3,7 @@ import axios, {type AxiosError} from 'axios'
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
 import Button from '@/components/elements/Button.vue'
-import MaterialLine from '@/components/post/MaterialLine.vue'
+import MaterialLine from '@/components/post/PostRowCard.vue'
 
 const authStore = useAuthStore()
 const toastStore = useToastStore()

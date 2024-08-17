@@ -14,7 +14,9 @@ const timePeriod = [
     'За всё время',
     'За сутки',
     'За неделю',
+    'За 2 недели',
     'За месяц',
+    'За 3 месяца',
     'За 6 месяцев',
     'За год'
 ]
@@ -129,7 +131,15 @@ const activeColor = getRandomColor()
 
                 <div class="line flex flex-wrap gap-4 p-4">
 
-                    <RouterLink class="shine-button flex items-center" :to="{ name: 'home' }">
+                    <RouterLink class="shine-button flex items-center" :to="{ name: 'catalog' }">
+                        <span class="press flex">
+                            <span class="preset flex items-center gap-1">
+                                <span class="icon icon-brilliant"/>
+                                <span>Все</span>
+                            </span>
+                        </span>
+                    </RouterLink>
+                    <RouterLink class="shine-button flex items-center" :to="{ name: 'catalog' }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-news"/>
@@ -137,7 +147,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{name: 'home'}">
+                    <RouterLink class="shine-button flex items-center" :to="{ name: 'catalog' }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-axolotl-bucket"/>
@@ -145,7 +155,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{name: 'home'}">
+                    <RouterLink class="shine-button flex items-center" :to="{ name: 'catalog' }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-spawn-egg"/>
@@ -153,7 +163,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{name: 'home'}">
+                    <RouterLink class="shine-button flex items-center" :to="{ name: 'catalog' }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-skin"/>
@@ -161,7 +171,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{name: 'home'}">
+                    <RouterLink class="shine-button flex items-center" :to="{ name: 'catalog' }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-map"/>
@@ -169,7 +179,7 @@ const activeColor = getRandomColor()
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{name: 'home'}">
+                    <RouterLink class="shine-button flex items-center" :to="{ name: 'catalog' }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-script"/>
@@ -212,9 +222,6 @@ const activeColor = getRandomColor()
 footer {
     margin-top: 208px;
 }
-</style>
-
-<style scoped>
 .catalog-container {
     position: relative;
     margin-top: 208px;
@@ -227,9 +234,10 @@ footer {
 }
 .banner {
     background-image: url('/images/elements/catalog-banner1.png');
-    background-repeat: no-repeat;
+    background-repeat: repeat;
+    min-width: 1920px;
+    width: 100%;
     height: 280px;
-    width: 1920px;
 }
 .banner .title,
 .catalog-container .title {

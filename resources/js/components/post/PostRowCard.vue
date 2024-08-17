@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {type PropType, ref} from 'vue'
 import type {Toast} from '@/stores/toast'
+import EffectIcon from '@/components/elements/EffectIcon.vue'
 
 const props = defineProps ({
     cover: {
@@ -66,25 +67,25 @@ function subscribe() {
             <div class="line flex justify-between gap-2 pb-2">
                 <div class="sub-line flex flex-wrap gap-2">
                     <button :class="{ 'active': isLiked }" class="flex items-center" @click="like" type="button">
-                        <span class="icon icon-heart flex"/>
+                        <EffectIcon class="set-mark" icon="icon-heart"/>
                         <span class="counter flex p-1">{{ likes }}</span>
                     </button>
                     <button :class="{ 'active': isSubscribed }" class="flex items-center" @click="subscribe" type="button">
-                        <span class="icon icon-diamond flex"/>
+                        <EffectIcon class="set-mark" icon="icon-diamond"/>
                         <span class="counter flex p-1">{{ subscribes }}</span>
                     </button>
-                    <button class="flex items-center" type="button">
+                    <RouterLink class="set-mark flex items-center" :to="{ name: 'catalog' }">
                         <span class="icon icon-comment flex"/>
                         <span class="counter flex p-1">{{ comments }}</span>
-                    </button>
-                    <button class="flex items-center" type="button">
+                    </RouterLink>
+                    <RouterLink class="set-mark flex items-center" :to="{ name: 'catalog' }">
                         <span class="icon icon-download flex"/>
                         <span class="counter flex p-1">{{ downloads }}</span>
-                    </button>
+                    </RouterLink>
                 </div>
                 <div class="sub-line flex flex-wrap gap-4">
                     <p class="time flex items-center text-end">{{ time }}</p>
-                    <RouterLink class="flex items-center" :to="{ name: 'catalog' }">
+                    <RouterLink class="set-mark flex items-center" :to="{ name: 'catalog' }">
                         <span class="icon icon-eye flex"/>
                         <span class="counter flex p-1">{{ views }}</span>
                     </RouterLink>
