@@ -15,7 +15,7 @@ const toastStore = useToastStore()
         <form action="" class="flex flex-col h-full w-full">
 
             <div class="line flex items-center gap-4 pl-4">
-                <RouterLink class="shine-button flex items-center" :to="{ name: 'post-create' }">
+                <RouterLink class="shine-button flex items-center" :to="{ name: 'create-post' }">
                     <span class="press flex w-full">
                         <span class="preset flex items-center gap-1">
                             <span class="icon icon-brilliant"/>

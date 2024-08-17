@@ -88,7 +88,7 @@ const contentEditorExtensions = [
 </script>
 
 <template>
-    <div class="post-version flex w-full p-2 gap-2 justify-end">
+    <div class="post-version flex w-full py-2 gap-2 justify-end">
         <section class="post-container flex flex-col w-full gap-2">
 
             <slot name="title"></slot>

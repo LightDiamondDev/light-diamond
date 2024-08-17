@@ -10,7 +10,7 @@ import Input from '@/components/elements/Input.vue'
 import ItemButton from '@/components/elements/ItemButton.vue'
 import Menu from '@/components/elements/Menu.vue'
 
-import type {EditorMenuItem} from '@/components/post/types'
+import type {EditorMenuItem} from '@/components/elements/editor/types'
 import EditorHorizontalMenu from '@/components/elements/editor/EditorHorizontalMenu.vue'
 import EditorVerticalMenu from '@/components/elements/editor/EditorVerticalMenu.vue'
 import OverlayPanel from '@/components/elements/OverlayPanel.vue'
@@ -207,11 +207,7 @@ const menuItems = computed<EditorMenuItem[]>(() => {
 
     if (isAtEmptyRootParagraph()) {
         if (editor.value.schema.nodes['heading']) {
-            items.push({
-                displayName: 'Заголовок',
-                icon: nodes['heading-1'].icon,
-                children: headingItems,
-            })
+            items.push(...headingItems)
         }
 
         ['blockquote', 'bulletList', 'orderedList', 'image', 'codeBlock', 'horizontalRule'].forEach((key) => {

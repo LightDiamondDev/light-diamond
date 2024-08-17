@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import ItemButton from '@/components/elements/ItemButton.vue'
-//import type {TooltipOptions} from 'primevue/tooltip'
-import {onUnmounted, type PropType, reactive} from 'vue'
-//import EditorVerticalMenu from '@/components/editor/EditorVerticalMenu.vue'
-//import type {EditorMenuItem} from '@/components/editor/types'
+import {type PropType, reactive} from 'vue'
+import EditorVerticalMenu from '@/components/elements/editor/EditorVerticalMenu.vue'
+import type {EditorMenuItem} from '@/components/elements/editor/types'
 
 defineProps({
     items: {
@@ -13,35 +11,6 @@ defineProps({
 })
 
 const verticalMenus = reactive<{ [key: string]: InstanceType<typeof EditorVerticalMenu> }>({})
-
-document.addEventListener('scroll', onScroll)
-
-onUnmounted(() => {
-    document.removeEventListener('scroll', onScroll)
-})
-
-function onScroll() {
-    for (const menuKey in verticalMenus) {
-        verticalMenus[menuKey]?.hide()
-    }
-}
-
-function getItemTooltip(item: EditorMenuItem): TooltipOptions {
-    return {
-        value: `${item.displayName}${item.shortcut ? `<p class="text-gray-400">${item.shortcut}</p>` : ''}`,
-        escape: false,
-        pt: {
-            text: {
-                style: {
-                    padding: '0.3rem 0.4rem',
-                    fontSize: '0.8rem',
-                    textAlign: 'center',
-                    lineHeight: '1.2em'
-                }
-            }
-        }
-    }
-}
 </script>
 
 <template>
@@ -64,7 +33,6 @@ function getItemTooltip(item: EditorMenuItem): TooltipOptions {
                         text
                         v-if="verticalMenus[`editor-vertical-menu-${id}`]"
                         :severity="menuItem.isActive ? 'primary' : 'secondary'"
-                        v-tooltip.top="getItemTooltip(menuItem)"
                         aria-haspopup="true"
                         :aria-controls="`editor-vertical-menu-${id}`"
                         class="flex-shrink-0"
@@ -80,7 +48,6 @@ function getItemTooltip(item: EditorMenuItem): TooltipOptions {
                         text
                         :icon="menuItem.icon"
                         :severity="menuItem.isActive ? 'primary' : 'secondary'"
-                        v-tooltip.top="getItemTooltip(menuItem)"
                         class="flex-shrink-0"
                         @click="menuItem.callback"
                     />

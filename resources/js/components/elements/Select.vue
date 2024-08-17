@@ -32,7 +32,7 @@ const model = defineModel<any>()
 
 const isSelfMouseDown = ref(false)
 const container = ref<HTMLElement>()
-const isSelectOpened = ref(false)
+const isSelectOpen = ref(false)
 
 function onDocumentMouseUp(event: MouseEvent) {
     if (!(event.target instanceof HTMLElement)) {
@@ -43,32 +43,46 @@ function onDocumentMouseUp(event: MouseEvent) {
     const isOutsideClicked = !isSelfMouseDown.value && !isContainerMouseUp
 
     if (isOutsideClicked) {
-        isSelectOpened.value = !isSelectOpened.value
+        close()
     }
     isSelfMouseDown.value = false
 }
 
+function onSelfMouseDown() {
+    isSelfMouseDown.value = true
+}
+
+function open() {
+    isSelectOpen.value = true
+
+    container.value!.addEventListener('mousedown', onSelfMouseDown)
+    addEventListener('mouseup', onDocumentMouseUp)
+}
+
+function close() {
+    isSelectOpen.value = false
+
+    container.value!.removeEventListener('mousedown', onSelfMouseDown)
+    removeEventListener('mouseup', onDocumentMouseUp)
+}
+
 function toggleSelect() {
-    isSelectOpened.value = !isSelectOpened.value
-    if (isSelectOpened.value) {
-        addEventListener('mouseup', onDocumentMouseUp)
-    } else {
-        removeEventListener('mouseup', onDocumentMouseUp)
-    }
+    isSelectOpen.value ? close() : open()
 }
 
 function select(option: any) {
-    model.value = option
-    emit('change', option)
-    toggleSelect()
+    if (isSelectOpen.value) {
+        model.value = option
+        emit('change', option)
+        close()
+    }
 }
 </script>
 
 <template>
     <div
-        :class="{ 'disabled': disabled, 'opened': isSelectOpened }"
+        :class="{ 'disabled': disabled, 'open': isSelectOpen }"
         class="select flex flex-col relative"
-        @mousedown="isSelfMouseDown = true"
         ref="container"
     >
         <button
@@ -90,7 +104,7 @@ function select(option: any) {
         </button>
         <Transition name="smooth-select-switch">
             <div
-                v-if="isSelectOpened"
+                v-if="isSelectOpen"
                 class="options flex flex-col w-full absolute"
             >
                 <template v-for="option in props.options">
@@ -125,7 +139,7 @@ function select(option: any) {
 .select.disabled {
     opacity: .8;
 }
-.select.opened .option {
+.select.open .option {
     opacity: 1;
 }
 .select-button {
@@ -140,7 +154,7 @@ function select(option: any) {
 .button-arrow .icon {
     transition: .2s;
 }
-.select.opened .button-arrow .icon {
+.select.open .button-arrow .icon {
     transform: rotate(180deg);
 }
 
