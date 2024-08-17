@@ -3,7 +3,7 @@ import axios, {type AxiosError} from 'axios'
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
 import Button from '@/components/elements/Button.vue'
-import MaterialLine from '@/components/post/MaterialLine.vue'
+import MaterialLine from '@/components/post/PostRowCard.vue'
 
 const authStore = useAuthStore()
 const toastStore = useToastStore()
@@ -44,7 +44,7 @@ const toastStore = useToastStore()
             <div class="separator self-center w-[98%]"></div>
 
             <MaterialLine
-                title="Аддон Barygi Atakyut [1.1]" class="h-[114px] pl-4 pr-4 gap-4"
+                title="Аддон Barblgi Atakyut [1.1]" class="h-[114px] pl-4 pr-4 gap-4"
                 cover="/images/users/hobana.png" :likes="31" :subscribes="23" :comments="56"
                 :downloads="68" :views="341" time="1 нед. назад"
             />

@@ -14,6 +14,7 @@ const props = defineProps({
     },
     icon: String,
     title: String,
+    imageSrc: String,
     maxSizeInMegabytes: {
         type: Number,
         required: true
@@ -33,8 +34,8 @@ const emit = defineEmits<{
 }>()
 
 const model = defineModel<string>({default: ''})
+const imageSrc = ref(props.imageSrc)
 const toastStore = useToastStore()
-const coverSrc = ref('')
 
 const allowedImageFormats = props.allowedGif ? ['PNG', 'JPG', 'JPEG', 'GIF'] : ['PNG', 'JPG', 'JPEG']
 const allowedFormats = allowedImageFormats.map((format) => 'image/' + format.toLowerCase())
@@ -100,7 +101,7 @@ function uploadImage(file: File) {
         }
 
         emit('upload', file)
-        coverSrc.value = URL.createObjectURL(file)
+        imageSrc.value = URL.createObjectURL(file)
     }
     tempImg.src = URL.createObjectURL(file)
 }
@@ -110,14 +111,14 @@ function uploadImage(file: File) {
 <label
     :class="{'editable': editable, 'cursor-pointer': editable, 'dragover': isDraggingOver}"
     class="upload-image-container flex justify-center items-center locked"
-    :style="'background-size: 100% 100%;background-image: url(' + coverSrc + ');'"
+    :style="'background-size: 100% 100%;background-image: url(' + imageSrc + ');'"
     @dragenter.prevent="onDragEnter"
     @dragleave="onDragLeave"
     @dragover.prevent
     @drop.prevent="onDrop"
     :for="id"
 >
-    <span :class="{ 'loaded': coverSrc }" class="upload-image-info flex flex-col items-center gap-2 p-4">
+    <span :class="{ 'loaded': imageSrc }" class="upload-image-info flex flex-col items-center gap-2 p-4">
         <span class="upload-image-heading flex gap-2">
             <span :class="icon" class="icon relative"></span>
             <span class="head-font text-[1.2rem] duration-200">{{ title }}</span>

@@ -1,72 +1,38 @@
 <script setup lang="ts">
-import {computed, nextTick, type PropType, ref} from 'vue'
+import {type PropType, ref} from 'vue'
 import ItemButton from '@/components/elements/ItemButton.vue'
-import {absolutePosition, isElementInOverflowedContainer} from '@/helpers'
-
-export interface SelectOption {
-    label?: string
-    icon?: string
-}
 
 const props = defineProps({
-    id: String,
+    disabled: {
+        type: Boolean,
+        default: false
+    },
+    editable: {
+        type: Boolean,
+        default: false
+    },
     icon: {
         type: String,
         default: 'icon-down-arrow'
     },
-    alignRight: {
-        type: Boolean,
-        default: false
-    },
+    optionLabelKey:  String,
+    optionIconKey:  String,
     options: {
         type: Object as PropType<any[]>,
         required: true
     },
-})
-
-const model = defineModel<string>({default: ''})
-
-defineExpose({
-    show,
-    hide,
-    toggle,
-})
-
-const isVisible = ref(false)
-const isContainerMouseDown = ref(false)
-const container = ref<HTMLElement>()
-const target = ref<HTMLElement>()
-
-const useTargetPositionContext = computed(() => target.value && !isElementInOverflowedContainer(target.value))
-
-function show(targetOrEvent: HTMLElement | Event) {
-    if (targetOrEvent instanceof Event && !(targetOrEvent.currentTarget instanceof HTMLElement)) {
-        return
+    placeholder: {
+        type: String,
+        default: 'Выберите значение'
     }
+})
 
-    target.value = targetOrEvent instanceof HTMLElement ? targetOrEvent : targetOrEvent.currentTarget as HTMLElement
-    isVisible.value = true
+const emit = defineEmits(['change'])
+const model = defineModel<any>()
 
-    nextTick(() => {
-        alignOverlay()
-        addEventListener('mouseup', onDocumentMouseUp)
-        addEventListener('resize', alignOverlay)
-    })
-}
-
-function hide() {
-    isVisible.value = false
-    removeEventListener('mouseup', onDocumentMouseUp)
-    removeEventListener('resize', alignOverlay)
-}
-
-function toggle(targetOrEvent: HTMLElement | Event) {
-    isVisible.value ? hide() : show(targetOrEvent)
-}
-
-function alignOverlay() {
-    absolutePosition(container!.value!, target.value!, useTargetPositionContext.value, props.alignRight)
-}
+const isSelfMouseDown = ref(false)
+const container = ref<HTMLElement>()
+const isSelectOpened = ref(false)
 
 function onDocumentMouseUp(event: MouseEvent) {
     if (!(event.target instanceof HTMLElement)) {
@@ -74,86 +40,140 @@ function onDocumentMouseUp(event: MouseEvent) {
     }
 
     const isContainerMouseUp = container.value?.contains(event.target)
-    const isTargetMouseUp = target.value?.contains(event.target)
-    const isOutsideClicked = !isContainerMouseDown.value && !isContainerMouseUp && !isTargetMouseUp
+    const isOutsideClicked = !isSelfMouseDown.value && !isContainerMouseUp
 
     if (isOutsideClicked) {
-        hide()
+        isSelectOpened.value = !isSelectOpened.value
     }
-    isContainerMouseDown.value = false
+    isSelfMouseDown.value = false
 }
 
-function onOptionClick(option: SelectOption) {
+function toggleSelect() {
+    isSelectOpened.value = !isSelectOpened.value
+    if (isSelectOpened.value) {
+        addEventListener('mouseup', onDocumentMouseUp)
+    } else {
+        removeEventListener('mouseup', onDocumentMouseUp)
+    }
+}
+
+function select(option: any) {
     model.value = option
-    if (option.action) {
-        option.action()
-    }
-
-
-}
-
-const currentValue = ref('')
-const isSelectOpened = ref(false)
-
-function setValue() {
-
+    emit('change', option)
+    toggleSelect()
 }
 </script>
 
 <template>
-    <div :class="{ 'opened': isSelectOpened }" class="select flex flex-col">
-        <button @click="isSelectOpened = !isSelectOpened" class="select-button flex justify-between" type="button">
-            <input
-                class="current-option flex items-center w-full pl-6"
-                v-model="model"
-                @change="setValue"
-                :id="id" type="text"
-                placeholder="Выберите Категорию"
-            >
+    <div
+        :class="{ 'disabled': disabled, 'opened': isSelectOpened }"
+        class="select flex flex-col relative"
+        @mousedown="isSelfMouseDown = true"
+        ref="container"
+    >
+        <button
+            class="select-button flex justify-between items-center"
+            @click="toggleSelect"
+            :disabled="disabled"
+            type="button"
+        >
+            <span class="flex items-center w-full gap-4 pl-6">
+                <span v-if="model !== undefined" :class="optionIconKey ? model[optionIconKey] : model" class="icon" />
+                <span class="text">
+                    <span v-if="model === undefined" class="opacity-80">{{ placeholder }}</span>
+                    <span v-else>{{ optionLabelKey ? model[optionLabelKey] : model }}</span>
+                </span>
+            </span>
             <span class="button-arrow flex justify-center items-center">
                 <span class="icon icon-down-arrow flex"></span>
             </span>
         </button>
-        <div class="options flex flex-col">
-            <template v-for="option in props.options">
+        <Transition name="smooth-select-switch">
+            <div
+                v-if="isSelectOpened"
+                class="options flex flex-col w-full absolute"
+            >
+                <template v-for="option in props.options">
 
-                <ItemButton
-                    @click="onOptionClick"
-                    :text="props.options[option]"
-                    class="flex pl-6"
-                />
+                    <ItemButton
+                        @click="select(option)"
+                        :text="optionLabelKey ? option[optionLabelKey] : option"
+                        :icon="optionIconKey ? option[optionIconKey] : option"
+                        class="option flex pl-6"
+                    >
+                        <template #icon>
+                            <slot name="option-icon"/>
+                        </template>
+                    </ItemButton>
 
-            </template>
-        </div>
+                </template>
+            </div>
+        </Transition>
     </div>
 </template>
 
 <style scoped>
-.current-option {
+.button-arrow {
     height: 72px;
+    width: 72px;
 }
 .select .options {
     transition: .2s;
-    opacity: 0;
-    height: 0;
+    z-index: 1;
+    top: 72px;
 }
-.select.opened .options {
-    height: 72px;
+.select.disabled {
+    opacity: .8;
+}
+.select.opened .option {
     opacity: 1;
 }
 .select-button {
+    overflow: hidden;
     cursor: pointer;
-}
-.select-button .button-arrow {
-    min-width: 72px;
     height: 72px;
 }
 .select-button .icon {
-    transition: .2s;
     height: 32px;
     width: 32px;
 }
+.button-arrow .icon {
+    transition: .2s;
+}
 .select.opened .button-arrow .icon {
-    transform: rotate(-180deg);
+    transform: rotate(180deg);
+}
+
+/* =============== [ Анимации ] =============== */
+
+.smooth-select-switch-enter-active {
+    transition: .8s ease;
+}
+
+.smooth-select-switch-enter-from {
+    transform: translateY(-20%);
+    transition: 1s;
+    opacity: 0;
+}
+
+.smooth-select-switch-leave-to {
+    transform: translateY(-20%);
+    transition: 1s;
+    opacity: 0;
+}
+
+/* =============== [ Медиа-Запрос { ?px < 1024px } ] =============== */
+
+@media screen and (max-width: 1023px) {
+    .button-arrow {
+        min-width: 64px;
+        height: 64px;
+    }
+    .select .options {
+        top: 64px;
+    }
+    .select-button {
+        height: 64px;
+    }
 }
 </style>
