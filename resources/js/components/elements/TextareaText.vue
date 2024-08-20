@@ -10,7 +10,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <label class="label-input-text flex items-center h-full max-w-full" :for="id">
+    <label class="label-input-text flex h-full max-w-full" :for="id">
         <textarea
             class="flex h-full w-full"
             v-model="model"

@@ -21,10 +21,10 @@ watch(route, () => {
 
 function updateCurrentSectionByRoute() {
     switch (route.name) {
-        case 'content-studio.materials':
+        case 'studio.materials':
             currentSection.value = Section.MATERIALS
             break
-        case 'content-studio.requests':
+        case 'studio.requests':
             currentSection.value = Section.REQUESTS
             break
     }
@@ -59,7 +59,7 @@ updateCurrentSectionByRoute()
             <RouterLink
                 :class="{ 'transfusion': currentSection === Section.MATERIALS }"
                 class="h-fit flex"
-                :to="{ name: 'content-studio.materials' }"
+                :to="{ name: 'studio.materials' }"
             >
                 <ItemButton
                     class="pl-8 pr-4 w-full text-[1.1rem]"
@@ -73,7 +73,7 @@ updateCurrentSectionByRoute()
             <RouterLink
                 :class="{ 'transfusion': currentSection === Section.REQUESTS }"
                 class="h-fit flex"
-                :to="{name: 'content-studio.requests'}"
+                :to="{name: 'studio.requests'}"
             >
                 <ItemButton
                     class="pl-8 pr-4 w-full text-[1.1rem]"

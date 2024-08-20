@@ -15,7 +15,7 @@ onMounted(() => {
 <template>
     <div class="global-error-window flex justify-center items-center">
         <div class="global-error-container flex flex-col items-center">
-            <h1 class="text-4xl font-bold text-center mt-8">Страница недоступна</h1>
+            <h1 class="text-4xl font-bold text-center mt-8">У вас нет доступа!</h1>
             <p class="text-muted text-center mt-4">Для просмотра страницы необходимо войти в аккаунт!</p>
             <div class="mob parrot flex justify-center items-center full-locked">
                 <div class="animation-dancing-red-parrot"></div>

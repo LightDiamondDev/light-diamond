@@ -78,8 +78,8 @@ function scrollToTop() {
 /* =============== [ Структура ] =============== */
 footer {
     background-color: var(--primary-bg-color);
+    transition-property: background-color;
     user-select: none;
-    transition: .3s;
     width: 100%;
 }
 

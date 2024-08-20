@@ -90,20 +90,20 @@ function saveAsDraft() {
     <PostEditor v-model="postVersion" :author="authStore.user!">
 
         <template v-slot:title>
-            <div class="title flex items-center h-[72px]">
-                <h1 class="text-[1.2rem] md:text-[2rem] flex justify-center w-full">Создание Материала</h1>
+            <div class="title flex items-center h-[72px] p-12">
+                <h1 class="text-[1.5rem] md:text-[3rem] flex justify-center w-full">Создание Материала</h1>
             </div>
         </template>
 
         <template v-slot:sidebar>
             <ShineButton
-                class="shine-button text-[0.7rem] w-full confirm"
+                class="shine-button w-full confirm"
                 @click="submitOverlayPanel?.toggle"
                 text="На рассмотрение"
                 icon="icon-eye"
             />
             <ShineButton
-                class="shine-button text-[0.7rem] w-full"
+                class="shine-button w-full"
                 @click="saveAsDraft"
                 text="Сохранить как черновик"
                 :loading="isSavingAsDraft"
@@ -115,17 +115,17 @@ function saveAsDraft() {
     <OverlayPanel ref="submitOverlayPanel" class="overlay-panel max-w-[100vw] p-4 mt-20rem">
         <div class="flex flex-col gap-2">
 
-            <p class="text-[0.8rem]">Вы точно хотите отправить Материал на рассмотрение?</p>
+            <p class="flex">Вы точно хотите отправить Материал на рассмотрение?</p>
 
-            <div class="flex gap-2 justify-end">
+            <div class="flex gap-2">
                 <ShineButton
-                    class="confirm text-[0.8rem]"
+                    class="flex confirm"
                     :loading="isSubmitting" @click="submit"
                     icon="icon-tick"
                     text="Да, отправить"
                 />
                 <ShineButton
-                    class="text-[0.8rem]"
+                    class="flex"
                     @click="submitOverlayPanel?.hide()"
                     icon="icon-small-cross"
                     text="Отмена"
@@ -137,6 +137,9 @@ function saveAsDraft() {
 </template>
 
 <style>
+.title {
+    color: var(--secondary-text-color);
+}
 .shine-button .press,
 .shine-button .preset {
     width: 100%;

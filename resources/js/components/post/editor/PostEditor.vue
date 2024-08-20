@@ -17,6 +17,7 @@ import {Underline} from '@tiptap/extension-underline'
 import Editor from '@/components/elements/editor/Editor.vue'
 import Select from '@/components/elements/Select.vue'
 import UploadImage from '@/components/elements/UploadImage.vue'
+import UploadFile from '@/components/elements/UploadFile.vue'
 import UserAvatar from '@/components/user/UserAvatar.vue'
 import TextareaText from '@/components/elements/TextareaText.vue'
 
@@ -48,8 +49,8 @@ const titleEditorExtensions = [
         content: 'heading',
     }),
     Placeholder.configure({
-        placeholder: 'Название материала',
-    }),
+        placeholder: 'Название Материала',
+    })
 ]
 
 const contentEditorExtensions = [
@@ -83,115 +84,208 @@ const contentEditorExtensions = [
     Link.configure({
         openOnClick: 'whenNotEditable',
     }),
-    Image,
+    Image
 ]
 </script>
 
 <template>
-    <div class="post-version flex w-full py-2 gap-2 justify-end">
-        <section class="post-container flex flex-col w-full gap-2">
 
-            <slot name="title"></slot>
+        <slot name="title"></slot>
 
-            <div class="interface flex flex-col">
+        <section class="page-container flex justify-center">
 
-                <RouterLink class="author-wrap flex items-center w-fit gap-2 p-4" :to="{name: 'home'}">
-                <span class="icon-border flex justify-center items-center h-[48px] w-[48px]">
-                    <UserAvatar :user="author"/>
-                </span>
-                    <span class="username duration-200">{{ author.username }}</span>
-                </RouterLink>
+            <div class="content w-full">
 
-                <div class="separator self-center w-[97%]"></div>
+                <div class="interface flex flex-col">
 
-                <Editor
-                    v-model="postVersion.title"
-                    class="text-[1.2rem] pl-1"
-                    :editable="editable"
-                    :extensions="titleEditorExtensions"
-                    placeholder="Название Материала"
-                    plain-text
-                    without-menus
-                />
+                    <div class="separator self-center w-full"></div>
 
-                <UploadImage
-                    class="flex mb-6 ml-10 mr-10"
-                    :editable="editable"
-                    icon="icon-download"
-                    id="upload-post-preview"
-                    :image-src="postVersion.cover_url"
-                    title="Загрузить обложку Материала"
-                    @upload="(file) => postVersion.cover_file = file"
-                    :max-size-in-megabytes="5"
-                    :min-height="432"
-                    :min-width="768"
-                />
+                    <RouterLink class="author-wrap flex items-center w-fit gap-2 ml-[-2px] pb-2 pt-2" :to="{name: 'home'}">
+                        <span class="icon-border flex justify-center items-center h-[48px] w-[48px]">
+                            <UserAvatar :user="author"/>
+                        </span>
+                        <span class="username duration-200">{{ author.username }}</span>
+                    </RouterLink>
 
-                <Editor
-                    v-model="postVersion.content"
-                    :editable="editable"
-                    :extensions="contentEditorExtensions"
-                    editor-class="post-content min-h-[3rem]"
-                />
+                    <div class="separator self-center w-full"></div>
+
+                    <Editor
+                        v-model="postVersion.title"
+                        class="material-name text-[1.2rem] mb-4 mt-4"
+                        :editable="editable"
+                        :extensions="titleEditorExtensions"
+                        placeholder="Название Материала"
+                        plain-text
+                        without-menus
+                    />
+
+                    <p class="text-[0.8rem] opacity-80">
+                        Название Материала (например, Ресурс-Пака, Аддона или Мира) может содержать
+                        версию обновления, например:
+                    </p>
+
+                    <ul class="text-[0.8rem] opacity-80 py-2">
+                        <li>Better Craft [2.0.12]</li>
+                        <li>Blue Skies [0.1.2]</li>
+                        <li>Escape Temple [3.1]</li>
+                    </ul>
+
+                    <UploadImage
+                        class="upload-post-preview flex my-4"
+                        :editable="editable"
+                        icon="icon-download"
+                        id="upload-post-preview"
+                        :image-src="postVersion.cover_url"
+                        title="Загрузить обложку Материала"
+                        @upload="(file) => postVersion.cover_file = file"
+                        :max-size-in-megabytes="5"
+                        :min-height="432"
+                        :min-width="768"
+                    />
+
+                    <p class="text-[0.8rem] opacity-80">
+                        Красивая обложка притягивает больше внимания! Рекомендуется использовать изображения с соотношением сторон 16 : 9.
+                    </p>
+
+                    <h1 class="flex justify-center text-[2.5rem] mt-2">Основной Контент Материала</h1>
+
+                    <div class="separator self-center w-full my-4"></div>
+
+                </div>
             </div>
 
-            <div class="description flex flex-col">
-
-                <Select
-                    class="post-category flex m-6"
-                    v-model="postVersion.category_id"
-                    :disabled="!editable"
-                    input-id="category"
-                    :options="postCategoryStore.categories"
-                    option-label-key="name"
-                    option-icon-key="icon"
-                    placeholder="Выберите Категорию"
-                >
-                    <template #option-icon/>
-                </Select>
-
-                <TextareaText
-                    class="post-description mb-6 ml-6 mr-6 p-4"
-                    v-model="postVersion.description"
-                    :disabled="!editable"
-                    id="post-description"
-                    :max-length="360"
-                    :min-length="12"
-                    placeholder="Описание Материала"
-                    rows="3"
-                />
-
-            </div>
         </section>
-        <div class="hook"></div>
-        <aside class="post-interaction flex flex-col items-center fixed gap-2 p-2">
-            <slot name="sidebar"></slot>
-        </aside>
-    </div>
 
+    <section class="page-container flex justify-center">
+        <div class="content w-full">
+            <Editor
+                v-model="postVersion.content"
+                editor-class="post-content"
+                :extensions="contentEditorExtensions"
+                :editable="editable"
+            />
+        </div>
+    </section>
+
+
+        <section class="page-container flex justify-end relative">
+            <div class="flex justify-center w-full">
+                <div class="content flex justify-center w-full">
+                    <div class="description flex flex-col w-full">
+
+                        <div class="separator self-center w-full my-4"></div>
+
+                        <Select
+                            class="post-category flex my-4"
+                            v-model="postVersion.category_id"
+                            :disabled="!editable"
+                            input-id="category"
+                            :options="postCategoryStore.categories"
+                            option-label-key="name"
+                            option-icon-key="icon"
+                            placeholder="Выберите Категорию"
+                        >
+                            <template #option-icon/>
+                        </Select>
+
+                        <p class="text-[0.8rem] opacity-80">
+                            Категория Материала должна точно соответствовать своему содержанию!
+                        </p>
+
+                        <TextareaText
+                            class="post-description p-4"
+                            v-model="postVersion.description"
+                            :disabled="!editable"
+                            id="post-description"
+                            :max-length="165"
+                            :min-length="15"
+                            placeholder="Описание Материала"
+                            rows="3"
+                        />
+
+                        <p class="text-[0.8rem] opacity-80 mb-2">
+                            Описание Материала должно быть лаконичным, содержать основную суть и не превышать лимит
+                            в 165 символов!
+                        </p>
+
+                        <UploadFile
+                            class="upload-post-preview flex mt-4"
+                            :editable="editable"
+                            icon="icon-download"
+                            id="upload-post-preview"
+                            :image-src="postVersion.cover_url"
+                            title="Загрузить Файл Материала"
+                            @upload="(file) => postVersion.cover_file = file"
+                            :max-size-in-megabytes="20"
+                        />
+
+                        <p class="text-[0.8rem] opacity-80 my-6">
+                            К Материалу о Ресурс-Паке, Аддоне или Шаблоне Мира разрешается прикреплять до 5 Файлов, не
+                            превышающих лимит по размеру!
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+            <aside class="post-interaction flex flex-col items-center fixed gap-2 p-2">
+                <slot name="sidebar"></slot>
+            </aside>
+        </section>
 </template>
 
+<style>
+.content textarea {
+    text-shadow: none;
+}
+.content .material-name .is-empty,
+.post-category {
+    color: var(--primary-text-color);
+}
+.post-interaction .shine-button.confirm .text {
+    white-space: nowrap;
+}
+</style>
+
 <style scoped>
-.post-version {
-    position: relative;
-    max-width: 1280px;
+.primary-background {
+    background-attachment: fixed;
+    width: 100%;
+}
+.content {
+    max-width: 800px;
+}
+.content .separator {
+    background-color: var(--secondary-text-color);
+    opacity: .5;
+}
+.content ol {
+    list-style-type: decimal;
+}
+.content ul {
+    list-style-type: square;
+}
+.interface .upload-image-container {
+    aspect-ratio: 16 / 9;
+    max-width: 100%;
 }
 .author-wrap:hover .username {
     color: var(--hover-text-color);
 }
-.post-version .interface .upload-image-container {
-    aspect-ratio: 16 / 9;
-    max-width: 100%;
-}
-.post-interaction, .hook {
-    min-width: 280px;
-    width: 280px;
-}
-.post-interaction .button {
-    width: 100%;
+.post-interaction {
+    height: fit-content;
+    min-width: 220px;
+    font-size: 12px;
+    width: 220px;
+    top: 96px;
 }
 .post-description {
-    background-color: rgba(0, 0, 0, .2);
-    min-height: 152px;
+    min-height: 120px;
+}
+.post-help {
+    max-width: 280px;
+}
+.post-help * {
+    line-height: 1.8;
+    opacity: .9;
 }
 </style>

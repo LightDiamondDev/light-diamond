@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import {type PropType, ref} from 'vue'
-import {getRandomColor, getRandomSplash} from '@/stores/splashes'
-import {useAuthStore} from '@/stores/auth'
-import Posts from '@/components/catalog/Posts.vue'
 import {GameEdition} from '@/types'
-import {useRouter} from 'vue-router'
+import {getRandomColor, getRandomSplash} from '@/stores/splashes'
 import usePreferenceManager from '@/preference-manager'
+import {useAuthStore} from '@/stores/auth'
+import {useRouter} from 'vue-router'
+import Posts from '@/components/catalog/Posts.vue'
 
 const props = defineProps({
     edition: {
@@ -41,7 +41,6 @@ function switchTimePeriod() {
 
 function switchEdition() {
     const edition = props.edition === GameEdition.BEDROCK ? GameEdition.JAVA : GameEdition.BEDROCK
-
     router.push({name: `catalog.${edition.toLowerCase()}`})
     usePreferenceManager().setEdition(edition)
 }
@@ -55,7 +54,7 @@ function switchEdition() {
         </div>
     </div>
 </div>
-<div class="catalog-container flex justify-center w-full">
+<div class="catalog-container bg-lighter flex justify-center w-full">
     <section class="catalog flex flex-col items-center w-full">
 
         <div class="title flex flex-col justify-center items-center w-full">

@@ -1,24 +1,20 @@
 import type {RouteRecordRaw} from 'vue-router'
 import type {Component} from 'vue'
+import {GameEdition} from '@/types'
 
 import Home from '@/components/Home.vue'
 import Catalog from '@/components/catalog/Catalog.vue'
-import ContentStudio from '@/components/studio/Studio.vue'
-import ContentStudioMaterials from '@/components/studio/StudioMaterials.vue'
-import ContentStudioRequests from '@/components/studio/StudioRequests.vue'
 import CreatePost from '@/components/post/editor/CreatePost.vue'
-
-// import Processing from '@/components/elements/ProcessingMovingItems.vue'
-// import NoPermission from '@/components/NoPermission.vue'
-// import AuthRequired from '@/components/auth/AuthRequired.vue'
-
+import Studio from '@/components/studio/Studio.vue'
+import StudioMaterials from '@/components/studio/StudioMaterials.vue'
+import StudioRequests from '@/components/studio/StudioRequests.vue'
 import VerifyEmail from '@/components/auth/VerifyEmail.vue'
 import ResetForm from '@/components/auth/ResetForm.vue'
 import Settings from '@/components/settings/Settings.vue'
 import ProfileSettings from '@/components/settings/ProfileSettings.vue'
 import SecuritySettings from '@/components/settings/SecuritySettings.vue'
 import NotFound from '@/components/NotFound.vue'
-import {GameEdition} from '@/types'
+import ViewPost from '@/components/post/ViewPost.vue'
 
 declare module 'vue-router' {
     interface RouteMeta {
@@ -43,7 +39,7 @@ const routes: RouteRecordRaw[] = [
         path: '/bedrock',
         name: 'catalog.bedrock',
         component: Catalog,
-        props: {edition: GameEdition.BEDROCK},
+        props: { edition: GameEdition.BEDROCK },
         meta: {
             title: 'Каталог Bedrock',
         },
@@ -74,10 +70,10 @@ const routes: RouteRecordRaw[] = [
         },
     },
     {
-        path: '/content-studio',
-        name: 'content-studio',
-        component: ContentStudio,
-        redirect: { name: 'content-studio.materials' },
+        path: '/studio',
+        name: 'studio',
+        component: Studio,
+        redirect: { name: 'studio.materials' },
         meta: {
             title: 'Контент-Студия',
             requiresAuth: true,
@@ -86,16 +82,16 @@ const routes: RouteRecordRaw[] = [
             [
                 {
                     path: 'materials',
-                    name: 'content-studio.materials',
-                    component: ContentStudioMaterials,
+                    name: 'studio.materials',
+                    component: StudioMaterials,
                     meta: {
                         title: 'Контент-Студия — Материалы',
                     }
                 },
                 {
                     path: 'requests',
-                    name: 'content-studio.requests',
-                    component: ContentStudioRequests,
+                    name: 'studio.requests',
+                    component: StudioRequests,
                     meta: {
                         title: 'Контент-Студия — Заявки на публикацию',
                     }
@@ -108,6 +104,14 @@ const routes: RouteRecordRaw[] = [
         component: CreatePost,
         meta: {
             title: 'Редактор Материала',
+        },
+    },
+    {
+        path: '/view-post',
+        name: 'view-post',
+        component: ViewPost,
+        meta: {
+            title: 'Просмотр Материала',
         },
     },
     {

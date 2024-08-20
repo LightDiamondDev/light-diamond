@@ -51,7 +51,4 @@ const props = defineProps({
 .disabled {
     opacity: .5;
 }
-.shine-button {
-    max-width: 100%;
-}
 </style>

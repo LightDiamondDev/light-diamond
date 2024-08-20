@@ -11,7 +11,8 @@ const props = defineProps({
 
 <template>
     <Component
-        class="item-button flex items-center gap-3"
+        class="item-button flex items-center"
+        :class="{ 'gap-3': text }"
         type="button"
         :is="as"
     >
@@ -45,7 +46,7 @@ const props = defineProps({
 .left-header-sidebar .item-button .text,
 .right-header-sidebar .item-button .text {
     line-height: 1.2;
-    max-width: 60%;
+    max-width: 90%;
 }
 
 /* =============== [ Медиа-Запрос { ?px < 1024px } ] =============== */

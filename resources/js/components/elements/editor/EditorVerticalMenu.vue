@@ -56,5 +56,7 @@ function toggle(event: Event) {
 </template>
 
 <style scoped>
-
+.content .menu .item-button {
+    min-width: 64px;
+}
 </style>

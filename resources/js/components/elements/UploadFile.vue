@@ -3,10 +3,6 @@ import {useToastStore} from '@/stores/toast'
 import {ref} from 'vue'
 
 const props = defineProps({
-    allowedGif: {
-        type: Boolean,
-        default: false
-    },
     id: String,
     editable: {
         type: Boolean,
@@ -14,19 +10,11 @@ const props = defineProps({
     },
     icon: String,
     title: String,
-    imageSrc: String,
+    fileSrc: String,
     maxSizeInMegabytes: {
         type: Number,
         required: true
-    },
-    minHeight: {
-        type: Number,
-        required: true
-    },
-    minWidth: {
-        type: Number,
-        required: true
-    },
+    }
 })
 
 const emit = defineEmits<{
@@ -34,27 +22,25 @@ const emit = defineEmits<{
 }>()
 
 const model = defineModel<string>({default: ''})
-const imageSrc = ref(props.imageSrc)
+const fileSrc = ref(props.fileSrc)
 const toastStore = useToastStore()
 
-const allowedImageFormats = props.allowedGif ? ['PNG', 'JPG', 'JPEG', 'GIF'] : ['PNG', 'JPG', 'JPEG']
-const allowedFormats = allowedImageFormats.map((format) => 'image/' + format.toLowerCase())
+const allowedFileFormats = ['MCPACK', 'MCADDON', 'MCWORLD', 'MCSKIN', 'PNG'];
+const allowedFormats = allowedFileFormats.map((format) => 'file/' + format.toLowerCase())
 const maxSizeInMegabytes = props.maxSizeInMegabytes
-const minHeight = props.minHeight
-const minWidth = props.minWidth
 
 const isDraggingOver = ref(false)
 
 function onChange(event: any) {
     if (props.editable && event.target && event.target.files[0]) {
-        uploadImage(event.target.files![0])
+        uploadFile(event.target.files![0])
     }
 }
 
 function onDrop(event: DragEvent) {
     if (props.editable) {
         if (event.dataTransfer?.files) {
-            uploadImage(event.dataTransfer.files[0])
+            uploadFile(event.dataTransfer.files[0])
         }
         isDraggingOver.value = false
     }
@@ -72,10 +58,10 @@ function onDragLeave() {
     }
 }
 
-function uploadImage(file: File) {
+function uploadFile(file: File) {
     if (!allowedFormats.includes(file.type)) {
         toastStore.warning(
-            `Недопустимый формат изображения, разрешены только ${allowedImageFormats.join(', ')}.`,
+            `Недопустимый формат Файла, разрешены только ${allowedFileFormats.join(', ')}.`,
             'Неверный формат'
         )
         return
@@ -88,30 +74,14 @@ function uploadImage(file: File) {
         )
         return
     }
-
-    const tempImg = new Image()
-    tempImg.onload = () => {
-        if (tempImg.width < minWidth || tempImg.height < minHeight) {
-            toastStore.warning(
-                `Минимальное разрешение изображения - ${minWidth} x ${minHeight}.`,
-                'Разрешение'
-
-            )
-            return
-        }
-
-        emit('upload', file)
-        imageSrc.value = URL.createObjectURL(file)
-    }
-    tempImg.src = URL.createObjectURL(file)
 }
 </script>
 
 <template>
 <label
-    :class="{'editable': editable, 'cursor-pointer': editable, 'dragover': isDraggingOver, 'loaded': imageSrc }"
-    class="upload-image-container flex justify-center items-center locked"
-    :style="'background-size: 100% 100%;background-image: url(' + imageSrc + ');'"
+    :class="{'editable': editable, 'cursor-pointer': editable, 'dragover': isDraggingOver, 'loaded': fileSrc }"
+    class="upload-file-container flex justify-center items-center locked"
+    :style="'background-size: 100% 100%;background-image: url(' + fileSrc + ');'"
     @dragenter.prevent="onDragEnter"
     @dragleave="onDragLeave"
     @dragover.prevent
@@ -119,19 +89,18 @@ function uploadImage(file: File) {
     :for="id"
 >
     <em
-        :class="{ 'loaded': imageSrc }"
-        class="upload-image-info flex flex-col items-center gap-2 p-4"
+        :class="{ 'loaded': fileSrc }"
+        class="upload-file-info flex flex-col items-center gap-2 p-4"
     >
-        <span class="upload-image-heading flex gap-2">
+        <span class="upload-file-heading flex gap-2">
             <span :class="icon" class="icon relative"></span>
             <span class="head-font text-[1.2rem] duration-200">{{ title }}</span>
         </span>
-        <span>Минимальное разрешение — {{ minWidth }} × {{ minHeight }}</span>
         <span>Максимальный размер — {{ maxSizeInMegabytes }} Мб</span>
-        <span>{{ allowedImageFormats.join(" / ") }}</span>
+        <span>{{ allowedFileFormats.join(" / ") }}</span>
         <input
             @change="onChange"
-            accept="image/*"
+            accept="file/*"
             type="file"
             :id="id"
         />
@@ -140,12 +109,12 @@ function uploadImage(file: File) {
 </template>
 
 <style scoped>
-.upload-image-container:active .icon,
-.upload-image-container:hover .icon,
-.upload-image-container.dragover .icon {
+.upload-file-container:active .icon,
+.upload-file-container:hover .icon,
+.upload-file-container.dragover .icon {
     animation: levitation-icon-animation infinite 1s ease;
 }
-.upload-image-info {
+.upload-file-info {
     background-size: 100% 100%;
     pointer-events: none;
 }
@@ -165,10 +134,10 @@ em.loaded span {
 em.loaded {
     opacity: 0;
 }
-.upload-image-container:hover em.loaded:not(:hover) {
+.upload-file-container:hover em.loaded:not(:hover) {
     opacity: 1;
 }
-.upload-image-container.loaded:not(.dragover) {
+.upload-file-container.loaded:not(.dragover) {
     outline: 0;
 }
 input {

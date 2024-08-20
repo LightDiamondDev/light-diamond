@@ -3,7 +3,7 @@
         --primary-bg-color: #005565;
         --secondary-bg-color: #eaeaea;
         --primary-text-color: #eaeaea;
-        --secondary-text-color: #005565;
+        --secondary-text-color: #353535;
         --hover-text-color: #00ffff;
         --surface-border: #4d848f;
         --primary-color: #5aedda;
@@ -51,15 +51,14 @@
     .content-studio .title,
     .content-studio aside,
     .dialog-form-container .interface,
+    .editor-horizontal-menu,
     .global-error-container,
     .header-blur aside,
     .header-dropdown-content,
     .menu,
     .post-card,
-    .post-version .interface,
-    .post-version .description,
-    .post-version .post-interaction,
-    .post-version .title,
+    .post-interaction,
+    .primary-background,
     .search-form-background form,
     .select .options,
     .select,
@@ -71,6 +70,10 @@
     footer {
         background-image: url('/images/elements/base-background.png');
         background-color: var(--primary-bg-color);
+    }
+
+    .secondary-background {
+        background-color: var(--secondary-bg-color);
     }
 
     header {
@@ -173,6 +176,10 @@
         filter: invert(100%);
     }
 
+    input:-webkit-autofill + button {
+        background-color: var(--autofill-color);
+    }
+
     input:-webkit-autofill,
     input:-webkit-autofill:active,
     input:-webkit-autofill:focus,
@@ -184,10 +191,6 @@
     select:-webkit-autofill:focus,
     select:-webkit-autofill:focus-visible,
     select:-webkit-autofill:hover,
-
-    textarea {
-        background: none;
-    }
 
     textarea:-webkit-autofill,
     textarea:-webkit-autofill:active,
@@ -201,8 +204,8 @@
         -webkit-background-clip: text;
     }
 
-    input:-webkit-autofill + button {
-        background-color: var(--autofill-color);
+    textarea {
+        background: none;
     }
 
     ::-webkit-scrollbar {
@@ -307,6 +310,103 @@
         border: 2px solid rgba(255, 255, 255, .8);
     }
 
+    .content {
+        color: var(--secondary-text-color);
+    }
+
+    .content .text-muted,
+    .content .item-button .text {
+        color: var(--primary-text-color);
+    }
+
+    .content .text-muted {
+        text-align: center;
+    }
+
+    .content .upload-image-container,
+    .content .upload-file-container {
+        outline: 2px dashed var(--secondary-text-color);
+        transition: .5s;
+    }
+
+    .content .loaded {
+        color: var(--primary-text-color);
+    }
+
+    .content textarea::placeholder {
+        color: var(--secondary-text-color);
+        opacity: .8;
+    }
+
+    .content .upload-image-container:hover,
+    .content .upload-file-container:hover {
+        outline: 2px dashed rgb(0, 150, 150);
+    }
+
+    .content .upload-image-container.dragover,
+    .content .upload-file-container.dragover {
+        outline: 8px dashed rgba(0, 150, 150, 1);
+    }
+
+    .content .upload-file-container.dragover .upload-file-heading,
+    .content .upload-image-container.dragover .upload-image-heading,
+    .content .upload-file-container:hover .upload-file-heading,
+    .content .upload-image-container:hover .upload-image-heading {
+        color: rgba(0, 85, 101, .8);
+    }
+
+    .content blockquote {
+        border-left: 4px solid rgba(0, 85, 101, .8);
+    }
+
+    .content * {
+        line-height: 1.8;
+    }
+
+    .content h1 {
+        font-size: 3rem;
+    }
+
+    .content h2 {
+        font-size: 2.5rem;
+    }
+
+    .content h3 {
+        font-size: 2rem;
+    }
+
+    .content h4 {
+        font-size: 1.5rem;
+    }
+
+    .content h5 {
+        font-size: 1.2rem;
+    }
+
+    .content h6 {
+        font-size: 1rem;
+    }
+
+    .content b,
+    .content code,
+    .content .post-content em,
+    .content i,
+    .content li,
+    .content pre,
+    .content p,
+    .content s,
+    .content textarea,
+    .content .username,
+    .content u {
+        text-shadow: none;
+    }
+
+    .content hr {
+        border: 1px solid var(--secondary-text-color);
+        opacity: .8;
+        width: 95%;
+    }
+
     .left-header-sidebar .button-link:hover {
         background-color: rgba(0, 255, 255, .1);
     }
@@ -351,8 +451,16 @@
         border: 2px solid rgba(0, 255, 255, .3);
     }
 
+    .editor-horizontal-menu {
+        border: 2px solid rgba(0, 255, 255, .3);
+    }
+
     form fieldset label  {
         border: 2px solid var(--border-color);
+    }
+
+    .wshine-buttons {
+        max-width: 100%;
     }
 
     .message {
@@ -400,10 +508,7 @@
         font-weight: normal;
     }
 
-    .post-version .interface,
-    .post-version .description,
-    .post-version .post-interaction,
-    .post-version .title {
+    .post-interaction {
         border: 2px solid rgba(0, 255, 255, .3);
     }
 
@@ -476,7 +581,6 @@
         border: 2px solid rgba(0, 255, 255, .3);
         will-change: box-shadow,transform;
         touch-action: manipulation;
-        white-space: nowrap;
         appearance: none;
     }
 
@@ -516,9 +620,19 @@
         background: radial-gradient(100% 100% at 100% 0, rgba(50, 200, 50, .3) 0, rgba(30, 120, 30, .3) 100%);
     }
 
+    .shine-button.warning .press {
+        background: radial-gradient(100% 100% at 100% 0, rgba(200, 180, 50, .3) 0, rgba(180, 160, 30, .3) 100%);
+        border: 2px solid rgba(200, 180, 50, .8);
+    }
+
     .surface-ground {
         background-image: url('/images/elements/base-background.png');
         background-color: var(--secondary-bg-color);
+        background-attachment: fixed;
+    }
+
+    .bg-lighter {
+        background-image: url('/images/elements/base-background-lighter.png');
     }
 
     .transfusion {
@@ -539,16 +653,16 @@
     }
 
     .upload-image-container {
-        border: 2px dashed rgba(255, 255, 255, .5);
+        outline: 2px dashed rgba(255, 255, 255, .5);
         transition: .5s;
     }
 
     .upload-image-container:hover {
-        border: 2px dashed rgb(0, 255, 255);
+        outline: 2px dashed rgb(0, 255, 255);
     }
 
     .upload-image-container.dragover {
-        border: 8px dashed rgba(0, 255, 255, 1);
+        outline: 8px dashed rgba(0, 255, 255, 1);
     }
 
     .user-menu {
@@ -588,6 +702,12 @@
     .catalog-panel .filters-button,
     .catalog-panel .line a span,
     .catalog-panel .line button span,
+    .content h1,
+    .content h2,
+    .content h3,
+    .content h4,
+    .content h5,
+    .content h6,
     .design-settings-form div,
     .dialog-header h1,
     .global-error-container h1,
@@ -606,7 +726,8 @@
 
     .catalog .splash,
     .user-menu .profile-link .title,
-    .left-header-sidebar .item-button {
+    .left-header-sidebar .item-button,
+    pre, pre.is-empty {
         font-family: Monocraft, sans-serif;
     }
 
@@ -646,6 +767,10 @@
         background-image: url('/images/icons/bestiary.png');
     }
 
+    .icon-bold {
+        background-image: url('/images/icons/diamond-bold.png');
+    }
+
     .icon-book {
         background-image: url('/images/icons/diamond-book.png');
     }
@@ -670,6 +795,10 @@
         background-image: url('/images/icons/diamond-clock.png');
     }
 
+    .icon-code {
+        background-image: url('/images/icons/diamond-code.png');
+    }
+
     .icon-comment {
         background-image: url('/images/icons/diamond-comment.png');
     }
@@ -692,6 +821,10 @@
 
     .icon-diamond {
         background-image: url('/images/icons/diamond.png');
+    }
+
+    .icon-division {
+        background-image: url('/images/icons/diamond-division.png');
     }
 
     .icon-documentary {
@@ -738,6 +871,14 @@
         background-image: url('/images/icons/diamond-heart.png');
     }
 
+    .icon-image {
+        background-image: url('/images/icons/diamond-image.png');
+    }
+
+    .icon-italic {
+        background-image: url('/images/icons/diamond-italic.png');
+    }
+
     .icon-left-arrow {
         background-image: url('/images/icons/diamond-left-arrow.png');
     }
@@ -748,6 +889,14 @@
 
     .icon-like {
         background-image: url('/images/icons/diamond-heart.png');
+    }
+
+    .icon-link-round {
+        background-image: url('/images/icons/diamond-link-round.png');
+    }
+
+    .icon-link-square {
+        background-image: url('/images/icons/diamond-link-square.png');
     }
 
     .icon-long-left-arrow {
@@ -778,8 +927,32 @@
         background-image: url('/images/icons/minecraft-materials.png');
     }
 
+    .icon-minus {
+        background-image: url('/images/icons/diamond-minus.png');
+    }
+
+    .icon-multiply {
+        background-image: url('/images/icons/diamond-multiply.png');
+    }
+
     .icon-news {
         background-image: url('/images/icons/diamond-news.png');
+    }
+
+    .icon-ordered-list {
+        background-image: url('/images/icons/diamond-ordered-list.png');
+    }
+
+    .icon-plus {
+        background-image: url('/images/icons/diamond-plus.png');
+    }
+
+    .icon-quote {
+        background-image: url('/images/icons/diamond-quote.png');
+    }
+
+    .icon-refresh {
+        background-image: url('/images/icons/diamond-refresh.png');
     }
 
     .icon-right-arrow {
@@ -810,6 +983,10 @@
         background-image: url('/images/icons/diamond-star.png');
     }
 
+    .icon-strike-through {
+        background-image: url('/images/icons/diamond-strike-through.png');
+    }
+
     .icon-sun {
         background-image: url('/images/icons/diamond-sun.svg');
     }
@@ -826,16 +1003,44 @@
         background-image: url('/images/icons/diamond-telegram.png');
     }
 
+    .icon-text-height {
+        background-image: url('/images/icons/diamond-text-height.png');
+    }
+
     .icon-tick {
         background-image: url('/images/icons/diamond-tick.png');
+    }
+
+    .icon-title {
+        background-image: url('/images/icons/diamond-title.png');
+    }
+
+    .icon-title-1 {
+        background-image: url('/images/icons/diamond-title-1.png');
+    }
+
+    .icon-title-2 {
+        background-image: url('/images/icons/diamond-title-2.png');
+    }
+
+    .icon-title-3 {
+        background-image: url('/images/icons/diamond-title-3.png');
     }
 
     .icon-top-arrow {
         background-image: url('/images/icons/diamond-top-arrow.png');
     }
 
+    .icon-underlined {
+        background-image: url('/images/icons/diamond-underlined.png');
+    }
+
     .icon-units {
         background-image: url('/images/icons/diamond-units.png');
+    }
+
+    .icon-unordered-list {
+        background-image: url('/images/icons/diamond-unordered-list.png');
     }
 
     .icon-vk {

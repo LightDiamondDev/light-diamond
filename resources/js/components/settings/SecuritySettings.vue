@@ -6,6 +6,7 @@ import {getErrorMessageByCode} from '@/helpers'
 
 import Input from '@/components/elements/Input.vue'
 import Button from '@/components/elements/Button.vue'
+import ShineButton from '@/components/elements/ShineButton.vue'
 import {useToastStore} from '@/stores/toast'
 
 const authStore = useAuthStore()
@@ -237,12 +238,13 @@ function submitChangePassword() {
                             <p class="text-[0.9rem] pr-3 pt-3">
                                 Подтвердите свой адрес электронной почты, перейдя по ссылке из письма.
                             </p>
-                            <Button
-                                class="warning min-h-[64px] max-w-[280px] pb-3 pr-3 pt-3"
-                                button-type="button"
-                                text="Отправить повторно"
+                            <ShineButton
                                 :loading="isProcessingSendEmailVerificationLink"
+                                class="shine-button warning min-h-[64px] max-w-[300px] pb-3 pr-3 pt-3"
                                 @click="sendEmailVerificationLink"
+                                text="Отправить повторно"
+                                button-type="button"
+                                icon="icon-letter"
                             />
                         </div>
                     </div>

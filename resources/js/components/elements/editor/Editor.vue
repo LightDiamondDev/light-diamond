@@ -8,14 +8,12 @@ import {useToastStore} from '@/stores/toast'
 
 import Input from '@/components/elements/Input.vue'
 import ItemButton from '@/components/elements/ItemButton.vue'
-import Menu from '@/components/elements/Menu.vue'
 
 import type {EditorMenuItem} from '@/components/elements/editor/types'
 import EditorHorizontalMenu from '@/components/elements/editor/EditorHorizontalMenu.vue'
 import EditorVerticalMenu from '@/components/elements/editor/EditorVerticalMenu.vue'
 import OverlayPanel from '@/components/elements/OverlayPanel.vue'
 
-const menu = ref<InstanceType<typeof Menu>>()
 const addNodeMenu = ref<InstanceType<typeof EditorVerticalMenu>>()
 const linkOverlayPanel = ref<InstanceType<typeof OverlayPanel>>()
 
@@ -62,7 +60,7 @@ const currentLink = reactive({
 const editor = useEditor({
     editorProps: {
         attributes: {
-            class: `focus:outline-none m-4 lg:mx-10 ${props.editorClass}`
+            class: `focus:outline-none ${props.editorClass}`
         }
     },
 
@@ -82,7 +80,7 @@ const nodes: { [key: string]: EditorNodeInfo } = {
         attributes: {level: 1},
         displayName: 'Заголовок 1',
         shortcut: 'Ctrl+Alt+1',
-        icon: 'fa-solid fa-heading',
+        icon: 'icon-title-1',
         callback: () => editor.value?.chain().focus()?.setHeading({level: 1}).run(),
     },
     'heading-2': {
@@ -90,28 +88,36 @@ const nodes: { [key: string]: EditorNodeInfo } = {
         attributes: {level: 2},
         displayName: 'Заголовок 2',
         shortcut: 'Ctrl+Alt+2',
-        icon: 'fa-solid fa-heading',
+        icon: 'icon-title-2',
         callback: () => editor.value?.chain().focus().setHeading({level: 2}).run(),
+    },
+    'heading-3': {
+        name: 'heading',
+        attributes: {level: 3},
+        displayName: 'Заголовок 3',
+        shortcut: 'Ctrl+Alt+3',
+        icon: 'icon-title-3',
+        callback: () => editor.value?.chain().focus().setHeading({level: 3}).run(),
     },
     'bulletList': {
         name: 'bulletList',
-        displayName: 'Список',
+        displayName: 'Маркерованный список',
         shortcut: 'Ctrl+⇧+8',
-        icon: 'fa-solid fa-list-ul',
+        icon: 'icon-unordered-list',
         callback: () => editor.value?.chain().focus().toggleBulletList().run(),
     },
     'orderedList': {
         name: 'orderedList',
         displayName: 'Нумерованный список',
         shortcut: 'Ctrl+⇧+7',
-        icon: 'fa-solid fa-list-ol',
+        icon: 'icon-ordered-list',
         callback: () => editor.value?.chain().focus().toggleOrderedList().run(),
     },
     'paragraph': {
         name: 'paragraph',
         displayName: 'Абзац',
         shortcut: 'Ctrl+Alt+0',
-        icon: 'fa-solid fa-paragraph',
+        icon: 'icon-diamond',
         callback: () => editor.value?.chain().focus().setParagraph().run(),
     },
 
@@ -119,26 +125,26 @@ const nodes: { [key: string]: EditorNodeInfo } = {
         name: 'codeBlock',
         displayName: 'Код',
         shortcut: 'Ctrl+Alt+C',
-        icon: 'fa-solid fa-code',
+        icon: 'icon-code',
         callback: () => editor.value?.chain().focus().setCodeBlock().run(),
     },
     'blockquote': {
         name: 'blockquote',
         displayName: 'Цитата',
         shortcut: 'Ctrl+⇧+B',
-        icon: 'fa-solid fa-quote-left',
+        icon: 'icon-quote',
         callback: () => editor.value?.chain().focus().toggleBlockquote().run(),
     },
     'horizontalRule': {
         name: 'horizontalRule',
         displayName: 'Разделитель',
-        icon: 'fa-solid fa-minus',
+        icon: 'icon-minus',
         callback: () => editor.value?.chain().focus().setHorizontalRule().run(),
     },
     'image': {
         name: 'image',
         displayName: 'Изображение',
-        icon: 'fa-solid fa-image',
+        icon: 'icon-image',
         callback: () => openImageDialog((image) => {
             uploadImage(image, (imageUrl) => {
                 editor.value?.chain().focus().setImage({src: imageUrl}).run()
@@ -152,41 +158,41 @@ const marks: { [key: string]: EditorNodeInfo } = {
         name: 'bold',
         displayName: 'Жирный',
         shortcut: 'Ctrl+B',
-        icon: 'fa-solid fa-bold',
+        icon: 'icon-bold',
         callback: () => editor.value?.chain().focus().toggleBold().run(),
     },
     'italic': {
         name: 'italic',
         displayName: 'Курсив',
         shortcut: 'Ctrl+I',
-        icon: 'fa-solid fa-italic',
+        icon: 'icon-italic',
         callback: () => editor.value?.chain().focus().toggleItalic().run(),
     },
     'underline': {
         name: 'underline',
         displayName: 'Подчёркнутый',
         shortcut: 'Ctrl+U',
-        icon: 'fa-solid fa-underline',
+        icon: 'icon-underlined',
         callback: () => editor.value?.chain().focus().toggleUnderline().run(),
     },
     'strike': {
         name: 'strike',
         displayName: 'Зачёркнутый',
         shortcut: 'Ctrl+⇧+S',
-        icon: 'fa-solid fa-strikethrough',
+        icon: 'icon-strike-through',
         callback: () => editor.value?.chain().focus().toggleStrike().run(),
     },
     'code': {
         name: 'code',
         displayName: 'Код',
         shortcut: 'Ctrl+E',
-        icon: 'fa-solid fa-code',
+        icon: 'icon-code',
         callback: () => editor.value?.chain().focus().toggleCode().run(),
     },
     'link': {
         name: 'link',
         displayName: 'Ссылка',
-        icon: 'fa-solid fa-link',
+        icon: 'icon-link-square',
         callback: (event: Event) => linkOverlayPanel.value!.toggle(event),
     },
 }
@@ -197,7 +203,7 @@ const menuItems = computed<EditorMenuItem[]>(() => {
     }
 
     const items: EditorMenuItem[] = []
-    const headingItems = ['heading-1', 'heading-2'].map<EditorMenuItem>((key) => ({
+    const headingItems = ['heading-1', 'heading-2', 'heading-3'].map<EditorMenuItem>((key) => ({
         displayName: nodes[key].displayName,
         icon: nodes[key].icon,
         shortcut: nodes[key].shortcut,
@@ -242,8 +248,8 @@ const menuItems = computed<EditorMenuItem[]>(() => {
         const currentNodeInfo = getCurrentNodeInfo()
 
         items.push({
-            displayName: `Преобразовать "${currentNodeInfo?.displayName ?? '?'}" в`,
-            icon: 'fa-solid fa-text-height',
+            displayName: `Преобразовать «${currentNodeInfo?.displayName ?? '?'}» в`,
+            icon: 'icon-text-height',
             children: [
                 ...headingItems,
                 ...['paragraph', 'codeBlock', 'bulletList', 'orderedList'].map((key) => ({
@@ -368,8 +374,8 @@ function setLink() {
         editor.value!
             .chain()
             .focus()
-            .setLink({href: currentLink.href})
-            .insertContentAt({from: selection.from, to: selection.to}, currentLink.text)
+            .setLink({ href: currentLink.href })
+            .insertContentAt({ from: selection.from, to: selection.to }, currentLink.text)
             .run()
     }
 
@@ -383,7 +389,7 @@ function unsetLink() {
 </script>
 
 <template>
-    <div>
+    <div class="editor">
         <BubbleMenu
             v-if="editor && editable && !withoutMenus && menuItems.length > 0"
             :editor="editor"
@@ -393,18 +399,18 @@ function unsetLink() {
         >
             <EditorHorizontalMenu
                 :items="menuItems"
-                class="rounded border drop-shadow-[0_0px_2px_rgba(0,0,0,0.3)]"
+                class="border drop-shadow-[0_0px_2px_rgba(0,0,0,0.3)]"
             />
         </BubbleMenu>
 
         <FloatingMenu
             v-if="editor && editable && !withoutMenus"
-            :editor="editor"
             :tippy-options="{ placement: 'left', offset: [0, 0], zIndex: 100 }"
             :should-show="({state}) => isAtEmptyRootParagraph(state)"
             class="hidden lg:block"
+            :editor="editor"
         >
-            <Button icon="fa-solid fa-plus" rounded severity="secondary" @click="addNodeMenu?.toggle"/>
+            <ItemButton icon="icon-plus" rounded severity="secondary" @click="addNodeMenu?.toggle"/>
             <EditorVerticalMenu ref="addNodeMenu" title="Добавить" :items="menuItems"/>
         </FloatingMenu>
 
@@ -412,11 +418,11 @@ function unsetLink() {
             <form class="space-y-2" @submit.prevent="setLink">
                 <div>
                     <Input v-model="currentLink.href" placeholder="https://" class="w-full" autocomplete="off"/>
-                    <ItemButton icon="fa-solid fa-check" outlined title="Сохранить ссылку" type="submit"/>
-                    <ItemButton icon="fa-solid fa-xmark" outlined title="Удалить ссылку" severity="danger"
+                    <ItemButton icon="icon-tick" outlined title="Сохранить ссылку" type="submit"/>
+                    <ItemButton icon="icon-small-cross" outlined title="Удалить ссылку" severity="danger"
                                 @click="unsetLink"/>
                 </div>
-                <Input v-model="currentLink.text" placeholder="Текст..." class="w-full" autocomplete="off"/>
+                <InputText v-model="currentLink.text" placeholder="Текст..." class="w-full" autocomplete="off"/>
             </form>
         </OverlayPanel>
 
@@ -427,11 +433,19 @@ function unsetLink() {
         <EditorHorizontalMenu
             v-if="editor && editable && !withoutMenus"
             :items="menuItems"
-            class="block lg:hidden sticky bottom-0 rounded-b-xl border-t overflow-x-auto whitespace-nowrap"
+            class="block lg:hidden sticky bottom-0 border-t overflow-x-auto whitespace-nowrap"
         />
     </div>
 </template>
 
 <style scoped>
-
+.content .item-button .text {
+    line-height: 1.5;
+}
+.tippy-content .item-button {
+    justify-content: center;
+    background: none;
+    min-height: 48px;
+    width: 48px;
+}
 </style>

@@ -28,7 +28,7 @@
             toastStore.info(
                 `Мы отправили Вам письмо со ссылкой для подтверждения Вашей электронной почты!`,
                 'Подтверждение E-Mail',
-                '15000',
+                15000,
                 'icon-letter'
             )
             const {registered, ...newQuery} = to.query
@@ -41,9 +41,9 @@
 <template>
     <GlobalModals/>
     <Toaster/>
-    <div class="surface-ground">
+    <div class="surface-ground bg-lighter flex flex-col items-center">
         <Header/>
-        <main class="flex flex-col items-center">
+        <main class="flex flex-col items-center w-full">
             <RouterView></RouterView>
         </main>
         <Footer/>

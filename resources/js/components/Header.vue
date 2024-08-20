@@ -43,11 +43,11 @@ const userMenuItems = computed<MenuItem[]>(() => [
         label: 'Контент-студия',
         icon: 'icon-bottle',
         visible: authStore.isAuthenticated,
-        route: {name: 'content-studio'}
+        route: {name: 'studio'}
     },
     {
         label: 'Создать материал',
-        icon: 'icon-download',
+        icon: 'icon-plus',
         visible: authStore.isAuthenticated,
         route: {name: 'create-post'}
     },
@@ -174,11 +174,11 @@ const navigationSections = computed<NavigationSection[]>(() => [
         label: 'Помощь',
         children: [
             {
-                label: 'Правила пользования',
+                label: 'Правила Пользования',
                 icon: 'icon-hand',
             },
             {
-                label: 'Политика конфиденциальности',
+                label: 'Политика Конфиденциальности',
                 icon: 'icon-script',
             },
             {
@@ -253,6 +253,7 @@ function logout() {
                 class="profile-link laminated-link transfusion bordered flex items-center m-1"
                 href="#"
             >
+                <span class="notifications-counter flex justify-center items-center absolute">15</span>
                 <UserAvatar :user="authStore.user!"/>
                 <div class="flex flex-col">
                     <span
@@ -314,7 +315,7 @@ function logout() {
                         :text="childSection.label"
                         :icon="childSection.icon"
                         :to="childSection.route"
-                        class="pl-8 pr-4"
+                        class="pl-12 pr-4"
                     />
                     <ItemButton
                         v-else
@@ -322,7 +323,7 @@ function logout() {
                         :text="childSection.label"
                         :icon="childSection.icon"
                         :href="childSection.url"
-                        class="pl-8 pr-4"
+                        class="pl-12 pr-4"
                     />
                 </template>
 
@@ -340,7 +341,7 @@ function logout() {
         class="transition-transform flex justify-center duration-300 select-none h-[var(--header-height)] z-[1] w-full top-0 fixed"
         :class="{'-translate-y-full': !preferenceManager.isHeaderFixedVisible() && isHeaderHidden}"
     >
-        <nav class="header flex justify-between">
+        <nav class="header page-container flex justify-between">
             <div class="flex items-center xs:gap-4">
                 <button
                     class="burger duration-100 flex justify-center items-center h-full p-2 md:-ml-3"
@@ -406,12 +407,9 @@ function logout() {
                     type="button"
                     @click="userMenu?.toggle"
                 >
-                    <span
-                        v-if="authStore.isAuthenticated"
-                        class="profile-border icon icon-border flex justify-center items-center h-[48px] w-[48px]"
-                    >
-                        <img alt="" src="/images/users/content/funny-girl.png" class="h-[32px]">
-                    </span>
+                    <span v-if="authStore.isAuthenticated" class="notifications-counter flex justify-center items-center absolute">15</span>
+
+                    <UserAvatar v-if="authStore.isAuthenticated" :user="authStore.user!"/>
 
                     <span v-else class="icon icon-border-profile h-[42px] w-[42px]"></span>
                 </button>
@@ -427,8 +425,6 @@ function logout() {
 }
 
 .header {
-    max-width: 1312px;
-    padding: 0 1rem;
     width: 100%;
 }
 
@@ -490,6 +486,15 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
     color: var(--primary-text-color);
     background-size: 400% 100%;
     padding: 4px 0;
+}
+
+.notifications-counter {
+    background-color: rgb(210, 10, 30);
+    color: var(--primary-text-color);
+    margin: 0 0 36px 36px;
+    text-align: center;
+    font-size: .5rem;
+    z-index: 1;
 }
 
 /* =============== [ Медиа-Запрос { ?px < 426px } ] =============== */

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {type PropType, reactive} from 'vue'
-import EditorVerticalMenu from '@/components/elements/editor/EditorVerticalMenu.vue'
 import type {EditorMenuItem} from '@/components/elements/editor/types'
+import EditorVerticalMenu from '@/components/elements/editor/EditorVerticalMenu.vue'
+import ItemButton from '@/components/elements/ItemButton.vue'
 
 defineProps({
     items: {
@@ -14,11 +15,11 @@ const verticalMenus = reactive<{ [key: string]: InstanceType<typeof EditorVertic
 </script>
 
 <template>
-    <div class="bg-[var(--surface-overlay)] h-[2.5rem] overflow-x-auto flex" @mousedown.prevent>
+    <div class="editor-horizontal-menu flex"> <!-- @mousedown.prevent -->
         <template v-for="(menuItem, id) in items">
             <template v-if="menuItem.isVisible !== false">
                 <template v-if="menuItem.isSeparator">
-                    <div class="w-[1px] bg-[var(--surface-border)] inline-block ml-1 mr-1 flex-shrink-0"/>
+                    <div class="separator flex self-center h-[40px] w-[2px]"/>
                 </template>
 
                 <template v-else-if="menuItem.children">
@@ -29,23 +30,21 @@ const verticalMenus = reactive<{ [key: string]: InstanceType<typeof EditorVertic
                         :title="menuItem.displayName"
                     />
 
-                    <Button
-                        text
+                    <ItemButton
                         v-if="verticalMenus[`editor-vertical-menu-${id}`]"
                         :severity="menuItem.isActive ? 'primary' : 'secondary'"
+                        icon="icon-down-arrow"
                         aria-haspopup="true"
                         :aria-controls="`editor-vertical-menu-${id}`"
                         class="flex-shrink-0"
                         @click="verticalMenus[`editor-vertical-menu-${id}`].toggle"
                     >
                         <span :class="menuItem.icon"/>
-                        <span class="ml-3 fa-solid fa-angle-down"/>
-                    </Button>
+                    </ItemButton>
                 </template>
 
                 <template v-else>
-                    <Button
-                        text
+                    <ItemButton
                         :icon="menuItem.icon"
                         :severity="menuItem.isActive ? 'primary' : 'secondary'"
                         class="flex-shrink-0"
@@ -58,5 +57,9 @@ const verticalMenus = reactive<{ [key: string]: InstanceType<typeof EditorVertic
 </template>
 
 <style scoped>
-
+.content .item-button {
+    justify-content: center;
+    min-height: 48px;
+    width: 48px;
+}
 </style>
