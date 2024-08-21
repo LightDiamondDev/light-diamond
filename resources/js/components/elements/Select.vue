@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {type PropType, ref} from 'vue'
+import {computed, type PropType, ref} from 'vue'
 import ItemButton from '@/components/elements/ItemButton.vue'
 
 const props = defineProps({
@@ -15,8 +15,9 @@ const props = defineProps({
         type: String,
         default: 'icon-down-arrow'
     },
-    optionLabelKey:  String,
-    optionIconKey:  String,
+    optionLabelKey: String,
+    optionIconKey: String,
+    optionValueKey: String,
     options: {
         type: Object as PropType<any[]>,
         required: true
@@ -27,8 +28,21 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['change'])
-const model = defineModel<any>()
+const emit = defineEmits(['select'])
+const model = defineModel()
+const currentOption = computed(() => {
+    return props.options!.find(
+        (option) => model.value === (props.optionValueKey ? option[props.optionValueKey] : option)
+    )
+})
+
+function getOptionLabel(option) {
+    return option && props.optionLabelKey ? option[props.optionLabelKey] : option
+}
+
+function getOptionIcon(option) {
+    return option && props.optionIconKey ? option[props.optionIconKey] : undefined
+}
 
 const isSelfMouseDown = ref(false)
 const container = ref<HTMLElement>()
@@ -72,8 +86,8 @@ function toggleSelect() {
 
 function select(option: any) {
     if (isSelectOpen.value) {
-        model.value = option
-        emit('change', option)
+        model.value = props.optionValueKey ? option[props.optionValueKey] : option
+        emit('select', option)
         close()
     }
 }
@@ -92,10 +106,10 @@ function select(option: any) {
             type="button"
         >
             <span class="flex items-center w-full gap-4 pl-6">
-                <span v-if="model !== undefined" :class="optionIconKey ? model[optionIconKey] : model" class="icon" />
+                <span v-if="icon" :class="getOptionIcon(currentOption)" class="icon"/>
                 <span class="text">
                     <span v-if="model === undefined" class="opacity-80">{{ placeholder }}</span>
-                    <span v-else>{{ optionLabelKey ? model[optionLabelKey] : model }}</span>
+                    <span v-else>{{ getOptionLabel(currentOption) }}</span>
                 </span>
             </span>
             <span class="button-arrow flex justify-center items-center">
@@ -103,23 +117,18 @@ function select(option: any) {
             </span>
         </button>
         <Transition name="smooth-select-switch">
-            <div
-                v-if="isSelectOpen"
-                class="options flex flex-col w-full absolute"
-            >
+            <div v-if="isSelectOpen" class="options flex flex-col w-full absolute">
                 <template v-for="option in props.options">
-
                     <ItemButton
                         @click="select(option)"
-                        :text="optionLabelKey ? option[optionLabelKey] : option"
-                        :icon="optionIconKey ? option[optionIconKey] : option"
+                        :text="getOptionLabel(option)"
+                        :icon="getOptionIcon(option)"
                         class="option flex pl-6"
                     >
                         <template #icon>
-                            <slot name="option-icon"/>
+                            <slot name="option-icon" :option="option"/>
                         </template>
                     </ItemButton>
-
                 </template>
             </div>
         </Transition>
@@ -131,29 +140,36 @@ function select(option: any) {
     height: 72px;
     width: 72px;
 }
+
 .select .options {
     transition: .2s;
     z-index: 1;
     top: 72px;
 }
+
 .select.disabled {
     opacity: .8;
 }
+
 .select.open .option {
     opacity: 1;
 }
+
 .select-button {
     overflow: hidden;
     cursor: pointer;
     height: 72px;
 }
+
 .select-button .icon {
     height: 32px;
     width: 32px;
 }
+
 .button-arrow .icon {
     transition: .2s;
 }
+
 .select.open .button-arrow .icon {
     transform: rotate(180deg);
 }
@@ -183,9 +199,11 @@ function select(option: any) {
         min-width: 64px;
         height: 64px;
     }
+
     .select .options {
         top: 64px;
     }
+
     .select-button {
         height: 64px;
     }
