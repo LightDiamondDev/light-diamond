@@ -157,6 +157,7 @@ function onMaskMouseUp(event: MouseEvent) {
     height: 100%;
     width: 100%;
     z-index: 3;
+    left: 0;
 }
 
 .interface .dialog-header .back-button-replacement,

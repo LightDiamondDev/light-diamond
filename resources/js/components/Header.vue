@@ -271,7 +271,7 @@ function logout() {
     </Menu>
 
     <div
-        class="header-blur fixed overflow-y-hidden transition duration-500 h-[100vh] w-full z-[3] flex visible"
+        class="header-blur fixed overflow-y-hidden transition duration-500 h-[100vh] w-full z-[3] left-0 flex visible"
         :class="{'header-blur-on': isHeaderSidebar, 'header-blur-off': !isHeaderSidebar}"
     >
         <aside
@@ -338,7 +338,7 @@ function logout() {
     />
 
     <header
-        class="transition-transform flex justify-center duration-300 select-none h-[var(--header-height)] z-[1] w-full top-0 fixed"
+        class="transition-transform flex justify-center duration-300 select-none h-[var(--header-height)] z-[1] w-full top-0 left-0 fixed"
         :class="{'-translate-y-full': !preferenceManager.isHeaderFixedVisible() && isHeaderHidden}"
     >
         <nav class="header page-container flex justify-between">

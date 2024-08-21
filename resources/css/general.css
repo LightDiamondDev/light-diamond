@@ -166,24 +166,11 @@
 
     @media screen and (min-width: 1024px)
     {
-        /*
-        body.lock-scroll { padding-right: var(--global-scrollbar-width); }
-
-        */
-
-        body.lock-scroll .dialog-background,
+        body.lock-scroll,
         body.lock-scroll header,
-        body.lock-scroll main,
-        body.lock-scroll footer {
-            padding-right: var(--global-scrollbar-width);
-        }
+        body.lock-scroll .dialog-background,
         body.lock-scroll .catalog-banner {
-            left: var(--global-scrollbar-width);
-        }
-        body.lock-scroll .catalog-banner .banner {
-            margin-right: var(--global-scrollbar-width);
-            right: var(--global-scrollbar-width);
-            position: relative;
+            padding-right: var(--global-scrollbar-width);
         }
     }
 

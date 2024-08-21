@@ -63,7 +63,7 @@ function switchEdition() {
                 :to="{ name: `catalog.${edition?.toLowerCase()}` }"
             >
                 <img alt="Logo" class="materials-logo h-[48px] md:h-[100px]" src="/images/elements/light-diamond-materials-logo.png"/>
-                <span v-if="authStore.isAuthenticated" class="base flex justify-center items-center">
+                <span class="base flex justify-center items-center">
                     <span
                         class="splash flex justify-center"
                         :class="{
@@ -245,6 +245,7 @@ footer {
     position: fixed;
     height: 280px;
     top: 0;
+    left: 0;
 }
 .banner {
     background-image: url('/images/elements/catalog-banner1.png');
