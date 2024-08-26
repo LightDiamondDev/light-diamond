@@ -11,10 +11,6 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    icon: {
-        type: String,
-        default: 'icon-down-arrow'
-    },
     optionLabelKey: String,
     optionIconKey: String,
     optionValueKey: String,
@@ -28,7 +24,7 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['select'])
+const emit = defineEmits(['select', 'show'])
 const model = defineModel()
 const currentOption = computed(() => {
     return props.options!.find(
@@ -81,7 +77,12 @@ function close() {
 }
 
 function toggleSelect() {
-    isSelectOpen.value ? close() : open()
+    if (isSelectOpen.value) {
+        close()
+    } else {
+        open()
+        emit('show')
+    }
 }
 
 function select(option: any) {
@@ -105,8 +106,8 @@ function select(option: any) {
             :disabled="disabled"
             type="button"
         >
-            <span class="flex items-center w-full gap-4 pl-6">
-                <span v-if="icon" :class="getOptionIcon(currentOption)" class="icon"/>
+            <span class="select-span flex items-center w-full gap-4 pl-6">
+                <span v-if="optionIconKey" :class="getOptionIcon(currentOption)" class="icon"/>
                 <span class="text">
                     <span v-if="model === undefined" class="opacity-80">{{ placeholder }}</span>
                     <span v-else>{{ getOptionLabel(currentOption) }}</span>
@@ -142,6 +143,7 @@ function select(option: any) {
 }
 
 .select .options {
+    max-height: 360px;
     transition: .2s;
     z-index: 1;
     top: 72px;

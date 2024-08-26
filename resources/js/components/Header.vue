@@ -105,12 +105,12 @@ const navigationSections = computed<NavigationSection[]>(() => [
                 icon: 'icon-spawn-egg',
             },
             {
-                label: 'Скины',
-                icon: 'icon-skin',
-            },
-            {
                 label: 'Карты',
                 icon: 'icon-map',
+            },
+            {
+                label: 'Скины',
+                icon: 'icon-skin',
             },
             {
                 label: 'Статьи',
@@ -238,7 +238,7 @@ function logout() {
     <Dialog
         v-model:visible="isSearchDialog"
         animation="top-translate"
-        class="search-dialog outer page-container"
+        class="search-dialog outer max-w-[1280px] w-full"
         :header="false"
         position="top-center"
         title="Поиск"

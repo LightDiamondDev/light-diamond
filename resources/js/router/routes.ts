@@ -5,16 +5,18 @@ import {GameEdition} from '@/types'
 import Home from '@/components/Home.vue'
 import Catalog from '@/components/catalog/Catalog.vue'
 import CreatePost from '@/components/post/editor/CreatePost.vue'
-import Studio from '@/components/studio/Studio.vue'
+import PostCategory from '@/components/post/PostCategory.vue'
+import PostVersion from '@/components/post/editor/PostVersion.vue'
+import Post from '@/components/post/Post.vue'
+import ProfileSettings from '@/components/settings/ProfileSettings.vue'
+import ResetForm from '@/components/auth/ResetForm.vue'
+import SecuritySettings from '@/components/settings/SecuritySettings.vue'
+import Settings from '@/components/settings/Settings.vue'
 import StudioMaterials from '@/components/studio/StudioMaterials.vue'
 import StudioRequests from '@/components/studio/StudioRequests.vue'
-import VerifyEmail from '@/components/auth/VerifyEmail.vue'
-import ResetForm from '@/components/auth/ResetForm.vue'
-import Settings from '@/components/settings/Settings.vue'
-import ProfileSettings from '@/components/settings/ProfileSettings.vue'
-import SecuritySettings from '@/components/settings/SecuritySettings.vue'
+import Studio from '@/components/studio/Studio.vue'
 import NotFound from '@/components/NotFound.vue'
-import ViewPost from '@/components/post/ViewPost.vue'
+import VerifyEmail from '@/components/auth/VerifyEmail.vue'
 
 declare module 'vue-router' {
     interface RouteMeta {
@@ -59,7 +61,7 @@ const routes: RouteRecordRaw[] = [
         props: {edition: GameEdition.JAVA},
         meta: {
             title: 'Каталог Java',
-        },
+        }
     },
     {
         path: '/java/:category',
@@ -67,7 +69,7 @@ const routes: RouteRecordRaw[] = [
         props: ({params}) => ({edition: GameEdition.BEDROCK, categorySlug: params.category as string}),
         meta: {
             title: 'Категория Java',
-        },
+        }
     },
     {
         path: '/studio',
@@ -103,16 +105,31 @@ const routes: RouteRecordRaw[] = [
         name: 'create-post',
         component: CreatePost,
         meta: {
-            title: 'Редактор Материала',
-        },
+            title: 'Создание Материала',
+            requiresAuth: true
+        }
     },
     {
-        path: '/view-post',
-        name: 'view-post',
-        component: ViewPost,
+        path: '/post-version/:id',
+        name: 'post-version',
+        props: ({params}) => ({id: Number.parseInt(params.id as string, 10) || 0}),
+        component: PostVersion,
         meta: {
-            title: 'Просмотр Материала',
-        },
+            title: 'Заявка на публикацию',
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/post/:slug/',
+        name: 'post',
+        props: true,
+        component: Post,
+    },
+    {
+        path: '/category/:slug',
+        name: 'post-category',
+        props: true,
+        component: PostCategory,
     },
     {
         path: '/email/verify/:id/:hash',

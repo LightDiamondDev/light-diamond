@@ -130,7 +130,6 @@ function submitLogin() {
         </div>
 
     </form>
-
 </template>
 
 <style scoped>

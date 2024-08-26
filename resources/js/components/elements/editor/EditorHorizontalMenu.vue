@@ -56,6 +56,12 @@ const verticalMenus = reactive<{ [key: string]: InstanceType<typeof EditorVertic
     </div>
 </template>
 
+<style>
+.content .editor-horizontal-menu .space-y-2 div {
+    display: flex;
+}
+</style>
+
 <style scoped>
 .content .item-button {
     justify-content: center;

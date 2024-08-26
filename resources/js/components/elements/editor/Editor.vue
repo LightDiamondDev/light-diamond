@@ -34,7 +34,7 @@ const props = defineProps({
     withoutMenus: {
         type: Boolean,
         default: false
-    },
+    }
 })
 
 interface EditorNodeInfo {
@@ -45,8 +45,6 @@ interface EditorNodeInfo {
     icon: string
     callback: (event: Event) => void
 }
-
-
 
 const toastStore = useToastStore()
 const contentModel = defineModel<string>()
@@ -117,7 +115,7 @@ const nodes: { [key: string]: EditorNodeInfo } = {
         name: 'paragraph',
         displayName: 'Абзац',
         shortcut: 'Ctrl+Alt+0',
-        icon: 'icon-diamond',
+        icon: 'icon-paragraph',
         callback: () => editor.value?.chain().focus().setParagraph().run(),
     },
 
@@ -192,7 +190,7 @@ const marks: { [key: string]: EditorNodeInfo } = {
     'link': {
         name: 'link',
         displayName: 'Ссылка',
-        icon: 'icon-link-square',
+        icon: 'icon-link-round',
         callback: (event: Event) => linkOverlayPanel.value!.toggle(event),
     },
 }
@@ -422,7 +420,7 @@ function unsetLink() {
                     <ItemButton icon="icon-small-cross" outlined title="Удалить ссылку" severity="danger"
                                 @click="unsetLink"/>
                 </div>
-                <InputText v-model="currentLink.text" placeholder="Текст..." class="w-full" autocomplete="off"/>
+                <Input v-model="currentLink.text" placeholder="Текст..." class="w-full" autocomplete="off"/>
             </form>
         </OverlayPanel>
 

@@ -25,7 +25,7 @@ const model = defineModel<string>({default: ''})
 const fileSrc = ref(props.fileSrc)
 const toastStore = useToastStore()
 
-const allowedFileFormats = ['MCPACK', 'MCADDON', 'MCWORLD', 'MCSKIN', 'PNG'];
+const allowedFileFormats = ['MCPACK', 'MCADDON', 'MCWORLD', 'MCSKIN', 'ZIP', 'PNG'];
 const allowedFormats = allowedFileFormats.map((format) => 'file/' + format.toLowerCase())
 const maxSizeInMegabytes = props.maxSizeInMegabytes
 
@@ -94,10 +94,10 @@ function uploadFile(file: File) {
     >
         <span class="upload-file-heading flex gap-2">
             <span :class="icon" class="icon relative"></span>
-            <span class="head-font text-[1.2rem] duration-200">{{ title }}</span>
+            <span class="head-font md:text-[1.2rem] text-center duration-200">{{ title }}</span>
         </span>
-        <span>Максимальный размер — {{ maxSizeInMegabytes }} Мб</span>
-        <span>{{ allowedFileFormats.join(" / ") }}</span>
+        <span class="text-center">Максимальный размер — {{ maxSizeInMegabytes }} Мб</span>
+        <span class="text-center">{{ allowedFileFormats.join(" / ") }}</span>
         <input
             @change="onChange"
             accept="file/*"
@@ -134,6 +134,9 @@ em.loaded span {
 em.loaded {
     opacity: 0;
 }
+em.loaded .upload-file-heading {
+    color: var(--hover-text-color);
+}
 .upload-file-container:hover em.loaded:not(:hover) {
     opacity: 1;
 }
@@ -143,5 +146,21 @@ em.loaded {
 input {
     height: 0;
     width: 0;
+}
+
+/* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
+
+@media screen and (max-width: 767px) {
+    em span {
+        font-size: .9rem;
+    }
+}
+
+/* =============== [ Медиа-Запрос { ?px < 425px } ] =============== */
+
+@media screen and (max-width: 425px) {
+    em span {
+        font-size: .7rem;
+    }
 }
 </style>

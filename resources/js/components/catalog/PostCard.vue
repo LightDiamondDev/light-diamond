@@ -51,13 +51,13 @@ function subscribe() {
                 </div>
                 <p class="author-username flex items-center">GrostLight15</p>
             </RouterLink>
-            <p class="type flex items-center text-end">Неделю назад</p>
+            <p class="type ago flex items-center text-end">Неделю назад</p>
         </div>
 
 
-        <div class="menu-separator flex self-center w-[95%]"></div>
-        <div class="actions flex flex-wrap gap-2 p-2 text-[0.7rem]">
-            <div class="line flex flex-wrap gap-2">
+        <div class="menu-separator flex self-center w-[95%]"/>
+        <div class="actions flex flex-wrap gap-2 text-[0.7rem]">
+            <div class="line basic flex flex-wrap gap-2">
                 <button :class="{ 'active': isLiked }" class="set-mark flex items-center" @click="like">
                     <EffectIcon icon="icon-heart"/>
                     <span class="counter flex p-1">{{ likes }}</span>
@@ -71,12 +71,15 @@ function subscribe() {
                     <span class="counter flex p-1">78</span>
                 </RouterLink>
             </div>
+
+            <div class="menu-separator mini-separator self-center w-[95%]"/>
+
             <div class="line flex flex-wrap gap-2">
-                <RouterLink class="set-mark flex items-center" :to="{ name: 'home' }">
+                <RouterLink class="set-mark flex items-center mini" :to="{ name: 'home' }">
                     <span class="icon icon-eye flex"/>
                     <span class="counter flex p-1">1,5K</span>
                 </RouterLink>
-                <RouterLink class="set-mark flex items-center" :to="{ name: 'home' }">
+                <RouterLink class="set-mark flex items-center mini" :to="{ name: 'home' }">
                     <span class="icon icon-download flex"/>
                     <span class="counter flex p-1">1,1K</span>
                 </RouterLink>
@@ -138,6 +141,12 @@ function subscribe() {
     height: 24px;
     width: 64px;
 }
+.description-wrap .actions {
+    padding: .5rem;
+}
+.mini-separator {
+    display: none;
+}
 
 /* =============== [ Медиа-Запрос { < 1281px } ] =============== */
 
@@ -189,12 +198,31 @@ function subscribe() {
     .post-card .line {
         gap: 2rem;
     }
+    .description-wrap .actions {
+        flex-direction: column-reverse;
+        align-items: center;
+        padding: 0;
+        gap: 0;
+    }
+    .description-wrap .line.basic {
+        padding: 4px;
+    }
+    .description-wrap .mini {
+        transform: scale(.8);
+    }
+    .mini-separator {
+        display: flex;
+    }
+    .type.ago {
+        margin-bottom: 1rem;
+    }
 }
 
 /* =============== [ Медиа-Запрос { < 301px } ] =============== */
 
 @media screen and (max-width: 300px) {
-    .author-wrap {
+    .author-wrap,
+    .type.ago {
         justify-content: center;
     }
     .material-info,

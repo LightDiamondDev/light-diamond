@@ -38,7 +38,7 @@ const props = defineProps({
     class: {
         type: String,
         default: ''
-    },
+    }
 })
 
 const emit = defineEmits(['back'])
@@ -103,45 +103,45 @@ function onMaskMouseUp(event: MouseEvent) {
             @mouseup="onMaskMouseUp"
         >
 
-                <div
-                    v-if="isVisible"
-                    class="dialog-form-container inner flex"
-                    :class="props.class"
-                    ref="container"
-                >
+            <div
+                v-if="isVisible"
+                class="dialog-form-container inner flex"
+                :class="props.class"
+                ref="container"
+            >
 
-                    <slot name="left-content"/>
+                <slot name="left-content"/>
 
-                    <div class="interface w-full">
+                <div class="interface w-full">
 
-                        <div v-if="header" class="dialog-header flex justify-between items-center">
-                            <button
-                                v-if="backButton"
-                                class="flex justify-center items-center m-2"
-                                type="button"
-                                @click="emit('back')"
-                            >
-                                <span class="icon icon-long-left-arrow"></span>
-                            </button>
+                    <div v-if="header" class="dialog-header flex justify-between items-center">
+                        <button
+                            v-if="backButton"
+                            class="flex justify-center items-center m-2"
+                            type="button"
+                            @click="emit('back')"
+                        >
+                            <span class="icon icon-long-left-arrow"></span>
+                        </button>
 
-                            <div v-else class="back-button-replacement m-2"/>
+                        <div v-else class="back-button-replacement m-2"/>
 
-                            <h1 class="text-[1.8rem]">{{ title }}</h1>
+                        <h1 class="text-[1.8rem]">{{ title }}</h1>
 
-                            <button
-                                v-if="closeButton"
-                                class="flex justify-center items-center m-2"
-                                type="button"
-                                @click="isVisible = false"
-                            >
-                                <span class="icon icon-cross"></span>
-                            </button>
-                        </div>
-
-                        <slot/>
-
+                        <button
+                            v-if="closeButton"
+                            class="flex justify-center items-center m-2"
+                            type="button"
+                            @click="isVisible = false"
+                        >
+                            <span class="icon icon-cross"></span>
+                        </button>
                     </div>
+
+                    <slot/>
+
                 </div>
+            </div>
 
         </div>
 

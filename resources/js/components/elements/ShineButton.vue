@@ -51,4 +51,7 @@ const props = defineProps({
 .disabled {
     opacity: .5;
 }
+.shine-button .icon {
+    min-width: 32px;
+}
 </style>

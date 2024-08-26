@@ -41,7 +41,6 @@ function submitForgotPassword() {
 </script>
 
 <template>
-
     <form action="" class="forgot-password flex flex-col items-center" name="forgot-password">
 
         <fieldset class="flex flex-col items-center">
@@ -88,7 +87,6 @@ function submitForgotPassword() {
         </div>
 
     </form>
-
 </template>
 
 <style scoped>

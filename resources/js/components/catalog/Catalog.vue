@@ -6,6 +6,7 @@ import usePreferenceManager from '@/preference-manager'
 import {useAuthStore} from '@/stores/auth'
 import {useRouter} from 'vue-router'
 import Posts from '@/components/catalog/Posts.vue'
+import Banner from '@/components/elements/Banner.vue'
 
 const props = defineProps({
     edition: {
@@ -47,13 +48,7 @@ function switchEdition() {
 </script>
 
 <template>
-<div class="catalog-banner flex justify-center w-full">
-    <div class="banner flex justify-center items-end">
-        <div class="title flex flex-col justify-center items-center">
-            <h1 class="text-center absolute opacity-0">Каталог Light Diamond</h1>
-        </div>
-    </div>
-</div>
+<Banner title="Каталог Light Diamond" :is-title-visible="false"/>
 <div class="catalog-container bg-lighter flex justify-center w-full">
     <section class="catalog flex flex-col items-center w-full">
 
@@ -120,7 +115,7 @@ function switchEdition() {
                             <span class="press flex">
                                 <span class="preset flex items-center gap-1">
                                     <span class="icon icon-crown"/>
-                                    <span>{{ currentTimePeriod }}</span>
+                                    <span style="white-space: nowrap;">{{ currentTimePeriod }}</span>
                                 </span>
                             </span>
                         </button>
@@ -180,16 +175,16 @@ function switchEdition() {
                     <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
-                                <span class="icon icon-skin"/>
-                                <span>Скины</span>
+                                <span class="icon icon-map"/>
+                                <span>Карты</span>
                             </span>
                         </span>
                     </RouterLink>
                     <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
-                                <span class="icon icon-map"/>
-                                <span>Карты</span>
+                                <span class="icon icon-skin"/>
+                                <span>Скины</span>
                             </span>
                         </span>
                     </RouterLink>
@@ -237,36 +232,15 @@ footer {
     margin-top: 208px;
 }
 .catalog-container {
+    background-attachment: fixed;
     position: relative;
     margin-top: 208px;
 }
-.catalog-banner {
-    overflow: hidden;
-    position: fixed;
-    height: 280px;
-    top: 0;
-    left: 0;
-}
-.banner {
-    background-image: url('/images/elements/catalog-banner1.png');
-    background-repeat: repeat;
-    min-width: 1920px;
-    width: 100%;
-    height: 280px;
-}
-.banner .title,
 .catalog-container .title {
     position: relative;
     line-height: 1.1;
     font-size: 3rem;
     height: 208px
-}
-.banner .title .title {
-    line-height: 1.1;
-    font-size: 3rem;
-}
-.banner .title h1 {
-    text-shadow: 4px 4px 48px black;
 }
 .catalog-container .title {
     margin-top: -208px;
@@ -382,9 +356,6 @@ section.catalog {
     .catalog-panel .sub-line {
         flex-grow: 1;
     }
-    .banner .title {
-        font-size: 2.5rem;
-    }
     .menu-separator {
         width: 95%;
     }
@@ -393,17 +364,6 @@ section.catalog {
 /* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
 
 @media screen and (max-width: 450px) {
-    .catalog-banner {
-        height: 178px;
-    }
-    .banner {
-        height: 178px;
-    }
-    .banner .title {
-        font-size: 1.8rem;
-        max-width: 214px;
-        height: 126px
-    }
     .catalog-container .title {
         height: 104px;
     }

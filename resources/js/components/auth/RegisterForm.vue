@@ -137,7 +137,6 @@ function submitRegister() {
         </button>
 
     </form>
-
 </template>
 
 <style scoped>

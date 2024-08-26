@@ -10,7 +10,7 @@ import Button from '@/components/elements/Button.vue'
                     <span class="icon icon-magnifier"></span>
                 </button>
                 <input class="flex text-[0.9rem]" id="search-input" placeholder="Поиск..." type="text">
-                <button class="flex justify-center items-center" @click="isVisible = false" type="reset">
+                <button class="flex justify-center items-center" type="reset">
                     <span class="icon icon-cross"></span>
                 </button>
             </label>

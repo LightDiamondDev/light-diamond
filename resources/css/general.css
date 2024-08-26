@@ -22,7 +22,6 @@
         background: none;
         cursor: pointer;
     }
-    code { font-family: Monocraft, sans-serif; }
     fieldset { border: none; }
     img { user-select: none; }
     input {
@@ -209,9 +208,9 @@
     .ProseMirror > .is-empty:before {
         color: #adb5bd;
         content: attr(data-placeholder);
+        pointer-events: none;
         float: left;
         height: 0;
-        pointer-events: none;
     }
 
     .content .ProseMirror > .is-empty:before {
@@ -242,10 +241,6 @@
             list-style-type: decimal;
         }
 
-        ul {
-            list-style-type: disc;
-        }
-
         ol, ul {
             padding-left: 2rem;
         }
@@ -254,21 +249,13 @@
             margin: 0;
         }
 
-
+        --surface-50: #27272a;
 
         code {
-            /*
-            background-color: var(--surface-50);
-            */
-            border-radius: 0.3rem;
             padding: 0.2rem 0.5rem;
         }
 
         pre {
-            /*
-            background-color: var(--surface-50);
-            */
-            border-radius: 0.5rem;
             padding: 0.6rem 0.9rem;
             overflow-x: auto;
 
@@ -291,10 +278,6 @@
 
         h1 {
             font-weight: 600;
-        }
-
-        h2 {
-            margin-top: 1.2rem;
         }
 
         hr {
