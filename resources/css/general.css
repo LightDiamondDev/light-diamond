@@ -161,12 +161,14 @@
         }
     }
 
-    body.lock-scroll,
-    body.lock-scroll header,
-    body.lock-scroll .dialog-background,
-    body.lock-scroll .catalog-banner {
+    body.lock-scroll {
         /*noinspection CssUnresolvedCustomProperty*/
         padding-right: var(--current-global-scrollbar-width);
+    }
+
+    body.lock-scroll .fixed.w-full {
+        /*noinspection CssUnresolvedCustomProperty*/
+        width: calc(100% - var(--current-global-scrollbar-width)) !important;
     }
 
     :root {

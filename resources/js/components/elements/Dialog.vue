@@ -94,7 +94,7 @@ function onMaskMouseUp(event: MouseEvent) {
 
         <div
             v-if="isVisible"
-            class="dialog-background outer flex"
+            class="dialog-background outer flex fixed w-full h-full left-0 z-[3]"
             :class="{
                 'justify-center items-center': position === 'center',
                 'justify-center items-start': position === 'top-center',
@@ -153,11 +153,6 @@ function onMaskMouseUp(event: MouseEvent) {
 
 .dialog-background {
     background-color: rgba(0, 0, 0, .5);
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    z-index: 3;
-    left: 0;
 }
 
 .interface .dialog-header .back-button-replacement,
