@@ -118,10 +118,13 @@ export function remToPixels(remValue: string) {
 }
 
 export function lockGlobalScroll() {
+    const currentScrollbarWidth = window.innerWidth - document.documentElement.offsetWidth
+    document.body.style.setProperty('--current-global-scrollbar-width', currentScrollbarWidth + 'px')
     document.body.classList.add('lock-scroll')
 }
 
 export function unlockGlobalScroll() {
+    document.body.style.removeProperty('--current-global-scrollbar-width')
     document.body.classList.remove('lock-scroll')
 }
 
