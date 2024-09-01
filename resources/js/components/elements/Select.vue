@@ -106,23 +106,21 @@ function change(option: any) {
     >
         <button
             class="select-button flex justify-between items-center"
-            @click="toggleSelect"
             :disabled="disabled"
             type="button"
+            @click="toggleSelect"
         >
             <span class="select-span flex items-center w-full gap-4 pl-6">
-
-                <template v-if="model">
+                <template v-if="currentOption">
                     <slot name="option-icon" :option="currentOption">
                         <span v-if="optionIconKey" :class="getOptionIcon(currentOption)" class="icon"></span>
                     </slot>
                 </template>
 
                 <span class="text">
-                    <span v-if="!model" class="opacity-80 ml-2">{{ placeholder }}</span>
-                    <span v-else>{{ getOptionLabel(currentOption) }}</span>
+                    <span v-if="currentOption">{{ getOptionLabel(currentOption) }}</span>
+                    <span v-else class="opacity-80 ml-2">{{ placeholder }}</span>
                 </span>
-
             </span>
             <span v-if="!disabled" class="button-arrow flex justify-center items-center">
                 <span class="icon icon-down-arrow flex"></span>
@@ -160,6 +158,7 @@ function change(option: any) {
     z-index: 1;
     top: 72px;
 }
+
 .select.disabled {
     opacity: .8;
 }
