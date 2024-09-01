@@ -24,13 +24,14 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['select', 'show'])
+const emit = defineEmits(['change', 'show'])
 const model = defineModel()
 const currentOption = computed(() => {
     return props.options!.find(
         (option) => model.value === (props.optionValueKey ? option[props.optionValueKey] : option)
     )
 })
+const placeholder = ref(props.placeholder)
 
 function getOptionLabel(option) {
     return option && props.optionLabelKey ? option[props.optionLabelKey] : option
@@ -85,10 +86,13 @@ function toggleSelect() {
     }
 }
 
-function select(option: any) {
+function change(option: any) {
     if (isSelectOpen.value) {
-        model.value = props.optionValueKey ? option[props.optionValueKey] : option
-        emit('select', option)
+        const newModelValue = props.optionValueKey ? option[props.optionValueKey] : option
+        if (newModelValue !== model.value) {
+            model.value = newModelValue
+            emit('change', option)
+        }
         close()
     }
 }
@@ -107,13 +111,20 @@ function select(option: any) {
             type="button"
         >
             <span class="select-span flex items-center w-full gap-4 pl-6">
-                <span v-if="optionIconKey" :class="getOptionIcon(currentOption)" class="icon"/>
+
+                <template v-if="model">
+                    <slot name="option-icon" :option="currentOption">
+                        <span v-if="optionIconKey" :class="getOptionIcon(currentOption)" class="icon"></span>
+                    </slot>
+                </template>
+
                 <span class="text">
-                    <span v-if="model === undefined" class="opacity-80">{{ placeholder }}</span>
+                    <span v-if="!model" class="opacity-80 ml-2">{{ placeholder }}</span>
                     <span v-else>{{ getOptionLabel(currentOption) }}</span>
                 </span>
+
             </span>
-            <span class="button-arrow flex justify-center items-center">
+            <span v-if="!disabled" class="button-arrow flex justify-center items-center">
                 <span class="icon icon-down-arrow flex"></span>
             </span>
         </button>
@@ -121,7 +132,7 @@ function select(option: any) {
             <div v-if="isSelectOpen" class="options flex flex-col w-full absolute">
                 <template v-for="option in props.options">
                     <ItemButton
-                        @click="select(option)"
+                        @click="change(option)"
                         :text="getOptionLabel(option)"
                         :icon="getOptionIcon(option)"
                         class="option flex pl-6"
@@ -144,11 +155,11 @@ function select(option: any) {
 
 .select .options {
     max-height: 360px;
+    overflow-y: auto;
     transition: .2s;
     z-index: 1;
     top: 72px;
 }
-
 .select.disabled {
     opacity: .8;
 }

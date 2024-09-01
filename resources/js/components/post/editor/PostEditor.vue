@@ -33,14 +33,18 @@ defineProps({
         default: true,
     },
     errors: {
+        type: Object,
+        required: true,
+    },
+    derrors2: {
         type: Object as PropType<{ [key: string]: string[] }>,
-        required: true
+        required: false
     }
 })
 
 const preferenceManager = usePreferenceManager()
 const postCategoryStore = usePostCategoryStore()
-const errors = ref<string[][]>([])
+// const errors = ref<string[][]>([])
 const postVersion = defineModel<PostVersion>({default: {}})
 const gameEdition = ref<GameEdition|null>(preferenceManager.getEdition())
 const categories = computed(() => postCategoryStore.categories.filter(
@@ -119,10 +123,8 @@ const contentEditorExtensions = [
     Image
 ]
 
-function onEditionSelect(editionOption: any) {
-    if (editionOption.value !== gameEdition.value) {
-        postVersion.value.category_id = undefined
-    }
+function onEditionChange(editionOption: any) {
+    postVersion.value.category_id = undefined
 }
 
 </script>
@@ -130,6 +132,8 @@ function onEditionSelect(editionOption: any) {
 <template>
 
     <slot name="banner"/>
+
+    <slot name="header"/>
 
     <div class="first-section bg-lighter w-full">
         <section class="page-container flex justify-center">
@@ -150,6 +154,7 @@ function onEditionSelect(editionOption: any) {
 
                     <Editor
                         v-model="postVersion.title"
+                        :class="{'red-overlay': errors['title']}"
                         class="material-name flex justify-center max-w-[1280px]"
                         :editable="editable"
                         :extensions="titleEditorExtensions"
@@ -157,10 +162,11 @@ function onEditionSelect(editionOption: any) {
                         without-menus
                     />
 
-                    <p class="error">{{ errors['title']?.[0] || '&nbsp;' }}</p>
+                    <p class="error mb-6">{{ errors['title']?.[0] || ' ' }}</p>
 
                     <UploadImage
-                        class="upload-post-preview flex mb-8"
+                        :class="{'red-overlay': errors['cover_file']}"
+                        class="upload-post-preview flex"
                         :editable="editable"
                         icon="icon-download"
                         id="upload-post-preview"
@@ -172,6 +178,8 @@ function onEditionSelect(editionOption: any) {
                         :min-width="768"
                     />
 
+                    <p class="error mb-6 mt-4">{{ errors['cover_file']?.[0] || ' ' }}</p>
+
                 </div>
             </div>
 
@@ -181,12 +189,13 @@ function onEditionSelect(editionOption: any) {
             <div class="content w-full">
                 <Editor
                     v-model="postVersion.content"
+                    :class="{'red-overlay': errors['content']}"
                     editor-class="post-content min-h-[12rem]"
                     :extensions="contentEditorExtensions"
                     :editable="editable"
                 />
 
-                <p class="error">{{ errors['content']?.[0] || '&nbsp;' }}</p>
+                <p class="error">{{ errors['content']?.[0] || ' ' }}</p>
             </div>
         </section>
 
@@ -207,18 +216,17 @@ function onEditionSelect(editionOption: any) {
                             option-label-key="label"
                             option-icon-key="icon"
                             option-value-key="value"
-                            @select="onEditionSelect"
+                            @change="onEditionChange"
                         >
                             <template #option-icon/>
                         </Select>
 
                         <Select
+                            :class="{'red-overlay': errors['category_id']}"
                             class="post-category flex"
                             v-model="postVersion.category_id"
                             :disabled="!editable"
                             input-id="category"
-
-
                             :options="categories"
                             option-label-key="name"
                             option-value-key="id"
@@ -227,9 +235,10 @@ function onEditionSelect(editionOption: any) {
                             <template #option-icon/>
                         </Select>
 
-                        <p class="error">{{ errors['category_id']?.[0] || '&nbsp;' }}</p>
+                        <p class="error my-2">{{ errors['category_id']?.[0] || ' ' }}</p>
 
                         <Textarea
+                            :class="{'red-overlay': errors['description']}"
                             class="post-description"
                             v-model="postVersion.description"
                             :disabled="!editable"
@@ -240,10 +249,10 @@ function onEditionSelect(editionOption: any) {
                             rows="3"
                         />
 
-                        <p class="error">{{ errors['description']?.[0] || '&nbsp;' }}</p>
+                        <p class="error mb-3 mt-2">{{ errors['description']?.[0] || ' ' }}</p>
 
                         <UploadFile
-                            class="upload-post-preview flex"
+                            class="upload-post-preview flex mb-5"
                             :editable="editable"
                             icon="icon-download"
                             id="upload-post-preview"
@@ -253,12 +262,10 @@ function onEditionSelect(editionOption: any) {
                             :max-size-in-megabytes="20"
                         />
 
-                        <p class="error">{{ errors['cover_url']?.[0] || '&nbsp;' }}</p>
-
                     </div>
                 </div>
             </div>
-            <aside class="post-interaction flex flex-col items-center gap-2">
+            <aside class="post-interaction flex flex-col items-center">
                 <slot name="sidebar"></slot>
             </aside>
         </section>
@@ -267,6 +274,14 @@ function onEditionSelect(editionOption: any) {
 </template>
 
 <style>
+.banner-title {
+    position: relative;
+    height: 208px;
+}
+.banner-title h1 {
+    line-height: 1.1;
+    font-size: 3rem;
+}
 .material-name h1 {
     word-wrap: anywhere;
     line-break: strict;
@@ -280,11 +295,19 @@ function onEditionSelect(editionOption: any) {
 .post-edition {
     color: var(--primary-text-color);
 }
-.post-category .options {
-    overflow-y: scroll;
-}
 .post-interaction .shine-button.confirm .text {
     white-space: nowrap;
+}
+
+/* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
+
+@media screen and (max-width: 450px) {
+    .banner-title {
+        height: 108px;
+    }
+    .banner-title h1 {
+        font-size: 2rem;
+    }
 }
 </style>
 
@@ -292,7 +315,6 @@ function onEditionSelect(editionOption: any) {
 .first-section {
     background-attachment: fixed;
     position: relative;
-    margin-top: 208px;
 }
 .content {
     max-width: 800px;
@@ -308,11 +330,11 @@ function onEditionSelect(editionOption: any) {
     list-style-type: square;
 }
 .interface .upload-image-container {
+    background-position: center;
+    object-position: center;
     aspect-ratio: 16 / 9;
-    max-width: 100%;
-}
-.author-wrap:hover .username {
-    color: var(--hover-text-color);
+    object-fit: cover;
+    width: 100%;
 }
 .post-interaction {
     height: fit-content;
@@ -356,14 +378,6 @@ function onEditionSelect(editionOption: any) {
 @media screen and (max-width: 767px) {
     .origin-info {
         flex-direction: column;
-    }
-}
-
-/* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
-
-@media screen and (max-width: 450px) {
-    .first-section {
-        margin-top: 106px;
     }
 }
 </style>

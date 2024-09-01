@@ -19,6 +19,11 @@ defineExpose({
     toggle,
 })
 
+defineOptions({
+    inheritAttrs: false
+})
+
+
 const isVisible = ref(false)
 const isContainerMouseDown = ref(false)
 const container = ref<HTMLElement>()
@@ -80,6 +85,7 @@ function onDocumentMouseUp(event: MouseEvent) {
                 class="menu absolute z-0 flex flex-col overflow-auto"
                 :class="props.class"
                 ref="container"
+                v-bind="$attrs"
             >
                 <slot/>
             </div>

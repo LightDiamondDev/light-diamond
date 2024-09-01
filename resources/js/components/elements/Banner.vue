@@ -4,6 +4,10 @@ const props = defineProps({
         type: String,
         default: 'Заголовок'
     },
+    isTitleDisplay: {
+        type: Boolean,
+        default: true
+    },
     isTitleVisible: {
         type: Boolean,
         default: true
@@ -14,7 +18,7 @@ const props = defineProps({
 <template>
     <div class="banner-container flex justify-center fixed w-full">
         <div class="banner flex justify-center items-end">
-            <div :class="{ 'opacity-0': !isTitleVisible }" class="title page-container flex flex-col justify-center items-center">
+            <div v-if="isTitleDisplay" :class="{ 'opacity-0': !isTitleVisible }" class="title page-container flex flex-col justify-center items-center">
                 <h1 class="text-center absolute">{{ title }}</h1>
             </div>
         </div>

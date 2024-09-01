@@ -7,20 +7,12 @@ import {RouterLink, useRouter} from 'vue-router'
 
 import {computed, reactive, ref} from 'vue'
 
-import {
-    getAppUrl,
-    getErrorMessageByCode,
-    getFullDate,
-    getPostVersionStatusInfo,
-    getRelativeDate
-} from '@/helpers'
+import {getAppUrl, getErrorMessageByCode, getPostVersionStatusInfo, getRelativeDate} from '@/helpers'
 
 import {
-    GameEdition,
     type PostVersion,
     type PostVersionActionReject,
     type PostVersionActionRequestChanges,
-    PostVersionActionType,
     PostVersionStatus,
     type User,
     UserRole
@@ -29,7 +21,6 @@ import {
 import slugify from '@sindresorhus/slugify'
 
 import PostEditor from '@/components/post/editor/PostEditor.vue'
-import PostHistory from '@/components/post/PostHistory.vue'
 import PostVersionActionComponent from '@/components/post/PostVersionAction.vue'
 
 import Banner from '@/components/elements/Banner.vue'
@@ -93,6 +84,7 @@ const isRejecting = ref(false)
 const isRequestingChanges = ref(false)
 const isSavingAsDraft = ref(false)
 const isSubmitting = ref(false)
+const isUpdatingDraft = ref(false)
 
 const errors = ref<{ [key: string]: string[] }>({})
 
@@ -107,7 +99,6 @@ const moderatorOptions = computed(() => {
         if (postVersion.value!.assigned_moderator_id !== authStore.id) {
             options.push(authStore.user!)
         }
-
         return options
     }
 
@@ -150,10 +141,7 @@ function loadModerators() {
 }
 
 function assignModerator(moderator: User) {
-    if (moderator.id === postVersion.value!.assigned_moderator_id) return
-
     postVersion.value!.assigned_moderator = moderator
-
     axios.put(
         `/api/post-versions/${props.id}/assigned-moderator`,
         {moderator_id: moderator.id}
@@ -163,6 +151,7 @@ function assignModerator(moderator: User) {
         } else {
             if (response.data.message) {
                 toastStore.error(response.data.message)
+                errors.value = response.data.errors
             }
         }
     }).catch((error: AxiosError) => {
@@ -171,25 +160,23 @@ function assignModerator(moderator: User) {
 }
 
 function accept() {
-    isSubmitting.value = true
-    errors.value = {}
+    isAccepting.value = true
 
     const formData = new FormData()
-    Object.keys(postVersion.value).forEach(key => formData.append(key, postVersion.value[key]))
+    Object.keys(postVersion.value!).forEach(key => formData.append(key, postVersion.value![key]))
+    if (!postVersion.value?.post_id) {
+        formData.append('slug', slug.value)
+    }
 
-    axios.post('/api/post-versions/submit', formData).then((response) => {
+    axios.patch(`/api/post-versions/${props.id}/accept`, formData).then((response) => {
         if (response.data.success) {
             toastStore.success('Материал успешно опубликован!')
-            submitOverlayPanel.value?.hide()
-            router.push({name: 'post-version', params: {id: response.data.id}})
+            acceptOverlayPanel.value?.hide()
+            loadPostVersion()
         } else {
             if (response.data.errors) {
                 toastStore.error('Не все поля заполнены корректно.')
                 errors.value = response.data.errors
-
-                console.log(errors)
-                console.log(errors.value)
-
             }
             if (response.data.message) {
                 toastStore.error(response.data.message)
@@ -198,30 +185,25 @@ function accept() {
     }).catch((error: AxiosError) => {
         toastStore.error(getErrorMessageByCode(error.response!.status))
     }).finally(() => {
-        isSubmitting.value = false
+        isAccepting.value = false
     })
 }
 
 function submit() {
     isSubmitting.value = true
-    errors.value = {}
 
     const formData = new FormData()
-    Object.keys(postVersion.value).forEach(key => formData.append(key, postVersion.value[key]))
+    Object.keys(postVersion.value!).forEach(key => formData.append(key, postVersion.value![key]))
 
-    axios.post('/api/post-versions/submit', formData).then((response) => {
+    axios.patch(`/api/post-versions/${props.id}/submit`, formData).then((response) => {
         if (response.data.success) {
             toastStore.success('Материал отправлен на модерацию.')
             submitOverlayPanel.value?.hide()
-            router.push({name: 'post-version', params: {id: response.data.id}})
+            loadPostVersion()
         } else {
             if (response.data.errors) {
                 toastStore.error('Не все поля заполнены корректно.')
                 errors.value = response.data.errors
-
-                console.log(errors)
-                console.log(errors.value)
-
             }
             if (response.data.message) {
                 toastStore.error(response.data.message)
@@ -234,18 +216,18 @@ function submit() {
     })
 }
 
-function saveAsDraft() {
-    isSavingAsDraft.value = true
-    errors.value = {}
+function reject() {
+    isRejecting.value = true
 
     const formData = new FormData()
-    Object.keys(postVersion.value).forEach(key => formData.append(key, postVersion.value[key]))
+    Object.keys(postVersion.value!).forEach(key => formData.append(key, postVersion.value![key]))
+    Object.keys(rejectDetails).forEach(key => formData.append(`details[${key}]`, rejectDetails[key]))
 
-    axios.post('/api/post-versions', formData).then((response) => {
+    axios.patch(`/api/post-versions/${props.id}/reject`, formData).then((response) => {
         if (response.data.success) {
-            toastStore.success('Материал сохранён как черновик.')
-            const postVersionId = response.data.id
-            router.push({name: 'post-version', params: {id: postVersionId}})
+            toastStore.warning('Материал был отклонён.', 'Отклонено')
+            rejectOverlayPanel.value?.hide()
+            loadPostVersion()
         } else {
             if (response.data.errors) {
                 toastStore.error('Не все поля заполнены корректно.')
@@ -258,14 +240,62 @@ function saveAsDraft() {
     }).catch((error: AxiosError) => {
         toastStore.error(getErrorMessageByCode(error.response!.status))
     }).finally(() => {
-        isSavingAsDraft.value = false
+        isRejecting.value = false
     })
 }
 
-function onModeratorSelect(editionOption: any) {
+function revision() {
+    isRequestingChanges.value = true
 
+    const formData = new FormData()
+    Object.keys(postVersion.value!).forEach(key => formData.append(key, postVersion.value![key]))
+    Object.keys(requestChangesDetails).forEach(key => formData.append(`details[${key}]`, requestChangesDetails[key]))
+
+    axios.patch(`/api/post-versions/${props.id}/request-changes`, formData).then((response) => {
+        if (response.data.success) {
+            toastStore.success('Материал возвращён на доработку.')
+            revisionOverlayPanel.value?.hide()
+            loadPostVersion()
+        } else {
+            if (response.data.errors) {
+                toastStore.error('Не все поля заполнены корректно.')
+                errors.value = response.data.errors
+            }
+            if (response.data.message) {
+                toastStore.error(response.data.message)
+            }
+        }
+    }).catch((error: AxiosError) => {
+        toastStore.error(getErrorMessageByCode(error.response!.status))
+    }).finally(() => {
+        isRequestingChanges.value = false
+    })
 }
 
+function updateDraft() {
+    isUpdatingDraft.value = true
+
+    const formData = new FormData()
+    Object.keys(postVersion.value!).forEach(key => formData.append(key, postVersion.value![key]))
+
+    axios.patch(`/api/post-versions/${props.id}`, formData).then((response) => {
+        if (response.data.success) {
+            toastStore.success('Изменения успешно сохранены.')
+        } else {
+            if (response.data.errors) {
+                toastStore.error('Не все поля заполнены корректно.')
+                errors.value = response.data.errors
+            }
+            if (response.data.message) {
+                toastStore.error(response.data.message)
+            }
+        }
+    }).catch((error: AxiosError) => {
+        toastStore.error(getErrorMessageByCode(error.response!.status))
+    }).finally(() => {
+        isUpdatingDraft.value = false
+    })
+}
 loadPostVersion()
 </script>
 
@@ -297,55 +327,59 @@ loadPostVersion()
             :errors="errors"
         >
             <template v-slot:banner>
-                <Banner title="Заявка на публикацию">
-                    <template v-slot:banner-content>
-                        <div class="mark-block flex justify-end items-center max-w-[800px] w-full gap-4 pb-2">
-                            <div :class="{ 'new': isFirstVersion, 'update': !isFirstVersion }" class="material-type new flex items-center h-fit gap-2 px-1 py-0.5">
-                                <span class="icon-apple icon flex"/>
-                                <p v-if="isFirstVersion" class="text-[.7rem]">Новый Материал</p>
-                                <p v-else class="text-[.7rem]">Обновление</p>
-                            </div>
-                            <div class="time-ago time flex items-center h-fit gap-2 px-1 py-0.5">
-                                <span class="icon-clock icon flex"/>
-                                <p class="text-[.7rem]">1 мин. назад</p>
-                            </div>
+                <Banner :is-title-display="false"/>
+            </template>
+
+            <template v-slot:header>
+                <div class="banner-title page-container flex flex-col justify-center items-center w-full">
+
+                    <RouterLink
+                        class="logo-wrap flex items-center full-locked relative orange"
+                        :to="{ name: 'home' }"
+                    >
+                        <h1 class="title-font text-center">Заявка на публикацию</h1>
+                    </RouterLink>
+
+                    <div class="mark-block flex justify-end items-center max-w-[800px] absolute w-full bottom-0 gap-4 pb-2">
+                        <div :class="{ 'new': isFirstVersion, 'update': !isFirstVersion }" class="material-type new flex items-center h-fit gap-2 px-1 py-0.5">
+                            <span class="icon-apple icon flex"/>
+                            <p v-if="isFirstVersion" class="text-[.7rem]">Новый Материал</p>
+                            <p v-else class="text-[.7rem]">Обновление</p>
                         </div>
-                    </template>
-                </Banner>
+                        <div class="time-ago time flex items-center h-fit gap-2 px-1 py-0.5">
+                            <span class="icon-clock icon flex"/>
+                            <p class="text-[.7rem]">{{ getRelativeDate(postVersion!.updated_at!) }}</p>
+                        </div>
+                    </div>
+
+                </div>
             </template>
 
             <template v-slot:sidebar>
-                <div class="flex flex-col w-full gap-2">
+                <div class="flex flex-col w-full">
 
                     <div v-if="authStore.isModerator &&
-                              (postVersion.status !== PostVersionStatus.DRAFT || postVersion.assigned_moderator)"
+                            (postVersion.status !== PostVersionStatus.DRAFT || postVersion.assigned_moderator)"
                          class="flex flex-col gap-2">
                         <p class="px-3 pt-2">Модератор</p>
 
                         <Select
-                            v-if="postVersion!.status === PostVersionStatus.PENDING"
-                            class="post-moderator flex self-center"
+                            :disabled="postVersion!.status !== PostVersionStatus.PENDING"
+                            class="post-moderator flex self-center w-full"
                             v-model="postVersion!.assigned_moderator_id"
-                            input-id="edition"
+                            input-id="moderator"
                             :options="moderatorOptions"
                             option-label-key="username"
                             option-value-key="id"
-                            placeholder="Назначить"
+                            placeholder="Не назначен"
                             @show="loadModerators"
-                            @select="onModeratorSelect"
+                            @change="assignModerator"
                         >
 
-                            <template #value="{placeholder}: {placeholder: string}">
-                                <div v-if="postVersion!.assigned_moderator" class="flex gap-2 items-center">
-                                    <UserAvatar :user="postVersion!.assigned_moderator"/>
-                                    <p class="hidden xs:block text-sm line-clamp-1">
-                                        {{ postVersion!.assigned_moderator.username }}
-                                    </p>
-                                </div>
-                                <span v-else>
-                            {{ placeholder }}
-                        </span>
+                            <template #option-icon="{option}: {option: User}">
+                                <UserAvatar :user="option"/>
                             </template>
+
                             <template #option="{option}: { option: User}">
                                 <div class="flex gap-2 items-center py-2 px-3 w-full"
                                      @click="assignModerator(option)">
@@ -357,22 +391,24 @@ loadPostVersion()
                         </Select>
                     </div>
 
-                    <p class="px-3">Статус</p>
+                    <p class="pt-2 px-3">Статус</p>
 
-                    <p class="transfusion bordered h-fit w-fit ml-3 p-2">На рассмотрении</p>
+                    <p :class="postVersionStatusInfo.colorClass" class="transfusion bordered h-fit w-fit mb-2 mx-3 p-2">
+                        {{ postVersionStatusInfo.name }}
+                    </p>
 
                     <div class="separator"></div>
 
-                    <div class="flex flex-col gap-2 pb-2 px-2">
+                    <div class="flex flex-col gap-2 p-2">
                         <ShineButton
-                            class="shine-button whitespace-nowrap"
-                            @click="saveAsDraft"
+                            class="shine-button text-[0.7rem]"
+                            @click="acceptOverlayPanel?.toggle"
                             text="История действий"
                             icon="icon-script"
                         />
                     </div>
 
-                    <div v-if="authStore.isModerator && postVersion.status !== PostVersionStatus.DRAFT"
+                    <div v-if="isReviewing"
                          class="flex flex-col gap-2 pb-2 px-2">
                         <div class="separator"></div>
                         <ShineButton
@@ -385,19 +421,17 @@ loadPostVersion()
                             class="shine-button cancel"
                             @click="rejectOverlayPanel?.toggle"
                             text="Отклонить"
-                            :loading="isSavingAsDraft"
                             icon="icon-small-cross"
                         />
                         <ShineButton
                             class="shine-button"
                             @click="revisionOverlayPanel?.toggle"
                             text="На доработку"
-                            :loading="isSavingAsDraft"
                             icon="icon-refresh"
                         />
                     </div>
                 </div>
-                <div v-if="isOwnDraft" class="flex flex-col gap-2 p-2">
+                <div v-if="isOwnDraft" class="flex flex-col gap-2 pb-2 px-2">
                     <div class="separator"></div>
                     <ShineButton
                         class="shine-button w-full confirm"
@@ -407,9 +441,9 @@ loadPostVersion()
                     />
                     <ShineButton
                         class="shine-button w-full"
-                        @click="saveAsDraft"
+                        @click="updateDraft"
                         text="Сохранить изменения"
-                        :loading="isSavingAsDraft"
+                        :loading="isUpdatingDraft"
                         icon="icon-script"
                     />
                 </div>
@@ -436,12 +470,14 @@ loadPostVersion()
             <p class="flex">URL-идентификатор</p>
 
             <Input
+                v-model="slug"
                 class="material-url-id py-2"
                 id="material-url-id"
-                placeholder="new-test-material"
             />
 
-            <p class="flex text-[10px]">https://lightdiamond.ru/post/new-test-material</p>
+            <p class="error">{{ errors['slug']?.[0] || ' ' }}</p>
+
+            <p class="flex text-[10px]">{{ postUrl }}</p>
 
             <div class="flex gap-2">
                 <ShineButton
@@ -452,7 +488,8 @@ loadPostVersion()
                 />
                 <ShineButton
                     class="flex confirm"
-                    :loading="isSubmitting" @click="accept"
+                    :loading="isAccepting"
+                    @click="accept"
                     icon="icon-tick"
                     text="Опубликовать"
                 />
@@ -460,19 +497,22 @@ loadPostVersion()
         </div>
     </OverlayPanel>
 
-    <OverlayPanel ref="denyOverlayPanel" class="overlay-panel max-w-[100vw] p-4 mt-24rem">
+    <OverlayPanel ref="rejectOverlayPanel" class="overlay-panel max-w-[100vw] p-4 mt-24rem">
         <div class="flex flex-col gap-2">
 
             <p class="flex">Причина отклонения</p>
 
             <Textarea
-                class="material-deny-reason"
-                id="material-deny-reason"
+                v-model="rejectDetails.reason"
+                class="material-reject-reason"
+                id="material-reject-reason"
                 :max-length="185"
                 :min-length="15"
                 placeholder="Неприемлимый Контент"
                 rows="3"
             />
+
+            <p class="error">{{ errors['details.reason']?.[0] || ' ' }}</p>
 
             <div class="flex gap-2">
                 <ShineButton
@@ -483,7 +523,7 @@ loadPostVersion()
                 />
                 <ShineButton
                     class="flex cancel"
-                    :loading="isSubmitting" @click="saveAsDraft"
+                    :loading="isRejecting" @click="reject"
                     icon="icon-tick"
                     text="Отклонить"
                 />
@@ -497,13 +537,16 @@ loadPostVersion()
             <p class="flex">Что не так?</p>
 
             <Textarea
-                class="material-deny-reason"
-                id="material-deny-reason"
+                v-model="requestChangesDetails.message"
+                class="material-revision-reason"
+                id="material-revision-reason"
                 :max-length="185"
                 :min-length="15"
                 placeholder="Необходимо доработать Материал..."
                 rows="3"
             />
+
+            <p class="error">{{ errors['details.message']?.[0] || ' ' }}</p>
 
             <div class="flex gap-2">
                 <ShineButton
@@ -514,7 +557,7 @@ loadPostVersion()
                 />
                 <ShineButton
                     class="flex confirm"
-                    :loading="isSubmitting" @click="saveAsDraft"
+                    :loading="isRequestingChanges" @click="revision"
                     icon="icon-tick"
                     text="Отправить"
                 />
@@ -547,18 +590,31 @@ loadPostVersion()
 </template>
 
 <style>
-.post-moderator {
-    width: 220px;
+.post-moderator.select .select-button,
+.post-moderator.select .options {
+    border-right: 0;
+    border-left: 0;
 }
 .post-moderator.select .options {
-    overflow-y: scroll;
     max-height: 216px;
 }
 .post-moderator.select .options .option,
 .post-moderator.select .select-button .select-span {
-    padding-left: 1rem;
+    padding-left: .5rem;
+    gap: .5rem;
 }
-.material-deny-reason textarea {
+.post-moderator.select .options .icon-border,
+.post-moderator.select .select-button .icon-border {
+    height: 42px;
+    width: 42px;
+}
+.post-moderator.select .options .icon-border img,
+.post-moderator.select .select-button .icon-border img {
+    height: 28px;
+    width: 28px;
+}
+.material-reject-reason textarea,
+.material-revision-reason textarea {
     min-height: 136px;
     padding: 4px 8px;
 }
@@ -571,6 +627,9 @@ loadPostVersion()
 }
 .shine-button .preset {
     padding: .5rem;
+}
+.loading-icon {
+    min-width: 28px;
 }
 </style>
 
@@ -608,6 +667,9 @@ loadPostVersion()
 /* =============== [ Медиа-Запрос { ?px < 1024px + desktop-height } ] =============== */
 
 @media screen and (max-width: 1023px) and (min-height: 654px) {
+    .mark-block {
+        margin-right: 2rem;
+    }
     .unavailable-post {
         height: 540px;
     }

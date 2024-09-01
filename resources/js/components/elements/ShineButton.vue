@@ -35,7 +35,7 @@ const props = defineProps({
     >
         <span class="press flex">
             <span class="preset flex items-center gap-2">
-                <ProcessingMovingItems v-if="loading" :item="loadingItem" height="28px" width="28px"/>
+                <ProcessingMovingItems v-if="loading" class="loading-icon" :item="loadingItem" height="28px" width="28px"/>
                 <span
                     v-if="!loading && icon !== ''"
                     :class="icon"

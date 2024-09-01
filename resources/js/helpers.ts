@@ -85,25 +85,25 @@ export function getRelativeDate(date: Date | string): string {
 
 export function getPostVersionStatusInfo(status: PostVersionStatus) {
     switch (status) {
+        case PostVersionStatus.ACCEPTED:
+            return {
+                colorClass: 'confirm',
+                name: 'Принято'
+            }
         case PostVersionStatus.DRAFT:
             return {
+                colorClass: 'draft',
                 name: 'Черновик',
-                severity: 'secondary'
             }
         case PostVersionStatus.PENDING:
             return {
-                name: 'На рассмотрении',
-                severity: 'warning'
-            }
-        case PostVersionStatus.ACCEPTED:
-            return {
-                name: 'Принято',
-                severity: 'success'
+                colorClass: 'pending',
+                name: 'На рассмотрении'
             }
         case PostVersionStatus.REJECTED:
             return {
-                name: 'Отклонено',
-                severity: 'danger'
+                colorClass: 'cancel',
+                name: 'Отклонено'
             }
     }
 }

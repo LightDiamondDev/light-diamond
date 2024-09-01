@@ -58,7 +58,7 @@ function saveAsDraft() {
     errors.value = {}
 
     const formData = new FormData()
-    Object.keys(postVersion.value).forEach(key => formData.append(key, postVersion.value[key]))
+    Object.keys(postVersion.value!).forEach(key => formData.append(key, postVersion.value![key]))
 
     axios.post('/api/post-versions', formData).then((response) => {
         if (response.data.success) {
@@ -104,6 +104,7 @@ function saveAsDraft() {
                     :loading="isSavingAsDraft"
                     icon="icon-script"
                 />
+                <p class="error">{{ errors['category_id']?.[0] || ' ' }}</p>
             </div>
         </template>
     </PostEditor>

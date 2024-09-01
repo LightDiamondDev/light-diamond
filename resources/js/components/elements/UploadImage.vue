@@ -110,7 +110,7 @@ function uploadImage(file: File) {
 <label
     :class="{'editable': editable, 'cursor-pointer': editable, 'dragover': isDraggingOver, 'loaded': imageSrc }"
     class="upload-image-container flex justify-center items-center locked"
-    :style="'background-size: 100% 100%;background-image: url(' + imageSrc + ');'"
+    :style="'background-image: url(' + imageSrc + ');'"
     @dragenter.prevent="onDragEnter"
     @dragleave="onDragLeave"
     @dragover.prevent

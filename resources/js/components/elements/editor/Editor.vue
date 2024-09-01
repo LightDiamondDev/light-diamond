@@ -391,7 +391,7 @@ function unsetLink() {
         <BubbleMenu
             v-if="editor && editable && !withoutMenus && menuItems.length > 0"
             :editor="editor"
-            :tippy-options="{zIndex: 100, maxWidth: 'none'}"
+            :tippy-options="{zIndex: 1, maxWidth: 'none'}"
             :update-delay="0"
             class="hidden lg:block"
         >
@@ -403,7 +403,7 @@ function unsetLink() {
 
         <FloatingMenu
             v-if="editor && editable && !withoutMenus"
-            :tippy-options="{ placement: 'left', offset: [0, 0], zIndex: 100 }"
+            :tippy-options="{ placement: 'left', offset: [0, 0], zIndex: 1 }"
             :should-show="({state}) => isAtEmptyRootParagraph(state)"
             class="hidden lg:block"
             :editor="editor"
@@ -412,15 +412,16 @@ function unsetLink() {
             <EditorVerticalMenu ref="addNodeMenu" title="Добавить" :items="menuItems"/>
         </FloatingMenu>
 
-        <OverlayPanel v-if="editable && !withoutMenus" ref="linkOverlayPanel" @show="onLinkOverlayPanelShow">
-            <form class="space-y-2" @submit.prevent="setLink">
-                <div>
-                    <Input v-model="currentLink.href" placeholder="https://" class="w-full" autocomplete="off"/>
+        <!-- @show="onLinkOverlayPanelShow" -->
+        <OverlayPanel v-if="editable && !withoutMenus" ref="linkOverlayPanel">
+            <form @submit.prevent="setLink">
+                <div class="flex">
+                    <Input v-model="currentLink.href" class="editor-link-url w-full" placeholder="https://" autocomplete="off"/>
                     <ItemButton icon="icon-tick" outlined title="Сохранить ссылку" type="submit"/>
-                    <ItemButton icon="icon-small-cross" outlined title="Удалить ссылку" severity="danger"
-                                @click="unsetLink"/>
+                    <ItemButton icon="icon-small-cross" outlined title="Удалить ссылку" severity="danger" @click="unsetLink"/>
                 </div>
-                <Input v-model="currentLink.text" placeholder="Текст..." class="w-full" autocomplete="off"/>
+                <div class="separator"></div>
+                <Input v-model="currentLink.text" class="editor-link-text w-full h-[3rem]" placeholder="Текст..." autocomplete="off"/>
             </form>
         </OverlayPanel>
 

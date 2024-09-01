@@ -314,6 +314,16 @@
         color: var(--secondary-text-color);
     }
 
+    .content .author-wrap:focus-visible .username,
+    .content .author-wrap:hover .username {
+        color: var(--trinity-text-color);
+    }
+
+    .content .editor-link-text,
+    .content .editor-link-url {
+        color: var(--primary-text-color);
+    }
+
     .content .text-muted,
     .content .item-button .text {
         color: var(--primary-text-color);
@@ -399,6 +409,11 @@
         list-style-type: square;
     }
 
+    .content a {
+        animation: content-link-color-animation 5s infinite;
+    }
+
+    .content a,
     .content b,
     .content code,
     .content .post-content em,
@@ -406,6 +421,7 @@
     .content li,
     .content pre,
     .content p,
+    .content strong,
     .content s,
     .content textarea,
     .content .username,
@@ -413,8 +429,13 @@
         text-shadow: none;
     }
 
-    .content .error {
-        color: rgba(180, 30, 50, .8);
+    .content strong,
+    .content b {
+        font-weight: 800;
+    }
+
+    .error {
+        color: rgba(255, 30, 50, 1);
     }
 
     .content .label-input-text textarea {
@@ -576,10 +597,15 @@
         white-space: nowrap;
     }
 
-    .post-interaction .material-deny-reason,
+    .post-interaction .material-reject-reason,
+    .post-interaction .material-revision-reason,
     .post-interaction .material-url-id  {
         background: linear-gradient(rgba(0, 15, 15, .5), transparent);
         border: 2px solid var(--border-color);
+    }
+
+    .red-overlay {
+        outline: 2px solid rgba(255, 30, 50, 1);
     }
 
     .search-form-background form {
@@ -719,6 +745,36 @@
         border: 2px solid rgba(0, 255, 255, .3);
     }
 
+    .transfusion.cancel {
+        background: linear-gradient(90deg, rgba(255, 30, 50, .3), rgba(255, 30, 50, .5), rgba(255, 30, 50, .3), rgba(255, 30, 50, .5), rgba(255, 30, 50, .3));
+        background-size: 400% 100%;
+    }
+
+    .transfusion.confirm {
+        background: linear-gradient(90deg, rgba(30, 180, 30, .2), rgba(30, 180, 30, .4), rgba(50, 200, 100, .2), rgba(50, 200, 100, .4), rgba(30, 180, 30, .2));
+        background-size: 400% 100%;
+    }
+
+    .transfusion.draft {
+        background: linear-gradient(90deg, rgba(150, 150, 150, .2), rgba(150, 150, 150, .4), rgba(50, 200, 200, .2), rgba(50, 200, 200, .4), rgba(150, 150, 150, .2));
+        background-size: 400% 100%;
+    }
+
+    .transfusion.inactive {
+        background: linear-gradient(90deg, rgba(150, 150, 150, .2), rgba(150, 150, 150, .4), rgba(150, 150, 150, .2), rgba(150, 150, 150, .4), rgba(150, 150, 150, .2));
+        background-size: 400% 100%;
+    }
+
+    .transfusion.pending {
+        background: linear-gradient(90deg, rgba(255, 230, 50, .2), rgba(255, 230, 50, .4), rgba(255, 150, 50, .2), rgba(255, 150, 50, .4), rgba(255, 230, 50, .2));
+        background-size: 400% 100%;
+    }
+
+    .transfusion.warning {
+        background: linear-gradient(90deg, rgba(200, 180, 50, .3), rgba(200, 180, 50, .5), rgba(200, 180, 50, .3), rgba(200, 180, 50, .5), rgba(200, 180, 50, .3));
+        background-size: 400% 100%;
+    }
+
     .toaster .achievement .content,
     .toaster .toast .content {
         border-bottom: 2px solid rgba(255, 255, 255, .3);
@@ -742,6 +798,10 @@
 
     .upload-image-container.dragover {
         outline: 8px dashed rgba(0, 255, 255, 1);
+    }
+
+    .upload-image-container.red-overlay {
+        outline: 2px dashed rgba(255, 30, 50, 1);
     }
 
     .user-menu {
@@ -797,6 +857,7 @@
     .select .text,
     .settings .settings-container form .section-title,
     .settings-button span,
+    .title-font,
     .title,
     .toast .content h1,
     footer nav a span {
@@ -1141,6 +1202,17 @@
 
     .icon-youtube {
         background-image: url('/images/icons/diamond-youtube.png');
+    }
+
+    /* =============== [ Анимации ] =============== */
+
+    @keyframes content-link-color-animation
+    {
+        0% { color: rgba(0, 85, 100, 1); }
+        25% { color: rgba(0, 130, 180, 1); }
+        50% { color: rgba(0, 160, 160, 1); }
+        75% { color: rgba(0, 160, 130, 1); }
+        100% { color: rgba(0, 85, 100, 1); }
     }
 
     /* =============== [ Медиа-Запрос { ?px < 1024px } ] =============== */

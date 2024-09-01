@@ -257,9 +257,7 @@ function logout() {
                 <UserAvatar :user="authStore.user!"/>
                 <div class="flex flex-col">
                     <span
-                        :class="{
-                            'text-sm': authStore.username!.length > 15
-                        }"
+                        :class="{ 'text-sm': authStore.username!.length > 15 }"
                         class="title"
                     >
                         {{ authStore.username }}
@@ -338,7 +336,7 @@ function logout() {
     />
 
     <header
-        class="transition-transform flex justify-center duration-300 select-none h-[var(--header-height)] z-[1] w-full top-0 left-0 fixed"
+        class="transition-transform flex justify-center duration-300 select-none h-[var(--header-height)] z-[2] w-full top-0 left-0 fixed"
         :class="{'-translate-y-full': !preferenceManager.isHeaderFixedVisible() && isHeaderHidden}"
     >
         <nav class="header page-container flex justify-between">
@@ -395,6 +393,7 @@ function logout() {
 
             <div class="flex items-center">
                 <button
+                    @mousedown="console.log('Флекс')"
                     class="search-button flex justify-center items-center p-2"
                     @click="isSearchDialog = true"
                     type="button"

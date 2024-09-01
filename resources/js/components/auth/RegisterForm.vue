@@ -119,7 +119,7 @@ function submitRegister() {
                     :class="{ 'error': errors['password_confirmation'], 'success': !errors['password_confirmation']}"
                     class="status text-[0.8rem] m-2"
                 >
-                        {{ errors['password_confirmation']?.[0] || '&nbsp;' }}
+                    {{ errors['password_confirmation']?.[0] || '&nbsp;' }}
                 </span>
             </div>
         </fieldset>
