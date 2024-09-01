@@ -20,14 +20,12 @@ onMounted(() => {
             <div class="mob parrot flex justify-center items-center full-locked">
                 <div class="animation-dancing-red-parrot"></div>
             </div>
-            <RouterLink class="flex justify-center mb-8" :to="{ name: 'home' }">
-                <Button
-                    @click="globalModalStore.isAuth = !globalModalStore.isAuth"
-                    type="button"
-                    icon="item-diamond"
-                    text="Войти"
-                />
-            </RouterLink>
+            <Button
+                @click="globalModalStore.isAuth = !globalModalStore.isAuth"
+                type="button"
+                icon="item-diamond"
+                text="Войти"
+            />
         </div>
     </div>
 </template>
