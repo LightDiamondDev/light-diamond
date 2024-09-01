@@ -340,7 +340,7 @@ function onLinkOverlayPanelShow() {
 function openImageDialog(callback: ((file: File) => void)) {
     const input = document.createElement('input')
     input.type = 'file'
-    input.accept = 'image/jpeg, image/png, image/jpg'
+    input.accept = 'image/jpeg, image/png, image/jpg, image/gif'
     input.style.display = 'none'
     input.onchange = () => {
         callback(input.files![0])

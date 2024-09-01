@@ -20,7 +20,7 @@ class UploadImageController extends Controller
         $validator = Validator::make($request->all(), [
             'image' => [
                 'required',
-                File::types(['jpeg', 'jpg', 'png']),
+                File::types(['jpeg', 'jpg', 'png', 'gif']),
                 File::image()
                     ->max(self::MAX_IMAGE_SIZE_MB * 1024)
                     ->dimensions(
