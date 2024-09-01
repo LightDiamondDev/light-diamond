@@ -33,20 +33,19 @@ defineProps({
         default: true,
     },
     errors: {
-        type: Object,
+        type: Object as PropType<{ [key: string]: string[] }>,
         required: true,
     },
-    derrors2: {
-        type: Object as PropType<{ [key: string]: string[] }>,
-        required: false
-    }
 })
 
 const preferenceManager = usePreferenceManager()
 const postCategoryStore = usePostCategoryStore()
-// const errors = ref<string[][]>([])
 const postVersion = defineModel<PostVersion>({default: {}})
-const gameEdition = ref<GameEdition|null>(preferenceManager.getEdition())
+const gameEdition = ref<GameEdition|null>(
+    postVersion.value.category
+        ? postVersion.value.category.edition
+        : preferenceManager.getEdition()
+)
 const categories = computed(() => postCategoryStore.categories.filter(
     (category) => category.edition === gameEdition.value || category.edition === null)
 )
@@ -123,7 +122,7 @@ const contentEditorExtensions = [
     Image
 ]
 
-function onEditionChange(editionOption: any) {
+function onEditionChange() {
     postVersion.value.category_id = undefined
 }
 
