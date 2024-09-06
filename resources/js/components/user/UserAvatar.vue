@@ -12,11 +12,17 @@ defineProps({
 </script>
 
 <template>
-    <span class="icon icon-outline flex justify-center items-center icon-border h-[48px] w-[48px]">
-        <img alt="" src="/images/users/content/funny-girl.png" class="h-[32px]">
+    <span class="icon icon-border icon-outline flex justify-center items-center">
+        <img alt="" src="/images/users/content/funny-girl.png">
     </span>
 </template>
 
 <style scoped>
-
+.icon-border {
+    height: 48px;
+    width: 48px;
+}
+.icon-border img {
+    height: 32px;
+}
 </style>

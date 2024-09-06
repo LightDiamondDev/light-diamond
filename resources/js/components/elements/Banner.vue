@@ -38,9 +38,8 @@ const props = defineProps({
 .banner {
     background-image: url('/images/elements/catalog-banner1.png');
     background-repeat: repeat;
-    min-width: 1920px;
+    width: 1920px;
     height: 280px;
-    width: 100%;
     left: 0;
 }
 .banner .title,

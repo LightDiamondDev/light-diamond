@@ -1,18 +1,25 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
 
+import {computed, reactive, ref} from 'vue'
+
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
 import {RouterLink, useRouter} from 'vue-router'
 
-import {computed, reactive, ref} from 'vue'
-
-import {getAppUrl, getErrorMessageByCode, getPostVersionStatusInfo, getRelativeDate} from '@/helpers'
+import {
+    getAppUrl,
+    getErrorMessageByCode,
+    getFullPresentableDate,
+    getPostVersionStatusInfo,
+    getRelativeDate
+} from '@/helpers'
 
 import {
     type PostVersion,
     type PostVersionActionReject,
     type PostVersionActionRequestChanges,
+    PostVersionActionType,
     PostVersionStatus,
     type User,
     UserRole
@@ -21,7 +28,7 @@ import {
 import slugify from '@sindresorhus/slugify'
 
 import PostEditor from '@/components/post/editor/PostEditor.vue'
-import PostVersionActionComponent from '@/components/post/PostVersionAction.vue'
+import PostVersionAction from '@/components/post/PostVersionAction.vue'
 
 import Banner from '@/components/elements/Banner.vue'
 import Button from '@/components/elements/Button.vue'
@@ -48,13 +55,13 @@ const toastStore = useToastStore()
 const router = useRouter()
 
 const acceptOverlayPanel = ref<InstanceType<typeof OverlayPanel>>()
+const reconsiderOverlayPanel = ref<InstanceType<typeof OverlayPanel>>()
 const revisionOverlayPanel = ref<InstanceType<typeof OverlayPanel>>()
 const rejectOverlayPanel = ref<InstanceType<typeof OverlayPanel>>()
 const submitOverlayPanel = ref<InstanceType<typeof OverlayPanel>>()
 
 const postVersion = ref<PostVersion>()
 const moderators = ref<User[]>()
-const moderator = ref()
 const customSlug = ref<string>()
 
 const isFirstVersion = computed(() => !postVersion.value!.post || postVersion.value!.updated_at === postVersion.value!.post.created_at)
@@ -80,9 +87,9 @@ const requestChangesDetails = reactive<PostVersionActionRequestChanges>({message
 const isAccepting = ref(false)
 const isHistoryDialog = ref(false)
 const isLoading = ref(false)
+const isReconsidering = ref(false)
 const isRejecting = ref(false)
 const isRequestingChanges = ref(false)
-const isSavingAsDraft = ref(false)
 const isSubmitting = ref(false)
 const isUpdatingDraft = ref(false)
 
@@ -216,6 +223,8 @@ function submit() {
     })
 }
 
+function reconsider() {}
+
 function reject() {
     isRejecting.value = true
 
@@ -306,16 +315,17 @@ loadPostVersion()
     <template v-else>
         <Dialog
             v-if="postVersion"
-            :header="true"
-            title="История Действий"
+            class="post-version-history page-container max-w-[800px] top-0"
             v-model:visible="isHistoryDialog"
-            :modal="true"
-            :draggable="false"
+            title="История Действий"
             :dismissable-mask="true"
-            style="width: 50rem; height: 50rem;"
+            :draggable="false"
+            style="top: 0"
+            :header="true"
+            :modal="true"
         >
-            <div class="flex flex-col gap-5">
-                <PostVersionActionComponent v-for="action in postVersion.actions" :action="action"/>
+            <div class="post-version-actions flex flex-col gap-6 md:gap-2 p-2 md:p-6">
+                <PostVersionAction v-for="action in postVersion.actions" :action="action"/>
             </div>
         </Dialog>
 
@@ -331,24 +341,27 @@ loadPostVersion()
             </template>
 
             <template v-slot:header>
-                <div class="banner-title page-container flex flex-col justify-center items-center w-full">
+                <div class="banner-title page-container flex flex-col justify-center items-center xs:items-end max-w-[800px]">
 
                     <RouterLink
-                        class="logo-wrap flex items-center full-locked relative orange"
+                        class="logo-wrap flex justify-center items-center relative xs:w-full full-locked"
                         :to="{ name: 'home' }"
                     >
                         <h1 class="title-font text-center">Заявка на публикацию</h1>
                     </RouterLink>
 
-                    <div class="mark-block flex justify-end items-center max-w-[800px] absolute w-full bottom-0 gap-4 pb-2">
-                        <div :class="{ 'new': isFirstVersion, 'update': !isFirstVersion }" class="material-type new flex items-center h-fit gap-2 px-1 py-0.5">
+                    <div class="mark-block flex absolute bottom-2 gap-2">
+                        <div :class="{ 'new': isFirstVersion, 'update': !isFirstVersion }" class="material-type new flex items-center h-fit gap-2 locked">
                             <span class="icon-apple icon flex"/>
-                            <p v-if="isFirstVersion" class="text-[.7rem]">Новый Материал</p>
-                            <p v-else class="text-[.7rem]">Обновление</p>
+                            <p v-if="isFirstVersion" class="text-[.6rem] xs:text-[.7rem]">Новый Материал</p>
+                            <p v-else class="text-[.6rem] xs:text-[.7rem]">Обновление</p>
                         </div>
-                        <div class="time-ago time flex items-center h-fit gap-2 px-1 py-0.5">
+                        <div
+                            class="time-ago time flex items-center h-fit gap-2 locked tooltip whitespace-nowrap"
+                            v-tooltip.top="getFullPresentableDate(postVersion!.updated_at!)"
+                        >
                             <span class="icon-clock icon flex"/>
-                            <p class="text-[.7rem]">{{ getRelativeDate(postVersion!.updated_at!) }}</p>
+                            <p class="text-[.6rem] xs:text-[.7rem]">{{ getRelativeDate(postVersion!.updated_at!) }}</p>
                         </div>
                     </div>
 
@@ -399,12 +412,30 @@ loadPostVersion()
 
                     <div class="separator"></div>
 
-                    <div class="flex flex-col gap-2 p-2">
+                    <div v-if="postVersion.actions!.length !== 0" class="flex flex-col gap-2 p-2">
+                        <PostVersionAction
+                            v-if="[PostVersionActionType.REJECT, PostVersionActionType.REQUEST_CHANGES].includes(lastAction?.type!)"
+                            class="sidebar-last-action px-2 md:px-1"
+                            :action="lastAction"
+                            :minimized="true"
+                        />
                         <ShineButton
-                            class="shine-button text-[0.7rem]"
-                            @click="acceptOverlayPanel?.toggle"
+                            class="shine-button self-center text-[0.7rem]"
+                            @click="isHistoryDialog = true"
                             text="История действий"
                             icon="icon-script"
+                        />
+                    </div>
+
+                    <div
+                        v-if="postVersion.status === PostVersionStatus.ACCEPTED || postVersion.status === PostVersionStatus.REJECTED"
+                        class="flex flex-col gap-2 pb-2 px-2"
+                    >
+                        <ShineButton
+                            class="shine-button w-full reconsider"
+                            @click="reconsiderOverlayPanel?.toggle"
+                            text="Вернуть на рассмотрение"
+                            icon="icon-eye"
                         />
                     </div>
 
@@ -431,7 +462,7 @@ loadPostVersion()
                         />
                     </div>
                 </div>
-                <div v-if="isOwnDraft" class="flex flex-col gap-2 pb-2 px-2">
+                <div v-if="isOwnDraft" class="flex flex-col w-full gap-2 pb-2 px-2">
                     <div class="separator"></div>
                     <ShineButton
                         class="shine-button w-full confirm"
@@ -492,6 +523,37 @@ loadPostVersion()
                     @click="accept"
                     icon="icon-tick"
                     text="Опубликовать"
+                />
+            </div>
+        </div>
+    </OverlayPanel>
+
+    <OverlayPanel ref="reconsiderOverlayPanel" class="overlay-panel max-w-[100vw] p-4 mt-24rem">
+        <div class="flex flex-col gap-2">
+
+            <p class="flex">Вернуть на рассмотрение?</p>
+
+            <p v-if="postVersion!.status === PostVersionStatus.ACCEPTED" class="flex">
+                Материал будет убран с Каталога и пользователи потеряют к нему доступ.
+            </p>
+
+            <p v-else-if="postVersion!.status === PostVersionStatus.REJECTED" class="flex">
+                Материал будет восстановлен и перемещён на рассмотрение, пока не будет принят или снова отклонён.
+            </p>
+
+            <div class="flex gap-2">
+                <ShineButton
+                    class="flex"
+                    @click="reconsiderOverlayPanel?.hide()"
+                    icon="icon-small-cross"
+                    text="Отмена"
+                />
+                <ShineButton
+                    class="flex reconsider"
+                    :loading="isReconsidering"
+                    @click="reconsider"
+                    icon="icon-tick"
+                    text="Вернуть"
                 />
             </div>
         </div>
@@ -590,6 +652,10 @@ loadPostVersion()
 </template>
 
 <style>
+.post-version-history .dialog-header h1 {
+    text-align: center;
+    line-height: 1.2;
+}
 .post-moderator.select .select-button,
 .post-moderator.select .options {
     border-right: 0;
@@ -631,9 +697,23 @@ loadPostVersion()
 .loading-icon {
     min-width: 28px;
 }
+.time-ago.tooltip::before {
+    align-items: center;
+    bottom: 2.6rem;
+    display: flex;
+    height: 2rem;
+    left: 2.3rem;
+}
 </style>
 
 <style scoped>
+.content h1 {
+    font-size: 3rem;
+}
+.material-type, .time-ago {
+    padding: .125rem .25rem;
+    cursor: pointer;
+}
 .unavailable-post {
     height: 720px;
     width: 100%;
@@ -663,13 +743,17 @@ loadPostVersion()
 .global-error-container p {
     max-width: 300px;
 }
+.post-version-actions {
+    max-height: 500px;
+    overflow-y: auto;
+}
+.sidebar-last-action {
+    font-size: 12px;
+}
 
 /* =============== [ Медиа-Запрос { ?px < 1024px + desktop-height } ] =============== */
 
 @media screen and (max-width: 1023px) and (min-height: 654px) {
-    .mark-block {
-        margin-right: 2rem;
-    }
     .unavailable-post {
         height: 540px;
     }
@@ -687,6 +771,19 @@ loadPostVersion()
     .mob.phantom div {
         height: 80px;
         width: 160px;
+    }
+}
+
+/* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
+
+@media screen and (max-width: 450px) {
+    .material-type, .time-ago {
+        padding: 0 .25rem;
+        cursor: pointer;
+    }
+    .time-ago.tooltip::before {
+        bottom: 2.4rem;
+        left: 1.2rem;
     }
 }
 </style>

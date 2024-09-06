@@ -41,7 +41,7 @@
 <template>
     <GlobalModals/>
     <Toaster/>
-    <div class="surface-ground bg-lighter flex flex-col items-center">
+    <div class="surface-ground bg-lighter flex flex-col items-center w-full">
         <Header/>
         <main class="flex flex-col items-center w-full">
             <RouterView></RouterView>

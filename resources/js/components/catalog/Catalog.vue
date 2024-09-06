@@ -79,7 +79,7 @@ function switchEdition() {
             <nav class="flex flex-col">
 
                 <div class="line flex flex-wrap justify-between gap-4 p-4">
-                    <div class="sub-line flex flex-wrap gap-4">
+                    <div class="sub-line flex justify-center flex-wrap gap-4">
                         <button
                             :class="{ 'active': isFresh }"
                             class="shine-button flex items-center option"
@@ -121,9 +121,13 @@ function switchEdition() {
                         </button>
                     </div>
                     <div class="sub-line flex flex-wrap justify-center gap-4">
-                        <button class="shine-button flex items-center option edition" type="button" @click="switchEdition">
+                        <button
+                            class="shine-button flex items-center option edition"
+                            type="button"
+                            @click="switchEdition"
+                        >
                             <span class="press flex">
-                                <span class="preset flex items-center gap-1 min-w-[172px]">
+                                <span class="preset flex items-center gap-1">
                                     <span
                                         :class="{ 'icon-bedrock-dev-small': edition === GameEdition.BEDROCK,
                                         'icon-minecraft-materials': edition === GameEdition.JAVA }"
@@ -278,7 +282,7 @@ section.catalog {
 }
 .catalog-panel .line a,
 .catalog-panel .line button {
-    max-width: 400px;
+    max-width: 268px;
     flex-grow: 1;
     border: none;
 }

@@ -22,6 +22,7 @@ import UploadImage from '@/components/elements/UploadImage.vue'
 import UploadFile from '@/components/elements/UploadFile.vue'
 import UserAvatar from '@/components/user/UserAvatar.vue'
 import Textarea from '@/components/elements/Textarea.vue'
+import LoadedFile from '@/components/elements/LoadedFile.vue'
 
 defineProps({
     author: {
@@ -35,7 +36,7 @@ defineProps({
     errors: {
         type: Object as PropType<{ [key: string]: string[] }>,
         required: true,
-    },
+    }
 })
 
 const preferenceManager = usePreferenceManager()
@@ -43,7 +44,7 @@ const postCategoryStore = usePostCategoryStore()
 const postVersion = defineModel<PostVersion>({default: {}})
 const gameEdition = ref<GameEdition|null>(
     postVersion.value.category
-        ? postVersion.value.category.edition
+        ? postVersion.value.category.edition!
         : preferenceManager.getEdition()
 )
 const categories = computed(() => postCategoryStore.categories.filter(
@@ -130,12 +131,20 @@ function onEditionChange() {
 
 <template>
 
-    <slot name="banner"/>
+    <div class="post-editor-banner">
+        <slot name="banner"/>
+    </div>
 
-    <slot name="header"/>
+    <div class="post-editor-header flex w-full">
+        <slot name="header"/>
+    </div>
 
     <div class="first-section bg-lighter w-full">
-        <section class="page-container flex justify-center">
+        <section class="page-container flex flex-col justify-center items-center">
+
+            <aside class="post-interaction upper-interaction flex-col items-center mt-4">
+                <slot name="sidebar"></slot>
+            </aside>
 
             <div class="content w-full">
 
@@ -221,7 +230,7 @@ function onEditionChange() {
                         </Select>
 
                         <Select
-                            :class="{'red-overlay': errors['category_id']}"
+                            :class="{'red-border': errors['category_id']}"
                             class="post-category flex"
                             v-model="postVersion.category_id"
                             :disabled="!editable"
@@ -237,7 +246,7 @@ function onEditionChange() {
                         <p class="error my-2">{{ errors['category_id']?.[0] || ' ' }}</p>
 
                         <Textarea
-                            :class="{'red-overlay': errors['description']}"
+                            :class="{'red-border': errors['description']}"
                             class="post-description"
                             v-model="postVersion.description"
                             :disabled="!editable"
@@ -248,10 +257,31 @@ function onEditionChange() {
                             rows="3"
                         />
 
-                        <p class="error mb-3 mt-2">{{ errors['description']?.[0] || ' ' }}</p>
+                        <p class="error mt-2">{{ errors['description']?.[0] || ' ' }}</p>
+
+                        <LoadedFile
+                            class="my-2"
+                            file-name="Light Diamond Addon — Craft & Survive [0.1.0]"
+                            file-format=".MCADDON"
+                            file-size="12,5 Мб
+                        "/>
+
+                        <LoadedFile
+                            class="my-2"
+                            file-name="LD Better Ores [0.2.1]"
+                            file-format=".MCPACK"
+                            file-size="587 Кб"
+                        />
+
+                        <LoadedFile
+                            class="my-2"
+                            file-name="Escape The Tower [2.3.0]"
+                            file-format=".MCWORLD"
+                            file-size="1,51 Мб"
+                        />
 
                         <UploadFile
-                            class="upload-post-preview flex mb-5"
+                            class="upload-post-preview flex mb-5 mt-2.5"
                             :editable="editable"
                             icon="icon-download"
                             id="upload-post-preview"
@@ -264,7 +294,7 @@ function onEditionChange() {
                     </div>
                 </div>
             </div>
-            <aside class="post-interaction flex flex-col items-center">
+            <aside class="post-interaction lower-interaction flex flex-col items-center">
                 <slot name="sidebar"></slot>
             </aside>
         </section>
@@ -286,6 +316,9 @@ function onEditionChange() {
     line-break: strict;
     white-space: wrap;
 }
+.content .material-name h1 {
+    font-size: 2rem;
+}
 .content textarea {
     text-shadow: none;
 }
@@ -297,12 +330,24 @@ function onEditionChange() {
 .post-interaction .shine-button.confirm .text {
     white-space: nowrap;
 }
+.interface .upload-image-container {
+    background-position: center;
+    background-size: cover;
+    aspect-ratio: 16 / 9;
+}
 
 /* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
 
 @media screen and (max-width: 450px) {
+    .content .material-name h1 {
+        font-size: 1.5rem;
+    }
+    .post-editor-banner .banner-container,
+    .post-editor-banner .banner {
+        height: 256px;
+    }
     .banner-title {
-        height: 108px;
+        height: 168px;
     }
     .banner-title h1 {
         font-size: 2rem;
@@ -318,6 +363,18 @@ function onEditionChange() {
 .content {
     max-width: 800px;
 }
+.content h1,
+.content h2,
+.content h3,
+.content img {
+    line-height: 1.1;
+    margin: 1rem 0;
+}
+.content h4,
+.content h5,
+.content h6 {
+    text-shadow: none;
+}
 .content .separator {
     background-color: var(--secondary-text-color);
     opacity: .5;
@@ -327,13 +384,6 @@ function onEditionChange() {
 }
 .content ul li {
     list-style-type: square;
-}
-.interface .upload-image-container {
-    background-position: center;
-    object-position: center;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    width: 100%;
 }
 .post-interaction {
     height: fit-content;
@@ -345,6 +395,7 @@ function onEditionChange() {
 }
 .post-description {
     min-height: 128px;
+    font-size: 14px;
 }
 .post-help {
     max-width: 280px;
@@ -355,6 +406,12 @@ function onEditionChange() {
 }
 .last-section {
     justify-content: flex-end;
+}
+.lower-interaction {
+    z-index: 1;
+}
+.upper-interaction {
+    display: none;
 }
 
 /* =============== [ Медиа-Запрос { ?px < 1281px } ] =============== */
@@ -369,6 +426,9 @@ function onEditionChange() {
         max-width: 800px;
         position: static;
         width: 100%;
+    }
+    .upper-interaction {
+        display: flex;
     }
 }
 

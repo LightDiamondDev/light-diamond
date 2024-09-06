@@ -377,10 +377,6 @@
         line-height: 1.8;
     }
 
-    .content h1 {
-        font-size: 3rem;
-    }
-
     .content h2 {
         font-size: 2.5rem;
     }
@@ -399,10 +395,6 @@
 
     .content h6 {
         font-size: 1rem;
-    }
-
-    .content .material-name h1 {
-        font-size: 2rem;
     }
 
     .content ul {
@@ -434,6 +426,10 @@
         font-weight: 800;
     }
 
+    .content .origin-info .username {
+        color: var(--secondary-text-color);
+    }
+
     .error {
         color: rgba(255, 30, 50, 1);
     }
@@ -447,17 +443,6 @@
     .content .label-input-text textarea::placeholder {
         color: var(--primary-text-color);
         opacity: .5;
-    }
-
-    .post-comment-content code,
-    .post-content code,
-    .post-comment-content pre,
-    .post-content pre {
-        background: rgba(180, 185, 190, .6);
-    }
-    .post-comment-content pre,
-    .post-content pre {
-        border: 2px solid rgba(255, 255, 255, .3)
     }
 
     .content hr {
@@ -520,6 +505,16 @@
 
     form fieldset label  {
         border: 2px solid var(--border-color);
+    }
+
+    .loaded-file {
+        background: linear-gradient(90deg, rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05));
+        animation: transfusion-animation 15s linear infinite;
+        background-size: 400% 100%;
+    }
+
+    .loaded-file-background {
+        border: 2px solid rgba(0, 255, 255, .3);
     }
 
     .mark-block p {
@@ -585,8 +580,52 @@
         border: 2px solid rgba(255, 255, 255, .8);
     }
 
-    .post-title {
-        font-weight: normal;
+    .post-comment-actions {
+        border-top: 2px solid rgba(0, 255, 255, .3);
+    }
+
+    .post-comment-editor * {
+        text-shadow: none;
+    }
+
+    .post-comment-editor {
+        background: linear-gradient(rgba(0, 15, 15, .5), transparent);
+        border: 2px solid rgba(255, 255, 255, .8);
+    }
+
+    .post-comment-content code,
+    .post-comment-content pre {
+        background: rgba(0, 15, 15, .3);
+        color: rgba(180, 255, 255, .9);
+    }
+
+    .post-comment-content pre {
+        border: 2px solid rgba(0, 255, 255, .2);
+    }
+
+    .post-comment-content blockquote {
+        border-left: 4px solid rgba(0, 255, 255, .8);
+    }
+
+    .post-content code,
+    .post-content pre {
+        background: rgba(200, 185, 190, .6);
+    }
+
+    .post-content pre {
+        border: 2px solid rgba(255, 255, 255, .3)
+    }
+
+    .post-comment-content ul {
+        list-style-type: square;
+    }
+
+    .post-comment-reply-button {
+        color: var(--primary-color);
+    }
+
+    .post-comment-reply-button:hover {
+        color: var(--hover-text-color);
     }
 
     .post-interaction {
@@ -602,6 +641,24 @@
     .post-interaction .material-url-id  {
         background: linear-gradient(rgba(0, 15, 15, .5), transparent);
         border: 2px solid var(--border-color);
+    }
+
+    .post-title {
+        font-weight: normal;
+    }
+
+    .post-version-actions,
+    .post-version-action-message {
+        background: linear-gradient(rgba(0, 15, 15, .5), transparent);
+    }
+
+    .post-version-action-message {
+        border: 2px solid rgba(255, 255, 255, .5);
+    }
+
+    .red-border.label-input-text textarea,
+    .red-border.select .select-button {
+        border: 2px solid rgba(255, 30, 50, 1);
     }
 
     .red-overlay {
@@ -651,6 +708,10 @@
     .set-mark.active .counter,
     .set-mark.active .icon {
         filter: grayscale(0);
+    }
+
+    .base-post-interaction .set-mark .counter {
+        color: var(--trinity-text-color);
     }
 
     .settings .banner {
@@ -720,6 +781,10 @@
         background: radial-gradient(100% 100% at 100% 0, rgba(50, 200, 50, .3) 0, rgba(30, 120, 30, .3) 100%);
     }
 
+    .shine-button.reconsider .press {
+        background: radial-gradient(100% 100% at 100% 0, rgba(235, 150, 50, .3) 0, rgba(200, 120, 30, .3) 100%);
+    }
+
     .shine-button.warning .press {
         background: radial-gradient(100% 100% at 100% 0, rgba(200, 180, 50, .3) 0, rgba(180, 160, 30, .3) 100%);
         border: 2px solid rgba(200, 180, 50, .8);
@@ -733,6 +798,26 @@
 
     .bg-lighter {
         background-image: url('/images/elements/base-background-lighter.png');
+    }
+
+    .text-error {
+        color: rgba(255, 30, 50, .5);
+    }
+
+    .text-confirm {
+        color: rgba(30, 180, 30, 1);
+    }
+
+    .text-inactive {
+        color: rgba(150, 150, 150, 1);
+    }
+
+    .text-revision {
+        color: rgba(235, 150, 50, 1);
+    }
+
+    .text-warning {
+        color: rgba(200, 180, 50, 1);
     }
 
     .transfusion {
@@ -780,6 +865,15 @@
         border-bottom: 2px solid rgba(255, 255, 255, .3);
         border-right: 2px solid rgba(255, 255, 255, .3);
         border-top: 2px solid rgba(255, 255, 255, .3);
+    }
+
+    .tooltip::after,
+    .tooltip::before {
+        border: 2px solid rgba(0, 150, 150, .3);
+        background-color: rgba(0, 20, 20, 1);
+        color: rgba(200, 200, 200, 1);
+        text-shadow: none;
+        font-size: 10px;
     }
 
     .unavailable-post h1, .unavailable-post p {
@@ -867,7 +961,10 @@
     .catalog .splash,
     .content code,
     .content .material-name h1,
+    .content .material-name,
     .left-header-sidebar .item-button,
+    .post-comment-content code,
+    .post-comment-content pre,
     .post-interaction .post-moderator.select .options .text,
     .post-interaction .post-moderator .select-button .text,
     .post-moderator.select .options .text,
@@ -982,6 +1079,14 @@
 
     .icon-download {
         background-image: url('/images/icons/diamond-download.png');
+    }
+
+    .icon-ellipsis {
+        background-image: url('/images/icons/diamond-ellipsis.png');
+    }
+
+    .icon-equals {
+        background-image: url('/images/icons/diamond-equals.png');
     }
 
     .icon-eye {
@@ -1122,6 +1227,10 @@
 
     .icon-small-cross {
         background-image: url('/images/icons/diamond-small-cross.png');
+    }
+
+    .icon-small-pencil {
+        background-image: url('/images/icons/diamond-small-pencil.png');
     }
 
     .icon-spawn-egg {

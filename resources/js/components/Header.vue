@@ -340,7 +340,7 @@ function logout() {
         :class="{'-translate-y-full': !preferenceManager.isHeaderFixedVisible() && isHeaderHidden}"
     >
         <nav class="header page-container flex justify-between">
-            <div class="flex items-center xs:gap-4">
+            <div class="flex items-center xs:gap-2">
                 <button
                     class="burger duration-100 flex justify-center items-center h-full p-2 md:-ml-3"
                     :class="{'xl:hidden': !preferenceManager.isDesktopSidebarVisible(), 'opacity-0': isHeaderSidebar}"
@@ -415,16 +415,13 @@ function logout() {
             </div>
         </nav>
     </header>
+
 </template>
 
 <style scoped>
 .list-label:focus-visible + .header-dropdown-content {
     display: flex;
     flex-direction: column;
-}
-
-.header {
-    width: 100%;
 }
 
 .header-dropdown {
@@ -450,6 +447,10 @@ header .list-label:focus-visible .list-label-text, header .list-label:hover .lis
 button.list-label .icon {
     transition: .2s;
 }
+.icon-magnifier,
+.icon-units {
+    min-width: 2rem;
+}
 
 button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .search-button:focus-visible .icon, .search-button:hover .icon,
@@ -458,7 +459,10 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 }
 
 .header .burger,
-.header .search-button,
+.header .search-button {
+    height: 70px;
+}
+
 .header .user-menu-button {
     height: 70px;
     width: 52px;

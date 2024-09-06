@@ -126,7 +126,7 @@ function onMaskMouseUp(event: MouseEvent) {
 
                         <div v-else class="back-button-replacement m-2"/>
 
-                        <h1 class="text-[1.8rem]">{{ title }}</h1>
+                        <h1 class="text-[1.2rem] md:text-[1.8rem]">{{ title }}</h1>
 
                         <button
                             v-if="closeButton"

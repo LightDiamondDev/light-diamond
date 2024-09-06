@@ -104,7 +104,6 @@ function saveAsDraft() {
                     :loading="isSavingAsDraft"
                     icon="icon-script"
                 />
-                <p class="error">{{ errors['category_id']?.[0] || ' ' }}</p>
             </div>
         </template>
     </PostEditor>

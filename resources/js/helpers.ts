@@ -43,8 +43,38 @@ export function getFullDate(date: Date | string) {
     return date.toLocaleString()
 }
 
+export function getFullPresentableDate(date: Date | string) {
+    if (typeof date === 'string') {
+        date = new Date(date)
+        return date.getDate() + ' ' +
+            getMonthName(date.getMonth()) +
+            getCheckedYear(date.getFullYear()) + ' ' +
+            getPresentableDate(date) + ':' + date.getMinutes()
+    } else { return '' }
+}
+
+export function getPresentableDate(date: Date | string) {
+    if (typeof date === 'string') {
+        date = new Date(date)
+        return date.getDate() + ' ' + getMonthName(date.getMonth()) + getCheckedYear(date.getFullYear())
+    } else { return '' }
+}
+
+export function getPresentableHours(date: Date | string) {
+    if (typeof date === 'string') {
+        date = new Date(date)
+        let minutes = date.getMinutes()
+        if (minutes < 10) {
+            return date.getHours() + ':' + minutes
+        } else {
+            return date.getHours() + ':0' + minutes
+        }
+
+    } else { return '' }
+}
+
 export function getRelativeDate(date: Date | string): string {
-    const now = new Date()
+    const now= new Date()
     if (typeof date === 'string') {
         date = new Date(date)
     }
@@ -81,6 +111,44 @@ export function getRelativeDate(date: Date | string): string {
 
     const diffInYears = Math.floor(diffInDays / 365)
     return `${diffInYears} г. назад`
+}
+
+export function getMonthName(number: number) {
+    switch (number) {
+        case 0:
+            return 'января'
+        case 1:
+            return 'февраля'
+        case 2:
+            return 'марта'
+        case 3:
+            return 'апреля'
+        case 4:
+            return 'мая'
+        case 5:
+            return 'июня'
+        case 6:
+            return 'июля'
+        case 7:
+            return 'августа'
+        case 8:
+            return 'сентября'
+        case 9:
+            return 'октября'
+        case 10:
+            return 'ноября'
+        case 11:
+            return 'декабря'
+    }
+}
+
+export function getCheckedYear(number: number) {
+    const now= new Date()
+    if (number !== now.getFullYear()) {
+        return ','
+    } else {
+        return ' ' + number
+    }
 }
 
 export function getPostVersionStatusInfo(status: PostVersionStatus) {

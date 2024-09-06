@@ -6,11 +6,13 @@
         font-weight: normal;
         outline: none;
     }
-    html { scroll-behavior: smooth; }
+    html {
+        scroll-behavior: smooth;
+    }
     body {
+        overflow-y: scroll;
         padding: 0;
         margin: 0;
-        overflow-y: scroll;
     }
     a {
         border: 2px solid transparent;
@@ -57,6 +59,80 @@
         animation: smooth-up-appear-animation .5s ease;
     }
     .lock-scroll { overflow: hidden; }
+
+    .tooltip { position: relative; }
+
+    .tooltip::before {
+        content: attr(data-tooltip);
+        transition: opacity 1s;
+        pointer-events: none;
+        position: absolute;
+        text-align: center;
+        min-width: 120px;
+        padding: 4px;
+        opacity: 0;
+        z-index: 1;
+    }
+
+    .tooltip::after {
+        transition: opacity .5s;
+        pointer-events: none;
+        position: absolute;
+        content: '';
+        opacity: 0;
+        z-index: 1;
+    }
+
+    .tooltip:hover::before,
+    .tooltip:hover::after,
+    .tooltip:focus::before,
+    .tooltip:focus::after {
+        opacity: 1;
+    }
+
+    .tooltip-top::before {
+        margin-inline-start: -60px;
+        inset-inline-start: 50%;
+        inset-block-end: 120%;
+    }
+
+    .tooltip-bottom::before {
+        margin-inline-start: -60px;
+        inset-inline-start: 50%;
+        inset-block-start: 120%;
+    }
+
+    .tooltip-left::before {
+        inset-inline-end: 120%;
+        inset-block-end: 0;
+        min-height: 100%;
+    }
+
+    .tooltip-right::before {
+        inset-inline-start: 120%;
+        inset-block-end: 0;
+        min-height: 100%;
+    }
+
+    .tooltip-left::after {
+        inset-inline-start: -20%;
+        inset-block-start: 25%;
+    }
+
+    .tooltip-right::after {
+        inset-inline-end: -20%;
+        inset-block-start: 25%;
+    }
+
+    .tooltip-top::after {
+        inset-inline-start: 40%;
+        inset-block-start: -20%;
+    }
+
+    .tooltip-bottom::after {
+        inset-inline-start: 40%;
+        inset-block-end: -20%;
+    }
 
     .animation-angry-warden { background-image: url('/public/images/mobs/angry-warden-animation.gif'); }
     .animation-dancing-blue-parrot { background-image: url('/public/images/mobs/dancing-blue-parrot-animation.gif'); }
@@ -272,6 +348,14 @@
             margin-top: 0;
         }
 
+        /* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
+
+        @media screen and (max-width: 450px) {
+            a, b, blockquote, code, li, ol, p, s, strong, ul {
+                font-size: 12px;
+            }
+        }
+
     }
 
     .post-content {
@@ -291,10 +375,6 @@
     .post-comment-content {
         p, pre, img, blockquote {
             margin-top: 1em;
-        }
-
-        p {
-            font-size: 0.9375rem;
         }
 
         li + li, ol, ul {
