@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('post_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('slug')->unique();
+            $table->string('slug');
             $table->string('name');
             $table->enum('edition', ['BEDROCK', 'JAVA'])->nullable()->default(null);
             $table->boolean('is_article')->default(false);

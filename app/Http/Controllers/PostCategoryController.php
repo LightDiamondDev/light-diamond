@@ -6,6 +6,7 @@ use App\Models\Enums\GameEdition;
 use App\Models\PostCategory;
 use App\Rules\ColumnExistsRule;
 use App\Rules\SlugSyntaxRule;
+use App\Rules\UniqueCategorySlugRule;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -59,8 +60,9 @@ class PostCategoryController extends Controller
 
     public function add(Request $request): JsonResponse
     {
+        $edition = $request->enum('status', GameEdition::class);
         $validator = Validator::make($request->all(), [
-            'slug' => ['required', 'string', Rule::unique(PostCategory::class, 'slug'), new SlugSyntaxRule()],
+            'slug' => ['required', 'string', new UniqueCategorySlugRule($edition), new SlugSyntaxRule()],
             'name' => ['required', 'string'],
             'edition' => ['required', Rule::enum(GameEdition::class), 'nullable'],
             'is_article' => ['required', 'boolean'],
@@ -77,13 +79,16 @@ class PostCategoryController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         $category = PostCategory::find($id);
-
         if ($category === null) {
             return $this->errorJsonResponse('Не найдено категории с id ' . $id);
         }
 
+        $edition = $request->has('edition')
+            ? $request->enum('status', GameEdition::class)
+            : $category->edition;
+
         $validator = Validator::make($request->all(), [
-            'slug' => ['string', Rule::unique(PostCategory::class, 'slug')->ignore($category->id), new SlugSyntaxRule()],
+            'slug' => ['string', (new UniqueCategorySlugRule($edition))->ignore($category->id), new SlugSyntaxRule()],
             'name' => ['string'],
             'edition' => [Rule::enum(GameEdition::class), 'nullable'],
             'is_article' => ['boolean'],
