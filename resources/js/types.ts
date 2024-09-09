@@ -34,9 +34,11 @@ export interface Post {
     slug: string
     version?: PostVersion
     like_count: number
+    favourite_count: number
     comment_count: number
     view_count: number
     is_liked: boolean
+    is_favourite: boolean
     created_at: string
     updated_at: string
 }
