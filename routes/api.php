@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FavouritePostController;
 use App\Http\Controllers\PostCategoryController;
 use App\Http\Controllers\PostCommentController;
 use App\Http\Controllers\PostCommentLikeController;
@@ -57,6 +58,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/posts/{postId}/likes', [PostLikeController::class, 'like'])->where('postId', '[0-9]+');
     Route::delete('/posts/{postId}/likes', [PostLikeController::class, 'unlike'])->where('postId', '[0-9]+');
+
+    Route::post('/posts/{postId}/favourites', [FavouritePostController::class, 'addFavourite'])->where('postId', '[0-9]+');
+    Route::delete('/posts/{postId}/favourites', [FavouritePostController::class, 'removeFavourite'])->where('postId', '[0-9]+');
 
     Route::post('/posts/{postId}/comments', [PostCommentController::class, 'submit'])->where('id', '[0-9]+');
     Route::delete('/post-comments/{id}', [PostCommentController::class, 'remove'])->where('id', '[0-9]+');

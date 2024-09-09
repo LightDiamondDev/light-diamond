@@ -17,7 +17,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PostComment> $comments
  * @property-read int|null $comments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FavouritePost> $favourites
+ * @property-read int|null $favourites_count
  * @property-read int $comment_count
+ * @property-read int $favourite_count
+ * @property-read bool $is_favourite
  * @property-read bool $is_liked
  * @property-read int $like_count
  * @property-read \App\Models\PostVersion $version
@@ -48,9 +52,11 @@ class Post extends Model
     protected $appends = [
         'version',
         'like_count',
+        'favourite_count',
         'comment_count',
         'view_count',
         'is_liked',
+        'is_favourite',
     ];
 
     public function getVersionAttribute(): PostVersion
@@ -72,6 +78,11 @@ class Post extends Model
         return $this->hasMany(PostLike::class, 'post_id');
     }
 
+    public function favourites(): HasMany
+    {
+        return $this->hasMany(FavouritePost::class, 'post_id');
+    }
+
     public function comments(): HasMany
     {
         return $this->hasMany(PostComment::class, 'post_id');
@@ -85,6 +96,11 @@ class Post extends Model
     public function getLikeCountAttribute(): int
     {
         return $this->likes()->count();
+    }
+
+    public function getFavouriteCountAttribute(): int
+    {
+        return $this->favourites()->count();
     }
 
     public function getCommentCountAttribute(): int
@@ -101,5 +117,11 @@ class Post extends Model
     {
         $user = Auth::user();
         return $user !== null && $this->likes()->where('user_id', $user->id)->exists();
+    }
+
+    public function getIsFavouriteAttribute(): bool
+    {
+        $user = Auth::user();
+        return $user !== null && $this->favourites()->where('user_id', $user->id)->exists();
     }
 }
