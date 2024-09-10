@@ -262,7 +262,11 @@ function logout() {
                 href="#"
             >
                 <span class="notifications-counter flex justify-center items-center absolute">15</span>
-                <UserAvatar :user="authStore.user!"/>
+                <UserAvatar
+                    border-class-list="h-12 w-12"
+                    icon-class-list="h-8 w-8"
+                    :user="authStore.user!"
+                />
                 <div class="flex flex-col">
                     <span
                         :class="{ 'text-sm': authStore.username!.length > 15 }"
@@ -425,7 +429,12 @@ function logout() {
                 >
                     <span v-if="authStore.isAuthenticated" class="notifications-counter flex justify-center items-center absolute">15</span>
 
-                    <UserAvatar v-if="authStore.isAuthenticated" :user="authStore.user!"/>
+                    <UserAvatar
+                        v-if="authStore.isAuthenticated"
+                        border-class-list="h-12 w-12"
+                        icon-class-list="h-8 w-8"
+                        :user="authStore.user!"
+                    />
 
                     <span v-else class="icon icon-border-profile h-[42px] w-[42px]"></span>
                 </button>

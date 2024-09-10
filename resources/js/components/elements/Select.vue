@@ -3,6 +3,7 @@ import {computed, type PropType, ref} from 'vue'
 import ItemButton from '@/components/elements/ItemButton.vue'
 
 const props = defineProps({
+    buttonClasses: String,
     disabled: {
         type: Boolean,
         default: false
@@ -18,6 +19,7 @@ const props = defineProps({
         type: Object as PropType<any[]>,
         required: true
     },
+    optionsClasses: String,
     optionClasses: String,
     placeholder: {
         type: String,
@@ -102,11 +104,11 @@ function change(option: any) {
 <template>
     <div
         :class="{ 'disabled': disabled, 'open': isSelectOpen }"
-        class="select ld-primary-background ld-shadow-text flex flex-col relative"
+        class="select ld-shadow-text flex flex-col relative"
         ref="container"
     >
         <button
-            :class="{ 'cursor-default': disabled }"
+            :class="buttonClasses"
             class="select-button flex justify-between items-center"
             :disabled="disabled"
             type="button"
@@ -129,7 +131,7 @@ function change(option: any) {
             </span>
         </button>
         <Transition name="smooth-select-switch">
-            <div v-if="isSelectOpen" class="options ld-primary-background flex flex-col w-full absolute">
+            <div v-if="isSelectOpen" :class="optionsClasses" class="options flex flex-col w-full absolute">
                 <template v-for="option in props.options">
                     <ItemButton
                         @click="change(option)"

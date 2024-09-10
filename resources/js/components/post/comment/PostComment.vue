@@ -244,7 +244,12 @@ function onReplyClick() {
             </div>
         </div>
         <template v-else>
-            <UserAvatar :user="comment.user" class="min-w-[2rem]"/>
+            <UserAvatar
+                v-if="authStore.isAuthenticated"
+                border-class-list="min-w-[2rem] h-12 w-12"
+                icon-class-list="h-8 w-8"
+                :user="comment.user"
+            />
             <div class="flex flex-col gap-2 flex-1 min-w-0 md:mr-8">
                 <div
                     class="comment-header flex justify-between items-center transition-all duration-300 gap-2"

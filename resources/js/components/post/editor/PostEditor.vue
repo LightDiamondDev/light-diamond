@@ -160,7 +160,11 @@ function onEditionChange() {
                         <div class="origin-info flex justify-between">
                             <RouterLink class="author-wrap flex items-center w-fit gap-2 ml-[-2px] pb-2 pt-2" :to="{name: 'home'}">
                             <span class="icon-border flex justify-center items-center h-[48px] w-[48px]">
-                                <UserAvatar :user="author"/>
+                                <UserAvatar
+                                    border-class-list="h-12 w-12"
+                                    icon-class-list="h-8 w-8"
+                                    :user="author"
+                                />
                             </span>
                                 <span class="username duration-200">{{ author.username }}</span>
                             </RouterLink>
@@ -222,6 +226,8 @@ function onEditionChange() {
                             <div class="separator self-center w-full my-4"></div>
 
                             <Select
+                                button-classes="ld-primary-background ld-primary-border ld-title-font"
+                                options-classes="ld-primary-background ld-primary-border mt-[-2px]"
                                 class="post-edition flex my-4"
                                 v-model="gameEdition"
                                 :disabled="!editable"
@@ -237,8 +243,10 @@ function onEditionChange() {
                             </Select>
 
                             <Select
+                                button-classes="ld-primary-background ld-primary-border ld-title-font"
+                                options-classes="ld-primary-background ld-primary-border mt-[-2px]"
                                 :class="{'red-border': errors['category_id']}"
-                                class="post-category flex"
+                                class="post-category flex my-4"
                                 v-model="postVersion.category_id"
                                 :disabled="!editable"
                                 input-id="category"

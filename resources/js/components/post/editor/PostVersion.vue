@@ -375,9 +375,10 @@ loadPostVersion()
                             (postVersion.status !== PostVersionStatus.DRAFT || postVersion.assigned_moderator)"
                          class="flex flex-col gap-2">
                         <p class="px-3 pt-2">Модератор</p>
-
                         <Select
+                            options-classes="ld-primary-background ld-primary-border mt-[-10px]"
                             :disabled="postVersion!.status !== PostVersionStatus.PENDING"
+                            button-classes="max-h-[64px]"
                             class="post-moderator flex self-center w-full"
                             v-model="postVersion!.assigned_moderator_id"
                             input-id="moderator"
@@ -391,13 +392,21 @@ loadPostVersion()
                         >
 
                             <template #option-icon="{option}: {option: User}">
-                                <UserAvatar :user="option"/>
+                                <UserAvatar
+                                    border-class-list="h-12 w-12"
+                                    icon-class-list="h-8 w-8"
+                                    :user="option"
+                                />
                             </template>
 
                             <template #option="{option}: { option: User}">
                                 <div class="flex gap-2 items-center py-2 px-3 w-full"
                                      @click="assignModerator(option)">
-                                    <UserAvatar :user="option"/>
+                                    <UserAvatar
+                                        border-class-list="h-12 w-12"
+                                        icon-class-list="h-8 w-8"
+                                        :user="option"
+                                    />
                                     <p class="text-sm line-clamp-1">{{ option.username }}</p>
                                 </div>
                             </template>
@@ -405,34 +414,31 @@ loadPostVersion()
                         </Select>
                     </div>
 
-                    <p class="pb-1 pt-2 xl:px-3 px-4">Статус</p>
+                    <div v-if="postVersion!.post" class="header-details-item flex xl:flex-col flex-row">
+                        <p class="mt-2 xl:px-3 px-4">Материал</p>
+                        <RouterLink
+                            :to="{name: 'post', params: {slug: postVersion!.post.slug}}"
+                            class="ld-default-link line-clamp-2 text-[12px] hover:underline duration-200 mx-2 xl:mt-0 mt-2"
+                        >
+                            {{ postVersion!.post.version!.title }}
+                        </RouterLink>
+                    </div>
 
-                    <p
-                        :class="postVersionStatusInfo.colorClass"
-                        class="transfusion bordered h-fit w-fit xl:mb-2 mb-4 xl:mx-2 mx-4 p-2"
-                    >
-                        {{ postVersionStatusInfo.name }}
-                    </p>
+                    <div class="flex xl:flex-col flex-row">
+                        <p class="mt-2 xl:px-3 px-4 xl:py-0 py-0.5">Статус</p>
+                        <p
+                            :class="postVersionStatusInfo.colorClass"
+                            class="transfusion bordered h-fit w-fit xl:mb-2 mb-2 xl:mt-1 mt-2 xl:mx-2 mx-4 px-2 py-0.5"
+                        >
+                            {{ postVersionStatusInfo.name }}
+                        </p>
+                    </div>
 
-                    <p class="pb-1 xl:px-3 px-4">Название</p>
-
-                    <p class="ld-tinted-background ld-primary-border h-fit text-[10px] xl:mb-2 mb-4 xl:mx-2 mx-4 p-2">
-                        {{ postVersion.title }}
-                    </p>
-
-                    <p class="pb-1 xl:px-3 px-4">Ссылка</p>
-
-                    <p class="ld-tinted-background ld-primary-border h-fit text-[10px] xl:mb-2 mb-4 xl:mx-2 mx-4 p-2 break-words">
-                        {{ postUrl }}
-                    </p>
-
-                    <div class="separator"></div>
-
-                    <div v-if="postVersion.actions!.length !== 0" class="flex flex-col xl:gap-2 gap-4 xl:p-2 p-4">
+                    <div v-if="postVersion.actions!.length !== 0" class="flex flex-col xl:gap-2 gap-4 mt-1 xl:pb-2 non-pb-4 xl:px-2 px-4">
                         <PostVersionAction
                             v-if="[PostVersionActionType.REJECT, PostVersionActionType.REQUEST_CHANGES].includes(lastAction?.type!)"
                             class="sidebar-last-action px-2 md:px-1"
-                            :action="lastAction"
+                            :action="lastAction!"
                             :minimized="true"
                         />
                         <ShineButton
@@ -696,6 +702,12 @@ loadPostVersion()
 }
 .upper-interaction .upper-unavailable {
     display: none;
+}
+.non-pb-4 {
+    padding-bottom: 1rem;
+}
+.upper-interaction .non-pb-4 {
+    padding-bottom: 0;
 }
 .ld-shine-button .press,
 .ld-shine-button .preset {

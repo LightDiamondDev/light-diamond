@@ -88,6 +88,14 @@
         text-shadow: 1px 1px rgba(0, 0, 0, .5);
     }
 
+    .ld-default-link {
+        color: var(--primary-color);
+    }
+
+    .ld-default-link:hover {
+        color: var(--hover-text-color);
+    }
+
     .header-dropdown-content { margin-top: -2px; }
 
     .header-blur-on {
@@ -363,14 +371,20 @@
 
     .content h1 {
         font-size: 3rem;
+        line-height: 1.2;
+        margin: 1rem 0;
     }
 
     .content h2 {
         font-size: 2.5rem;
+        line-height: 1.2;
+        margin: 1rem 0;
     }
 
     .content h3 {
         font-size: 2rem;
+        line-height: 1.2;
+        margin: .5rem 0;
     }
 
     .content h4 {
@@ -416,6 +430,10 @@
 
     .content .origin-info .username {
         color: var(--secondary-text-color);
+    }
+
+    .content .post-moderator {
+        border: 0;
     }
 
     .error {
@@ -666,18 +684,8 @@
         opacity: .8;
     }
 
-    .select .select-button {
-        border: 2px solid rgba(0, 255, 255, .3);
-    }
-
     .select .select-button:focus-visible {
         border: 2px solid #00ffff;
-    }
-
-    .select .options {
-        border-bottom: 2px solid rgba(0, 255, 255, .3);
-        border-right: 2px solid rgba(0, 255, 255, .3);
-        border-left: 2px solid rgba(0, 255, 255, .3);
     }
 
     .set-mark .icon {

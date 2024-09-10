@@ -272,7 +272,12 @@ function onNewCommentEditorClick() {
 
                         <RouterLink class="author-wrap flex items-center order-2 xl:order-1 w-fit gap-2" :to="{name: 'home'}">
                             <span class="icon-border flex justify-center items-center h-[48px] w-[48px]">
-                                <UserAvatar :user="post.version!.author"/>
+                                <UserAvatar
+                                    v-if="authStore.isAuthenticated"
+                                    border-class-list="h-12 w-12"
+                                    icon-class-list="h-8 w-8"
+                                    :user="post.version!.author"
+                                />
                             </span>
                             <span
                                 :class="{ 'short-username': post.version!.author!.username!.length < 16 }"

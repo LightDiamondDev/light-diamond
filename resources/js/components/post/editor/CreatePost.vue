@@ -121,7 +121,7 @@ function saveAsDraft() {
         </template>
     </PostEditor>
 
-    <OverlayPanel ref="submitOverlayPanel" class="overlay-panel max-w-[100vw] p-4 mt-24rem">
+    <OverlayPanel ref="submitOverlayPanel" class="overlay-panel ld-primary-background max-w-[100vw] p-4 mt-24rem">
         <div class="flex flex-col gap-2">
 
             <p class="flex">Вы точно хотите отправить Материал на рассмотрение?</p>
