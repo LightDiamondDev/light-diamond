@@ -17,7 +17,7 @@ const props = defineProps({
 
 <template>
     <div class="banner-container flex justify-center fixed w-full">
-        <div class="banner flex justify-center items-end">
+        <div class="banner flex justify-center items-end w-full" style="background-color: orange">
             <div v-if="isTitleDisplay" :class="{ 'opacity-0': !isTitleVisible }" class="title page-container flex flex-col justify-center items-center">
                 <h1 class="text-center absolute">{{ title }}</h1>
             </div>
@@ -38,7 +38,6 @@ const props = defineProps({
 .banner {
     background-image: url('/images/elements/catalog-banner1.png');
     background-repeat: repeat;
-    width: 1920px;
     height: 280px;
     left: 0;
 }

@@ -51,7 +51,7 @@ updateCurrentSectionByRoute()
 
 <template>
     <div class="settings flex flex-col w-full p-2">
-        <div class="title flex items-center mb-2 pl-2 pr-2">
+        <div class="title ld-primary-background ld-primary-border flex items-center mb-2 pl-2 pr-2">
             <button
                 class="h-[48px] w-[48px] justify-center items-center arrow locked"
                 :class="{ 'invisible': isMobileMenu }"
@@ -67,7 +67,7 @@ updateCurrentSectionByRoute()
             <div class="h-[48px] w-[48px] arrow locked"></div>
         </div>
         <div class="interface flex">
-            <aside :class="{ 'on': isMobileMenu }">
+            <aside class="ld-primary-background ld-primary-border" :class="{ 'on': isMobileMenu }">
                 <div class="units">
 
                     <RouterLink
@@ -79,7 +79,7 @@ updateCurrentSectionByRoute()
                             class="pl-8 pr-4 w-full text-[1.1rem]"
                             @click="setProfileSection()"
                             icon="icon-diamond"
-                            text="Профиль"
+                            label="Профиль"
                             tabindex="-1"
                         />
                     </RouterLink>
@@ -92,8 +92,8 @@ updateCurrentSectionByRoute()
                         <ItemButton
                             class="pl-8 pr-4 w-full text-[1.1rem]"
                             @click="setSecuritySection()"
+                            label="Безопасность"
                             icon="icon-apple"
-                            text="Безопасность"
                             tabindex="-1"
                         />
                     </RouterLink>
@@ -103,7 +103,7 @@ updateCurrentSectionByRoute()
 
             <div
                 :class="{ 'on': !isMobileMenu }"
-                class="settings-container flex flex-col"
+                class="settings-container ld-primary-background flex flex-col"
             >
 
                 <RouterView v-slot="{ Component }">

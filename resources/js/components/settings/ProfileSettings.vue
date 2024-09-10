@@ -164,14 +164,14 @@ function submitChangeAvatar() {
                             :disabled="usernameData.username === authStore.username || !usernameData.username"
                             class="confirm max-h-[64px] max-w-[200px]"
                             button-type="submit"
-                            text="Подтвердить"
+                            label="Подтвердить"
                             :loading="isProcessingUsername"
                             @click.prevent="submitChangeUsername()"
                         />
                         <Button
                             class="cancel max-h-[64px] max-w-[200px]"
                             button-type="button"
-                            text="Отменить"
+                            label="Отменить"
                             :loading="isProcessingUsername"
                             @click.prevent="isEditingUsername = false"
                         />

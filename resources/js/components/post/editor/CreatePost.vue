@@ -2,10 +2,10 @@
 import PostEditor from '@/components/post/editor/PostEditor.vue'
 import {ref} from 'vue'
 import axios, {type AxiosError} from 'axios'
-import {getErrorMessageByCode} from '@/helpers'
+import {getErrorMessageByCode, getFullPresentableDate, getRelativeDate} from '@/helpers'
 import { useToastStore } from '@/stores/toast'
 import OverlayPanel from '@/components/elements/OverlayPanel.vue'
-import {useRouter} from 'vue-router'
+import {RouterLink, useRouter} from 'vue-router'
 import type {PostVersion} from '@/types'
 import {useAuthStore} from '@/stores/auth'
 import ShineButton from '@/components/elements/ShineButton.vue'
@@ -86,21 +86,34 @@ function saveAsDraft() {
     <PostEditor v-model="postVersion" :author="authStore.user!" :errors="errors">
 
         <template v-slot:banner>
-            <Banner title="Создание Материала"/>
+            <Banner :is-title-display="false"/>
+        </template>
+
+        <template v-slot:header>
+            <div class="banner-title page-container flex flex-col justify-center items-center xs:items-end max-w-[800px]">
+
+                <RouterLink
+                    class="logo-wrap flex justify-center items-center relative xs:w-full full-locked"
+                    :to="{ name: 'home' }"
+                >
+                    <h1 class="title-font text-center">Создание Материала</h1>
+                </RouterLink>
+
+            </div>
         </template>
 
         <template v-slot:sidebar>
             <div class="flex flex-col gap-2 p-2">
                 <ShineButton
-                    class="shine-button w-full confirm"
+                    class="ld-shine-button w-full confirm"
                     @click="submitOverlayPanel?.toggle"
-                    text="На рассмотрение"
+                    label="На рассмотрение"
                     icon="icon-eye"
                 />
                 <ShineButton
-                    class="shine-button w-full"
+                    class="ld-shine-button w-full"
                     @click="saveAsDraft"
-                    text="Сохранить как черновик"
+                    label="Сохранить как черновик"
                     :loading="isSavingAsDraft"
                     icon="icon-script"
                 />
@@ -117,14 +130,14 @@ function saveAsDraft() {
                 <ShineButton
                     class="flex confirm"
                     :loading="isSubmitting" @click="submit"
+                    label="Да, отправить"
                     icon="icon-tick"
-                    text="Да, отправить"
                 />
                 <ShineButton
                     class="flex"
                     @click="submitOverlayPanel?.hide()"
                     icon="icon-small-cross"
-                    text="Отмена"
+                    label="Отмена"
                 />
             </div>
         </div>
@@ -133,14 +146,14 @@ function saveAsDraft() {
 </template>
 
 <style>
-.shine-button .press,
-.shine-button .preset {
+.ld-shine-button .press,
+.ld-shine-button .preset {
     width: 100%;
 }
-.shine-button .text {
+.ld-shine-button .text {
     height: 2rem;
 }
-.shine-button .preset {
+.ld-shine-button .preset {
     padding: .5rem;
 }
 </style>

@@ -4,15 +4,15 @@ const props = defineProps({
         type: String,
         default: 'button'
     },
+    label: String,
     icon: String,
-    text: String
 });
 </script>
 
 <template>
     <Component
-        class="item-button flex items-center"
-        :class="{ 'gap-3': text }"
+        class="item-button ld-shadow-text flex items-center"
+        :class="{ 'gap-3': label }"
         type="button"
         :is="as"
     >
@@ -21,7 +21,7 @@ const props = defineProps({
                 <span v-if="icon" :class="icon" class="icon flex min-w-[2rem]"/>
             </slot>
         </div>
-        <span class="text text-start duration-200">{{ text }}</span>
+        <span class="label text-start duration-200">{{ label }}</span>
 
     </Component>
 </template>
@@ -33,14 +33,6 @@ const props = defineProps({
 
 .item-button {
     min-height: 72px;
-}
-
-.item-button:focus-visible .icon, .item-button:hover .icon {
-    animation: icon-trigger-up-animation .3s ease;
-}
-
-.item-button:focus-visible .text, .item-button:hover .text {
-    color: var(--hover-text-color);
 }
 
 .left-header-sidebar .item-button .text,

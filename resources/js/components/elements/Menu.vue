@@ -77,7 +77,7 @@ function onItemClick(item: MenuItem) {
                 v-else
                 :as="item.route ? 'RouterLink' : 'button'"
                 @click="onItemClick(item)"
-                :text="item.label"
+                :label="item.label"
                 :icon="item.icon"
                 :to="item.route"
                 class="pl-6 pr-4 lg:text-[1.1rem]"

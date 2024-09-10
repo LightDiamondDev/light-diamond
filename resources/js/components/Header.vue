@@ -246,7 +246,15 @@ function logout() {
         <SearchForm/>
     </Dialog>
 
-    <Menu ref="userMenu" :items="userMenuItems" align-right class="user-menu">
+    <Menu
+        :items="userMenuItems"
+        align-right
+        class="user-menu
+            ld-primary-background
+            ld-primary-border-bottom
+            ld-primary-border-right
+            ld-primary-border-left"
+        ref="userMenu">
         <template v-slot:header>
             <a
                 v-if="authStore.isAuthenticated"
@@ -274,7 +282,7 @@ function logout() {
     >
         <aside
             class="
-                left-header-sidebar bg-[var(--primary-bg-color)]
+                left-header-sidebar  ld-primary-background ld-shadow-text
                 overflow-y-scroll max-w-[320px]
                 transition duration-500 h-full
                 flex flex-col fixed"
@@ -310,7 +318,7 @@ function logout() {
                     <ItemButton
                         v-if="childSection.route"
                         as="RouterLink"
-                        :text="childSection.label"
+                        :label="childSection.label"
                         :icon="childSection.icon"
                         :to="childSection.route"
                         class="pl-12 pr-4"
@@ -318,7 +326,7 @@ function logout() {
                     <ItemButton
                         v-else
                         :as="childSection.url ? 'a' : 'button'"
-                        :text="childSection.label"
+                        :label="childSection.label"
                         :icon="childSection.icon"
                         :href="childSection.url"
                         class="pl-12 pr-4"
@@ -336,7 +344,7 @@ function logout() {
     />
 
     <header
-        class="transition-transform flex justify-center duration-300 select-none h-[var(--header-height)] z-[2] w-full top-0 left-0 fixed"
+        class="ld-primary-background ld-primary-border-bottom ld-shadow-text transition-transform flex justify-center duration-300 select-none h-[var(--header-height)] z-[2] w-full top-0 left-0 fixed"
         :class="{'-translate-y-full': !preferenceManager.isHeaderFixedVisible() && isHeaderHidden}"
     >
         <nav class="header page-container flex justify-between">
@@ -367,12 +375,22 @@ function logout() {
                             <span class="list-label-text">{{ section.label }}</span>
                         </button>
 
-                        <div class="header-dropdown-content absolute hidden top-[var(--header-height)] min-w-[260px]">
+                        <div
+                            class="header-dropdown-content
+                                ld-primary-background
+                                ld-primary-border-bottom
+                                ld-primary-border-right
+                                ld-primary-border-left
+                                absolute
+                                hidden
+                                top-[var(--header-height)]
+                                min-w-[260px]"
+                        >
                             <template v-for="childSection of section.children">
                                 <ItemButton
                                     v-if="childSection.route"
                                     as="RouterLink"
-                                    :text="childSection.label"
+                                    :label="childSection.label"
                                     :icon="childSection.icon"
                                     :to="childSection.route"
                                     class="pl-8 pr-4"
@@ -380,7 +398,7 @@ function logout() {
                                 <ItemButton
                                     v-else
                                     :as="childSection.url ? 'a' : 'button'"
-                                    :text="childSection.label"
+                                    :label="childSection.label"
                                     :icon="childSection.icon"
                                     :href="childSection.url"
                                     class="pl-8 pr-4"
@@ -393,7 +411,6 @@ function logout() {
 
             <div class="flex items-center">
                 <button
-                    @mousedown="console.log('Флекс')"
                     class="search-button flex justify-center items-center p-2"
                     @click="isSearchDialog = true"
                     type="button"

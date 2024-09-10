@@ -53,7 +53,7 @@ function close() {
 
 <template>
     <div
-        class="toast flex locked"
+        class="toast ld-primary-background flex locked"
         :class="{
             'error': toast.type === ToastType.ERROR,
             'info': toast.type === ToastType.INFO,

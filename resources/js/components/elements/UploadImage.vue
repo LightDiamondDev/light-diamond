@@ -108,7 +108,7 @@ function uploadImage(file: File) {
 
 <template>
 <label
-    :class="{'editable': editable, 'cursor-pointer': editable, 'dragover': isDraggingOver, 'loaded': imageSrc }"
+    :class="{ 'disabled': !editable, 'cursor-pointer': editable, 'dragover': isDraggingOver, 'loaded': imageSrc }"
     class="upload-image-container flex justify-center items-center locked"
     :style="'background-image: url(' + imageSrc + ');'"
     @dragenter.prevent="onDragEnter"
@@ -129,6 +129,7 @@ function uploadImage(file: File) {
         <span class="text-center">Максимальный размер — {{ maxSizeInMegabytes }} Мб</span>
         <span class="text-center">{{ allowedImageFormats.join(" / ") }}</span>
         <input
+            :disabled="!editable"
             @change="onChange"
             accept="image/*"
             type="file"
@@ -172,6 +173,9 @@ em.loaded .upload-image-heading {
 }
 .upload-image-container.loaded:not(.dragover) {
     outline: 0;
+}
+.upload-image-container.disabled .upload-image-info {
+    display: none;
 }
 input {
     height: 0;

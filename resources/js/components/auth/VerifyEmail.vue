@@ -35,7 +35,7 @@ function tryVerifyEmail() {
 
 <template>
     <div class="global-error-window flex justify-center items-center">
-        <div class="global-error-container flex flex-col items-center">
+        <div class="global-error-container ld-primary-background ld-primary-border flex flex-col items-center">
 
             <h1 v-if="isSuccess" class="text-4xl font-bold text-center mt-8">Поздравляем!</h1>
             <h1 v-else class="text-4xl font-bold text-center mt-8">Проверка...</h1>
@@ -55,7 +55,7 @@ function tryVerifyEmail() {
             <ProcessingMovingItems v-if="isProcessing" class="mb-9 mt-4" height="64px" width="64px"/>
 
             <RouterLink v-if="isSuccess" class="flex justify-center mb-8" :to="{ name: 'home' }">
-                <Button button-type="submit" icon="icon-diamond" text="Отлично, вперёд!"/>
+                <Button button-type="submit" icon="icon-diamond" label="Отлично, вперёд!"/>
             </RouterLink>
         </div>
     </div>

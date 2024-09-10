@@ -46,7 +46,7 @@ function submitResetPassword() {
 
 <template>
     <div class="global-error-window flex justify-center items-center">
-        <div class="global-error-container flex flex-col items-center">
+        <div class="global-error-container ld-primary-background ld-primary-border flex flex-col items-center">
             <h1 class="text-4xl text-center mt-8">Сброс пароля</h1>
             <p class="text-muted text-center text-[0.9rem] mb-2 mt-4">Придумайте новый пароль. Он должен быть надёжным!</p>
 
@@ -92,7 +92,7 @@ function submitResetPassword() {
                     button-type="submit"
                     class="mb-8"
                     icon="icon-bestiary"
-                    text="Подтвердить"
+                    label="Подтвердить"
                     :loading="isProcessing"
                     @click.prevent="submitResetPassword"
                 />

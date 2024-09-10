@@ -11,8 +11,7 @@ import {useRoute, RouterLink} from 'vue-router'
 import {
     changeTitle,
     convertDateToString,
-    getErrorMessageByCode,
-    getPresentableDate,
+    getErrorMessageByCode, getFullPresentableDate,
     getRelativeDate
 } from '@/helpers'
 
@@ -22,13 +21,10 @@ import PostCommentComponent from '@/components/post/comment/PostComment.vue'
 import PostCommentEditor from '@/components/post/comment/PostCommentEditor.vue'
 
 import Button from '@/components/elements/Button.vue'
-import ShineButton from '@/components/elements/ShineButton.vue'
 
 import UserAvatar from '@/components/user/UserAvatar.vue'
 
 import ProcessingMovingItems from '@/components/elements/ProcessingMovingItems.vue'
-import UploadImage from '@/components/elements/UploadImage.vue'
-import Select from '@/components/elements/Select.vue'
 import EffectIcon from '@/components/elements/EffectIcon.vue'
 
 const props = defineProps({
@@ -244,11 +240,11 @@ function onNewCommentEditorClick() {
 
                 <aside class="left-post-interaction flex flex-col items-start">
                     <div class="flex flex-row xl:flex-col justify-center flex-wrap gap-4">
-                        <button :class="{ 'active': post.is_liked }" class="set-mark flex items-center" @click="toggleLike">
+                        <button :class="{ 'active': post.is_liked }" class="set-mark flex items-center" @click="onLikeClick">
                             <EffectIcon icon="icon-heart"/>
                             <span class="counter flex p-1">{{ post.like_count }}</span>
                         </button>
-                        <button :class="{ 'active': post.is_liked }" class="set-mark flex items-center" @click="toggleLike">
+                        <button :class="{ 'active': post.is_liked }" class="set-mark flex items-center" @click="onLikeClick">
                             <EffectIcon icon="icon-diamond"/>
                             <span class="counter flex p-1">{{ post.like_count }}</span>
                         </button>
@@ -274,7 +270,7 @@ function onNewCommentEditorClick() {
                 <aside class="right-post-interaction flex xl:flex-col items-end">
                     <div class="flex flex-col md:flex-row xl:flex-col gap-2 xs:gap-8 xl:gap-2">
 
-                        <RouterLink class="author-wrap flex items-center order-2 xl:order-1 w-fit gap-2 mb-2" :to="{name: 'home'}">
+                        <RouterLink class="author-wrap flex items-center order-2 xl:order-1 w-fit gap-2" :to="{name: 'home'}">
                             <span class="icon-border flex justify-center items-center h-[48px] w-[48px]">
                                 <UserAvatar :user="post.version!.author"/>
                             </span>
@@ -290,27 +286,44 @@ function onNewCommentEditorClick() {
                             <span class="icon-apple icon flex mr-1"/>
                             <p class="date-action flex flex-col">
                                 <span class="date-action-subtitle">Опубликовано</span>
-                                <span>{{ getPresentableDate(post.created_at) }}</span>
-                                <span>{{ getRelativeDate(post.created_at) }}</span>
+                                <span v-tooltip.top="getFullPresentableDate(post.updated_at)">
+                                    {{ getRelativeDate(post.created_at) }}
+                                </span>
                             </p>
                         </div>
 
-                        <div v-if="post.updated_at === post.created_at" class="date-update flex order-3">
+                        <div v-if="post.updated_at !== post.created_at" class="date-update flex order-3">
                             <span class="icon-refresh icon flex mr-1"/>
                             <p class="date-action flex flex-col">
                                 <span class="date-action-subtitle">Обновлено</span>
-                                <span>{{ getPresentableDate(post.updated_at) }}</span>
-                                <span>{{ getRelativeDate(post.updated_at) }}</span>
+                                <span v-tooltip.top="getFullPresentableDate(post.created_at)">
+                                    {{ getRelativeDate(post.updated_at) }}
+                                </span>
                             </p>
                         </div>
 
                     </div>
                 </aside>
-
             </div>
 
-            <div class="comments primary-background page-container max-w-[800px] mb-4 p-4" id="comments" style="background-attachment: fixed">
+            <div class="page-container flex justify-center max-w-[800px] mb-8 mt-6">
+                <Button
+                    :loading="isSubmittingNewComment"
+                    :disabled="!authStore.isAuthenticated"
+                    @click="submitNewComment"
+                    class="max-w-[320px]"
+                    icon="icon-download"
+                    label="Скачать"
+                />
+            </div>
 
+            <div class="comments
+                    ld-primary-background
+                    ld-fixed-background
+                    page-container
+                    max-w-[800px] mb-4 p-4"
+                id="comments"
+            >
                 <div class="comments-title flex gap-3">
                     <p>Комментарии</p>
                     <p class="text-[var(--primary-color)]">{{ post!.comment_count }}</p>
@@ -328,7 +341,7 @@ function onNewCommentEditorClick() {
                         class="self-center md:self-start max-h-[72px] max-w-[240px] mt-2"
                         @click="submitNewComment"
                         icon="icon-comment"
-                        text="Отправить"
+                        label="Отправить"
                     />
                 </div>
 
@@ -388,7 +401,7 @@ function onNewCommentEditorClick() {
                     <div class="animation-flying-phantom"></div>
                 </div>
                 <RouterLink class="flex justify-center max-w-[480px] w-full mb-8" :to="{ name: 'home' }">
-                    <Button button-type="submit" icon="item-ender-pearl" icon-size="32px" text="Телепортироваться Домой"/>
+                    <Button button-type="submit" icon="item-ender-pearl" icon-size="32px" label="Телепортироваться Домой"/>
                 </RouterLink>
             </div>
         </div>
@@ -449,11 +462,14 @@ a, b, blockquote, code, li, ol, p, s, strong, ul {
 }
 .date-action span {
     align-items: center;
+    height: 1.8rem;
     display: flex;
-    height: 2rem;
 }
 .date-action-subtitle{
     color: var(--trinity-text-color);
+}
+.tooltip::before {
+    min-width: 200px;
 }
 .comments-title p {
     font-size: 1.2rem;

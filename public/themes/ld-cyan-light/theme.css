@@ -2,6 +2,7 @@
     :root {
         --primary-bg-color: #005565;
         --secondary-bg-color: #eaeaea;
+        --primary-border: 2px solid rgba(0, 255, 255, .3);
         --primary-text-color: #eaeaea;
         --secondary-text-color: #353535;
         --trinity-text-color: #005565;
@@ -40,62 +41,54 @@
         font-style: normal;
     }
 
-    * {
-        text-shadow: 1px 1px rgba(0, 0, 0, .5);
-    }
-
-    body,
-    header,
-    .catalog-panel,
-    .content-studio .content-studio-container,
-    .content-studio .title,
-    .content-studio aside,
-    .content .label-input-text,
-    .dialog-form-container .interface,
-    .editor-horizontal-menu,
-    .global-error-container,
-    .header-blur aside,
-    .header-dropdown-content,
-    .menu,
-    .post-card,
-    .post-interaction,
-    .primary-background,
-    .search-form-background form,
-    .select .options,
-    .select,
-    .settings aside,
-    .settings .settings-container,
-    .settings .title,
-    .toaster .achievement,
-    .toaster .toast,
-    footer {
+    .ld-primary-background, body {
         background-image: url('/images/elements/base-background.png');
         background-color: var(--primary-bg-color);
     }
 
-    .secondary-background {
+    .ld-secondary-background {
+        background-image: url('/images/elements/base-background-lighter.png');
         background-color: var(--secondary-bg-color);
     }
 
-    header {
-        border-bottom: 2px solid rgba(0, 255, 255, .2);
+    .ld-fixed-background {
+        background-attachment: fixed;
     }
 
-    .header-dropdown-content {
-        border-bottom: 2px solid rgba(0, 255, 255, .2);
-        border-right: 2px solid rgba(0, 255, 255, .2);
-        border-left: 2px solid rgba(0, 255, 255, .2);
-        margin-top: -2px;
+    .ld-primary-border-section,
+    .ld-primary-border {
+        border: var(--primary-border);
     }
 
-    footer,
-    footer .tinted-gradient {
-        border-top: 2px solid rgba(0, 255, 255, .2);
+    .ld-primary-border-bottom {
+        border-bottom: var(--primary-border);
     }
 
-    footer .tinted-gradient {
+    .ld-primary-border-left {
+        border-left: var(--primary-border);
+    }
+
+    .ld-primary-border-right {
+        border-right: var(--primary-border);
+    }
+
+    .ld-primary-border-top {
+        border-top: var(--primary-border);
+    }
+
+    .ld-tinted-background {
+        background: linear-gradient(rgba(0, 15, 15, .5), transparent);
+    }
+
+    .ld-tinted-background.harder {
         background: linear-gradient(rgba(0, 15, 15, .8), transparent);
     }
+
+    .ld-shadow-text * {
+        text-shadow: 1px 1px rgba(0, 0, 0, .5);
+    }
+
+    .header-dropdown-content { margin-top: -2px; }
 
     .header-blur-on {
         background-color: rgba(0, 0, 0, .5);
@@ -141,9 +134,6 @@
     }
 
     .menu {
-        border-bottom: 2px solid rgba(0, 255, 255, .2);
-        border-right: 2px solid rgba(0, 255, 255, .2);
-        border-left: 2px solid rgba(0, 255, 255, .2);
         box-shadow: 0 4px 8px rgba(0,0,0,.3);
         min-width: 200px;
     }
@@ -158,14 +148,6 @@
         background-color: rgba(0, 255, 255, .1);
         border: 2px solid #00ffff;
         color: #00ffff;
-    }
-
-    ::selection {
-        background-color: rgba(0, 255, 255, .3);
-    }
-
-    ::-moz-selection {
-        background-color: rgba(0, 255, 255, .3);
     }
 
     input::placeholder {
@@ -209,6 +191,14 @@
         background: none;
     }
 
+    ::-moz-selection {
+        background-color: rgba(0, 255, 255, .3);
+    }
+
+    ::selection {
+        background-color: rgba(0, 255, 255, .3);
+    }
+
     ::-webkit-scrollbar {
         width: var(--global-scrollbar-width);
     }
@@ -240,13 +230,13 @@
         height: 100%;
     }
 
-    .button-container:focus-visible .action-button .press .text, .button-container:hover .action-button .press .text {
+    .button-container:focus-visible .action-button .press .label, .button-container:hover .action-button .press .label {
         color: var(--hover-text-color);
     }
 
-    .button-container.cancel .action-button:hover .press .text,
-    .button-container.confirm .action-button:hover .press .text,
-    .button-container.warning .action-button:hover .press .text {
+    .button-container.cancel .action-button:hover .press .label,
+    .button-container.confirm .action-button:hover .press .label,
+    .button-container.warning .action-button:hover .press .label {
         color: var(--primary-text-color);
     }
 
@@ -300,12 +290,6 @@
         background-color: var(--secondary-bg-color);
     }
 
-    .content-studio .content-studio-container,
-    .content-studio .title,
-    .content-studio aside {
-        border: 2px solid rgba(0, 255, 255, .3);
-    }
-
     .content-studio .material-line .cover-wrap {
         border: 2px solid rgba(255, 255, 255, .8);
     }
@@ -325,7 +309,7 @@
     }
 
     .content .text-muted,
-    .content .item-button .text {
+    .content .item-button .label {
         color: var(--primary-text-color);
     }
 
@@ -375,6 +359,10 @@
 
     .content * {
         line-height: 1.8;
+    }
+
+    .content h1 {
+        font-size: 3rem;
     }
 
     .content h2 {
@@ -435,9 +423,7 @@
     }
 
     .content .label-input-text textarea {
-        background: linear-gradient(rgba(0, 15, 15, .5), transparent);
         color: var(--primary-text-color);
-        border: 2px solid rgba(0, 255, 255, .3);
         padding: 1rem;
     }
     .content .label-input-text textarea::placeholder {
@@ -457,18 +443,18 @@
 
     .design-settings-form div .settings-button span,
     .left-header-sidebar .button-link,
-    .action-button .text {
+    .action-button .label {
         color: var(--primary-text-color);
     }
 
-    .catalog-panel,
     .dialog-form-container .interface,
-    .global-error-container,
-    .settings aside,
     .settings form .description p,
-    .settings form,
-    .settings .title {
+    .settings form {
         border: 2px solid rgba(0, 255, 255, .3);
+    }
+
+    .search-dialog .interface {
+        border: none;
     }
 
     .design-settings-form div .settings-button {
@@ -505,6 +491,14 @@
 
     form fieldset label  {
         border: 2px solid var(--border-color);
+    }
+
+    .item-button:focus-visible .icon, .item-button:hover .icon {
+        animation: icon-trigger-up-animation .3s ease;
+    }
+
+    .item-button:focus-visible .label, .item-button:hover .label {
+        color: var(--hover-text-color);
     }
 
     .loaded-file {
@@ -609,7 +603,7 @@
 
     .post-content code,
     .post-content pre {
-        background: rgba(200, 185, 190, .6);
+        background: rgba(0, 15, 15, .3);
     }
 
     .post-content pre {
@@ -628,11 +622,7 @@
         color: var(--hover-text-color);
     }
 
-    .post-interaction {
-        border: 2px solid rgba(0, 255, 255, .3);
-    }
-
-    .post-interaction .post-moderator .select-button .text {
+    .post-interaction .post-moderator .select-button .label {
         white-space: nowrap;
     }
 
@@ -732,7 +722,7 @@
         background: none;
     }
 
-    .shine-button .press {
+    .ld-shine-button .press {
         background: radial-gradient(100% 100% at 100% 0, rgba(0, 200, 255, .3) 0, rgba(0, 70, 100, .3) 100%);
         transition: box-shadow .1s, transform .1s;
         border: 2px solid rgba(0, 255, 255, .3);
@@ -741,63 +731,53 @@
         appearance: none;
     }
 
-    .shine-button:focus-visible .press,
-    .shine-button:hover .press {
+    .ld-shine-button:focus-visible .press,
+    .ld-shine-button:hover .press {
         box-shadow: rgba(0, 55, 65, .5) 0 4px 8px, rgba(10, 35, 65, .5) 0 7px 13px -3px, rgba(0, 120, 150, .5) 0 4px 8px 0 inset;
         transform: translateY(-2px);
     }
 
-    .shine-button:focus-visible .press {
+    .ld-shine-button:focus-visible .press {
         border: 2px solid rgba(0, 255, 255, .5);
     }
 
-    .shine-button:focus-visible {
+    .ld-shine-button:focus-visible {
         border: none;
     }
 
-    .shine-button .press:hover .preset,
-    .shine-button .press:hover .preset {
+    .ld-shine-button .press:hover .preset,
+    .ld-shine-button .press:hover .preset {
         background: linear-gradient(90deg, rgba(0, 255, 255, .15), rgba(10, 35, 65, .15), rgba(0, 255, 255, .15), rgba(10, 35, 65, .15), rgba(0, 255, 255, .15));
         animation: transfusion-animation 10s linear infinite;
         background-size: 400% 100%;
     }
 
-    .shine-button:active .press,
-    .shine-button:active .press {
+    .ld-shine-button:active .press,
+    .ld-shine-button:active .press {
         box-shadow: rgba(0, 255, 255, .2) 0 4px 8px inset;
         transform: translateY(2px);
     }
 
-    .shine-button.active .press {
+    .ld-shine-button.active .press {
         background: radial-gradient(100% 100% at 100% 0, rgba(50, 200, 200, .3) 0, rgba(0, 255, 255, .3) 100%);
     }
 
-    .shine-button.cancel .press {
+    .ld-shine-button.cancel .press {
         background: radial-gradient(100% 100% at 100% 0, rgba(250, 30, 50, .3) 0, rgba(250, 10, 30, .3) 100%);
     }
 
-    .shine-button.confirm .press,
-    .shine-button.edition .press {
+    .ld-shine-button.confirm .press,
+    .ld-shine-button.edition .press {
         background: radial-gradient(100% 100% at 100% 0, rgba(50, 200, 50, .3) 0, rgba(30, 120, 30, .3) 100%);
     }
 
-    .shine-button.reconsider .press {
+    .ld-shine-button.reconsider .press {
         background: radial-gradient(100% 100% at 100% 0, rgba(235, 150, 50, .3) 0, rgba(200, 120, 30, .3) 100%);
     }
 
-    .shine-button.warning .press {
+    .ld-shine-button.warning .press {
         background: radial-gradient(100% 100% at 100% 0, rgba(200, 180, 50, .3) 0, rgba(180, 160, 30, .3) 100%);
         border: 2px solid rgba(200, 180, 50, .8);
-    }
-
-    .surface-ground {
-        background-image: url('/images/elements/base-background.png');
-        background-color: var(--secondary-bg-color);
-        background-attachment: fixed;
-    }
-
-    .bg-lighter {
-        background-image: url('/images/elements/base-background-lighter.png');
     }
 
     .text-error {
@@ -928,7 +908,7 @@
     }
 
     .achievement .content h1,
-    .action-button .text,
+    .action-button .label,
     .auth-dialog form fieldset .subtitle,
     .auth-dialog form .help-button span,
     .auth-remember-line .auth-remember-me,
@@ -948,9 +928,10 @@
     .item-button,
     .left-header-sidebar .unit-title,
     .list-label-text,
-    .select .text,
+    .select .label,
     .settings .settings-container form .section-title,
     .settings-button span,
+    .ld-title-font,
     .title-font,
     .title,
     .toast .content h1,
@@ -965,9 +946,9 @@
     .left-header-sidebar .item-button,
     .post-comment-content code,
     .post-comment-content pre,
-    .post-interaction .post-moderator.select .options .text,
-    .post-interaction .post-moderator .select-button .text,
-    .post-moderator.select .options .text,
+    .post-interaction .post-moderator.select .options .label,
+    .post-interaction .post-moderator .select-button .label,
+    .post-moderator.select .options .label,
     .user-menu .profile-link .title,
     pre, pre.is-empty {
         font-family: Monocraft, sans-serif;
@@ -1033,6 +1014,10 @@
         background-image: url('/images/icons/diamond-brilliant.png');
     }
 
+    .icon-charoit-crown {
+        background-image: url('/images/icons/charoit-crown.png');
+    }
+
     .icon-clock {
         background-image: url('/images/icons/diamond-clock.png');
     }
@@ -1053,12 +1038,12 @@
         background-image: url('/images/icons/diamond-crown.png');
     }
 
-    .icon-diamond-pickaxe {
-        background-image: url('/images/icons/diamond-pickaxe-icon.png');
+    .icon-dagger {
+        background-image: url('/images/icons/diamond-dagger.png');
     }
 
-    .icon-diamond-sword {
-        background-image: url('/images/icons/diamond-sword-icon.png');
+    .icon-diamond-pickaxe {
+        background-image: url('/images/icons/diamond-pickaxe-icon.png');
     }
 
     .icon-diamond {
@@ -1213,6 +1198,10 @@
         background-image: url('/images/icons/diamond-right-arrow.png');
     }
 
+    .icon-sapphire-dagger {
+        background-image: url('/images/icons/sapphire-dagger.png');
+    }
+
     .icon-script {
         background-image: url('/images/icons/diamond-script.png');
     }
@@ -1257,6 +1246,10 @@
         background-image: url('/images/icons/diamond-switcher-way.png');
     }
 
+    .icon-sword {
+        background-image: url('/images/icons/diamond-sword-icon.png');
+    }
+
     .icon-telegram {
         background-image: url('/images/icons/diamond-telegram.png');
     }
@@ -1283,6 +1276,10 @@
 
     .icon-title-3 {
         background-image: url('/images/icons/diamond-title-3.png');
+    }
+
+    .icon-topaz-dagger {
+        background-image: url('/images/icons/topaz-dagger.png');
     }
 
     .icon-top-arrow {
@@ -1327,6 +1324,20 @@
     /* =============== [ Медиа-Запрос { ?px < 1024px } ] =============== */
 
     @media screen and (max-width: 1023px) {
+        .user-menu .profile-link {
+            min-height: 64px;
+        }
+    }
+
+    /* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
+
+    @media screen and (max-width: 767px) {
+        .ld-primary-border-section {
+            border-bottom: var(--primary-border);
+            border-top: var(--primary-border);
+            border-right: none;
+            border-left: none;
+        }
         .user-menu .profile-link {
             min-height: 64px;
         }

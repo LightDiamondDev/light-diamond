@@ -20,7 +20,7 @@ function subscribe() {
 </script>
 
 <template>
-<div class="post-card flex flex-col">
+<div class="post-card ld-primary-background flex flex-col">
     <RouterLink class="preview-wrap flex" :to="{ name: 'home' }">
         <img alt="" class="preview flex w-full full-locked" src="/images/users/boba.png">
     </RouterLink>

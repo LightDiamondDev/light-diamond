@@ -112,7 +112,7 @@ function onMaskMouseUp(event: MouseEvent) {
 
                 <slot name="left-content"/>
 
-                <div class="interface w-full">
+                <div class="interface ld-primary-background w-full">
 
                     <div v-if="header" class="dialog-header flex justify-between items-center">
                         <button

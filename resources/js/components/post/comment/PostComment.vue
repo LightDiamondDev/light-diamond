@@ -305,14 +305,14 @@ function onReplyClick() {
                             class="cancel max-h-[72px] max-w-[200px]"
                             @click="replyData = null"
                             icon="icon-small-cross"
-                            text="Отмена"
+                            label="Отмена"
                         />
                         <Button
                             class="max-h-[72px] max-w-[200px]"
                             :loading="isSubmittingReply"
                             @click="submitReply"
                             icon="icon-comment"
-                            text="Отправить"
+                            label="Отправить"
                         />
                     </div>
                 </div>

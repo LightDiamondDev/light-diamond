@@ -15,7 +15,7 @@ const toastStore = useToastStore()
         <form action="" class="flex flex-col h-full w-full">
 
             <div class="line flex items-center gap-4 pl-4">
-                <RouterLink class="shine-button flex items-center" :to="{ name: 'create-post' }">
+                <RouterLink class="ld-shine-button flex items-center" :to="{ name: 'create-post' }">
                     <span class="press flex w-full">
                         <span class="preset flex items-center gap-1">
                             <span class="icon icon-brilliant"/>
@@ -114,7 +114,7 @@ const toastStore = useToastStore()
 .section .line {
     height: 72px;
 }
-.shine-button .preset {
+.ld-shine-button .preset {
     padding: 0.2rem 1.5rem;
 }
 .unit {

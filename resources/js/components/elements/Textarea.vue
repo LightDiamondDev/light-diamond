@@ -2,6 +2,10 @@
 const model = defineModel<string>({default: ''})
 
 const props = defineProps({
+    editable: {
+        type: Boolean,
+        default: true
+    },
     id: String,
     maxLength: Number,
     minLength: Number,
@@ -12,7 +16,8 @@ const props = defineProps({
 <template>
     <label class="label-input-text flex h-full max-w-full" :for="id">
         <textarea
-            class="flex h-full w-full"
+            class="ld-tinted-background flex h-full w-full"
+            :disabled="!editable"
             v-model="model"
             :maxlength="maxLength"
             :minlength="minLength"

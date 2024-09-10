@@ -79,7 +79,7 @@ function submitForgotPassword() {
                 button-type="submit"
                 icon="icon-bestiary"
                 icon-size="32px"
-                text="Получить Письмо"
+                label="Получить Письмо"
                 :loading="isProcessing"
                 @click.prevent="submitForgotPassword"
             />

@@ -78,6 +78,7 @@
         transition: opacity .5s;
         pointer-events: none;
         position: absolute;
+        min-height: 6px;
         content: '';
         opacity: 0;
         z-index: 1;
@@ -261,10 +262,9 @@
         padding: 0 16px;
     }
 
-    @media (min-width: 768px) {
-        .page-container {
-            max-width: 768px;
-        }
+    .page-container.xl {
+        max-width: none;
+        padding: 0;
     }
 
     @media (min-width: 1024px) {
@@ -275,6 +275,10 @@
 
     @media (min-width: 1280px) {
         .page-container {
+            max-width: 1280px;
+            padding: 0;
+        }
+        .page-container.xl {
             max-width: 1280px;
             padding: 0;
         }
@@ -351,7 +355,7 @@
         /* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
 
         @media screen and (max-width: 450px) {
-            a, b, blockquote, code, li, ol, p, s, strong, ul {
+            a, b, blockquote, code, li, ol, p, s, strong, textarea, ul {
                 font-size: 12px;
             }
         }
@@ -361,10 +365,6 @@
     .post-content {
         p, pre, img, blockquote {
             margin-top: 1.2rem;
-        }
-
-        h1 {
-            font-weight: 600;
         }
 
         li + li, ol, ul {

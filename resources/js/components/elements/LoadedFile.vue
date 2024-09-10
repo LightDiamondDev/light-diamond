@@ -33,13 +33,13 @@ function deleteFile() {
 <template>
     <div
         :class="{ 'disabled': disabled }"
-        class="loaded-file-background primary-background flex"
+        class="loaded-file-background ld-primary-background ld-shadow-text flex"
         ref="container"
     >
         <div class="loaded-file flex w-full">
             <label class="loaded-file-label flex justify-between items-center w-full" :for="id">
                 <span class="loaded-file-span flex items-center w-full gap-4 pl-4">
-                    <span class="icon-download icon"/>
+                    <span class="icon-download icon min-w-[2rem]"/>
                     <span class="text flex flex-col">
                         <span class="file-name flex duration-200">{{ fileName }}</span>
                         <span class="title-font flex opacity-80">{{ fileFormat + ' — ' + fileSize }}</span>
@@ -88,6 +88,10 @@ function deleteFile() {
     font-size: 14px;
 }
 
+.loaded-file-label .text span {
+    line-height: 1.5;
+}
+
 .loaded-file:hover .text .file-name {
     color: var(--hover-text-color);
 }
@@ -102,6 +106,22 @@ function deleteFile() {
 
     .loaded-file-label {
         height: 64px;
+    }
+}
+
+/* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
+
+@media screen and (max-width: 767px) {
+    .loaded-file-label .text {
+        font-size: 12px;
+    }
+}
+
+/* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
+
+@media screen and (max-width: 450px) {
+    .loaded-file-label .text {
+        font-size: 10px;
     }
 }
 </style>

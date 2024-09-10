@@ -45,9 +45,10 @@ function toggle(event: Event) {
 
 <template>
     <Menu
-        ref="menu"
         :items="convertToMenuItems(items)"
+        class="ld-primary-background"
         @mousedown.prevent
+        ref="menu"
     >
         <template #header v-if="title">
             <p class="p-2 text-muted">{{ title }}</p>

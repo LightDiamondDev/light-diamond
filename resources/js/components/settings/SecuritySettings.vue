@@ -218,13 +218,13 @@ function submitChangePassword() {
                             class="confirm max-h-[64px] max-w-[200px]"
                             button-type="submit"
                             :loading="isProcessingEmail"
-                            text="Подтвердить"
+                            label="Подтвердить"
                             @click.prevent="submitChangeEmail()"
                         />
                         <Button
                             class="cancel max-h-[64px] max-w-[200px]"
                             button-type="button"
-                            text="Отменить"
+                            label="Отменить"
                             :loading="isProcessingEmail"
                             @click.prevent="isEditingEmail = false"
                         />
@@ -240,9 +240,9 @@ function submitChangePassword() {
                             </p>
                             <ShineButton
                                 :loading="isProcessingSendEmailVerificationLink"
-                                class="shine-button warning min-h-[64px] max-w-[300px] pb-3 pr-3 pt-3"
+                                class="ld-shine-button warning min-h-[64px] max-w-[300px] pb-3 pr-3 pt-3"
                                 @click="sendEmailVerificationLink"
-                                text="Отправить повторно"
+                                label="Отправить повторно"
                                 button-type="button"
                                 icon="icon-letter"
                             />
@@ -317,14 +317,14 @@ function submitChangePassword() {
                             :disabled="passwordData.password !== passwordData.password_confirmation || !passwordData.password"
                             class="confirm max-h-[64px] max-w-[200px]"
                             button-type="submit"
-                            text="Подтвердить"
+                            label="Подтвердить"
                             :loading="isProcessingPassword"
                             @click.prevent="submitChangePassword()"
                         />
                         <Button
                             class="cancel max-h-[64px] max-w-[200px]"
                             button-type="button"
-                            text="Отменить"
+                            label="Отменить"
                             :loading="isProcessingPassword"
                             @click.prevent="isEditingPassword = false"
                         />

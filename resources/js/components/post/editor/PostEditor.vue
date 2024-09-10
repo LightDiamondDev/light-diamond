@@ -139,165 +139,179 @@ function onEditionChange() {
         <slot name="header"/>
     </div>
 
-    <div class="first-section bg-lighter w-full">
-        <section class="page-container flex flex-col justify-center items-center">
+    <div class="first-section ld-secondary-background w-full">
+        <div class="page-container xl">
+            <section class="flex flex-col justify-center items-center">
 
-            <aside class="post-interaction upper-interaction flex-col items-center mt-4">
-                <slot name="sidebar"></slot>
-            </aside>
+                <aside class="post-interaction
+                    ld-primary-background
+                    ld-primary-border-section
+                    upper-interaction
+                    flex-col
+                    items-center"
+                >
+                    <slot name="sidebar"></slot>
+                </aside>
 
-            <div class="content w-full">
+                <div class="content page-container w-full">
 
-                <div class="interface flex flex-col">
+                    <div class="interface flex flex-col">
 
-                    <div class="origin-info flex justify-between">
-                        <RouterLink class="author-wrap flex items-center w-fit gap-2 ml-[-2px] pb-2 pt-2" :to="{name: 'home'}">
+                        <div class="origin-info flex justify-between">
+                            <RouterLink class="author-wrap flex items-center w-fit gap-2 ml-[-2px] pb-2 pt-2" :to="{name: 'home'}">
                             <span class="icon-border flex justify-center items-center h-[48px] w-[48px]">
                                 <UserAvatar :user="author"/>
                             </span>
-                            <span class="username duration-200">{{ author.username }}</span>
-                        </RouterLink>
-                        <slot name="mark"/>
-                    </div>
+                                <span class="username duration-200">{{ author.username }}</span>
+                            </RouterLink>
+                            <slot name="mark"/>
+                        </div>
 
-                    <Editor
-                        v-model="postVersion.title"
-                        :class="{'red-overlay': errors['title']}"
-                        class="material-name flex justify-center max-w-[1280px]"
-                        :editable="editable"
-                        :extensions="titleEditorExtensions"
-                        plain-text
-                        without-menus
-                    />
-
-                    <p class="error mb-6">{{ errors['title']?.[0] || ' ' }}</p>
-
-                    <UploadImage
-                        :class="{'red-overlay': errors['cover_file']}"
-                        class="upload-post-preview flex"
-                        :editable="editable"
-                        icon="icon-download"
-                        id="upload-post-preview"
-                        :image-src="postVersion.cover_url"
-                        title="Загрузить обложку"
-                        @upload="(file) => postVersion.cover_file = file"
-                        :max-size-in-megabytes="5"
-                        :min-height="432"
-                        :min-width="768"
-                    />
-
-                    <p class="error mb-6 mt-4">{{ errors['cover_file']?.[0] || ' ' }}</p>
-
-                </div>
-            </div>
-
-        </section>
-
-        <section class="page-container flex justify-center">
-            <div class="content w-full">
-                <Editor
-                    v-model="postVersion.content"
-                    :class="{'red-overlay': errors['content']}"
-                    editor-class="post-content min-h-[12rem]"
-                    :extensions="contentEditorExtensions"
-                    :editable="editable"
-                />
-
-                <p class="error">{{ errors['content']?.[0] || ' ' }}</p>
-            </div>
-        </section>
-
-
-        <section class="last-section page-container flex relative">
-            <div class="flex justify-center w-full">
-                <div class="content flex justify-center w-full">
-                    <div class="description flex flex-col w-full">
-
-                        <div class="separator self-center w-full my-4"></div>
-
-                        <Select
-                            class="post-edition flex my-4"
-                            v-model="gameEdition"
-                            :disabled="!editable"
-                            input-id="edition"
-                            :options="gameEditions"
-                            option-label-key="label"
-                            option-icon-key="icon"
-                            option-value-key="value"
-                            @change="onEditionChange"
-                        >
-                            <template #option-icon/>
-                        </Select>
-
-                        <Select
-                            :class="{'red-border': errors['category_id']}"
-                            class="post-category flex"
-                            v-model="postVersion.category_id"
-                            :disabled="!editable"
-                            input-id="category"
-                            :options="categories"
-                            option-label-key="name"
-                            option-value-key="id"
-                            placeholder="Выберите Категорию"
-                        >
-                            <template #option-icon/>
-                        </Select>
-
-                        <p class="error my-2">{{ errors['category_id']?.[0] || ' ' }}</p>
-
-                        <Textarea
-                            :class="{'red-border': errors['description']}"
-                            class="post-description"
-                            v-model="postVersion.description"
-                            :disabled="!editable"
-                            id="post-description"
-                            :max-length="165"
-                            :min-length="15"
-                            placeholder="Описание"
-                            rows="3"
+                        <Editor
+                            v-model="postVersion.title"
+                            :class="{'red-overlay': errors['title']}"
+                            class="material-name flex justify-center max-w-[1280px]"
+                            :editable="editable"
+                            :extensions="titleEditorExtensions"
+                            plain-text
+                            without-menus
                         />
 
-                        <p class="error mt-2">{{ errors['description']?.[0] || ' ' }}</p>
+                        <p class="error mb-6">{{ errors['title']?.[0] || ' ' }}</p>
 
-                        <LoadedFile
-                            class="my-2"
-                            file-name="Light Diamond Addon — Craft & Survive [0.1.0]"
-                            file-format=".MCADDON"
-                            file-size="12,5 Мб
-                        "/>
-
-                        <LoadedFile
-                            class="my-2"
-                            file-name="LD Better Ores [0.2.1]"
-                            file-format=".MCPACK"
-                            file-size="587 Кб"
-                        />
-
-                        <LoadedFile
-                            class="my-2"
-                            file-name="Escape The Tower [2.3.0]"
-                            file-format=".MCWORLD"
-                            file-size="1,51 Мб"
-                        />
-
-                        <UploadFile
-                            class="upload-post-preview flex mb-5 mt-2.5"
+                        <UploadImage
+                            :class="{'red-overlay': errors['cover_file']}"
+                            class="upload-post-preview flex"
                             :editable="editable"
                             icon="icon-download"
                             id="upload-post-preview"
                             :image-src="postVersion.cover_url"
-                            title="Загрузить Файл Материала"
+                            title="Загрузить обложку"
                             @upload="(file) => postVersion.cover_file = file"
-                            :max-size-in-megabytes="20"
+                            :max-size-in-megabytes="5"
+                            :min-height="432"
+                            :min-width="768"
                         />
+
+                        <p class="error mb-6 mt-4">{{ errors['cover_file']?.[0] || ' ' }}</p>
 
                     </div>
                 </div>
-            </div>
-            <aside class="post-interaction lower-interaction flex flex-col items-center">
-                <slot name="sidebar"></slot>
-            </aside>
-        </section>
+
+            </section>
+
+            <section class="flex justify-center">
+                <div class="content page-container w-full">
+                    <Editor
+                        v-model="postVersion.content"
+                        :class="{'red-overlay': errors['content']}"
+                        editor-class="post-content min-h-[12rem]"
+                        :extensions="contentEditorExtensions"
+                        :editable="editable"
+                    />
+
+                    <p class="error">{{ errors['content']?.[0] || ' ' }}</p>
+                </div>
+            </section>
+
+            <section class="last-section flex relative">
+                <div class="page-container flex justify-center w-full">
+                    <div class="content flex justify-center w-full">
+                        <div class="description flex flex-col w-full">
+
+                            <div class="separator self-center w-full my-4"></div>
+
+                            <Select
+                                class="post-edition flex my-4"
+                                v-model="gameEdition"
+                                :disabled="!editable"
+                                input-id="edition"
+                                :options="gameEditions"
+                                option-classes="pl-6"
+                                option-label-key="label"
+                                option-icon-key="icon"
+                                option-value-key="value"
+                                @change="onEditionChange"
+                            >
+                                <template #option-icon/>
+                            </Select>
+
+                            <Select
+                                :class="{'red-border': errors['category_id']}"
+                                class="post-category flex"
+                                v-model="postVersion.category_id"
+                                :disabled="!editable"
+                                input-id="category"
+                                :options="categories"
+                                option-classes="pl-6"
+                                option-label-key="name"
+                                option-value-key="id"
+                                placeholder="Выберите Категорию"
+                            >
+                                <template #option-icon/>
+                            </Select>
+
+                            <p class="error my-2">{{ errors['category_id']?.[0] || ' ' }}</p>
+
+                            <Textarea
+                                :class="{'red-border': errors['description']}"
+                                class="post-description ld-primary-background ld-primary-border"
+                                v-model="postVersion.description"
+                                :editable="editable"
+                                id="post-description"
+                                :max-length="165"
+                                :min-length="15"
+                                placeholder="Описание"
+                                rows="3"
+                            />
+
+                            <p class="error mt-2">{{ errors['description']?.[0] || ' ' }}</p>
+
+                            <LoadedFile
+                                class="my-2"
+                                file-name="Light Diamond Addon — Craft & Survive [0.1.0]"
+                                file-format=".MCADDON"
+                                file-size="12,5 Мб
+                        "/>
+
+                            <LoadedFile
+                                class="my-2"
+                                file-name="LD Better Ores [0.2.1]"
+                                file-format=".MCPACK"
+                                file-size="587 Кб"
+                            />
+
+                            <LoadedFile
+                                class="my-2"
+                                file-name="Escape The Tower [2.3.0]"
+                                file-format=".MCWORLD"
+                                file-size="1,51 Мб"
+                            />
+
+                            <UploadFile
+                                class="upload-post-preview flex mb-5 mt-2.5"
+                                :editable="editable"
+                                icon="icon-download"
+                                id="upload-post-preview"
+                                :image-src="postVersion.cover_url"
+                                title="Загрузить Файл Материала"
+                                @upload="(file) => postVersion.cover_file = file"
+                                :max-size-in-megabytes="20"
+                            />
+
+                        </div>
+                    </div>
+                </div>
+                <aside class="post-interaction
+                    lower-interaction
+                    ld-primary-background
+                    ld-primary-border-section
+                    flex flex-col items-center"
+                >
+                    <slot name="sidebar"></slot>
+                </aside>
+            </section>
+        </div>
     </div>
 
 </template>
@@ -327,7 +341,7 @@ function onEditionChange() {
 .post-edition {
     color: var(--primary-text-color);
 }
-.post-interaction .shine-button.confirm .text {
+.post-interaction .ld-shine-button.confirm .text {
     white-space: nowrap;
 }
 .interface .upload-image-container {
@@ -341,6 +355,10 @@ function onEditionChange() {
 @media screen and (max-width: 450px) {
     .content .material-name h1 {
         font-size: 1.5rem;
+    }
+    #post-description {
+        min-height: 216px;
+        font-size: 12px;
     }
     .post-editor-banner .banner-container,
     .post-editor-banner .banner {
@@ -408,6 +426,7 @@ function onEditionChange() {
     justify-content: flex-end;
 }
 .lower-interaction {
+    margin-bottom: 1rem;
     z-index: 1;
 }
 .upper-interaction {
@@ -422,7 +441,6 @@ function onEditionChange() {
         align-items: center;
     }
     .post-interaction {
-        margin-bottom: 1rem;
         max-width: 800px;
         position: static;
         width: 100%;
@@ -437,6 +455,9 @@ function onEditionChange() {
 @media screen and (max-width: 767px) {
     .origin-info {
         flex-direction: column;
+    }
+    .post-description {
+        min-height: 168px;
     }
 }
 </style>

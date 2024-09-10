@@ -6,7 +6,7 @@ function scrollToTop() {
 
 <template>
 
-    <footer class="flex flex-col items-center">
+    <footer class="ld-primary-background ld-primary-border-top ld-shadow-text flex flex-col items-center">
         <nav class="flex justify-between">
 
             <div class="sm:hidden ml-4 w-12"></div>
@@ -39,7 +39,7 @@ function scrollToTop() {
                 <span class="icon icon-top-arrow"></span>
             </a>
         </nav>
-        <div class="tinted-gradient flex flex-col items-center">
+        <div class="ld-tinted-background harder ld-primary-border-top flex flex-col items-center w-full">
             <div class="media mt-6 mb-6 flex justify-between">
                 <a class="flex justify-center items-center" href="https://vk.com/light.diamond">
                     <span class="icon icon-vk"></span>
@@ -126,10 +126,6 @@ footer .media a:focus-visible .icon, footer .media a:hover .icon {
 
 footer .footer-anchor .icon-top-arrow {
     animation: footer-anchor-icon-animation 1s infinite;
-}
-
-footer .tinted-gradient {
-    width: 100%;
 }
 
 footer .media {

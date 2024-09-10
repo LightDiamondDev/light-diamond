@@ -5,7 +5,7 @@ import {
     type PostVersionActionAssignModerator,
     type PostVersionActionReject,
     type PostVersionActionRequestChanges,
-    PostVersionActionType
+    PostVersionActionType, UserRole
 } from '@/types'
 import {getFullDate, getRelativeDate} from '@/helpers'
 import UserAvatar from '@/components/user/UserAvatar.vue'
@@ -55,10 +55,27 @@ const props = defineProps({
 
         <div class="flex items-center w-full gap-2 md:gap-4">
             <div class="flex self-start gap-3">
-                <UserAvatar v-if="action.type === PostVersionActionType.SUBMIT" :user="action.user!"/>
+                <div v-if="action.type === PostVersionActionType.SUBMIT" class="relative">
+                    <span
+                        :class="{
+                            'icon-charoit-crown': action.user?.role === UserRole.ADMIN,
+                            'icon-sapphire-dagger': action.user?.role === UserRole.MODERATOR
+                        }"
+                        class="icon-role icon flex absolute xs:h-8 h-6 xs:w-8 w-6 z-[1] xs:right-[-12px] xs:top-[-12px] right-[-8px] top-[-8px]"
+                    />
+                    <UserAvatar
+                        border-class-list="xs:h-12 xs:w-12 h-9 w-9"
+                        icon-class-list="xs:h-8 xs:w-8 h-6 w-6"
+                        :user="action.user!"
+                    />
+                </div>
                 <span
                     v-else
-                    class="icon-eye icon text-[var(--surface-500)] m-2"
+                    :class="{
+                            'icon-charoit-crown': action.user?.role === UserRole.ADMIN,
+                            'icon-sapphire-dagger': action.user?.role === UserRole.MODERATOR
+                        }"
+                    class="icon text-[var(--surface-500)] xs:h-12 xs:w-12 h-8 w-8"
                 />
             </div>
 
@@ -108,7 +125,7 @@ const props = defineProps({
             </div>
             <p
                 :title="getFullDate(action.created_at!)"
-                class="text-muted text-xs text-center md:text-end md:whitespace-nowrap leading-6"
+                class="text-muted xs:text-[12px] text-[10px] text-center md:text-end md:whitespace-nowrap leading-6"
             >
                 {{ getRelativeDate(action.created_at!) }}
             </p>
@@ -122,7 +139,7 @@ const props = defineProps({
 }
 .post-version-action-message,
 .post-version-action span {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 /* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
@@ -130,7 +147,7 @@ const props = defineProps({
 @media screen and (max-width: 450px) {
     .post-version-action-message,
     .post-version-action span {
-        font-size: 12px;
+        font-size: 10px;
     }
 }
 </style>

@@ -46,30 +46,12 @@ export function getFullDate(date: Date | string) {
 export function getFullPresentableDate(date: Date | string) {
     if (typeof date === 'string') {
         date = new Date(date)
+        let hours = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
+        let minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
         return date.getDate() + ' ' +
             getMonthName(date.getMonth()) +
-            getCheckedYear(date.getFullYear()) + ' ' +
-            getPresentableDate(date) + ':' + date.getMinutes()
-    } else { return '' }
-}
-
-export function getPresentableDate(date: Date | string) {
-    if (typeof date === 'string') {
-        date = new Date(date)
-        return date.getDate() + ' ' + getMonthName(date.getMonth()) + getCheckedYear(date.getFullYear())
-    } else { return '' }
-}
-
-export function getPresentableHours(date: Date | string) {
-    if (typeof date === 'string') {
-        date = new Date(date)
-        let minutes = date.getMinutes()
-        if (minutes < 10) {
-            return date.getHours() + ':' + minutes
-        } else {
-            return date.getHours() + ':0' + minutes
-        }
-
+            getCheckedYear(date.getFullYear()) + ', ' +
+            hours + ':' + minutes
     } else { return '' }
 }
 

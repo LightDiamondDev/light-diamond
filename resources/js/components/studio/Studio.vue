@@ -51,11 +51,11 @@ updateCurrentSectionByRoute()
 
 <template>
 <div class="content-studio flex flex-col w-full">
-    <div class="title flex justify-center h-[72px] mb-2 mt-2">
+    <div class="title ld-primary-background ld-primary-border ld-shadow-text flex justify-center h-[72px] mb-2 mt-2">
         <h1 class="text-[1.2rem] md:text-[2rem] flex items-center">Контент-Студия</h1>
     </div>
     <div class="interface flex mb-2">
-        <aside class="flex flex-col">
+        <aside class="ld-primary-background ld-primary-border flex flex-col">
             <RouterLink
                 :class="{ 'transfusion': currentSection === Section.MATERIALS }"
                 class="h-fit flex"
@@ -65,7 +65,7 @@ updateCurrentSectionByRoute()
                     class="pl-8 pr-4 w-full text-[1.1rem]"
                     @click="setRequestsSection()"
                     icon="icon-news"
-                    text="Материалы"
+                    label="Материалы"
                     tabindex="-1"
                 />
             </RouterLink>
@@ -79,7 +79,7 @@ updateCurrentSectionByRoute()
                     class="pl-8 pr-4 w-full text-[1.1rem]"
                     @click="setMaterialsSection()"
                     icon="icon-letter"
-                    text="Заявки на публикацию"
+                    label="Заявки на публикацию"
                     tabindex="-1"
                 />
             </RouterLink>
@@ -87,7 +87,7 @@ updateCurrentSectionByRoute()
 
         <div
             :class="{ 'on': !isMobileMenu }"
-            class="content-studio-container flex flex-col w-full"
+            class="content-studio-container ld-primary-background ld-primary-border ld-shadow-text flex flex-col w-full"
         >
             <RouterView v-slot="{ Component }">
                 <Transition name="smooth-settings-switch">

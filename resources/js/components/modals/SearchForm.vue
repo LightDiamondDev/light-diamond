@@ -3,7 +3,14 @@ import Button from '@/components/elements/Button.vue'
 </script>
 
 <template>
-    <div class="search-form inner flex justify-center">
+    <div class="search-form
+        ld-primary-border-bottom
+        ld-primary-border-right
+        ld-primary-border-left
+        inner
+        flex
+        justify-center"
+    >
         <form action="" class="flex flex-col items-center">
             <label class="flex items-center" for="search-input">
                 <button class="flex justify-center items-center" id="search-button" type="button">

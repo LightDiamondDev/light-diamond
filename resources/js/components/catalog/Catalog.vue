@@ -49,7 +49,7 @@ function switchEdition() {
 
 <template>
 <Banner title="Каталог Light Diamond" :is-title-visible="false"/>
-<div class="catalog-container bg-lighter flex justify-center w-full">
+<div class="catalog-container ld-secondary-background flex justify-center w-full">
     <section class="catalog flex flex-col items-center w-full">
 
         <div class="title flex flex-col justify-center items-center w-full">
@@ -74,7 +74,7 @@ function switchEdition() {
             </RouterLink>
         </div>
 
-        <form class="catalog-panel flex flex-col w-full self-center" name="catalog">
+        <form class="catalog-panel ld-primary-background ld-primary-border flex flex-col w-full self-center" name="catalog">
 
             <nav class="flex flex-col">
 
@@ -82,7 +82,7 @@ function switchEdition() {
                     <div class="sub-line flex justify-center flex-wrap gap-4">
                         <button
                             :class="{ 'active': isFresh }"
-                            class="shine-button flex items-center option"
+                            class="ld-shine-button flex items-center option"
                             type="button"
                             @click="isFresh = true"
                         >
@@ -95,7 +95,7 @@ function switchEdition() {
                         </button>
                         <button
                             :class="{ 'active': !isFresh }"
-                            class="shine-button flex items-center option"
+                            class="ld-shine-button flex items-center option"
                             type="button"
                             @click="isFresh = false"
                         >
@@ -108,7 +108,7 @@ function switchEdition() {
                         </button>
                         <button
                             v-if="!isFresh"
-                            class="shine-button active flex items-center option w-[200px]"
+                            class="ld-shine-button active flex items-center option w-[200px]"
                             type="button"
                             @click="switchTimePeriod()"
                         >
@@ -122,7 +122,7 @@ function switchEdition() {
                     </div>
                     <div class="sub-line flex flex-wrap justify-center gap-4">
                         <button
-                            class="shine-button flex items-center option edition"
+                            class="ld-shine-button flex items-center option edition"
                             type="button"
                             @click="switchEdition"
                         >
@@ -144,7 +144,7 @@ function switchEdition() {
 
                 <div class="line flex flex-wrap gap-4 p-4">
 
-                    <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
+                    <RouterLink class="ld-shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-brilliant"/>
@@ -152,7 +152,7 @@ function switchEdition() {
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
+                    <RouterLink class="ld-shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-news"/>
@@ -160,7 +160,7 @@ function switchEdition() {
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
+                    <RouterLink class="ld-shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-axolotl-bucket"/>
@@ -168,7 +168,7 @@ function switchEdition() {
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
+                    <RouterLink class="ld-shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-spawn-egg"/>
@@ -176,7 +176,7 @@ function switchEdition() {
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
+                    <RouterLink class="ld-shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-map"/>
@@ -184,7 +184,7 @@ function switchEdition() {
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
+                    <RouterLink class="ld-shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-skin"/>
@@ -192,7 +192,7 @@ function switchEdition() {
                             </span>
                         </span>
                     </RouterLink>
-                    <RouterLink class="shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
+                    <RouterLink class="ld-shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
                         <span class="press flex">
                             <span class="preset flex items-center gap-1">
                                 <span class="icon icon-script"/>

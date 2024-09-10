@@ -18,6 +18,7 @@ const props = defineProps({
         type: Object as PropType<any[]>,
         required: true
     },
+    optionClasses: String,
     placeholder: {
         type: String,
         default: 'Выберите значение'
@@ -101,16 +102,17 @@ function change(option: any) {
 <template>
     <div
         :class="{ 'disabled': disabled, 'open': isSelectOpen }"
-        class="select flex flex-col relative"
+        class="select ld-primary-background ld-shadow-text flex flex-col relative"
         ref="container"
     >
         <button
+            :class="{ 'cursor-default': disabled }"
             class="select-button flex justify-between items-center"
             :disabled="disabled"
             type="button"
             @click="toggleSelect"
         >
-            <span class="select-span flex items-center w-full gap-4 pl-6">
+            <span class="select-span flex items-center w-full gap-4" :class="optionClasses">
                 <template v-if="currentOption">
                     <slot name="option-icon" :option="currentOption">
                         <span v-if="optionIconKey" :class="getOptionIcon(currentOption)" class="icon"></span>
@@ -127,13 +129,14 @@ function change(option: any) {
             </span>
         </button>
         <Transition name="smooth-select-switch">
-            <div v-if="isSelectOpen" class="options flex flex-col w-full absolute">
+            <div v-if="isSelectOpen" class="options ld-primary-background flex flex-col w-full absolute">
                 <template v-for="option in props.options">
                     <ItemButton
                         @click="change(option)"
-                        :text="getOptionLabel(option)"
+                        :label="getOptionLabel(option)"
                         :icon="getOptionIcon(option)"
-                        class="option flex pl-6"
+                        class="option flex"
+                        :class="optionClasses"
                     >
                         <template #icon>
                             <slot name="option-icon" :option="option"/>
@@ -146,6 +149,9 @@ function change(option: any) {
 </template>
 
 <style scoped>
+.select-button.cursor-default {
+    cursor: default;
+}
 .button-arrow {
     height: 72px;
     width: 72px;

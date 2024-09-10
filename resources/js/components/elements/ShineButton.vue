@@ -22,18 +22,18 @@ const props = defineProps({
         type: String,
         default: 'item-diamond'
     },
-    text: String
+    label: String
 });
 </script>
 
 <template>
     <button
-        class="shine-button flex items-center option w-full"
+        class="ld-shine-button flex items-center option w-full"
         :class="{ 'disabled': disabled }"
         :disabled="disabled"
         :type="buttonType"
     >
-        <span class="press flex">
+        <span class="press ld-shadow-text flex">
             <span class="preset flex items-center gap-2">
                 <ProcessingMovingItems v-if="loading" class="loading-icon" :item="loadingItem" height="28px" width="28px"/>
                 <span
@@ -41,7 +41,7 @@ const props = defineProps({
                     :class="icon"
                     class="icon"
                 />
-                <span class="text text-center flex items-center duration-200">{{ text }}</span>
+                <span class="label text-center flex items-center duration-200">{{ label }}</span>
             </span>
         </span>
     </button>
@@ -51,7 +51,7 @@ const props = defineProps({
 .disabled {
     opacity: .5;
 }
-.shine-button .icon {
+.ld-shine-button .icon {
     min-width: 32px;
 }
 </style>

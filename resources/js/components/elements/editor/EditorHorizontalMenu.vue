@@ -15,7 +15,7 @@ const verticalMenus = reactive<{ [key: string]: InstanceType<typeof EditorVertic
 </script>
 
 <template>
-    <div class="editor-horizontal-menu flex"> <!-- @mousedown.prevent -->
+    <div class="editor-horizontal-menu ld-primary-background flex"> <!-- @mousedown.prevent -->
         <template v-for="(menuItem, id) in items">
             <template v-if="menuItem.isVisible !== false">
                 <template v-if="menuItem.isSeparator">

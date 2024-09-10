@@ -127,7 +127,7 @@ function submitRegister() {
         <Button
             button-type="submit"
             icon="icon-bestiary"
-            text="Зарегистрироваться"
+            label="Зарегистрироваться"
             :loading="isProcessing"
             @click.prevent="submitRegister"
         />

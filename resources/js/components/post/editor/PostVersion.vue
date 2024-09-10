@@ -324,7 +324,7 @@ loadPostVersion()
             :header="true"
             :modal="true"
         >
-            <div class="post-version-actions flex flex-col gap-6 md:gap-2 p-2 md:p-6">
+            <div class="post-version-actions flex flex-col gap-2 md:p-6 xs:p-4 p-2">
                 <PostVersionAction v-for="action in postVersion.actions" :action="action"/>
             </div>
         </Dialog>
@@ -353,15 +353,15 @@ loadPostVersion()
                     <div class="mark-block flex absolute bottom-2 gap-2">
                         <div :class="{ 'new': isFirstVersion, 'update': !isFirstVersion }" class="material-type new flex items-center h-fit gap-2 locked">
                             <span class="icon-apple icon flex"/>
-                            <p v-if="isFirstVersion" class="text-[.6rem] xs:text-[.7rem]">Новый Материал</p>
-                            <p v-else class="text-[.6rem] xs:text-[.7rem]">Обновление</p>
+                            <p v-if="isFirstVersion" class="text-[9px] xs:text-[.7rem]">Новый Материал</p>
+                            <p v-else class="text-[9px] xs:text-[.7rem]">Обновление</p>
                         </div>
                         <div
                             class="time-ago time flex items-center h-fit gap-2 locked tooltip whitespace-nowrap"
                             v-tooltip.top="getFullPresentableDate(postVersion!.updated_at!)"
                         >
                             <span class="icon-clock icon flex"/>
-                            <p class="text-[.6rem] xs:text-[.7rem]">{{ getRelativeDate(postVersion!.updated_at!) }}</p>
+                            <p class="text-[9px] xs:text-[.7rem]">{{ getRelativeDate(postVersion!.updated_at!) }}</p>
                         </div>
                     </div>
 
@@ -382,6 +382,7 @@ loadPostVersion()
                             v-model="postVersion!.assigned_moderator_id"
                             input-id="moderator"
                             :options="moderatorOptions"
+                            option-classes="xl:pl-2 pl-4"
                             option-label-key="username"
                             option-value-key="id"
                             placeholder="Не назначен"
@@ -404,15 +405,30 @@ loadPostVersion()
                         </Select>
                     </div>
 
-                    <p class="pt-2 px-3">Статус</p>
+                    <p class="pb-1 pt-2 xl:px-3 px-4">Статус</p>
 
-                    <p :class="postVersionStatusInfo.colorClass" class="transfusion bordered h-fit w-fit mb-2 mx-3 p-2">
+                    <p
+                        :class="postVersionStatusInfo.colorClass"
+                        class="transfusion bordered h-fit w-fit xl:mb-2 mb-4 xl:mx-2 mx-4 p-2"
+                    >
                         {{ postVersionStatusInfo.name }}
+                    </p>
+
+                    <p class="pb-1 xl:px-3 px-4">Название</p>
+
+                    <p class="ld-tinted-background ld-primary-border h-fit text-[10px] xl:mb-2 mb-4 xl:mx-2 mx-4 p-2">
+                        {{ postVersion.title }}
+                    </p>
+
+                    <p class="pb-1 xl:px-3 px-4">Ссылка</p>
+
+                    <p class="ld-tinted-background ld-primary-border h-fit text-[10px] xl:mb-2 mb-4 xl:mx-2 mx-4 p-2 break-words">
+                        {{ postUrl }}
                     </p>
 
                     <div class="separator"></div>
 
-                    <div v-if="postVersion.actions!.length !== 0" class="flex flex-col gap-2 p-2">
+                    <div v-if="postVersion.actions!.length !== 0" class="flex flex-col xl:gap-2 gap-4 xl:p-2 p-4">
                         <PostVersionAction
                             v-if="[PostVersionActionType.REJECT, PostVersionActionType.REQUEST_CHANGES].includes(lastAction?.type!)"
                             class="sidebar-last-action px-2 md:px-1"
@@ -420,60 +436,59 @@ loadPostVersion()
                             :minimized="true"
                         />
                         <ShineButton
-                            class="shine-button self-center text-[0.7rem]"
+                            class="ld-shine-button self-center text-[0.7rem]"
                             @click="isHistoryDialog = true"
-                            text="История действий"
+                            label="История действий"
                             icon="icon-script"
                         />
                     </div>
 
                     <div
                         v-if="postVersion.status === PostVersionStatus.ACCEPTED || postVersion.status === PostVersionStatus.REJECTED"
-                        class="flex flex-col gap-2 pb-2 px-2"
+                        class="flex flex-col xl:gap-2 gap-4 xl:px-2 px-4 xl:pb-2 pb-4"
                     >
                         <ShineButton
-                            class="shine-button w-full reconsider"
+                            class="ld-shine-button upper-unavailable w-full reconsider"
                             @click="reconsiderOverlayPanel?.toggle"
-                            text="Вернуть на рассмотрение"
+                            label="Вернуть на рассмотрение"
                             icon="icon-eye"
                         />
                     </div>
 
-                    <div v-if="isReviewing"
-                         class="flex flex-col gap-2 pb-2 px-2">
+                    <div v-if="isReviewing" class="upper-unavailable flex flex-col xl:gap-2 gap-4 xl:px-2 px-4 xl:pb-2 pb-4">
                         <div class="separator"></div>
                         <ShineButton
-                            class="shine-button confirm"
+                            class="ld-shine-button confirm"
                             @click="acceptOverlayPanel?.toggle"
-                            text="Принять"
+                            label="Принять"
                             icon="icon-tick"
                         />
                         <ShineButton
-                            class="shine-button cancel"
+                            class="ld-shine-button cancel"
                             @click="rejectOverlayPanel?.toggle"
-                            text="Отклонить"
+                            label="Отклонить"
                             icon="icon-small-cross"
                         />
                         <ShineButton
-                            class="shine-button"
+                            class="ld-shine-button"
                             @click="revisionOverlayPanel?.toggle"
-                            text="На доработку"
+                            label="На доработку"
                             icon="icon-refresh"
                         />
                     </div>
                 </div>
-                <div v-if="isOwnDraft" class="flex flex-col w-full gap-2 pb-2 px-2">
+                <div v-if="isOwnDraft" class="flex flex-col w-full xl:gap-2 gap-4 xl:px-2 px-4 xl:pb-2 pb-4">
                     <div class="separator"></div>
                     <ShineButton
-                        class="shine-button w-full confirm"
+                        class="ld-shine-button upper-unavailable w-full confirm"
                         @click="submitOverlayPanel?.toggle"
-                        text="На рассмотрение"
+                        label="На рассмотрение"
                         icon="icon-eye"
                     />
                     <ShineButton
-                        class="shine-button w-full"
+                        class="ld-shine-button w-full"
                         @click="updateDraft"
-                        text="Сохранить изменения"
+                        label="Сохранить изменения"
                         :loading="isUpdatingDraft"
                         icon="icon-script"
                     />
@@ -489,13 +504,13 @@ loadPostVersion()
                     <div class="animation-flying-phantom"></div>
                 </div>
                 <RouterLink class="flex justify-center max-w-[480px] w-full mb-8" :to="{ name: 'home' }">
-                    <Button button-type="submit" icon="item-ender-pearl" icon-size="32px" text="Телепортироваться Домой"/>
+                    <Button button-type="submit" icon="item-ender-pearl" icon-size="32px" label="Телепортироваться Домой"/>
                 </RouterLink>
             </div>
         </div>
     </template>
 
-    <OverlayPanel ref="acceptOverlayPanel" class="overlay-panel max-w-[100vw] p-4 mt-24rem">
+    <OverlayPanel class="overlay-panel ld-primary-background max-w-[100vw] p-4 mt-24rem" ref="acceptOverlayPanel">
         <div class="flex flex-col gap-2">
 
             <p class="flex">URL-идентификатор</p>
@@ -515,20 +530,20 @@ loadPostVersion()
                     class="flex"
                     @click="acceptOverlayPanel?.hide()"
                     icon="icon-small-cross"
-                    text="Отмена"
+                    label="Отмена"
                 />
                 <ShineButton
                     class="flex confirm"
                     :loading="isAccepting"
                     @click="accept"
+                    label="Опубликовать"
                     icon="icon-tick"
-                    text="Опубликовать"
                 />
             </div>
         </div>
     </OverlayPanel>
 
-    <OverlayPanel ref="reconsiderOverlayPanel" class="overlay-panel max-w-[100vw] p-4 mt-24rem">
+    <OverlayPanel class="overlay-panel ld-primary-background max-w-[100vw] p-4 mt-24rem" ref="reconsiderOverlayPanel">
         <div class="flex flex-col gap-2">
 
             <p class="flex">Вернуть на рассмотрение?</p>
@@ -546,20 +561,20 @@ loadPostVersion()
                     class="flex"
                     @click="reconsiderOverlayPanel?.hide()"
                     icon="icon-small-cross"
-                    text="Отмена"
+                    label="Отмена"
                 />
                 <ShineButton
                     class="flex reconsider"
                     :loading="isReconsidering"
                     @click="reconsider"
                     icon="icon-tick"
-                    text="Вернуть"
+                    label="Вернуть"
                 />
             </div>
         </div>
     </OverlayPanel>
 
-    <OverlayPanel ref="rejectOverlayPanel" class="overlay-panel max-w-[100vw] p-4 mt-24rem">
+    <OverlayPanel class="overlay-panel ld-primary-background max-w-[100vw] p-4 mt-24rem" ref="rejectOverlayPanel">
         <div class="flex flex-col gap-2">
 
             <p class="flex">Причина отклонения</p>
@@ -581,19 +596,19 @@ loadPostVersion()
                     class="flex"
                     @click="rejectOverlayPanel?.hide()"
                     icon="icon-small-cross"
-                    text="Отмена"
+                    label="Отмена"
                 />
                 <ShineButton
                     class="flex cancel"
                     :loading="isRejecting" @click="reject"
                     icon="icon-tick"
-                    text="Отклонить"
+                    label="Отклонить"
                 />
             </div>
         </div>
     </OverlayPanel>
 
-    <OverlayPanel ref="revisionOverlayPanel" class="overlay-panel max-w-[100vw] p-4 mt-24rem">
+    <OverlayPanel class="overlay-panel ld-primary-background max-w-[100vw] p-4 mt-24rem" ref="revisionOverlayPanel">
         <div class="flex flex-col gap-2">
 
             <p class="flex">Что не так?</p>
@@ -615,19 +630,19 @@ loadPostVersion()
                     class="flex"
                     @click="revisionOverlayPanel?.hide()"
                     icon="icon-small-cross"
-                    text="Отмена"
+                    label="Отмена"
                 />
                 <ShineButton
                     class="flex confirm"
                     :loading="isRequestingChanges" @click="revision"
                     icon="icon-tick"
-                    text="Отправить"
+                    label="Отправить"
                 />
             </div>
         </div>
     </OverlayPanel>
 
-    <OverlayPanel ref="submitOverlayPanel" class="overlay-panel max-w-[100vw] p-4 mt-24rem">
+    <OverlayPanel class="overlay-panel ld-primary-background max-w-[100vw] p-4 mt-24rem" ref="submitOverlayPanel">
         <div class="flex flex-col gap-2">
 
             <p class="flex">Вы точно хотите отправить Материал на рассмотрение?</p>
@@ -636,14 +651,14 @@ loadPostVersion()
                 <ShineButton
                     class="flex confirm"
                     :loading="isSubmitting" @click="submit"
+                    label="Да, отправить"
                     icon="icon-tick"
-                    text="Да, отправить"
                 />
                 <ShineButton
                     class="flex"
                     @click="submitOverlayPanel?.hide()"
                     icon="icon-small-cross"
-                    text="Отмена"
+                    label="Отмена"
                 />
             </div>
         </div>
@@ -664,11 +679,6 @@ loadPostVersion()
 .post-moderator.select .options {
     max-height: 216px;
 }
-.post-moderator.select .options .option,
-.post-moderator.select .select-button .select-span {
-    padding-left: .5rem;
-    gap: .5rem;
-}
 .post-moderator.select .options .icon-border,
 .post-moderator.select .select-button .icon-border {
     height: 42px;
@@ -684,14 +694,17 @@ loadPostVersion()
     min-height: 136px;
     padding: 4px 8px;
 }
-.shine-button .press,
-.shine-button .preset {
+.upper-interaction .upper-unavailable {
+    display: none;
+}
+.ld-shine-button .press,
+.ld-shine-button .preset {
     width: 100%;
 }
-.shine-button .text {
+.ld-shine-button .text {
     height: 2rem;
 }
-.shine-button .preset {
+.ld-shine-button .preset {
     padding: .5rem;
 }
 .loading-icon {

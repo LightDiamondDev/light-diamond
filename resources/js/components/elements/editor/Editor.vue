@@ -414,7 +414,7 @@ function unsetLink() {
 
         <!-- @show="onLinkOverlayPanelShow" -->
         <OverlayPanel v-if="editable && !withoutMenus" ref="linkOverlayPanel">
-            <form @submit.prevent="setLink">
+            <form class="content-link-editor ld-primary-background" @submit.prevent="setLink">
                 <div class="flex">
                     <Input v-model="currentLink.href" class="editor-link-url w-full" placeholder="https://" autocomplete="off"/>
                     <ItemButton icon="icon-tick" outlined title="Сохранить ссылку" type="submit"/>

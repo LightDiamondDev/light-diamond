@@ -7,7 +7,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <div class="achievement flex locked" >
+    <div class="achievement ld-primary-background flex locked" >
         <div class="indicator flex">
             <div class="cover">
                 <div class="set icon icon-border flex justify-center items-center">

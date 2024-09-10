@@ -23,18 +23,18 @@
             type: String,
             default: 'item-diamond'
         },
-        text: String
+        label: String
     });
 </script>
 
 <template>
     <button
-        class="button-container flex justify-center items-center"
+        class="ld-press-button button-container flex justify-center items-center"
         :class="{ 'disabled': disabled }"
         :disabled="disabled"
         :type="buttonType"
     >
-        <span class="action-button flex flex-col">
+        <span class="action-button ld-shadow-text flex flex-col">
             <span class="press flex justify-center items-center">
                 <ProcessingMovingItems v-if="loading" class="mr-4" :item="loadingItem" height="28px" width="28px"/>
                 <span
@@ -42,7 +42,7 @@
                     :class="icon"
                     class="icon mr-2"
                 />
-                <span class="text duration-200">{{ text }}</span>
+                <span class="label duration-200">{{ label }}</span>
             </span>
             <span class="base"></span>
         </span>

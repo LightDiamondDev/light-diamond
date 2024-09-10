@@ -5,14 +5,14 @@ import Button from '@/components/elements/Button.vue'
 
 <template>
     <div class="global-error-window flex justify-center items-center">
-        <div class="global-error-container flex flex-col items-center">
+        <div class="global-error-container ld-primary-background ld-primary-border flex flex-col items-center">
             <h1 class="text-4xl font-bold text-center mt-8">Доступ запрещён</h1>
             <p class="text-muted text-center mt-4">Недостаточно прав для просмотра страницы.</p>
             <div class="mob warden flex justify-center items-center full-locked">
                 <div class="animation-angry-warden"></div>
             </div>
             <RouterLink class="flex justify-center mb-8" :to="{ name: 'home' }">
-                <Button button-type="submit" icon="item-ender-pearl" icon-size="32px" text="Телепортироваться домой"/>
+                <Button button-type="submit" icon="item-ender-pearl" icon-size="32px" label="Телепортироваться домой"/>
             </RouterLink>
         </div>
     </div>
