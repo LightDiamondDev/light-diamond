@@ -15,9 +15,14 @@ const props = defineProps({
                 </div>
             </div>
         </div>
-        <div class="content flex justify-between pl-2 pt-1">
+        <div class="ld-primary-border-bottom
+            ld-primary-border-right
+            ld-primary-border-top
+            flex justify-between
+            w-full pl-2 pt-1"
+        >
             <div class="description flex flex-col">
-                <h1 class="title">Получено Достижение</h1>
+                <h1 class="title ld-title-font">Получено Достижение</h1>
                 <h2 class="name">{{ achievementTitle }}</h2>
                 <p>
                     Поздравляем, Вы заработали Достижение

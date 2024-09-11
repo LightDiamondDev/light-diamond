@@ -64,14 +64,14 @@
 
     .tooltip::before {
         content: attr(data-tooltip);
-        transition: opacity 1s;
+        transition: opacity .5s;
         pointer-events: none;
         position: absolute;
         text-align: center;
         min-width: 120px;
         padding: 4px;
         opacity: 0;
-        z-index: 1;
+        z-index: 5;
     }
 
     .tooltip::after {
@@ -81,13 +81,14 @@
         min-height: 6px;
         content: '';
         opacity: 0;
-        z-index: 1;
+        z-index: 5;
     }
 
     .tooltip:hover::before,
     .tooltip:hover::after,
     .tooltip:focus::before,
     .tooltip:focus::after {
+        animation: tooltip-show-animation 2s ease;
         opacity: 1;
     }
 
@@ -236,6 +237,18 @@
         }
         100% {
             transform: scale(1.1);
+        }
+    }
+
+    @keyframes tooltip-show-animation {
+        0% {
+            opacity: 0;
+        }
+        50% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
         }
     }
 

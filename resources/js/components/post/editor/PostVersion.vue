@@ -341,7 +341,7 @@ loadPostVersion()
             </template>
 
             <template v-slot:header>
-                <div class="banner-title page-container flex flex-col justify-center items-center xs:items-end max-w-[800px]">
+                <div class="banner-title page-container flex flex-col justify-center items-center md:items-end max-w-[800px]">
 
                     <RouterLink
                         class="logo-wrap flex justify-center items-center relative xs:w-full full-locked"
@@ -373,76 +373,94 @@ loadPostVersion()
 
                     <div v-if="authStore.isModerator &&
                             (postVersion.status !== PostVersionStatus.DRAFT || postVersion.assigned_moderator)"
-                         class="flex flex-col gap-2">
-                        <p class="px-3 pt-2">Модератор</p>
-                        <Select
-                            options-classes="ld-primary-background ld-primary-border mt-[-10px]"
-                            :disabled="postVersion!.status !== PostVersionStatus.PENDING"
-                            button-classes="max-h-[64px]"
-                            class="post-moderator flex self-center w-full"
-                            v-model="postVersion!.assigned_moderator_id"
-                            input-id="moderator"
-                            :options="moderatorOptions"
-                            option-classes="xl:pl-2 pl-4"
-                            option-label-key="username"
-                            option-value-key="id"
-                            placeholder="Не назначен"
-                            @show="loadModerators"
-                            @change="assignModerator"
-                        >
+                         class="flex xl:flex-col flex-row"
+                    >
+                        <div class="flex items-center max-w-[100px] xl:px-2.5 px-5 py-1">
+                            <p class="xl:mt-1">Модератор</p>
+                        </div>
+                        <div class="flex xl:max-w-none max-w-[200px] w-full">
+                            <Select
+                                options-classes="ld-primary-background ld-primary-border mt-[-10px]"
+                                :disabled="postVersion!.status !== PostVersionStatus.PENDING"
+                                class="post-moderator flex self-center w-full"
+                                v-model="postVersion!.assigned_moderator_id"
+                                button-label-classes="hidden xs:flex"
+                                button-classes="max-h-[64px]"
+                                input-id="moderator"
+                                :options="moderatorOptions"
+                                option-classes="xl:pl-2 pl-4"
+                                option-label-key="username"
+                                option-value-key="id"
+                                placeholder="Не назначен"
+                                @show="loadModerators"
+                                @change="assignModerator"
+                            >
 
-                            <template #option-icon="{option}: {option: User}">
-                                <UserAvatar
-                                    border-class-list="h-12 w-12"
-                                    icon-class-list="h-8 w-8"
-                                    :user="option"
-                                />
-                            </template>
-
-                            <template #option="{option}: { option: User}">
-                                <div class="flex gap-2 items-center py-2 px-3 w-full"
-                                     @click="assignModerator(option)">
+                                <template #option-icon="{option}: {option: User}">
                                     <UserAvatar
                                         border-class-list="h-12 w-12"
                                         icon-class-list="h-8 w-8"
                                         :user="option"
                                     />
-                                    <p class="text-sm line-clamp-1">{{ option.username }}</p>
-                                </div>
-                            </template>
+                                </template>
 
-                        </Select>
+                                <template #option="{option}: { option: User}">
+                                    <div class="flex gap-2 items-center py-2 px-3 w-full"
+                                         @click="assignModerator(option)">
+                                        <UserAvatar
+                                            border-class-list="h-12 w-12"
+                                            icon-class-list="h-8 w-8"
+                                            :user="option"
+                                        />
+                                        <p class="text-sm line-clamp-1">{{ option.username }}</p>
+                                    </div>
+                                </template>
+
+                            </Select>
+                        </div>
                     </div>
 
                     <div v-if="postVersion!.post" class="header-details-item flex xl:flex-col flex-row">
-                        <p class="mt-2 xl:px-3 px-4">Материал</p>
-                        <RouterLink
-                            :to="{name: 'post', params: {slug: postVersion!.post.slug}}"
-                            class="ld-default-link line-clamp-2 text-[12px] hover:underline duration-200 mx-2 xl:mt-0 mt-2"
-                        >
-                            {{ postVersion!.post.version!.title }}
-                        </RouterLink>
+                        <div class="flex items-center max-w-[100px] xl:px-2.5 px-5 py-1">
+                            <p>Материал</p>
+                        </div>
+                        <div class="flex items-center xl:px-2.5 px-4 py-1">
+                            <RouterLink
+                                :to="{name: 'post', params: {slug: postVersion!.post.slug}}"
+                                class="ld-default-link line-clamp-2 text-[12px] border-0 hover:underline duration-200"
+                            >
+                                {{ postVersion!.post.version!.title }}
+                            </RouterLink>
+                        </div>
                     </div>
 
                     <div class="flex xl:flex-col flex-row">
-                        <p class="mt-2 xl:px-3 px-4 xl:py-0 py-0.5">Статус</p>
-                        <p
-                            :class="postVersionStatusInfo.colorClass"
-                            class="transfusion bordered h-fit w-fit xl:mb-2 mb-2 xl:mt-1 mt-2 xl:mx-2 mx-4 px-2 py-0.5"
-                        >
-                            {{ postVersionStatusInfo.name }}
-                        </p>
+                        <div class="flex items-center min-w-[100px] xl:px-2.5 px-5 py-1">
+                            <p>Статус</p>
+                        </div>
+                        <div class="flex items-center xl:px-2.5 px-4 py-1">
+                            <p
+                                :class="postVersionStatusInfo.colorClass"
+                                class="transfusion bordered px-1 py-0.5"
+                            >
+                                {{ postVersionStatusInfo.name }}
+                            </p>
+                        </div>
                     </div>
 
-                    <div v-if="postVersion.actions!.length !== 0" class="flex flex-col xl:gap-2 gap-4 mt-1 xl:pb-2 non-pb-4 xl:px-2 px-4">
-                        <PostVersionAction
-                            v-if="[PostVersionActionType.REJECT, PostVersionActionType.REQUEST_CHANGES].includes(lastAction?.type!)"
-                            class="sidebar-last-action px-2 md:px-1"
-                            :action="lastAction!"
-                            :minimized="true"
-                        />
+                    <div v-if="postVersion.actions!.length !== 0" class="flex flex-col xl:gap-2 gap-4 mt-1 xl:pb-1 xl:px-2 px-4">
+                        <div class="flex items-center">
+                            <PostVersionAction
+                                v-if="[PostVersionActionType.REJECT, PostVersionActionType.REQUEST_CHANGES].includes(lastAction?.type!)"
+                                class="sidebar-last-action px-2 md:px-1"
+                                :action="lastAction!"
+                                :minimized="true"
+                            />
+                        </div>
                         <ShineButton
-                            class="ld-shine-button self-center text-[0.7rem]"
+                            class="ld-shine-button self-center text-[0.7rem] xl:mb-1 mb-4"
+                            :class="{ 'non-mb-0': postVersion.status === PostVersionStatus.ACCEPTED
+                            || postVersion.status === PostVersionStatus.REJECTED }"
                             @click="isHistoryDialog = true"
                             label="История действий"
                             icon="icon-script"
@@ -703,12 +721,6 @@ loadPostVersion()
 .upper-interaction .upper-unavailable {
     display: none;
 }
-.non-pb-4 {
-    padding-bottom: 1rem;
-}
-.upper-interaction .non-pb-4 {
-    padding-bottom: 0;
-}
 .ld-shine-button .press,
 .ld-shine-button .preset {
     width: 100%;
@@ -728,6 +740,9 @@ loadPostVersion()
     display: flex;
     height: 2rem;
     left: 2.3rem;
+}
+.upper-interaction  .non-mb-0 {
+    margin-bottom: 0;
 }
 </style>
 

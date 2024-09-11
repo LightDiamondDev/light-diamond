@@ -29,21 +29,29 @@ const props = defineProps({
         </span>
         <span v-else>
             <span v-if="action.type === PostVersionActionType.ACCEPT">
-                <span class="icon-tick icon text-confirm"/>
+                <span class="icon-tick icon flex text-confirm"/>
                 <span>Принято</span>
             </span>
-            <span v-else-if="action.type === PostVersionActionType.REJECT">
-                <span class="icon-small-cross icon"/>
-                <span>Отклонено: </span>
-                <span class="text-muted">{{ (action.details as PostVersionActionReject).reason }}</span>
+            <span v-else-if="action.type === PostVersionActionType.REJECT" class="flex items-center">
+                <span class="icon-red-cross icon flex min-w-[2rem] mr-1"/>
+                <span class="flex flex-col w-full">
+                    <span>Отклонено: </span>
+                    <span class="text-muted truncate ld-lightgray-text max-w-[90%] xl:max-w-[160px]">
+                        {{ (action.details as PostVersionActionReject).reason }}
+                    </span>
+                </span>
             </span>
-            <span v-else-if="action.type === PostVersionActionType.REQUEST_CHANGES">
-                <span class="icon-refresh icon"/>
-                <span>Возвращено на доработку: </span>
-                <span class="text-muted">{{ (action.details as PostVersionActionRequestChanges).message }}</span>
+            <span v-else-if="action.type === PostVersionActionType.REQUEST_CHANGES" class="flex items-center">
+                <span class="icon-white-rotate-left icon flex min-w-[2rem] mr-1"/>
+                <span class="flex flex-col w-full">
+                    <span>Возвращено на доработку: </span>
+                    <span class="text-muted truncate ld-lightgray-text max-w-[90%] xl:max-w-[160px]">
+                        {{ (action.details as PostVersionActionRequestChanges).message }}
+                    </span>
+                </span>
             </span>
             <span v-else-if="action.type === PostVersionActionType.ASSIGN_MODERATOR">
-                <span class="icon-eye icon"/>
+                <span class="icon-eye icon flex"/>
                 Назначен Модератор
                 <span class="text-[var(--primary-color)]">
                     {{ (action.details as PostVersionActionAssignModerator).moderator!.username}}

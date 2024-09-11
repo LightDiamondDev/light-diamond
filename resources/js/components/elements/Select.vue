@@ -4,6 +4,7 @@ import ItemButton from '@/components/elements/ItemButton.vue'
 
 const props = defineProps({
     buttonClasses: String,
+    buttonLabelClasses: String,
     disabled: {
         type: Boolean,
         default: false
@@ -121,7 +122,7 @@ function change(option: any) {
                     </slot>
                 </template>
 
-                <span class="text">
+                <span :class="buttonLabelClasses" class="text">
                     <span v-if="currentOption">{{ getOptionLabel(currentOption) }}</span>
                     <span v-else class="opacity-80 ml-2">{{ placeholder }}</span>
                 </span>
