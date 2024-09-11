@@ -88,7 +88,7 @@
     .tooltip:hover::after,
     .tooltip:focus::before,
     .tooltip:focus::after {
-        animation: tooltip-show-animation 2s ease;
+        animation: tooltip-show-animation 1.5s ease;
         opacity: 1;
     }
 
@@ -244,7 +244,7 @@
         0% {
             opacity: 0;
         }
-        50% {
+        20% {
             opacity: 0;
         }
         100% {

@@ -379,6 +379,17 @@ function onEditionChange() {
         font-size: 2rem;
     }
 }
+/* =============== [ Медиа-Запрос { ?px < 401px } ] =============== */
+
+@media screen and (max-width: 400px) {
+    .post-editor-banner .banner-container,
+    .post-editor-banner .banner {
+        height: 232px;
+    }
+    .banner-title {
+        height: 160px;
+    }
+}
 </style>
 
 <style scoped>

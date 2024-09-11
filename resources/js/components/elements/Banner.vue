@@ -17,7 +17,7 @@ const props = defineProps({
 
 <template>
     <div class="banner-container flex justify-center fixed w-full">
-        <div class="banner flex justify-center items-end w-full" style="background-color: orange">
+        <div class="banner flex justify-center items-end w-full">
             <div v-if="isTitleDisplay" :class="{ 'opacity-0': !isTitleVisible }" class="title page-container flex flex-col justify-center items-center">
                 <h1 class="text-center absolute">{{ title }}</h1>
             </div>
@@ -67,9 +67,7 @@ const props = defineProps({
 /* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
 
 @media screen and (max-width: 450px) {
-    .banner-container {
-        height: 178px;
-    }
+    .banner-container,
     .banner {
         height: 178px;
     }

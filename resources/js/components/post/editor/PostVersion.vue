@@ -435,10 +435,10 @@ loadPostVersion()
                     </div>
 
                     <div class="flex xl:flex-col flex-row">
-                        <div class="flex items-center min-w-[100px] xl:px-2.5 px-5 py-1">
+                        <div :class="{'xl:mt-0 mt-3': !authStore.isModerator}" class="flex items-center min-w-[100px] xl:px-2.5 px-5 py-1">
                             <p>Статус</p>
                         </div>
-                        <div class="flex items-center xl:px-2.5 px-4 py-1">
+                        <div :class="{'xl:mt-0 mt-3': !authStore.isModerator}" class="flex items-center xl:px-2.5 px-4 py-1">
                             <p
                                 :class="postVersionStatusInfo.colorClass"
                                 class="transfusion bordered px-1 py-0.5"

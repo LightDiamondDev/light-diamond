@@ -7,7 +7,7 @@ import {
     type PostVersionActionRequestChanges,
     PostVersionActionType, UserRole
 } from '@/types'
-import {getFullDate, getRelativeDate} from '@/helpers'
+import {getFullDate, getFullPresentableDate, getRelativeDate} from '@/helpers'
 import UserAvatar from '@/components/user/UserAvatar.vue'
 const props = defineProps({
     action: {
@@ -61,18 +61,20 @@ const props = defineProps({
     </div>
     <div v-else class="post-version-action flex flex-col xs:flex-row gap-1 xs:gap-2">
 
-        <div class="flex xs:flex-row flex-col items-center w-full xs:gap-2 md:gap-4">
+        <div class="flex xs:flex-row flex-col-reverse items-center w-full xs:gap-2 md:gap-4">
 
             <div class="flex items-center w-full gap-2">
                 <div class="flex self-start gap-3">
-                    <div v-if="action.type === PostVersionActionType.SUBMIT" class="relative">
-                    <span
-                        :class="{
-                            'icon-charoit-crown': action.user?.role === UserRole.ADMIN,
-                            'icon-emerald-dagger': action.user?.role === UserRole.MODERATOR
-                        }"
-                        class="icon-role icon flex absolute xs:h-8 h-6 xs:w-8 w-6 z-[1] xs:right-[-12px] xs:top-[-12px] right-[-8px] top-[-8px]"
-                    />
+                    <div v-if="action.user && action.type === PostVersionActionType.SUBMIT" class="relative">
+                        <span
+                            :class="{
+                                'icon-charoit-crown': action.user?.role === UserRole.ADMIN,
+                                'icon-emerald-dagger': action.user?.role === UserRole.MODERATOR
+                            }"
+                            class="icon-role icon flex absolute
+                                xs:h-8 h-6 xs:w-8 w-6 z-[1] xs:right-[-12px]
+                                xs:top-[-12px] right-[-8px] top-[-8px]"
+                        />
                         <UserAvatar
                             border-class-list="xs:h-12 xs:w-12 h-9 w-9"
                             icon-class-list="xs:h-8 xs:w-8 h-6 w-6"
@@ -83,7 +85,7 @@ const props = defineProps({
                         v-else
                         :class="{
                             'icon-charoit-crown': action.user?.role === UserRole.ADMIN,
-                            'icon-emerald-dagger': action.user?.role === UserRole.MODERATOR
+                            'icon-emerald-dagger': action.user?.role === UserRole.MODERATOR || !action.user
                         }"
                         class="icon text-[var(--surface-500)] xs:h-12 xs:w-12 h-8 w-8"
                     />
@@ -136,8 +138,10 @@ const props = defineProps({
             </div>
 
             <p
-                :title="getFullDate(action.created_at!)"
-                class="text-muted xs:text-[12px] text-[10px] text-center md:text-end md:whitespace-nowrap leading-6"
+                class="text-muted xs:text-[12px] text-[10px]
+                    text-center md:text-end md:whitespace-nowrap leading-6
+                    ld-lightgray-text"
+                v-tooltip.top="getFullPresentableDate(action.created_at!)"
             >
                 {{ getRelativeDate(action.created_at!) }}
             </p>
@@ -153,6 +157,19 @@ const props = defineProps({
 .post-version-action span {
     font-size: 12px;
 }
+.tooltip::before {
+    height: 2rem;
+    left: -2rem;
+}
+
+/* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
+
+@media screen and (max-width: 767px) {
+    .tooltip::before {
+        min-width: 200px;
+        left: -4rem;
+    }
+}
 
 /* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
 
@@ -160,6 +177,9 @@ const props = defineProps({
     .post-version-action-message,
     .post-version-action span {
         font-size: 10px;
+    }
+    .tooltip::before {
+        left: 0;
     }
 }
 </style>
