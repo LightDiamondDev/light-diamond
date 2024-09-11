@@ -449,6 +449,7 @@ loadPostVersion()
                     </div>
 
                     <div v-if="postVersion.actions!.length !== 0" class="flex flex-col xl:gap-2 gap-4 mt-1 xl:pb-1 xl:px-2 px-4">
+                        <div class="separator"></div>
                         <div class="flex items-center">
                             <PostVersionAction
                                 v-if="[PostVersionActionType.REJECT, PostVersionActionType.REQUEST_CHANGES].includes(lastAction?.type!)"

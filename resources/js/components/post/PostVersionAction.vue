@@ -61,34 +61,36 @@ const props = defineProps({
     </div>
     <div v-else class="post-version-action flex flex-col xs:flex-row gap-1 xs:gap-2">
 
-        <div class="flex items-center w-full gap-2 md:gap-4">
-            <div class="flex self-start gap-3">
-                <div v-if="action.type === PostVersionActionType.SUBMIT" class="relative">
+        <div class="flex xs:flex-row flex-col items-center w-full xs:gap-2 md:gap-4">
+
+            <div class="flex items-center w-full gap-2">
+                <div class="flex self-start gap-3">
+                    <div v-if="action.type === PostVersionActionType.SUBMIT" class="relative">
                     <span
                         :class="{
                             'icon-charoit-crown': action.user?.role === UserRole.ADMIN,
-                            'icon-sapphire-dagger': action.user?.role === UserRole.MODERATOR
+                            'icon-emerald-dagger': action.user?.role === UserRole.MODERATOR
                         }"
                         class="icon-role icon flex absolute xs:h-8 h-6 xs:w-8 w-6 z-[1] xs:right-[-12px] xs:top-[-12px] right-[-8px] top-[-8px]"
                     />
-                    <UserAvatar
-                        border-class-list="xs:h-12 xs:w-12 h-9 w-9"
-                        icon-class-list="xs:h-8 xs:w-8 h-6 w-6"
-                        :user="action.user!"
+                        <UserAvatar
+                            border-class-list="xs:h-12 xs:w-12 h-9 w-9"
+                            icon-class-list="xs:h-8 xs:w-8 h-6 w-6"
+                            :user="action.user!"
+                        />
+                    </div>
+                    <span
+                        v-else
+                        :class="{
+                            'icon-charoit-crown': action.user?.role === UserRole.ADMIN,
+                            'icon-emerald-dagger': action.user?.role === UserRole.MODERATOR
+                        }"
+                        class="icon text-[var(--surface-500)] xs:h-12 xs:w-12 h-8 w-8"
                     />
                 </div>
-                <span
-                    v-else
-                    :class="{
-                            'icon-charoit-crown': action.user?.role === UserRole.ADMIN,
-                            'icon-sapphire-dagger': action.user?.role === UserRole.MODERATOR
-                        }"
-                    class="icon text-[var(--surface-500)] xs:h-12 xs:w-12 h-8 w-8"
-                />
-            </div>
 
-            <div class="flex flex-col gap-2 w-full text-sm xs:text-base">
-                <div class="inline-block">
+                <div class="flex flex-col gap-2 w-full text-sm xs:text-base">
+                    <div class="inline-block">
                     <span class="text-[var(--hover-text-color)]">
                         {{
                             action.user === undefined
@@ -100,37 +102,39 @@ const props = defineProps({
                         }}
                     </span>
 
-                    <span v-if="action.type === PostVersionActionType.SUBMIT"> отправил заявку на публикацию.</span>
-                    <span v-else-if="action.type === PostVersionActionType.ACCEPT" class="text-confirm"> принял заявку.</span>
-                    <span v-else-if="action.type === PostVersionActionType.REJECT" class="text-error">
+                        <span v-if="action.type === PostVersionActionType.SUBMIT"> отправил заявку на публикацию.</span>
+                        <span v-else-if="action.type === PostVersionActionType.ACCEPT" class="text-confirm"> принял заявку.</span>
+                        <span v-else-if="action.type === PostVersionActionType.REJECT" class="text-error">
                         отклонил заявку:
                     </span>
-                    <span v-else-if="action.type === PostVersionActionType.REQUEST_CHANGES" class="text-revision">
+                        <span v-else-if="action.type === PostVersionActionType.REQUEST_CHANGES" class="text-revision">
                         вернул заявку на доработку:
                     </span>
-                    <span v-else-if="action.type === PostVersionActionType.ASSIGN_MODERATOR">
+                        <span v-else-if="action.type === PostVersionActionType.ASSIGN_MODERATOR">
                         назначил Модератора
                         <span class="text-[var(--hover-text-color)]">
                             {{ (action.details as PostVersionActionAssignModerator).moderator!.username }}
                         </span>
                         <span>.</span>
                     </span>
+                    </div>
+
+                    <p
+                        v-if="action.type === PostVersionActionType.REJECT"
+                        class="post-version-action-message px-3 py-2 w-full"
+                    >
+                        {{ (action.details as PostVersionActionReject).reason }}
+                    </p>
+
+                    <p
+                        v-if="action.type === PostVersionActionType.REQUEST_CHANGES"
+                        class="post-version-action-message px-3 py-2 w-full"
+                    >
+                        {{ (action.details as PostVersionActionRequestChanges).message }}
+                    </p>
                 </div>
-
-                <p
-                    v-if="action.type === PostVersionActionType.REJECT"
-                    class="post-version-action-message px-3 py-2 w-full"
-                >
-                    {{ (action.details as PostVersionActionReject).reason }}
-                </p>
-
-                <p
-                    v-if="action.type === PostVersionActionType.REQUEST_CHANGES"
-                    class="post-version-action-message px-3 py-2 w-full"
-                >
-                    {{ (action.details as PostVersionActionRequestChanges).message }}
-                </p>
             </div>
+
             <p
                 :title="getFullDate(action.created_at!)"
                 class="text-muted xs:text-[12px] text-[10px] text-center md:text-end md:whitespace-nowrap leading-6"

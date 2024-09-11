@@ -1035,6 +1035,10 @@
         background-image: url('/images/icons/charoit-crown.png');
     }
 
+    .icon-charoit-dagger {
+        background-image: url('/images/icons/charoit-dagger.png');
+    }
+
     .icon-clock {
         background-image: url('/images/icons/diamond-clock.png');
     }
@@ -1085,6 +1089,10 @@
 
     .icon-ellipsis {
         background-image: url('/images/icons/diamond-ellipsis.png');
+    }
+
+    .icon-emerald-dagger {
+        background-image: url('/images/icons/emerald-dagger.png');
     }
 
     .icon-equals {

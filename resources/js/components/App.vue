@@ -19,7 +19,7 @@
 
     watch(route, (to: RouteLocation) => {
         if (to.query.authorized) {
-            toastStore.success(`Вы успешно вошли!`, 'Пидоры', 18000000)
+            toastStore.success(`Вы успешно вошли!`)
             const {authorized, ...newQuery} = to.query
             router.replace({path: to.path, query: newQuery})
         }
