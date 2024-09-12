@@ -425,7 +425,7 @@ function logout() {
                 </button>
 
                 <button
-                    class="user-menu-button flex list-label justify-center items-center"
+                    class="user-menu-button flex list-label justify-center items-center md:mr-0 mr-1.5"
                     type="button"
                     @click="userMenu?.toggle"
                 >

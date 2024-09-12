@@ -448,7 +448,7 @@ loadPostVersion()
                         </div>
                     </div>
 
-                    <div v-if="postVersion.actions!.length !== 0" class="flex flex-col xl:gap-2 gap-4 mt-1 xl:pb-1 xl:px-2 px-4">
+                    <div v-if="postVersion.actions!.length !== 0" class="flex flex-col xl:gap-1 gap-2 mt-1 xl:pb-1 xl:px-2 px-4">
                         <div class="separator"></div>
                         <div class="flex items-center">
                             <PostVersionAction
@@ -502,10 +502,10 @@ loadPostVersion()
                         />
                     </div>
                 </div>
-                <div v-if="isOwnDraft" class="flex flex-col w-full xl:gap-2 gap-4 xl:px-2 px-4 xl:pb-2 pb-4">
+                <div v-if="isOwnDraft" class="upper-unavailable flex flex-col w-full xl:gap-2 gap-4 xl:px-2 px-4 xl:pb-2 pb-4">
                     <div class="separator"></div>
                     <ShineButton
-                        class="ld-shine-button upper-unavailable w-full confirm"
+                        class="ld-shine-button w-full confirm"
                         @click="submitOverlayPanel?.toggle"
                         label="На рассмотрение"
                         icon="icon-eye"
@@ -824,7 +824,7 @@ loadPostVersion()
     }
     .time-ago.tooltip::before {
         bottom: 2.4rem;
-        left: 1.2rem;
+        left: -.5rem;
     }
 }
 </style>

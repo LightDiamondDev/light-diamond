@@ -118,23 +118,27 @@ function uploadImage(file: File) {
     :for="id"
 >
     <em
+        class="upload-image-info-wrap flex justify-center items-center h-full w-full"
         :class="{ 'loaded': imageSrc }"
-        class="upload-image-info flex flex-col items-center gap-2 p-4"
     >
-        <span class="upload-image-heading flex gap-2">
-            <span :class="icon" class="icon relative"></span>
-            <span class="head-font md:text-[1.2rem] text-center duration-200">{{ title }}</span>
+        <span
+            class="upload-image-info flex flex-col items-center gap-2 p-4"
+        >
+            <span class="upload-image-heading flex gap-2">
+                <span :class="icon" class="icon relative"></span>
+                <span class="head-font md:text-[1.2rem] text-center duration-200">{{ title }}</span>
+            </span>
+            <span class="text-center">Минимальное разрешение — {{ minWidth }} × {{ minHeight }}</span>
+            <span class="text-center">Максимальный размер — {{ maxSizeInMegabytes }} Мб</span>
+            <span class="text-center">{{ allowedImageFormats.join(" / ") }}</span>
+            <input
+                :disabled="!editable"
+                @change="onChange"
+                accept="image/*"
+                type="file"
+                :id="id"
+            />
         </span>
-        <span class="text-center">Минимальное разрешение — {{ minWidth }} × {{ minHeight }}</span>
-        <span class="text-center">Максимальный размер — {{ maxSizeInMegabytes }} Мб</span>
-        <span class="text-center">{{ allowedImageFormats.join(" / ") }}</span>
-        <input
-            :disabled="!editable"
-            @change="onChange"
-            accept="image/*"
-            type="file"
-            :id="id"
-        />
     </em>
 </label>
 </template>
@@ -145,13 +149,17 @@ function uploadImage(file: File) {
 .upload-image-container.dragover .icon {
     animation: levitation-icon-animation infinite 1s ease;
 }
-.upload-image-info {
+.upload-image-info-wrap.loaded {
+    background: radial-gradient(
+        rgba(0, 0, 0, .7),
+        rgba(0, 0, 0, .6),
+        rgba(0, 0, 0, .1),
+        rgba(0, 0, 0, .1),
+        rgba(0, 0, 0, .1)
+    );
+    box-shadow: 0 0 2em rgba(0, 0, 0, .6);
     background-size: 100% 100%;
     pointer-events: none;
-}
-.loaded {
-    background: radial-gradient(rgba(0, 0, 0, .6), rgba(0, 0, 0, .6), rgba(0, 0, 0, .1));
-    box-shadow: 0 0 2em rgba(0, 0, 0, .6);
 }
 em {
     transition: .5s;
@@ -173,6 +181,9 @@ em.loaded .upload-image-heading {
 }
 .upload-image-container.loaded:not(.dragover) {
     outline: 0;
+}
+.upload-image-container.dragover .upload-image-info-wrap {
+    opacity: 1;
 }
 .upload-image-container.disabled .upload-image-info {
     display: none;
