@@ -348,7 +348,9 @@ function logout() {
     />
 
     <header
-        class="ld-primary-background ld-primary-border-bottom ld-shadow-text transition-transform flex justify-center duration-300 select-none h-[var(--header-height)] z-[2] w-full top-0 left-0 fixed"
+        class="ld-primary-background ld-primary-border-bottom ld-shadow-text transition-transform
+        flex justify-center duration-300 select-none fixed
+        h-[var(--header-height)] z-[2] w-full top-0 left-0"
         :class="{'-translate-y-full': !preferenceManager.isHeaderFixedVisible() && isHeaderHidden}"
     >
         <nav class="header page-container flex justify-between">

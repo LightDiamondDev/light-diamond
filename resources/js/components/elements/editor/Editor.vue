@@ -328,7 +328,6 @@ function getCurrentNodeInfo(): EditorNodeInfo | null {
             return nodes[key]
         }
     }
-
     return null
 }
 
@@ -390,14 +389,14 @@ function unsetLink() {
     <div class="editor">
         <BubbleMenu
             v-if="editor && editable && !withoutMenus && menuItems.length > 0"
-            :editor="editor"
             :tippy-options="{zIndex: 1, maxWidth: 'none'}"
-            :update-delay="0"
             class="hidden lg:block"
+            :editor="editor"
+            :update-delay="0"
         >
             <EditorHorizontalMenu
-                :items="menuItems"
                 class="border drop-shadow-[0_0px_2px_rgba(0,0,0,0.3)]"
+                :items="menuItems"
             />
         </BubbleMenu>
 
@@ -431,8 +430,9 @@ function unsetLink() {
 
         <EditorHorizontalMenu
             v-if="editor && editable && !withoutMenus"
+            class="block lg:hidden sticky bottom-0 border-t
+                overflow-x-auto whitespace-nowrap"
             :items="menuItems"
-            class="block lg:hidden sticky bottom-0 border-t overflow-x-auto whitespace-nowrap"
         />
     </div>
 </template>

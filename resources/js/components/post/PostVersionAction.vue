@@ -65,7 +65,7 @@ const props = defineProps({
 
             <div class="flex items-center w-full gap-2">
                 <div class="flex self-start gap-3">
-                    <div v-if="action.user && action.type === PostVersionActionType.SUBMIT" class="relative">
+                    <div v-if="action.user" class="relative">
                         <span
                             :class="{
                                 'icon-charoit-crown': action.user?.role === UserRole.ADMIN,
@@ -82,7 +82,7 @@ const props = defineProps({
                         />
                     </div>
                     <span
-                        v-else
+                        v-else-if="action.type !== PostVersionActionType.SUBMIT"
                         :class="{
                             'icon-charoit-crown': action.user?.role === UserRole.ADMIN,
                             'icon-emerald-dagger': action.user?.role === UserRole.MODERATOR || !action.user
