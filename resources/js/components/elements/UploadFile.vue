@@ -26,7 +26,6 @@ const fileSrc = ref(props.fileSrc)
 const toastStore = useToastStore()
 
 const allowedFileFormats = ['MCPACK', 'MCADDON', 'MCWORLD', 'MCSKIN', 'ZIP', 'PNG'];
-const allowedFormats = allowedFileFormats.map((format) => 'file/' + format.toLowerCase())
 const maxSizeInMegabytes = props.maxSizeInMegabytes
 
 const isDraggingOver = ref(false)
@@ -59,7 +58,9 @@ function onDragLeave() {
 }
 
 function uploadFile(file: File) {
-    if (!allowedFormats.includes(file.type)) {
+    const fileExtension = file.name.split('.').pop().toUpperCase()
+
+    if (!allowedFileFormats.includes(fileExtension)) {
         toastStore.warning(
             `Недопустимый формат Файла, разрешены только ${allowedFileFormats.join(', ')}.`,
             'Неверный формат'
@@ -74,6 +75,8 @@ function uploadFile(file: File) {
         )
         return
     }
+
+    emit('upload', file)
 }
 </script>
 

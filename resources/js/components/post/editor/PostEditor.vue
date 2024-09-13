@@ -23,6 +23,9 @@ import UploadFile from '@/components/elements/UploadFile.vue'
 import UserAvatar from '@/components/user/UserAvatar.vue'
 import Textarea from '@/components/elements/Textarea.vue'
 import LoadedFile from '@/components/elements/LoadedFile.vue'
+import axios, {type AxiosError} from 'axios'
+import {getErrorMessageByCode} from '@/helpers'
+import {useToastStore} from '@/stores/toast'
 
 defineProps({
     author: {
@@ -41,6 +44,7 @@ defineProps({
 
 const preferenceManager = usePreferenceManager()
 const postCategoryStore = usePostCategoryStore()
+const toastStore = useToastStore()
 const postVersion = defineModel<PostVersion>({default: {}})
 const gameEdition = ref<GameEdition|null>(
     postVersion.value.category
@@ -125,6 +129,23 @@ const contentEditorExtensions = [
 
 function onEditionChange() {
     postVersion.value.category_id = undefined
+}
+
+function uploadFile(file: File) {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    axios.post('/api/upload-post-file', formData).then((response) => {
+        if (response.data.success) {
+            toastStore.success('Файл успешно загружен!')
+        } else {
+            if (response.data.errors) {
+                toastStore.error(response.data.errors['file'][0])
+            }
+        }
+    }).catch((error: AxiosError) => {
+        toastStore.error(getErrorMessageByCode(error.response!.status))
+    })
 }
 
 </script>
@@ -280,7 +301,7 @@ function onEditionChange() {
                                 file-name="Light Diamond Addon — Craft & Survive [0.1.0]"
                                 file-format=".MCADDON"
                                 file-size="12,5 Мб
-                        "/>
+                            "/>
 
                             <LoadedFile
                                 class="my-2"
@@ -300,10 +321,10 @@ function onEditionChange() {
                                 class="upload-post-preview flex mb-5 mt-2.5"
                                 :editable="editable"
                                 icon="icon-download"
-                                id="upload-post-preview"
+                                id="upload-post-file"
                                 :image-src="postVersion.cover_url"
                                 title="Загрузить Файл Материала"
-                                @upload="(file) => postVersion.cover_file = file"
+                                @upload="uploadFile"
                                 :max-size-in-megabytes="20"
                             />
 

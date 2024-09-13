@@ -10,6 +10,7 @@ use App\Http\Controllers\PostLikeController;
 use App\Http\Controllers\PostVersionController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UploadImageController;
+use App\Http\Controllers\UploadPostFileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/settings/security/email-verification', [SettingsController::class, 'sendEmailVerificationLink'])->middleware(['throttle:1,1']);
 
     Route::post('/upload-image', [UploadImageController::class, 'upload']);
+    Route::post('/upload-post-file', [UploadPostFileController::class, 'upload']);
 
     Route::get('/post-versions/{id}', [PostVersionController::class, 'getById'])->where('id', '[0-9]+');
     Route::post('/post-versions', [PostVersionController::class, 'createDraft']);
