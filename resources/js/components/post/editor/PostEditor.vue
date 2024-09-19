@@ -36,7 +36,13 @@ defineProps({
     errors: {
         type: Object as PropType<{ [key: string]: string[] }>,
         required: true,
-    }
+    },
+    isUpperSidebar: {
+        type: Boolean,
+        default: true,
+    },
+    lowerSidebarClasses: String,
+    upperSidebarClasses: String
 })
 
 const preferenceManager = usePreferenceManager()
@@ -143,14 +149,16 @@ function onEditionChange() {
         <div class="page-container xl">
             <section class="flex flex-col justify-center items-center">
 
-                <aside class="post-interaction
-                    ld-primary-background
-                    ld-primary-border-section
-                    upper-interaction
-                    flex-col
-                    items-center"
+                <aside v-if="isUpperSidebar"
+                    class="post-interaction
+                        ld-primary-background
+                        ld-primary-border-section
+                        upper-interaction
+                        flex-col
+                        items-center"
+                    :class="upperSidebarClasses"
                 >
-                    <slot name="sidebar"></slot>
+                    <slot name="sidebar"/>
                 </aside>
 
                 <div class="content page-container w-full">
@@ -175,8 +183,8 @@ function onEditionChange() {
                             v-model="postVersion.title"
                             :class="{'red-overlay': errors['title']}"
                             class="material-name flex justify-center max-w-[1280px]"
-                            :editable="editable"
                             :extensions="titleEditorExtensions"
+                            :editable="editable"
                             plain-text
                             without-menus
                         />
@@ -233,7 +241,7 @@ function onEditionChange() {
                                 :disabled="!editable"
                                 input-id="edition"
                                 :options="gameEditions"
-                                option-classes="pl-6"
+                                option-classes="h-[64] pl-6"
                                 option-label-key="label"
                                 option-icon-key="icon"
                                 option-value-key="value"
@@ -251,7 +259,7 @@ function onEditionChange() {
                                 :disabled="!editable"
                                 input-id="category"
                                 :options="categories"
-                                option-classes="pl-6"
+                                option-classes="h-[64] pl-6"
                                 option-label-key="name"
                                 option-value-key="id"
                                 placeholder="Выберите Категорию"
@@ -310,13 +318,15 @@ function onEditionChange() {
                         </div>
                     </div>
                 </div>
-                <aside class="post-interaction
-                    lower-interaction
-                    ld-primary-background
-                    ld-primary-border-section
-                    flex flex-col items-center"
+                <aside
+                    class="post-interaction
+                        lower-interaction
+                        ld-primary-background
+                        ld-primary-border-section
+                        flex flex-col items-center"
+                    :class="lowerSidebarClasses"
                 >
-                    <slot name="sidebar"></slot>
+                    <slot name="sidebar"/>
                 </aside>
             </section>
         </div>

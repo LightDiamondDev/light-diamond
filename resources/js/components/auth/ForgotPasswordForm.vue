@@ -76,11 +76,12 @@ function submitForgotPassword() {
             </div>
 
             <Button
+                :loading="isProcessing"
                 button-type="submit"
+                class="w-[85%]"
                 icon="icon-bestiary"
                 icon-size="32px"
                 label="Получить Письмо"
-                :loading="isProcessing"
                 @click.prevent="submitForgotPassword"
             />
 

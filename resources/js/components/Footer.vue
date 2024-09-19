@@ -21,26 +21,26 @@ function scrollToTop() {
 
             <a class="xl:flex hidden items-center" href="#">
                 <span class="icon icon-apple"></span>
-                <span class="text-[1.1rem]">Аддон LD</span>
+                <span>Аддон LD</span>
             </a>
             <a class="sm:flex hidden items-center" href="#">
                 <span class="icon icon-diamond"></span>
-                <span class="text-[1.1rem]">Обновления</span>
+                <span>Обновления</span>
             </a>
             <a class="md:flex hidden items-center" href="#">
-                <span class="icon icon-diamond-sword"></span>
-                <span class="text-[1.1rem]">Помощь</span>
+                <span class="icon icon-dagger"></span>
+                <span>Помощь</span>
             </a>
             <a class="sm:flex hidden items-center" href="#">
                 <span class="icon icon-faq"></span>
-                <span class="text-[1.1rem]">О Проекте</span>
+                <span>О Проекте</span>
             </a>
-            <a class="footer-anchor mr-4 flex justify-center items-center self-center" @click="scrollToTop">
+            <a class="footer-anchor flex justify-center items-center self-center mr-4" @click="scrollToTop">
                 <span class="icon icon-top-arrow"></span>
             </a>
         </nav>
-        <div class="ld-tinted-background harder ld-primary-border-top flex flex-col items-center w-full">
-            <div class="media mt-6 mb-6 flex justify-between">
+        <div class="ld-tinted-background darker ld-primary-border-top flex flex-col items-center w-full">
+            <div class="media flex justify-between mt-4 mb-4">
                 <a class="flex justify-center items-center" href="https://vk.com/light.diamond">
                     <span class="icon icon-vk"></span>
                 </a>
@@ -51,23 +51,23 @@ function scrollToTop() {
                     <span class="icon icon-youtube"></span>
                 </a>
             </div>
-            <div class="row mb-1 flex sm:flex-row flex-col items-center">
+            <div class="row flex sm:flex-row flex-col items-center mb-1">
                 <a class="flex items-center p-2" href="#">
-                    <span class="text-sm">Политика Конфиденциальности</span>
+                    <span class="text-[12px]">Политика Конфиденциальности</span>
                 </a>
                 <div class="sm:flex hidden h-8 w-0.5"></div>
                 <a class="flex items-center p-2" href="#">
-                    <span class="text-sm">Условия Пользования</span>
+                    <span class="text-[12px]">Условия Пользования</span>
                 </a>
             </div>
-            <div class="row mt-1 mb-1 flex items-center">
+            <div class="row flex items-center mt-1 mb-1">
                 <p class="flex items-center p-2" href="#">
-                    <span class="text-sm">Minecraft защищён Авторским Правом Mojang Studios, данный Сайт не связан с ним официально.</span>
+                    <span class="text-[12px]">Minecraft защищён Авторским Правом Mojang Studios, данный Сайт не связан с ним официально.</span>
                 </p>
             </div>
-            <div class="row mt-1 mb-8 flex items-center">
+            <div class="row flex items-center mt-1 mb-8">
                 <p class="flex items-center p-2" href="#">
-                    <span class="text-sm">© 2023 - 2024 Light Diamond. Все права защищены.</span>
+                    <span class="text-[12px]">© 2023 - 2024 Light Diamond. Все права защищены.</span>
                 </p>
             </div>
         </div>
@@ -166,6 +166,7 @@ footer .row p:hover {
 }
 
 /* =============== [ Анимации Элементов ] =============== */
+
 @keyframes footer-anchor-icon-animation {
     0% {
         margin-top: -10px;

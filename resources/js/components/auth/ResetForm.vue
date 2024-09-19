@@ -90,7 +90,7 @@ function submitResetPassword() {
 
                 <Button
                     button-type="submit"
-                    class="mb-8"
+                    class="w-[85%] mb-8"
                     icon="icon-bestiary"
                     label="Подтвердить"
                     :loading="isProcessing"

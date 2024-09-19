@@ -74,7 +74,7 @@ function close() {
             flex justify-between
             w-full pl-2 pt-1"
         >
-            <div class="description flex flex-col">
+            <div class="description ld-shadow-text flex flex-col">
                 <h1 class="ld-title-font">{{ toast.title }}</h1>
                 <p>{{ toast.message }}</p>
             </div>
@@ -100,7 +100,7 @@ function close() {
 }
 
 .toast.error .indicator {
-    background-color: rgb(130, 20, 30);
+    background-color: rgb(200, 30, 50);
 }
 
 .toast.info .indicator {
@@ -143,7 +143,7 @@ function close() {
     font-size: 1.1rem;
 }
 .toast.error h1 {
-    color: rgb(200, 30, 60);
+    color: rgb(200, 30, 70);
 }
 .toast.info h1 {
     color: rgb(0, 200, 220);

@@ -27,25 +27,9 @@ const props = defineProps({
 </template>
 
 <style scoped>
-.header-dropdown-content .item-button {
-    font-size: 1.1rem;
-}
-
-.item-button {
-    min-height: 72px;
-}
-
 .left-header-sidebar .item-button .text,
 .right-header-sidebar .item-button .text {
     line-height: 1.2;
     max-width: 90%;
-}
-
-/* =============== [ Медиа-Запрос { ?px < 1024px } ] =============== */
-
-@media screen and (max-width: 1023px) {
-    .item-button {
-        min-height: 64px;
-    }
 }
 </style>

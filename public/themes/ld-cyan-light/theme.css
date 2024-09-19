@@ -3,8 +3,10 @@
         --primary-bg-color: #005565;
         --secondary-bg-color: #eaeaea;
         --primary-border: 2px solid rgba(0, 255, 255, .3);
+        --secondary-border: 2px solid rgba(255, 255, 255, 1);
+        --trinity-border: 2px solid rgba(0, 15, 15, .2);
         --primary-text-color: #eaeaea;
-        --secondary-text-color: #353535;
+        --secondary-text-color: #3a3a3a;
         --trinity-text-color: #005565;
         --hover-text-color: #00ffff;
         --surface-border: #4d848f;
@@ -76,12 +78,61 @@
         border-top: var(--primary-border);
     }
 
+    .ld-secondary-border-section,
+    .ld-secondary-border {
+        border: var(--secondary-border);
+    }
+
+    .ld-secondary-border-bottom {
+        border-bottom: var(--secondary-border);
+    }
+
+    .ld-secondary-border-left {
+        border-left: var(--secondary-border);
+    }
+
+    .ld-secondary-border-right {
+        border-right: var(--secondary-border);
+    }
+
+    .ld-secondary-border-top {
+        border-top: var(--secondary-border);
+    }
+
+    .ld-trinity-border-top {
+        border-top: var(--trinity-border);
+    }
+
     .ld-tinted-background {
         background: linear-gradient(rgba(0, 15, 15, .5), transparent);
     }
 
-    .ld-tinted-background.harder {
+    .ld-tinted-background.left {
+        background: linear-gradient(90deg, rgba(0, 15, 15, .5), transparent);
+    }
+
+    .ld-tinted-reversed-background {
+        background: linear-gradient(transparent, rgba(0, 15, 15, .5));
+    }
+
+    .ld-tinted-background.darker{
         background: linear-gradient(rgba(0, 15, 15, .8), transparent);
+    }
+
+    .ld-tinted-background.darker.left {
+        background: linear-gradient(90deg, rgba(0, 21, 21, .7), rgba(0, 21, 21, .3));
+    }
+
+    .ld-tinted-reversed-background.darker {
+        background: linear-gradient(transparent, rgba(0, 15, 15, .8));
+    }
+
+    .ld-primary-text {
+        color: var(--primary-text-color);
+    }
+
+    .ld-secondary-text {
+        color: var(--secondary-text-color);
     }
 
     .ld-default-link {
@@ -411,10 +462,6 @@
         list-style-type: square;
     }
 
-    .content a {
-        animation: content-link-color-animation 5s infinite;
-    }
-
     .content a,
     .content b,
     .content code,
@@ -604,6 +651,14 @@
         border-top: 2px solid rgba(0, 255, 255, .3);
     }
 
+    .post-comment a {
+        animation: comment-link-color-animation 5s infinite;
+    }
+
+    .post-comment-editor .editor-horizontal-menu {
+        border-top: var(--primary-border);
+    }
+
     .post-comment-editor * {
         text-shadow: none;
     }
@@ -613,32 +668,34 @@
         border: 2px solid rgba(255, 255, 255, .8);
     }
 
-    .post-comment-content code,
-    .post-comment-content pre {
+    .post-comment-highlighted .post-comment-inner {
+        animation: post-comment-highlighted 3s ease;
+    }
+    .post-comment-highlighted.post-comment-body {
+        background: linear-gradient(90deg, rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05));
+        animation: transfusion-animation 10s linear infinite;
+        background-size: 400% 100%;
+    }
+
+    .post-comment blockquote,
+    .post-comment .mention {
+        border-left: 4px solid rgba(0, 255, 255, .8);
+    }
+
+    .post-comment .mention {
+        border-bottom: none;
+        border-right: none;
+        border-top: none;
+    }
+
+    .post-comment code,
+    .post-comment pre {
         background-color: rgba(0, 15, 15, .2);
         color: rgba(255, 255, 255, .9);
     }
 
-    .post-comment-content pre {
+    .post-comment pre {
         border: 2px solid rgba(0, 255, 255, .2);
-    }
-
-    .post-comment-content blockquote {
-        border-left: 4px solid rgba(0, 255, 255, .8);
-    }
-
-    .post-content code,
-    .post-content pre {
-        background-color: #e0e0e0;
-    }
-
-    .post-content pre {
-        background-image: url('/images/elements/base-background-code.png');
-        border: 2px solid rgba(0, 15, 15, .1);
-    }
-
-    .post-comment-content ul {
-        list-style-type: square;
     }
 
     .post-comment-reply-button {
@@ -647,6 +704,24 @@
 
     .post-comment-reply-button:hover {
         color: var(--hover-text-color);
+    }
+
+    .post-comment ul {
+        list-style-type: square;
+    }
+
+    .post a {
+        animation: content-link-color-animation 5s infinite;
+    }
+
+    .post code,
+    .post pre {
+        background-color: #e0e0e0;
+    }
+
+    .post pre {
+        background-image: url('/images/elements/base-background-code.png');
+        border: 2px solid rgba(0, 15, 15, .1);
     }
 
     .post-interaction .post-moderator .select-button .label {
@@ -712,12 +787,16 @@
     .set-mark:hover .icon {
         filter: grayscale(60%);
     }
+    .set-mark.standby .counter,
+    .set-mark.standby .icon {
+        filter: grayscale(70%);
+    }
     .set-mark.active .counter,
     .set-mark.active .icon {
         filter: grayscale(0);
     }
 
-    .base-post-interaction .set-mark .counter {
+    .left-post-interaction .set-mark .counter {
         color: var(--trinity-text-color);
     }
 
@@ -915,10 +994,6 @@
         font-size: 1.1rem;
     }
 
-    .user-menu .profile-link {
-        min-height: 72px;
-    }
-
     .user-menu .profile-link:focus-visible,
     .user-menu .ld-pay-link:focus-visible {
         border: 2px solid #00ffff;
@@ -957,15 +1032,15 @@
     }
 
     .catalog .splash,
-    .content code,
-    .content .material-name h1,
-    .content .material-name,
     .left-header-sidebar .item-button,
-    .post-comment-content code,
-    .post-comment-content pre,
+    .post-comment code,
+    .post-comment pre,
+    .post code,
+    .post pre,
     .post-interaction .post-moderator.select .options .label,
     .post-interaction .post-moderator .select-button .label,
     .post-moderator.select .options .label,
+    .regular-font,
     .user-menu .profile-link .title,
     pre, pre.is-empty {
         font-family: Monocraft, sans-serif;
@@ -1047,6 +1122,10 @@
         background-image: url('/images/icons/diamond-code.png');
     }
 
+    .icon-comment-empty {
+        background-image: url('/images/icons/diamond-comment-empty.png');
+    }
+
     .icon-comment {
         background-image: url('/images/icons/diamond-comment.png');
     }
@@ -1083,6 +1162,10 @@
         background-image: url('/images/icons/diamond-down-arrow.png');
     }
 
+    .icon-download-empty {
+        background-image: url('/images/icons/diamond-download-empty.png');
+    }
+
     .icon-download {
         background-image: url('/images/icons/diamond-download.png');
     }
@@ -1097,6 +1180,10 @@
 
     .icon-equals {
         background-image: url('/images/icons/diamond-equals.png');
+    }
+
+    .icon-eye-empty {
+        background-image: url('/images/icons/diamond-eye-empty.png');
     }
 
     .icon-eye {
@@ -1141,6 +1228,10 @@
 
     .icon-left-arrow {
         background-image: url('/images/icons/diamond-left-arrow.png');
+    }
+
+    .icon-left-direction-arrow {
+        background-image: url('/images/icons/diamond-left-direction-arrow.png');
     }
 
     .icon-letter {
@@ -1225,6 +1316,10 @@
 
     .icon-right-arrow {
         background-image: url('/images/icons/diamond-right-arrow.png');
+    }
+
+    .icon-right-direction-arrow {
+        background-image: url('/images/icons/diamond-right-direction-arrow.png');
     }
 
     .icon-sapphire-dagger {
@@ -1345,6 +1440,15 @@
 
     /* =============== [ Анимации ] =============== */
 
+    @keyframes comment-link-color-animation
+    {
+        0% { color: rgba(0, 165, 185, 1); }
+        25% { color: rgba(0, 235, 190, 1); }
+        50% { color: rgba(0, 235, 235, 1); }
+        75% { color: rgba(0, 235, 190, 1); }
+        100% { color: rgba(0, 165, 185, 1); }
+    }
+
     @keyframes content-link-color-animation
     {
         0% { color: rgba(0, 85, 100, 1); }
@@ -1352,6 +1456,12 @@
         50% { color: rgba(0, 160, 160, 1); }
         75% { color: rgba(0, 160, 130, 1); }
         100% { color: rgba(0, 85, 100, 1); }
+    }
+
+    @keyframes post-comment-highlighted
+    {
+        from { background-color: rgba(0, 255, 255, .5); }
+        to { background-color: rgba(0, 255, 255, 0); }
     }
 
     /* =============== [ Медиа-Запрос { ?px < 1024px } ] =============== */

@@ -17,7 +17,6 @@
     a {
         border: 2px solid transparent;
         text-decoration: none;
-        line-height: 1.5;
     }
     button {
         border: 2px solid transparent;
@@ -33,7 +32,6 @@
         padding: 0 10px;
         border: none;
     }
-    p, span { line-height: 1.5; }
     .icon {
         background-size: contain;
         position: relative;
@@ -263,44 +261,20 @@
     }
 
     :root {
-        --header-height: 4.5rem;
+        --header-height: 64px;
         /* --header-margin: 1rem;
         --header-with-margin-height: calc(var(--header-height) + var(--header-margin)); */
     }
 
     .page-container {
+        max-width: 1280px;
         width: 100%;
-        margin-right: auto;
-        margin-left: auto;
-        padding: 0 16px;
-    }
-
-    .page-container.xl {
-        max-width: none;
-        padding: 0;
-    }
-
-    @media (min-width: 1024px) {
-        .page-container {
-            max-width: 100%;
-        }
-    }
-
-    @media (min-width: 1280px) {
-        .page-container {
-            max-width: 1280px;
-            padding: 0;
-        }
-        .page-container.xl {
-            max-width: 1280px;
-            padding: 0;
-        }
     }
 
     .ProseMirror > .is-empty:before {
-        color: #adb5bd;
         content: attr(data-placeholder);
         pointer-events: none;
+        color: #adb5bd;
         float: left;
         height: 0;
     }
@@ -316,36 +290,44 @@
         object-fit: cover;
     }
 
-    .post-content hr {
+    .post hr {
         margin: 2rem auto;
     }
 
-    .post-content, .post-comment-content {
-        a, b, blockquote, code, li, ol, p, s, strong, ul {
-            font-size: 14px;
-        }
+    .post, .post-comment {
+        * { font-size: 14px; }
 
-        img {
-            margin: 0 auto;
-        }
+        a { white-space: nowrap; }
 
         blockquote {
             padding-left: 1rem;
         }
 
-        ol {
-            list-style-type: decimal;
+        img {
+            max-height: 450px;
+            margin: 0 auto;
+        }
+
+        p {
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
 
         ol, ul {
             padding-left: 2rem;
         }
 
+        ol {
+            list-style-type: decimal;
+        }
+
+        ul {
+            list-style-type: square;
+        }
+
         li p {
             margin: 0;
         }
-
-        --surface-50: #27272a;
 
         code {
             padding: 0.2rem 0.5rem;
@@ -361,18 +343,34 @@
             }
         }
 
-        :first-child {
+        p, pre, img, blockquote {
+            margin-top: 1.2rem;
+        }
+
+        p:first-child {
             margin-top: 0;
+        }
+
+        li + li, ol, ul {
+            margin-top: 0.8rem;
         }
 
         /* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
 
         @media screen and (max-width: 450px) {
-            a, b, blockquote, code, li, ol, p, s, strong, textarea, ul {
-                font-size: 12px;
+            * { font-size: 12px; }
+
+            img {
+                max-height: 220px;
             }
         }
+    }
 
+    .post-content, .post-comment-content {
+        --surface-50: #27272a;
+        :first-child {
+            margin-top: 0;
+        }
     }
 
     .post-content {

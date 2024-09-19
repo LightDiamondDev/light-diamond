@@ -23,10 +23,8 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    class: {
-        type: String,
-        default: ''
-    }
+    itemClasses: String,
+    menuClasses: String
 })
 
 defineExpose({
@@ -66,9 +64,8 @@ function onItemClick(item: MenuItem) {
     <OverlayPanel
         ref="overlayPanel"
         :align-right="alignRight"
-        :class="props.class"
+        :class="menuClasses"
     >
-
         <slot name="header"/>
         <template v-for="item in visibleItems">
             <div v-if="item.separator" class="menu-separator self-center w-[90%]"/>
@@ -80,9 +77,8 @@ function onItemClick(item: MenuItem) {
                 :label="item.label"
                 :icon="item.icon"
                 :to="item.route"
-                class="pl-6 pr-4 lg:text-[1.1rem]"
+                :class="itemClasses"
             />
-
         </template>
     </OverlayPanel>
 </template>

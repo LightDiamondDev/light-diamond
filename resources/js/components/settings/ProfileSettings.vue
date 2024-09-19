@@ -89,7 +89,7 @@ function submitChangeAvatar() {
         </div>
         <form action="" class="flex flex-col h-full w-full">
 
-            <div class="section-title flex justify-center transfusion text-[1.5rem] mt-4">Аватар</div>
+            <div class="section-title flex justify-center transfusion text-[1.4rem] mt-4">Аватар</div>
 
             <fieldset class="flex flex-col m-4">
                 <div class="flex flex-col-reverse md:flex-row">
@@ -102,7 +102,7 @@ function submitChangeAvatar() {
                         />
                     </div>
                     <div class="description flex flex-col md:ml-2">
-                        <p class="text-[0.9rem] min-h-[96px] p-3">
+                        <p class="text-[0.8rem] min-h-[96px] p-3">
                             Аватар — прекрасное средство графического самовыражения, а также идентификации!
                             Загрузите своё собственное изображение, чтобы другие Пользователи могли проще
                             и быстрее Вас отличить!
@@ -111,19 +111,19 @@ function submitChangeAvatar() {
                 </div>
             </fieldset>
 
-            <div class="section-title flex justify-center transfusion text-[1.5rem]">Никнейм</div>
+            <div class="section-title flex justify-center transfusion text-[1.4rem]">Никнейм</div>
 
             <fieldset class="flex flex-col m-4">
                 <div class="flex flex-col">
                     <div class="flex flex-col">
                         <div class="description">
-                            <p class="text-[0.9rem] p-2">
+                            <p class="text-[0.8rem] p-2">
                                 Что может быть лучше оригинального и звучного слогана? — оригинальный и звучный
                                 Никнейм! Главное подбирайте с умом: обновлять Никнейм можно только 1 раз в месяц!
                             </p>
                         </div>
                         <div v-if="!isEditingUsername" class="mt-4">
-                            <span class="subtitle text-[1.1rem]">Никнейм</span>
+                            <span class="subtitle">Никнейм</span>
                             <div
                                 class="
                                     current-data-field
@@ -144,7 +144,7 @@ function submitChangeAvatar() {
                             </div>
                         </div>
                         <div v-else class="flex flex-col mt-4">
-                            <span class="subtitle text-[1.1rem]">Новый Никнейм</span>
+                            <span class="subtitle">Новый Никнейм</span>
                             <Input
                                 v-model="usernameData.username"
                                 id="settings-profile-nickname"
@@ -162,14 +162,14 @@ function submitChangeAvatar() {
                     <div v-if="isEditingUsername" class="flex gap-2">
                         <Button
                             :disabled="usernameData.username === authStore.username || !usernameData.username"
-                            class="confirm max-h-[64px] max-w-[200px]"
+                            class="confirm max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="submit"
                             label="Подтвердить"
                             :loading="isProcessingUsername"
                             @click.prevent="submitChangeUsername()"
                         />
                         <Button
-                            class="cancel max-h-[64px] max-w-[200px]"
+                            class="cancel max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="button"
                             label="Отменить"
                             :loading="isProcessingUsername"

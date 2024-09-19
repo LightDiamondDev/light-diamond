@@ -125,10 +125,11 @@ function submitRegister() {
         </fieldset>
 
         <Button
+            :loading="isProcessing"
             button-type="submit"
+            class="w-[85%]"
             icon="icon-bestiary"
             label="Зарегистрироваться"
-            :loading="isProcessing"
             @click.prevent="submitRegister"
         />
 

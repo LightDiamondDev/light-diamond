@@ -22,7 +22,7 @@ onMounted(() => {
             </div>
             <Button
                 @click="globalModalStore.isAuth = !globalModalStore.isAuth"
-                class="my-8"
+                class="w-[80%] my-8"
                 icon="item-diamond"
                 label="Войти"
                 type="button"

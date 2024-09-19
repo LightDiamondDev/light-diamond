@@ -12,7 +12,7 @@ import Button from '@/components/elements/Button.vue'
                 <div class="animation-angry-warden"></div>
             </div>
             <RouterLink class="flex justify-center mb-8" :to="{ name: 'home' }">
-                <Button button-type="submit" icon="item-ender-pearl" icon-size="32px" label="Телепортироваться домой"/>
+                <Button button-type="submit" class="w-[80%]" icon="item-ender-pearl" icon-size="32px" label="Телепортироваться домой"/>
             </RouterLink>
         </div>
     </div>

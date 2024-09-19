@@ -117,10 +117,11 @@ function submitLogin() {
             </div>
 
             <Button
+                :loading="isProcessing"
                 button-type="submit"
+                class="w-[85%]"
                 icon="icon-bestiary"
                 label="Войти"
-                :loading="isProcessing"
                 @click.prevent="submitLogin"
             />
 

@@ -7,7 +7,6 @@ import Catalog from '@/components/catalog/Catalog.vue'
 import CreatePost from '@/components/post/editor/CreatePost.vue'
 import PostCategory from '@/components/post/PostCategory.vue'
 import PostVersion from '@/components/post/editor/PostVersion.vue'
-import Post from '@/components/post/Post.vue'
 import ProfileSettings from '@/components/settings/ProfileSettings.vue'
 import ResetForm from '@/components/auth/ResetForm.vue'
 import SecuritySettings from '@/components/settings/SecuritySettings.vue'
@@ -17,6 +16,8 @@ import StudioRequests from '@/components/studio/StudioRequests.vue'
 import Studio from '@/components/studio/Studio.vue'
 import NotFound from '@/components/NotFound.vue'
 import VerifyEmail from '@/components/auth/VerifyEmail.vue'
+
+import Post from '@/components/post/Post.vue'
 
 declare module 'vue-router' {
     interface RouteMeta {
@@ -124,6 +125,9 @@ const routes: RouteRecordRaw[] = [
         name: 'post',
         props: true,
         component: Post,
+        meta: {
+            title: 'Каталог Java',
+        }
     },
     {
         path: '/category/:slug',

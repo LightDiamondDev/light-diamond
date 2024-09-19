@@ -76,7 +76,7 @@ updateCurrentSectionByRoute()
                         :to="{ name: 'settings.profile' }"
                     >
                         <ItemButton
-                            class="pl-8 pr-4 w-full text-[1.1rem]"
+                            class="h-[64px] w-full pl-8 pr-4"
                             @click="setProfileSection()"
                             icon="icon-diamond"
                             label="Профиль"
@@ -90,7 +90,7 @@ updateCurrentSectionByRoute()
                         :to="{name: 'settings.security'}"
                     >
                         <ItemButton
-                            class="pl-8 pr-4 w-full text-[1.1rem]"
+                            class="h-[64px] w-full pl-8 pr-4"
                             @click="setSecuritySection()"
                             label="Безопасность"
                             icon="icon-apple"

@@ -15,6 +15,10 @@ export function changeTitle(title: string) {
     document.title = title + ' - ' + import.meta.env.VITE_APP_NAME
 }
 
+export function countHTMLTag(html: string, tag: string) {
+    return (html.match(new RegExp(tag, 'g')) || []).length;
+}
+
 export function getHeaderHeight() {
     return remToPixels(getCssVariableValue('--header-height'))
 }

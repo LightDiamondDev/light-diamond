@@ -62,7 +62,7 @@ updateCurrentSectionByRoute()
                 :to="{ name: 'studio.materials' }"
             >
                 <ItemButton
-                    class="pl-8 pr-4 w-full text-[1.1rem]"
+                    class="h-[64px] w-full text-[1.1rem] pl-8 pr-4 "
                     @click="setRequestsSection()"
                     icon="icon-news"
                     label="Материалы"
@@ -76,7 +76,7 @@ updateCurrentSectionByRoute()
                 :to="{name: 'studio.requests'}"
             >
                 <ItemButton
-                    class="pl-8 pr-4 w-full text-[1.1rem]"
+                    class="h-[64px] w-full text-[1.1rem] pl-8 pr-4 "
                     @click="setMaterialsSection()"
                     icon="icon-letter"
                     label="Заявки на публикацию"

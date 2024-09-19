@@ -2,7 +2,7 @@
 import axios, {type AxiosError} from 'axios'
 import {computed, onUnmounted, type PropType, reactive, ref, watch} from 'vue'
 import {BubbleMenu, EditorContent, type Extensions, FloatingMenu, useEditor} from '@tiptap/vue-3'
-import {getErrorMessageByCode} from '@/helpers'
+import {getErrorMessageByCode, countHTMLTag} from '@/helpers'
 import {EditorState} from 'prosemirror-state'
 import {useToastStore} from '@/stores/toast'
 
@@ -26,6 +26,10 @@ const props = defineProps({
     extensions: {
         type: Object as PropType<Extensions>,
         required: true
+    },
+    isCommentEditor: {
+        type: Boolean,
+        default: false
     },
     plainText: {
         type: Boolean,
@@ -55,6 +59,8 @@ const currentLink = reactive({
     href: ''
 })
 
+const htmlContent = ref('')
+
 const editor = useEditor({
     editorProps: {
         attributes: {
@@ -69,7 +75,8 @@ const editor = useEditor({
     onUpdate: ({editor}) => {
         currentEditorContent = props.plainText ? editor.getText() : editor.getHTML()
         contentModel.value = currentEditorContent
-    },
+        htmlContent.value = editor.getHTML()
+    }
 })
 
 const nodes: { [key: string]: EditorNodeInfo } = {
@@ -348,6 +355,17 @@ function openImageDialog(callback: ((file: File) => void)) {
 }
 
 function uploadImage(image: File, callback: ((url: string) => void)) {
+
+    if (image.size > 5 * 1024 * 1024) {
+        toastStore.error(`Файл слишком большой. Максимальный размер - 5 Мб.`, 'Размер')
+        return
+    }
+
+    if (props.isCommentEditor && countHTMLTag(htmlContent.value, 'img') > 2) {
+        toastStore.error(`Вы не можете отправлять в комментариях более 3-х изображений!`, 'Превышен лимит!')
+        return
+    }
+
     const formData = new FormData()
     formData.append('image', image)
 
@@ -430,8 +448,7 @@ function unsetLink() {
 
         <EditorHorizontalMenu
             v-if="editor && editable && !withoutMenus"
-            class="block lg:hidden sticky bottom-0 border-t
-                overflow-x-auto whitespace-nowrap"
+            class="block lg:hidden sticky bottom-0 overflow-x-auto whitespace-nowrap"
             :items="menuItems"
         />
     </div>

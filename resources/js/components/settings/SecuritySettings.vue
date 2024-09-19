@@ -141,18 +141,18 @@ function submitChangePassword() {
         </div>
         <form action="" class="flex flex-col h-full w-full">
 
-            <div class="section-title flex justify-center transfusion text-[1.5rem] mt-4">Email</div>
+            <div class="section-title flex justify-center transfusion text-[1.4rem] mt-4">Email</div>
 
             <fieldset class="flex flex-col m-4">
                 <div class="flex flex-col">
                     <div class="flex flex-col">
                         <div class="description">
-                            <p class="text-[0.9rem] p-2">
+                            <p class="text-[0.8rem] p-2">
                                 Адрес электронной почты, к которому привязана Ваша учётная запись.
                             </p>
                         </div>
                         <div v-if="!isEditingEmail" class="mt-4">
-                            <span class="subtitle text-[1.1rem]">Email</span>
+                            <span class="subtitle">Email</span>
                             <div
                                 class="
                                     current-data-field
@@ -184,7 +184,7 @@ function submitChangePassword() {
                             </div>
                         </div>
                         <div v-else class="flex flex-col mt-4">
-                            <span class="subtitle text-[1.1rem]">Новый Email</span>
+                            <span class="subtitle">Новый Email</span>
                             <Input
                                 v-model="emailData.email"
                                 id="settings-security-email"
@@ -197,7 +197,7 @@ function submitChangePassword() {
                             >
                                 {{ emailErrors['email']?.[0] || '&nbsp;' }}
                             </span>
-                            <span class="subtitle text-[1.1rem]">Новый повторный Email</span>
+                            <span class="subtitle">Новый повторный Email</span>
                             <Input
                                 v-model="emailData.email_confirmation"
                                 id="settings-security-email-confirmation"
@@ -215,14 +215,14 @@ function submitChangePassword() {
                     <div v-if="isEditingEmail" class="flex gap-2">
                         <Button
                             :disabled="emailData.email === authStore.email || emailData.email !== emailData.email_confirmation || !emailData.email"
-                            class="confirm max-h-[64px] max-w-[200px]"
+                            class="confirm max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="submit"
                             :loading="isProcessingEmail"
                             label="Подтвердить"
                             @click.prevent="submitChangeEmail()"
                         />
                         <Button
-                            class="cancel max-h-[64px] max-w-[200px]"
+                            class="cancel max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="button"
                             label="Отменить"
                             :loading="isProcessingEmail"
@@ -235,7 +235,7 @@ function submitChangePassword() {
                             <span class="icon icon-share flex h-[48px] w-[48px]"></span>
                         </div>
                         <div class="flex flex-col">
-                            <p class="text-[0.9rem] pr-3 pt-3">
+                            <p class="text-[0.8rem] pr-3 pt-3">
                                 Подтвердите свой адрес электронной почты, перейдя по ссылке из письма.
                             </p>
                             <ShineButton
@@ -251,19 +251,19 @@ function submitChangePassword() {
                 </div>
             </fieldset>
 
-            <div class="section-title flex justify-center transfusion text-[1.5rem]">Пароль</div>
+            <div class="section-title flex justify-center transfusion text-[1.4rem]">Пароль</div>
 
             <fieldset class="flex flex-col m-4">
                 <div class="flex flex-col">
                     <div class="flex flex-col">
                         <div class="description">
-                            <p class="text-[0.9rem] p-2">
+                            <p class="text-[0.8rem] p-2">
                                 Пароль должен быть надёжным, содержать заглавные и строчные буквы,
                                 а также цифры и спец. символы! Хороший пароль — ключ к неуязвимости!
                             </p>
                         </div>
                         <div v-if="!isEditingPassword" class="mt-4">
-                            <span class="subtitle text-[1.1rem]">Пароль</span>
+                            <span class="subtitle">Пароль</span>
                             <div
                                 class="
                                     current-data-field
@@ -284,7 +284,7 @@ function submitChangePassword() {
                             </div>
                         </div>
                         <div v-else class="flex flex-col mt-4">
-                            <span class="subtitle text-[1.1rem]">Новый пароль</span>
+                            <span class="subtitle">Новый пароль</span>
                             <Input
                                 v-model="passwordData.password"
                                 id="settings-security-password"
@@ -297,7 +297,7 @@ function submitChangePassword() {
                             >
                                 {{ passwordErrors['password']?.[0] || '&nbsp;' }}
                             </span>
-                            <span class="subtitle text-[1.1rem]">Новый повторный пароль</span>
+                            <span class="subtitle">Новый повторный пароль</span>
                             <Input
                                 v-model="passwordData.password_confirmation"
                                 id="settings-security-password-confirmation"
@@ -315,14 +315,14 @@ function submitChangePassword() {
                     <div v-if="isEditingPassword" class="flex gap-2">
                         <Button
                             :disabled="passwordData.password !== passwordData.password_confirmation || !passwordData.password"
-                            class="confirm max-h-[64px] max-w-[200px]"
+                            class="confirm max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="submit"
                             label="Подтвердить"
                             :loading="isProcessingPassword"
                             @click.prevent="submitChangePassword()"
                         />
                         <Button
-                            class="cancel max-h-[64px] max-w-[200px]"
+                            class="cancel max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="button"
                             label="Отменить"
                             :loading="isProcessingPassword"

@@ -83,7 +83,13 @@ function saveAsDraft() {
 </script>
 
 <template>
-    <PostEditor v-model="postVersion" :author="authStore.user!" :errors="errors">
+    <PostEditor
+        v-model="postVersion"
+        :author="authStore.user!"
+        :errors="errors"
+        :is-upper-sidebar="false"
+        upper-sidebar-classes="hidden"
+    >
 
         <template v-slot:banner>
             <Banner :is-title-display="false"/>
@@ -103,7 +109,7 @@ function saveAsDraft() {
         </template>
 
         <template v-slot:sidebar>
-            <div class="flex flex-col gap-2 p-2">
+            <div class="create-post-upper-interaction flex flex-col gap-2 p-2">
                 <ShineButton
                     class="ld-shine-button w-full confirm"
                     @click="submitOverlayPanel?.toggle"
