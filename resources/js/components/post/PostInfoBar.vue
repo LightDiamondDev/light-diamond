@@ -22,7 +22,6 @@ const authStore = useAuthStore()
         <RouterLink class="author-wrap flex items-center w-fit border-0 sm:gap-0 gap-2 order-1" :to="{name: 'home'}">
             <span class="flex justify-center items-center mr-2">
                 <UserAvatar
-                    v-if="authStore.isAuthenticated"
                     border-class-list="md:h-10 md:w-10 h-8 w-8"
                     icon-class-list="md:h-7 md:w-7 h-6 w-6"
                     :user="post.version!.author!"
@@ -89,6 +88,9 @@ const authStore = useAuthStore()
 @media screen and (max-width: 510px) {
     .date-action.author {
         width: 100%;
+    }
+    .date-publication .tooltip::before {
+        left: -.5rem;
     }
 }
 </style>

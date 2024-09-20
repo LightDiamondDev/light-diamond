@@ -282,7 +282,6 @@ function verifyCommentAnswer(content: string) {
                 <div class="post-comment-inner flex w-full gap-2 xs:p-4 p-2">
                     <div class="flex relative">
                         <UserAvatar
-                            v-if="authStore.isAuthenticated"
                             border-class-list="md:h-10 md:min-w-10 h-8 min-w-8"
                             icon-class-list="md:h-7 md:min-w-7 h-6 min-w-6"
                             :user="comment.user!"
@@ -303,9 +302,9 @@ function verifyCommentAnswer(content: string) {
                             class="comment-header flex justify-between items-center transition-all duration-300 gap-2"
                         >
                             <div class="flex md:items-center items-end gap-2">
-                                <p class="comment-username flex flex-wrap flex-row gap-3">
+                                <p class="comment-username flex flex-wrap flex-row overflow-visible gap-3">
                                     <span class="flex gap-2">
-                                        <span class="nickname text-[var(--primary-color)]">{{ comment.user!.username }}</span>
+                                        <span class="nickname text-[var(--primary-color)] lg:text-base">{{ comment.user!.username }}</span>
                                         <span
                                             v-if="comment.user?.username === comment.post?.version?.author?.username"
                                             class="ld-lightgray-text flex items-center text-[12px] pl-1"
@@ -314,7 +313,7 @@ function verifyCommentAnswer(content: string) {
                                         </span>
                                     </span>
                                     <span
-                                        v-tooltip.left="`${getRelativeDate(comment.created_at)} (${getFullPresentableDate(comment.created_at)})`"
+                                        v-tooltip.top="`${getFullPresentableDate(comment.created_at)}`"
                                         class="flex items-center ld-lightgray-text text-[12px]"
                                     >
                                         {{ getRelativeDate(comment.created_at) }}
@@ -322,7 +321,7 @@ function verifyCommentAnswer(content: string) {
                                 </p>
                                 <p
                                     v-if="comment.created_at !== comment.updated_at"
-                                    v-tooltip.top="`Изменено ${getRelativeDate(comment.updated_at)} (${getFullPresentableDate(comment.updated_at)})`"
+                                    v-tooltip.top="`Изменено ${getFullPresentableDate(comment.updated_at)}`"
                                     class="text-xs ld-lightgray-text cursor-pointer mt-0"
                                 >
                                     [ред.]
@@ -347,16 +346,18 @@ function verifyCommentAnswer(content: string) {
                             </span>
                             <span
                                 v-html="comment.content"
-                                class="post-comment-html post-comment"
-                                :class="{'full': isExpanded}"
+                                class="post-comment-html post-comment overflow-hidden duration-500"
+                                :class="{'shrink': !isExpanded}"
                                 ref="commentHTMLRef"
                             />
                             <button
-                                v-if="commentHTMLRef && commentHTMLRef.offsetHeight > 280"
-                                class="ld-tinted-background darker left flex items-center min-h-[48px] px-4"
-                                @click="isExpanded = !isExpanded"
+                                v-if="commentHTMLRef && commentHTMLRef.scrollHeight > 300"
+                                class="comment-read-more-button flex items-center
+                                opacity-80 min-h-[32px] w-full px-4 duration-200"
+                                :class="{'ld-secondary-border-top': !isExpanded}"
+                                @click="isExpanded = !isExpanded" type="button"
                             >
-                                Читать далее
+                                {{ isExpanded ? 'Скрыть' : 'Читать далее...' }}
                             </button>
                         </div>
                         <div class="flex gap-3 items-center -ml-2">
@@ -419,9 +420,6 @@ function verifyCommentAnswer(content: string) {
 .comments .icon-border img {
     height: 28px;
 }
-.comment-username .nickname {
-    font-size: 16px;
-}
 .comment-answer {
     height: 32px;
 }
@@ -437,12 +435,18 @@ function verifyCommentAnswer(content: string) {
 .comment-answer p {
     margin-top: 0;
 }
+.post-comment-html {
+    transition: max-height .5s ease-in;
+    max-height: 3000px;
+}
+.post-comment-html.shrink {
+    max-height: 192px;
+}
 </style>
 
 <style scoped>
 .tooltip::before {
     min-width: 200px;
-    left: -4rem;
 }
 
 /* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
@@ -451,9 +455,6 @@ function verifyCommentAnswer(content: string) {
     .comment-username {
         flex-direction: column;
         gap: 2px;
-    }
-    .comment-username .nickname {
-        font-size: 14px;
     }
     .post-comment-html {
         margin-top: .5rem;

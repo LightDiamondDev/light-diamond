@@ -357,6 +357,10 @@
         background-color: var(--secondary-bg-color);
     }
 
+    .comment-read-more-button:hover {
+        color: var(--primary-color);
+    }
+
     .content-studio .material-line .cover-wrap {
         border: 2px solid rgba(255, 255, 255, .8);
     }
