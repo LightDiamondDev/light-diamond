@@ -1154,6 +1154,10 @@
         background-image: url('/images/icons/diamond.png');
     }
 
+    .icon-display-detail {
+        background-image: url('/images/icons/diamond-display-detail.png');
+    }
+
     .icon-division {
         background-image: url('/images/icons/diamond-division.png');
     }

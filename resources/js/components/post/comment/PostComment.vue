@@ -49,7 +49,7 @@ const route = useRoute()
 const editData = ref<EditedComment | null>(null)
 const replyData = ref<EditedComment | null>(null)
 const comment = reactive(props.comment!)
-const commentHTMLRef = ref<HTMLHtmlElement>()
+const commentHTMLRef = ref<HTMLElement>()
 const actionsMenu = ref()
 
 const isEditable = computed(() => authStore.id === comment.user_id && !isEditTimeExpired.value)
@@ -254,6 +254,12 @@ function verifyCommentAnswer(content: string) {
     .replace(/<ol>(.+)<\/ol>/g, '<span class="icon-ordered-list icon flex"></span>')
     .replace(/<br>/g, ' ')
 }
+
+const currentCommentHTMLHeight = computed(() =>
+    commentHTMLRef.value && commentHTMLRef.value.scrollHeight > 300 ? (isExpanded.value && commentHTMLRef.value ? commentHTMLRef.value.scrollHeight + 'px' : '260px') : 'fit-content'
+
+)
+
 </script>
 
 <template>
@@ -346,8 +352,8 @@ function verifyCommentAnswer(content: string) {
                             </span>
                             <span
                                 v-html="comment.content"
-                                class="post-comment-html post-comment overflow-hidden duration-500"
-                                :class="{'shrink': !isExpanded}"
+                                class="post-comment-html post-comment overflow-hidden"
+                                :style="{'height': currentCommentHTMLHeight}"
                                 ref="commentHTMLRef"
                             />
                             <button
@@ -436,11 +442,7 @@ function verifyCommentAnswer(content: string) {
     margin-top: 0;
 }
 .post-comment-html {
-    transition: max-height .5s ease-in;
-    max-height: 3000px;
-}
-.post-comment-html.shrink {
-    max-height: 192px;
+    transition: height .5s ease;
 }
 </style>
 
