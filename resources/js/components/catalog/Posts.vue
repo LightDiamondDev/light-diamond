@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import PostCard from '@/components/catalog/PostCard.vue'
+import PostCard from '@/components/post/PostCard.vue'
 </script>
 
 <template>

@@ -2,6 +2,8 @@
     :root {
         --primary-bg-color: #005565;
         --secondary-bg-color: #eaeaea;
+        --bg-image: url('/images/elements/base-background.png');
+        --tinted-bg-color: linear-gradient(rgba(0, 15, 15, .5), transparent);
         --primary-border: 2px solid rgba(0, 255, 255, .3);
         --secondary-border: 2px solid rgba(255, 255, 255, 1);
         --trinity-border: 2px solid rgba(0, 15, 15, .2);
@@ -133,6 +135,10 @@
 
     .ld-secondary-text {
         color: var(--secondary-text-color);
+    }
+
+    .ld-trinity-text {
+        color: var(--primary-color);
     }
 
     .ld-default-link {
