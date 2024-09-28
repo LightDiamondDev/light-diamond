@@ -28,22 +28,23 @@ const props = defineProps({
             <span>Отправлена заявка</span>
         </span>
         <span v-else>
-            <span v-if="action.type === PostVersionActionType.ACCEPT">
-                <span class="icon-tick icon flex text-confirm"/>
+            <span v-if="action.type === PostVersionActionType.ACCEPT" class="flex items-center md:text-[12px] text-[10px]">
+                <span class="icon-round-tick icon flex text-confirm mr-1"/>
                 <span>Принято</span>
             </span>
-            <span v-else-if="action.type === PostVersionActionType.REJECT" class="flex items-center">
-                <span class="icon-red-cross icon flex min-w-[2rem] mr-1"/>
+            <span v-else-if="action.type === PostVersionActionType.REJECT" class="line-height-small flex items-center md:text-[12px] text-[10px]">
+                <span class="icon-round-cross icon flex min-w-[2rem] mr-1"/>
                 <span class="flex flex-col w-full">
                     <span>Отклонено: </span>
-                    <span class="text-muted truncate ld-lightgray-text max-w-[90%] xl:max-w-[160px]">
+                    <!-- xl:max-w-[160px] -->
+                    <span class="text-muted truncate ld-lightgray-text max-w-[90%]">
                         {{ (action.details as PostVersionActionReject).reason }}
                     </span>
                 </span>
             </span>
             <span v-else-if="action.type === PostVersionActionType.REQUEST_CHANGES" class="flex items-center">
-                <span class="icon-white-rotate-left icon flex min-w-[2rem] mr-1"/>
-                <span class="flex flex-col w-full">
+                <span class="icon-round-eye icon flex min-w-[2rem] mr-1"/>
+                <span class="flex flex-col w-full md:text-[12px] text-[10px]">
                     <span>Возвращено на доработку: </span>
                     <span class="text-muted truncate ld-lightgray-text max-w-[90%] xl:max-w-[160px]">
                         {{ (action.details as PostVersionActionRequestChanges).message }}
@@ -160,6 +161,9 @@ const props = defineProps({
 .tooltip::before {
     height: 2rem;
     left: -2rem;
+}
+.line-height-small {
+    line-height: 1.2;
 }
 
 /* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */

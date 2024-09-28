@@ -4,13 +4,13 @@ import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
 import {getErrorMessageByCode} from '@/helpers'
 import {computed, reactive, ref} from 'vue'
+import type {RouteLocationRaw} from 'vue-router'
 
 import {type Post, type PostVersion, PostVersionStatus} from '@/types'
 import PostVersionCard from '@/components/post/PostVersionCard.vue'
 
 import Paginator from '@/components/elements/Paginator.vue'
 import TabMenu, {type TabMenuChangeEvent} from '@/components/elements/TabMenu.vue'
-import type {RouteLocationRaw} from 'vue-router'
 
 export interface MenuItem {
     label?: string
@@ -96,9 +96,10 @@ loadPostVersions()
 
 <template>
     <div class="section flex flex-col h-full">
-        <div class="flex ld-primary-border-bottom">
+        <div class="ld-primary-border-bottom flex md:justify-start justify-center">
             <TabMenu
-                item-classes="h-[48px] md:text-[1rem] text-[14px] px-4"
+                item-classes="justify-center h-[48px] min-w-[64px] md:text-[1rem] text-[14px] gap-1 lg:px-4 px-1"
+                item-label-classes="xs:flex hidden"
                 :items="tabMenuItems"
                 @tab-change="onTabChange"
             />
@@ -106,15 +107,15 @@ loadPostVersions()
 
         <div v-if="isLoading" class="flex flex-col rounded-md border">
             <div v-for="i in 3" class="flex xs:grid grid-cols-[6rem,1fr] gap-2 p-3 [&:not(:first-child)]:border-t">
-                <div class="skeleton h-[4.5rem] hidden xs:block"/>
+                <div class="skeleton transfusion bordered h-[4.5rem] hidden xs:block"/>
                 <div class="flex flex-col w-full">
                     <div class="flex mt-1 gap-3 items-center">
-                        <div class="skeleton h-[0.6rem] w-[4rem]"/>
-                        <div class="skeleton h-[0.6rem] w-[6rem]"/>
+                        <div class="skeleton transfusion bordered h-[0.6rem] w-[4rem]"/>
+                        <div class="skeleton transfusion bordered h-[0.6rem] w-[6rem]"/>
                     </div>
                     <div class="flex flex-col mt-4 gap-2">
-                        <div class="skeleton h-[0.9rem]"/>
-                        <div class="skeleton h-[0.9rem] w-[70%]"/>
+                        <div class="skeleton transfusion bordered h-[0.9rem]"/>
+                        <div class="skeleton transfusion bordered h-[0.9rem] w-[70%]"/>
                     </div>
                 </div>
             </div>

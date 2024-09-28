@@ -22,6 +22,7 @@ const props = defineProps({
         type: Object as PropType<TabMenuItem[]>,
         required: true
     },
+    itemLabelClasses: String,
     itemClasses: String,
     menuClasses: String
 })
@@ -32,19 +33,29 @@ const emit = defineEmits<{
 
 const visibleItems = computed(() => props.items!.filter((item) => item.visible || item.visible === undefined))
 
+const currentTabIndex = ref(0)
+
+function onTabClick(index) {
+    emit('tab-change', { tabIndex: index })
+    currentTabIndex.value = index
+}
+
 </script>
 
 <template>
-    <template v-for="item in visibleItems">
+    <template v-for="(item, index) in visibleItems">
         <div v-if="item.separator" class="menu-separator self-center w-[90%]"/>
         <ItemButton
             v-else
             :as="item.route ? 'RouterLink' : 'button'"
-            @click="emit('tab-change', { tabIndex: visibleItems.indexOf(item) })"
+            @click="onTabClick(index)"
+            :label-classes="itemLabelClasses"
+            class="tab-menu-button"
             :label="item.label"
             :icon="item.icon"
             :to="item.route"
-            :class="itemClasses"
+            :classes="itemClasses"
+            :class="{'active': currentTabIndex === index }"
         />
     </template>
 </template>

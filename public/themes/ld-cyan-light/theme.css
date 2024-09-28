@@ -161,6 +161,14 @@
         color: rgba(255, 160, 0, 1);
     }
 
+    .ld-admin-color {
+        color: #ba5aff;
+    }
+
+    .ld-moder-color {
+        color: #15da65;
+    }
+
     .header-dropdown-content { margin-top: -2px; }
 
     .header-blur-on {
@@ -169,6 +177,15 @@
 
     .header-blur-off {
         pointer-events: none;
+    }
+
+    .ld-checkbox {
+        background-image: url('/images/icons/diamond-border.png');
+    }
+
+    .ld-checkbox:checked:after {
+        background-image: url('/images/icons/diamond-tick.png');
+        background-size: cover;
     }
 
     .left-header-sidebar .closing-header-sidebar-button.closing-button {
@@ -886,6 +903,11 @@
         border: 2px solid rgba(200, 180, 50, .8);
     }
 
+    .tab-menu-button.active {
+        border-bottom: 2px solid var(--hover-text-color);
+        color: var(--hover-text-color);
+    }
+
     .text-error {
         color: rgba(255, 30, 50, 1);
     }
@@ -1336,6 +1358,18 @@
         background-image: url('/images/icons/diamond-right-direction-arrow.png');
     }
 
+    .icon-round-cross {
+        background-image: url('/images/icons/ruby-round-cross.png');
+    }
+
+    .icon-round-eye {
+        background-image: url('/images/icons/topaz-round-eye.png');
+    }
+
+    .icon-round-tick {
+        background-image: url('/images/icons/emerald-round-tick.png');
+    }
+
     .icon-sapphire-dagger {
         background-image: url('/images/icons/sapphire-dagger.png');
     }
@@ -1422,6 +1456,10 @@
 
     .icon-top-arrow {
         background-image: url('/images/icons/diamond-top-arrow.png');
+    }
+
+    .icon-trash {
+        background-image: url('/images/icons/diamond-trash.png');
     }
 
     .icon-underlined {

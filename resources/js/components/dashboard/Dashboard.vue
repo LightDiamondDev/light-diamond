@@ -18,7 +18,7 @@ const isMobileMenu = ref(true)
 
 const menuItems = ref<DashboardMenuItem[]>([
     {
-        label: 'Публикации',
+        label: 'Заявки на публикацию',
         icon: 'icon-news',
         route: 'dashboard.post-submissions',
     },
@@ -76,7 +76,7 @@ function setMobileMenu() {
                 <div class="ld-shadow-text flex items-center text-[1.2rem] md:text-[2rem] gap-2">
                     <p :class="{ 'sm-hidden': !isMobileMenu }" class="ld-trinity-text">Панель Управления</p>
                     <p class="opacity-80">></p>
-                    <p :class="{ 'sm-hidden': isMobileMenu }">{{ activeMenuItem.label }}</p>
+                    <p class="text-center" :class="{ 'sm-hidden': isMobileMenu }">{{ activeMenuItem.label }}</p>
                 </div>
                 <div class="h-[32px] w-[32px] arrow-tap"></div>
             </div>
@@ -94,7 +94,7 @@ function setMobileMenu() {
                         @click="onSectionSelect(item)"
                     >
                         <ItemButton
-                            class="h-[64px] md:text-[1rem] text-[14px] w-full pl-6 pr-8"
+                            class="h-[64px] md:text-[1rem] text-[14px] w-full gap-2 pl-6 pr-8"
                             plain :text="item !== activeMenuItem"
                             :label="item.label"
                             :icon="item.icon"

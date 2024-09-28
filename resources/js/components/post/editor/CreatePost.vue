@@ -159,9 +159,6 @@ function saveAsDraft() {
 .ld-shine-button .text {
     height: 2rem;
 }
-.ld-shine-button .preset {
-    padding: .5rem;
-}
 </style>
 
 <style scoped>

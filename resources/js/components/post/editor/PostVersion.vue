@@ -722,15 +722,8 @@ loadPostVersion()
 .upper-interaction .upper-unavailable {
     display: none;
 }
-.ld-shine-button .press,
-.ld-shine-button .preset {
-    width: 100%;
-}
 .ld-shine-button .text {
     height: 2rem;
-}
-.ld-shine-button .preset {
-    padding: .5rem;
 }
 .loading-icon {
     min-width: 28px;

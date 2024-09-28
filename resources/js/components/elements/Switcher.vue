@@ -16,13 +16,8 @@ function onClick() {
 </script>
 
 <template>
-    <button
-        class="settings-switcher icon-switcher-way icon flex justify-center items-center"
-        @click="onClick"
-    >
-        <span :class="{ 'on': active }"
-              class="handle icon-switcher-handle icon flex justify-center items-center"
-        />
+    <button class="settings-switcher icon-switcher-way icon flex justify-center items-center" @click="onClick">
+        <span class="handle icon-switcher-handle icon flex justify-center items-center" :class="{ 'on': active }"/>
     </button>
 </template>
 

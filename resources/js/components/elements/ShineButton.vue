@@ -28,13 +28,13 @@ const props = defineProps({
 
 <template>
     <button
-        class="ld-shine-button flex items-center option w-full"
+        class="ld-shine-button flex items-center option"
         :class="{ 'disabled': disabled }"
         :disabled="disabled"
         :type="buttonType"
     >
         <span class="press ld-shadow-text flex">
-            <span class="preset flex items-center gap-2">
+            <span class="preset flex items-center" :class="{'gap-2': label}">
                 <ProcessingMovingItems v-if="loading" class="loading-icon" :item="loadingItem" height="28px" width="28px"/>
                 <span
                     v-if="!loading && icon !== ''"

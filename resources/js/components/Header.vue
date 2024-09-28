@@ -247,7 +247,7 @@ function logout() {
     </Dialog>
 
     <Menu
-        item-classes="h-[64px] md:text-[1rem] text-[14px] pl-6 pr-4"
+        item-classes="h-[64px] md:text-[1rem] text-[14px] gap-3 pl-6 pr-4"
         :items="userMenuItems"
         align-right
         class="user-menu mt-[-4px]
@@ -323,7 +323,7 @@ function logout() {
                         :label="childSection.label"
                         :icon="childSection.icon"
                         :to="childSection.route"
-                        class="min-h-[64px] text-[14px] pl-12 pr-4"
+                        class="min-h-[64px] text-[14px] gap-3 pl-12 pr-4"
                     />
                     <ItemButton
                         v-else
@@ -331,7 +331,7 @@ function logout() {
                         :label="childSection.label"
                         :icon="childSection.icon"
                         :href="childSection.url"
-                        class="min-h-[64px] text-[14px] pl-12 pr-4"
+                        class="min-h-[64px] text-[14px] gap-3 pl-12 pr-4"
                     />
                 </template>
 
@@ -387,7 +387,7 @@ function logout() {
                         >
                             <template v-for="childSection of section.children">
                                 <ItemButton
-                                    class="h-[64px] md:text-[1rem] text-[14px] pl-8 pr-4"
+                                    class="h-[64px] md:text-[1rem] text-[14px] gap-3 pl-8 pr-4"
                                     v-if="childSection.route"
                                     as="RouterLink"
                                     :label="childSection.label"
@@ -397,7 +397,7 @@ function logout() {
                                 />
                                 <ItemButton
                                     v-else
-                                    class="h-[64px] md:text-[1rem] text-[14px] pl-8 pr-4"
+                                    class="h-[64px] md:text-[1rem] text-[14px] gap-3 pl-8 pr-4"
                                     :as="childSection.url ? 'a' : 'button'"
                                     :label="childSection.label"
                                     :icon="childSection.icon"
