@@ -2,15 +2,18 @@
 import axios, {type AxiosError} from 'axios'
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
-import {getErrorMessageByCode} from '@/helpers'
+import {getErrorMessageByCode, getFullPresentableDate, getRelativeDate} from '@/helpers'
 import {computed, reactive, ref} from 'vue'
-import type {RouteLocationRaw} from 'vue-router'
+import {type RouteLocationRaw, RouterLink} from 'vue-router'
 
-import {type Post, type PostVersion, PostVersionStatus} from '@/types'
+import {type Post, type PostVersion, PostVersionActionType as ActionType, PostVersionStatus} from '@/types'
 import PostVersionCard from '@/components/post/PostVersionCard.vue'
 
 import Paginator from '@/components/elements/Paginator.vue'
 import TabMenu, {type TabMenuChangeEvent} from '@/components/elements/TabMenu.vue'
+import ProcessingDiggingBlocks from '@/components/elements/ProcessingDiggingBlocks.vue'
+import UserAvatar from '@/components/user/UserAvatar.vue'
+import PostVersionAction from '@/components/post/PostVersionAction.vue'
 
 export interface MenuItem {
     label?: string
@@ -95,7 +98,7 @@ loadPostVersions()
 </script>
 
 <template>
-    <div class="section flex flex-col h-full">
+    <div class="section ld-shadow-text flex flex-col h-full">
         <div class="ld-primary-border-bottom flex md:justify-start justify-center">
             <TabMenu
                 item-classes="justify-center h-[48px] min-w-[64px] md:text-[1rem] text-[14px] gap-1 lg:px-4 px-1"
@@ -105,17 +108,24 @@ loadPostVersions()
             />
         </div>
 
-        <div v-if="isLoading" class="flex flex-col rounded-md border">
-            <div v-for="i in 3" class="flex xs:grid grid-cols-[6rem,1fr] gap-2 p-3 [&:not(:first-child)]:border-t">
-                <div class="skeleton transfusion bordered h-[4.5rem] hidden xs:block"/>
-                <div class="flex flex-col w-full">
-                    <div class="flex mt-1 gap-3 items-center">
-                        <div class="skeleton transfusion bordered h-[0.6rem] w-[4rem]"/>
-                        <div class="skeleton transfusion bordered h-[0.6rem] w-[6rem]"/>
-                    </div>
-                    <div class="flex flex-col mt-4 gap-2">
-                        <div class="skeleton transfusion bordered h-[0.9rem]"/>
-                        <div class="skeleton transfusion bordered h-[0.9rem] w-[70%]"/>
+        <div v-if="isLoading" class="flex flex-col">
+            <div v-for="i in 5" class="flex w-full gap-2 p-2">
+                <div class="skeleton transfusion flex
+                        sm:h-[112px] sm:max-w-[196px] sm:min-w-[196px]
+                        xs:h-[76px] xs:max-w-[132px] xs:min-w-[132px]
+                        h-[58px] max-w-[100px] min-w-[100px]
+                        overflow-hidden"
+                />
+                <div class="flex flex-col w-full gap-2">
+                    <div class="skeleton transfusion flex h-4 max-w-[360px] w-full"/>
+                    <div class="skeleton transfusion flex h-3 max-w-[80%] w-full"/>
+                    <div class="skeleton transfusion flex h-3 max-w-[55%] w-full"/>
+                    <div class="flex flex-wrap items-center md:text-[12px] text-[10px] gap-2 mt-0.5">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div class="skeleton transfusion flex h-7 w-7"/>
+                            <p class="skeleton transfusion flex h-4 w-[96px]"/>
+                            <p class="skeleton transfusion flex h-4 w-[72px]"/>
+                        </div>
                     </div>
                 </div>
             </div>

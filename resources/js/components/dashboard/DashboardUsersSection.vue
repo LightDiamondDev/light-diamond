@@ -147,24 +147,11 @@ function onRecordSave() {
     isEditRecordModal.value = false
 }
 
-function switchRecord() {
-
-    isCheckedRecordModal.value = !isCheckedRecordModal.value
-
-    if (isCheckedRecordModal.value) {
-        records.value.push(currentRecord)
-    } else {
-        if (records.value.indexOf(currentRecord) > -1) {
-            records.value.splice(records.value.indexOf(currentRecord), 1);
-        }
-    }
-}
-
 // import DataTable, {type DataTablePageEvent, type DataTableSortEvent} from 'primevue/datatable'
 </script>
 
 <template>
-    <div class="section flex flex-col h-full">
+    <div class="section ld-shadow-text flex flex-col h-full">
         <div v-if="authStore.isAdmin" class="flex">
             <ShineButton
                 class="cancel ml-2 mt-2" icon="icon-trash"
@@ -186,7 +173,7 @@ function switchRecord() {
                 </div>
             </div>
             <div class="table-rows flex flex-col lg:text-[12px] text-[10px] min-w-[720px] w-full px-2">
-                <div v-for="(record, index) in records" class="row ld-primary-border-bottom flex w-full">
+                <div v-for="(record) in records" class="row ld-primary-border-bottom flex w-full">
                     <label class="row-item flex items-center h-[48px] min-w-[48px] w-[8%] pl-1" for="">
                         <Checkbox
                             @check="selectedRecords.push(record)"
@@ -249,6 +236,7 @@ function switchRecord() {
             v-model:visible="isDeleteSelectedModal"
             class="user-form"
             title="Удаление"
+            style="top: 0;"
         >
             <form action="" class="register flex flex-col items-center max-w-[450px]" name="register">
                 <p class="subtitle md:text-[14px] text-[12px] text-center mb-4">
@@ -278,6 +266,7 @@ function switchRecord() {
             v-model:visible="isDeleteRecordModal"
             class="user-form"
             title="Удаление"
+            style="top: 0;"
         >
             <form action="" class="register flex flex-col items-center max-w-[450px]" name="register">
                 <p class="subtitle md:text-[14px] text-[12px] text-center mb-4">
@@ -307,6 +296,6 @@ function switchRecord() {
 
 <style scoped>
 .row:hover {
-    background-color: rgba(255, 255, 255, .08);
+    background-color: rgba(255, 255, 255, .1);
 }
 </style>

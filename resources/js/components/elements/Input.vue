@@ -9,8 +9,7 @@ const currentType = computed(
 
 const props = defineProps({
     autocomplete: {
-        type: String,
-        default: 'on'
+        type: String
     },
     id: String,
     type: {

@@ -80,7 +80,7 @@ class PostCategoryController extends Controller
     {
         $category = PostCategory::find($id);
         if ($category === null) {
-            return $this->errorJsonResponse('Не найдено категории с id ' . $id);
+            return $this->errorJsonResponse('Не найдено Категории с ID ' . $id . '.');
         }
 
         $edition = $request->has('edition')
@@ -107,7 +107,7 @@ class PostCategoryController extends Controller
         $category = PostCategory::find($id);
 
         if ($category === null) {
-            return $this->errorJsonResponse('Не найдено категории с id ' . $id);
+            return $this->errorJsonResponse('Не найдено Категории с ID ' . $id . '.');
         }
 
         $category->delete();

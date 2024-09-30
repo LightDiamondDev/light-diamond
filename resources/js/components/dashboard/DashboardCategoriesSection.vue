@@ -1,188 +1,314 @@
-<script setup lang="ts">
+<script setup lang='ts'>
 import axios, {type AxiosError} from 'axios'
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
 import {getErrorMessageByCode} from '@/helpers'
-import ImageLoader from '@/components/elements/ImageLoader.vue'
-import Input from '@/components/elements/Input.vue'
-import Button from '@/components/elements/Button.vue'
 import {ref} from 'vue'
 
-const authStore = useAuthStore()
-const toastStore = useToastStore()
+import {GameEdition, type PostCategory} from '@/types'
 
-const avatarData = ref({
-    avatar: authStore.avatar,
-})
-const avatarErrors = ref([])
-const isEditingAvatar = ref(false)
-const isProcessingAvatar = ref(false)
+import Button from '@/components/elements/Button.vue'
+import CategoryForm from '@/components/dashboard/CategoryForm.vue'
+import Category from '@/components/catalog/Category.vue'
+import Checkbox from '@/components/elements/Checkbox.vue'
+import Dialog from '@/components/elements/Dialog.vue'
+import Paginator from '@/components/elements/Paginator.vue'
+import ShineButton from '@/components/elements/ShineButton.vue'
 
-const usernameData = ref({
-    username: authStore.username,
-})
-const usernameErrors = ref([])
-const isEditingUsername = ref(false)
-const isProcessingUsername = ref(false)
-
-function toggleEditingUsername() {
-    isEditingUsername.value = !isEditingUsername.value
-    if (isEditingUsername.value) {
-        usernameData.value.username = authStore.username
-        usernameErrors.value = []
+interface ResponseData {
+    success: boolean
+    message?: string
+    errors?: string[][]
+    records?: PostCategory[]
+    pagination?: {
+        total_records: number
+        current_page: number
+        total_pages: number
     }
 }
 
-function submitChangeUsername() {
-    isProcessingUsername.value = true
-    usernameErrors.value = []
+const props = defineProps<{
+    category?: PostCategory
+}>()
 
-    axios.put('/api/settings/security/username', usernameData.value).then((response) => {
-        if (response.data.success) {
-            toggleEditingUsername()
-            toastStore.success('Никнейм успешно изменён!')
-            authStore.fetchUser()
+const authStore = useAuthStore()
+const toastStore = useToastStore()
+const apiUrl = '/api/post-categories'
+const records = ref<PostCategory[]>([])
+const totalRecords = ref(0)
+
+const category = ref<PostCategory>(props.category || {})
+const errors = ref<string[][]>([])
+
+const isLoading = ref(false)
+const isProcessing = ref(false)
+const isAddRecordModal = ref(false)
+const isDeleteSelectedModal = ref(false)
+const isEditRecordModal = ref(false)
+const isDeleteRecordModal = ref(false)
+
+const emit = defineEmits(['cancel', 'processed'])
+
+const loadRecordsData = ref({
+    page: 1,
+    per_page: 10,
+    sort_field: 'created_at',
+    sort_order: -1
+})
+
+const currentRecord = ref<Category | null>(null)
+
+const selectedRecords = ref<Category[]>([])
+
+function loadRecords() {
+    isLoading.value = true
+    records.value = []
+
+    axios.get(apiUrl, {params: loadRecordsData.value}).then((response) => {
+        const data: ResponseData = response.data
+        if (data.success) {
+            records.value = data.records!
+            totalRecords.value = data.pagination!.total_records
         } else {
-            if (response.data.errors) {
-                usernameErrors.value = response.data.errors
-            }
-            if (response.data.message) {
-                toastStore.error(response.data.message)
-            }
+            toastStore.error(data.message || '')
         }
     }).catch((error: AxiosError) => {
         toastStore.error(getErrorMessageByCode(error.response!.status))
     }).finally(() => {
-        isProcessingUsername.value = false
+        isLoading.value = false
     })
 }
 
-function submitChangeAvatar() {
-    isProcessingUsername.value = true
-    avatarErrors.value = []
+loadRecords()
 
-    axios.put('/api/settings/security/username', avatarData.value).then((response) => {
-        if (response.data.success) {
-            // toggleEditingAvatar()
-            toastStore.success('Аватар успешно изменён!')
-            authStore.fetchUser()
+function onChangePage(event: DataTablePageEvent) {
+    loadRecordsData.value.page = event.page + 1
+    loadRecords()
+}
+
+function onSort(event: DataTableSortEvent) {
+    loadRecordsData.value.sort_field = <string>event.sortField!
+    loadRecordsData.value.sort_order = event.sortOrder!
+    loadRecordsData.value.page = 1
+    loadRecords()
+}
+
+function deleteRecord(record: Category) {
+    axios.delete(`${apiUrl}/${record.id}`).then((response) => {
+        const data: ResponseData = response.data
+        if (data.success) {
+            loadRecords()
+            toastStore.success(`Категория «${record.name}» удалена.`)
         } else {
-            if (response.data.errors) {
-                avatarErrors.value = response.data.errors
-            }
-            if (response.data.message) {
-                toastStore.error(response.data.message)
-            }
+            toastStore.error(data.message || '')
         }
     }).catch((error: AxiosError) => {
         toastStore.error(getErrorMessageByCode(error.response!.status))
-    }).finally(() => {
-        isProcessingAvatar.value = false
     })
+}
+
+function deleteSelected() {
+    axios.delete(`${apiUrl}`, {params: {ids: selectedRecords.value.map((category) => category.id)}}).then((response) => {
+        const data: ResponseData = response.data
+        if (data.success) {
+            loadRecords()
+            selectedRecords.value = []
+            toastStore.success(`Выбранные Категории удалены.`)
+        } else {
+            toastStore.error(data.message || '')
+        }
+    }).catch((error: AxiosError) => {
+        toastStore.error(getErrorMessageByCode(error.response!.status))
+    })
+}
+
+function onEditClick(record: Category) {
+    currentRecord.value = {...record}
+    isEditRecordModal.value = true
+}
+
+function onDeleteClick(record: Category) {
+    currentRecord.value = record
+    isDeleteRecordModal.value = true
+}
+
+function onConfirmDeleteClick() {
+    deleteRecord(currentRecord.value!)
+    isDeleteRecordModal.value = false
+}
+
+function onConfirmDeleteSelectedClick() {
+    deleteSelected()
+    isDeleteSelectedModal.value = false
+}
+
+function onRecordSave() {
+    loadRecords()
+    isAddRecordModal.value = false
+    isEditRecordModal.value = false
 }
 </script>
 
 <template>
-    <div class="section flex flex-col h-full">
-        <div class="banner flex justify-center items-center w-full">
-            <img alt="" class="profile" src="/images/elements/stylization-banner.png">
+    <div class="section ld-shadow-text flex flex-col h-full">
+        <div v-if="authStore.isAdmin" class="flex">
+            <ShineButton
+                class="confirm ml-2 mt-2" icon="icon-plus"
+                @click="isAddRecordModal = true"
+            />
+            <ShineButton
+                class="cancel ml-2 mt-2" icon="icon-trash"
+                @click="isDeleteSelectedModal = true"
+                :disabled="selectedRecords.length === 0"
+            />
         </div>
-        <form action="" class="flex flex-col h-full w-full">
 
-            <div class="section-title flex justify-center transfusion text-[1.5rem] mt-4">Аватар</div>
-
-            <fieldset class="flex flex-col m-4">
-                <div class="flex flex-col-reverse md:flex-row">
-                    <div class="flex self-center mt-2 md:self-start md:mt-0">
-                        <ImageLoader
-                            v-model="avatarData.avatar"
-                            filler-icon="icon-white-pencil"
-                            id="settings-profile-avatar"
-                            image-path="/images/users/content/funny-girl.png"
+        <div class="data-table flex flex-col overflow-x-auto">
+            <div class="table-header flex text-[var(--primary-color)] lg:text-[14px] text-[12px] min-w-[720px] w-full px-2">
+                <div class="row ld-primary-border-bottom flex w-full">
+                    <label class="row-item flex items-center h-[48px] min-w-[48px] w-[8%] pl-1" for="">
+                        <Checkbox/>
+                    </label>
+                    <span class="row-item flex items-center h-[48px] w-[23%]">Название</span>
+                    <span class="row-item flex items-center h-[48px] w-[35%]">Ярлык</span>
+                    <span class="row-item flex items-center h-[48px] w-[20%]">Издание</span>
+                    <div v-if="authStore.isAdmin" class="row-item-item flex justify-end w-[12%] pr-1"/>
+                </div>
+            </div>
+            <div class="table-rows flex flex-col lg:text-[12px] text-[10px] min-w-[720px] w-full px-2">
+                <div v-for="(record) in records" class="row ld-primary-border-bottom flex w-full">
+                    <label class="row-item flex items-center h-[48px] min-w-[48px] w-[8%] pl-1" for="">
+                        <Checkbox
+                            @check="selectedRecords.push(record)"
+                            @uncheck="selectedRecords.splice(selectedRecords.indexOf(record), 1)"
                         />
-                    </div>
-                    <div class="description flex flex-col md:ml-2">
-                        <p class="text-[0.9rem] min-h-[96px] p-3">
-                            Аватар — прекрасное средство графического самовыражения, а также идентификации!
-                            Загрузите своё собственное изображение, чтобы другие Пользователи могли проще
-                            и быстрее Вас отличить!
-                        </p>
+                    </label>
+                    <span class="row-item flex items-center h-[48px] w-[23%]">{{ record.name }}</span>
+                    <span class="row-item flex items-center h-[48px] w-[35%]">{{ record.slug }}</span>
+                    <span
+                        class="row-item flex items-center h-[48px] w-[20%]"
+                        :class="{
+                            'ld-orange-text': record.edition === GameEdition.BEDROCK,
+                            'ld-moder-color': record.edition === GameEdition.JAVA,
+                            'ld-admin-color': record.edition === null
+                        }"
+                    >
+                        {{
+                            record.edition === GameEdition.BEDROCK ?
+                            'Бедрок' : record.edition === GameEdition.JAVA ?
+                            'Джава' : 'Любое'
+                        }}
+                    </span>
+                    <div v-if="authStore.isAdmin" class="row-item-item flex justify-end w-[12%]">
+                        <button class="flex justify-center items-center h-full lg:min-w-[48px] min-w-[36px] border-0" @click="onEditClick(record)">
+                            <span class="icon-small-pencil icon flex" v-tooltip.top="'Редактировать'"/>
+                        </button>
+                        <button class="flex justify-center items-center h-full lg:min-w-[48px] min-w-[36px] border-0" @click="onDeleteClick(record)">
+                            <span class="icon-trash icon flex" v-tooltip.top="'Удалить'"/>
+                        </button>
                     </div>
                 </div>
-            </fieldset>
+            </div>
+        </div>
 
-            <div class="section-title flex justify-center transfusion text-[1.5rem]">Никнейм</div>
+        <Paginator
+            class="h-[48px] gap-6"
+        />
 
-            <fieldset class="flex flex-col m-4">
-                <div class="flex flex-col">
-                    <div class="flex flex-col">
-                        <div class="description">
-                            <p class="text-[0.9rem] p-2">
-                                Что может быть лучше оригинального и звучного слогана? — оригинальный и звучный
-                                Никнейм! Главное подбирайте с умом: обновлять Никнейм можно только 1 раз в месяц!
-                            </p>
-                        </div>
-                        <div v-if="!isEditingUsername" class="mt-4">
-                            <span class="subtitle text-[1.1rem]">Никнейм</span>
-                            <div
-                                class="
-                                    current-data-field
-                                    transfusion bordered
-                                    flex
-                                    justify-between
-                                    items-center
-                                    h-[48px]"
-                            >
-                                <div class="flex pl-3 text-[14px]">{{ authStore.username }}</div>
-                                <button
-                                    class="edit-button p-[6px] mr-[-2px]"
-                                    @click="toggleEditingUsername()"
-                                    type="button"
-                                >
-                                    <span class="flex icon icon icon-white-pencil"></span>
-                                </button>
-                            </div>
-                        </div>
-                        <div v-else class="flex flex-col mt-4">
-                            <span class="subtitle text-[1.1rem]">Новый Никнейм</span>
-                            <Input
-                                v-model="usernameData.username"
-                                id="settings-profile-nickname"
-                                :placeholder="authStore.username"
-                                autocomplete="username"
-                            />
-                        </div>
-                        <span
-                            :class="{ 'error': usernameErrors['username'], 'success': !usernameErrors['username']}"
-                            class="status text-[0.8rem] locked"
-                        >
-                            {{ usernameErrors['username']?.[0] || '&nbsp;' }}
-                        </span>
-                    </div>
-                    <div v-if="isEditingUsername" class="flex gap-2">
-                        <Button
-                            :disabled="usernameData.username === authStore.username || !usernameData.username"
-                            class="confirm max-h-[64px] max-w-[200px]"
-                            button-type="submit"
-                            label="Подтвердить"
-                            :loading="isProcessingUsername"
-                            @click.prevent="submitChangeUsername()"
-                        />
-                        <Button
-                            class="cancel max-h-[64px] max-w-[200px]"
-                            button-type="button"
-                            label="Отменить"
-                            :loading="isProcessingUsername"
-                            @click.prevent="isEditingUsername = false"
-                        />
-                    </div>
+        <Dialog
+            v-model:visible="isAddRecordModal"
+            title="Добавление"
+            class="category-adding-form"
+            style="top: 0;"
+        >
+            <CategoryForm
+                @cancel="isAddRecordModal = false"
+                :category="currentRecord"
+                class="sm:min-w-[390px]"
+                goal="adding"
+                @processed="onRecordSave"
+            />
+        </Dialog>
+
+
+        <Dialog
+            v-model:visible="isEditRecordModal"
+            title="Редактирование"
+            class="category-editing-form"
+            style="top: 0;"
+        >
+            <CategoryForm
+                @cancel="isEditRecordModal = false"
+                :category="currentRecord"
+                goal="editing"
+                @processed="onRecordSave"
+            />
+        </Dialog>
+
+        <Dialog
+            v-model:visible="isDeleteSelectedModal"
+            class="category-form"
+            title="Удаление"
+            style="top: 0;"
+        >
+            <form action="" class="register flex flex-col items-center max-w-[450px]" name="register">
+                <p class="subtitle md:text-[14px] text-[12px] text-center mb-4">
+                    Вы действительно хотите удалить выбранных Пользователей [всего {{ selectedRecords.length }}]?
+                </p>
+
+                <div class="flex justify-center w-[85%] gap-2 mb-6">
+                    <Button
+                        button-type="submit"
+                        label="Удалить"
+                        class="delete min-w-[140px]"
+                        @click.prevent="onConfirmDeleteSelectedClick"
+                    />
+
+                    <Button
+                        button-type="submit"
+                        label="Отмена"
+                        class="cancel min-w-[140px]"
+                        @click.prevent="isDeleteSelectedModal = false"
+                    />
                 </div>
-            </fieldset>
 
-        </form>
+            </form>
+        </Dialog>
+
+        <Dialog
+            v-model:visible="isDeleteRecordModal"
+            class="category-form"
+            title="Удаление"
+            style="top: 0;"
+        >
+            <form action="" class="register flex flex-col items-center max-w-[450px]" name="register">
+                <p class="subtitle md:text-[14px] text-[12px] text-center mb-4">
+                    Вы действительно хотите удалить Категорию «{{ currentRecord!.name }}»?
+                </p>
+
+                <div class="flex justify-center w-[85%] gap-2 mb-6">
+                    <Button
+                        button-type="submit"
+                        label="Удалить"
+                        class="delete min-w-[140px]"
+                        @click.prevent="onConfirmDeleteClick"
+                    />
+
+                    <Button
+                        button-type="submit"
+                        label="Отмена"
+                        class="cancel min-w-[140px]"
+                        @click.prevent="isDeleteRecordModal = false"
+                    />
+                </div>
+
+            </form>
+        </Dialog>
     </div>
 </template>
 
 <style scoped>
-
+.row:hover {
+    background-color: rgba(255, 255, 255, .1);
+}
 </style>

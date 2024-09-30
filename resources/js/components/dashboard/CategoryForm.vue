@@ -3,7 +3,7 @@ import axios, {type AxiosError} from 'axios'
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
 import {getErrorMessageByCode} from '@/helpers'
-import {type User, UserRole} from '@/types'
+import {GameEdition, type PostCategory} from '@/types'
 import {ref} from 'vue'
 
 import Select from '@/components/elements/Select.vue'
@@ -17,33 +17,33 @@ interface ResponseData {
 }
 
 const props = defineProps<{
-    user?: User
+    category?: PostCategory
+    goal: String
 }>()
+const emit = defineEmits(['cancel', 'processed'])
 
 const authStore = useAuthStore()
 const toastStore = useToastStore()
-const apiUrl = '/api/users'
+const apiUrl = '/api/post-categories'
 
-const user = ref<User>(props.user || { role: UserRole.USER })
+const category = ref<PostCategory>(props.category || {})
 const errors = ref<string[][]>([])
 const isProcessing = ref(false)
 
-const userRoles = ref([
-    { icon: 'icon-skin', label: 'Пользователь', value: UserRole.USER },
-    { icon: 'icon-emerald-dagger', label: 'Модератор', value: UserRole.MODERATOR },
-    { icon: 'icon-charoit-crown', label: 'Администратор', value: UserRole.ADMIN },
+const categoryEditions = ref([
+    { icon: 'icon-diamond', label: 'Любое Издание', value: null },
+    { icon: 'icon-bedrock-dev-small', label: 'Бедрок', value: GameEdition.BEDROCK },
+    { icon: 'icon-minecraft-materials', label: 'Джава', value: GameEdition.JAVA },
 ])
-
-const emit = defineEmits(['cancel', 'processed'])
 
 function update() {
     errors.value = []
     isProcessing.value = true
 
-    axios.put(`${apiUrl}/${user.value.id}`, user.value!).then((response) => {
+    axios.put(`${apiUrl}/${category.value.id}`, category.value!).then((response) => {
         const data: ResponseData = response.data
         if (data.success) {
-            toastStore.success(`Данные Пользователя ${user.value.username} изменены.`)
+            toastStore.success(`Данные Категории «${category.value.name}» изменены.`)
             emit('processed')
         } else {
             if (data.errors) {
@@ -64,10 +64,10 @@ function add() {
     errors.value = []
     isProcessing.value = true
 
-    axios.post(`${apiUrl}`, user.value).then((response) => {
+    axios.post(`${apiUrl}`, category.value).then((response) => {
         const data: ResponseData = response.data
         if (data.success) {
-            toastStore.success(`Добавлен новый Пользователь ${user.value.username}.`)
+            toastStore.success(`Добавлена новая Категория «${category.value.name}».`)
             emit('processed')
         } else {
             if (data.errors) {
@@ -85,79 +85,90 @@ function add() {
 }
 
 function save() {
-    user.value.id ? update() : add()
+    category.value.id ? update() : add()
 }
 </script>
 
 <template>
-    <form action="" class="user flex flex-col items-center w-full" name="user" @submit.prevent="save">
+    <form action="" class="category flex flex-col items-center w-full" name="category" @submit.prevent="save">
         <fieldset class="flex flex-col items-center w-full">
             <div class="group flex flex-col w-[85%]">
-                <span class="subtitle md:text-[14px] text-[12px] my-2" :class="{ 'error': errors['username'] }">Никнейм</span>
+
+                <span class="subtitle md:text-[14px] text-[12px] my-2" :class="{ 'error': errors['email'] }">Название</span>
 
                 <Input
-                    v-model="user.username"
+                    v-model="category.name"
                     class="h-[48px]"
-                    id="user-nickname"
-                    placeholder="Steve"
-                    autocomplete="username"
+                    id="category-name"
+                    placeholder="Название"
+                    autocomplete="name"
+                    type="name"
                 />
 
                 <span
                     class="status md:text-[12px] text-[10px] mt-2"
-                    :class="{ 'error': errors['username'] }"
+                    :class="{ 'error': errors['name'] }"
                 >
-                    {{ errors['username']?.[0] || '&nbsp;' }}
+                    {{ errors['name']?.[0] || '&nbsp;' }}
                 </span>
 
-                <span class="subtitle md:text-[14px] text-[12px] my-2" :class="{ 'error': errors['email'] }">E-mail</span>
+                <span class="subtitle md:text-[14px] text-[12px] my-2" :class="{ 'error': errors['slug'] }">Ярлык</span>
 
                 <Input
-                    v-model="user.email"
+                    v-model="category.slug"
                     class="h-[48px]"
-                    id="user-email"
-                    placeholder="steve@minecraft.net"
-                    autocomplete="email"
-                    type="email"
+                    id="category-slug"
+                    placeholder="Ярлык"
+                    autocomplete="off"
+                    type="slug"
                 />
 
                 <span
                     class="status md:text-[12px] text-[10px] mt-2"
-                    :class="{ 'error': errors['email'] }"
+                    :class="{ 'error': errors['slug'] }"
                 >
-                    {{ errors['email']?.[0] || '&nbsp;' }}
+                    {{ errors['slug']?.[0] || '&nbsp;' }}
                 </span>
 
-                <span class="subtitle md:text-[14px] text-[12px] my-2" :class="{ 'error': errors['role'] }">Роль</span>
+                <span class="subtitle md:text-[14px] text-[12px] my-2" :class="{ 'error': errors['edition'] }">Издание</span>
 
                 <Select
                     options-classes="ld-primary-background ld-primary-border mt-[-2px]"
                     class="flex self-center w-full"
-                    v-model="user.role"
+                    v-model="category.edition"
                     button-classes="ld-primary-border ld-title-font h-[64px]"
-                    input-id="user-role"
-                    :options="userRoles"
+                    input-id="category-edition"
+                    :options="categoryEditions"
                     option-classes="h-[64px] gap-2 pl-4"
                     option-label-key="label"
                     option-icon-key="icon"
                     option-value-key="value"
-                    autocomplete="role"
-                    placeholder="Роль"
+                    autocomplete="off"
+                    placeholder="Издание"
                 />
 
                 <span
                     class="status md:text-[12px] text-[10px] mt-2"
-                    :class="{ 'error': errors['role'] }"
+                    :class="{ 'error': errors['edition'] }"
                 >
-                    {{ errors['role']?.[0] || '&nbsp;' }}
+                    {{ errors['edition']?.[0] || '&nbsp;' }}
                 </span>
             </div>
 
             <div class="flex justify-center w-[85%] gap-2 mb-6 mt-2">
                 <Button
+                    v-if="props.goal === 'editing'"
                     :loading="isProcessing"
                     button-type="submit"
                     label="Сохранить"
+                    class="confirm w-full"
+                />
+
+                <Button
+                    v-if="props.goal === 'adding'"
+                    :loading="isProcessing"
+                    button-type="submit"
+                    label="Добавить"
                     class="confirm w-full"
                 />
 
