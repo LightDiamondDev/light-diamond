@@ -99,8 +99,6 @@ function save() {
                     v-model="user.username"
                     class="h-[48px]"
                     id="user-nickname"
-                    placeholder="Steve"
-                    autocomplete="username"
                 />
 
                 <span
@@ -116,8 +114,6 @@ function save() {
                     v-model="user.email"
                     class="h-[48px]"
                     id="user-email"
-                    placeholder="steve@minecraft.net"
-                    autocomplete="email"
                     type="email"
                 />
 
@@ -141,7 +137,6 @@ function save() {
                     option-label-key="label"
                     option-icon-key="icon"
                     option-value-key="value"
-                    autocomplete="role"
                     placeholder="Роль"
                 />
 

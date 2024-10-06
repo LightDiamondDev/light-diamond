@@ -166,25 +166,34 @@ function onRecordSave() {
         <div class="data-table flex flex-col overflow-x-auto">
             <div class="table-header flex text-[var(--primary-color)] lg:text-[14px] text-[12px] min-w-[720px] w-full px-2">
                 <div class="row ld-primary-border-bottom flex w-full">
-                    <label class="row-item flex items-center h-[48px] min-w-[48px] w-[8%] pl-1" for="">
-                        <Checkbox/>
+                    <label class="row-item flex items-center h-[48px] min-w-[48px] w-[10%] pl-1" for="">
+                        <Checkbox
+                            @check="selectedRecords = [...records]"
+                            @uncheck="selectedRecords = []"
+                        />
                     </label>
-                    <span class="row-item flex items-center h-[48px] w-[23%]">Название</span>
-                    <span class="row-item flex items-center h-[48px] w-[35%]">Ярлык</span>
+                    <span class="row-item flex items-center h-[48px] w-[20%]">Название</span>
+                    <span class="row-item flex items-center h-[48px] w-[26%]">Ярлык</span>
                     <span class="row-item flex items-center h-[48px] w-[20%]">Издание</span>
+                    <span class="row-item flex items-center h-[48px] w-[12%]">Статья</span>
                     <div v-if="authStore.isAdmin" class="row-item-item flex justify-end w-[12%] pr-1"/>
                 </div>
             </div>
             <div class="table-rows flex flex-col lg:text-[12px] text-[10px] min-w-[720px] w-full px-2">
-                <div v-for="(record) in records" class="row ld-primary-border-bottom flex w-full">
-                    <label class="row-item flex items-center h-[48px] min-w-[48px] w-[8%] pl-1" for="">
+                <div
+                    v-for="(record) in records"
+                    class="row ld-primary-border-bottom flex w-full"
+                    :class="{'transfusion': selectedRecords.includes(record) }"
+                >
+                    <label class="row-item flex items-center h-[48px] min-w-[48px] w-[10%] pl-1" for="">
                         <Checkbox
+                            :checked="selectedRecords.includes(record)"
                             @check="selectedRecords.push(record)"
                             @uncheck="selectedRecords.splice(selectedRecords.indexOf(record), 1)"
                         />
                     </label>
-                    <span class="row-item flex items-center h-[48px] w-[23%]">{{ record.name }}</span>
-                    <span class="row-item flex items-center h-[48px] w-[35%]">{{ record.slug }}</span>
+                    <span class="row-item flex items-center h-[48px] w-[20%]">{{ record.name }}</span>
+                    <span class="row-item flex items-center h-[48px] w-[26%]">{{ record.slug }}</span>
                     <span
                         class="row-item flex items-center h-[48px] w-[20%]"
                         :class="{
@@ -198,6 +207,12 @@ function onRecordSave() {
                             'Бедрок' : record.edition === GameEdition.JAVA ?
                             'Джава' : 'Любое'
                         }}
+                    </span>
+                    <span
+                        class="row-item flex items-center h-[48px] w-[12%]"
+                        :class="{ 'ld-moder-color': record.is_article }"
+                    >
+                        {{ record.is_article ? 'Да' : 'Нет' }}
                     </span>
                     <div v-if="authStore.isAdmin" class="row-item-item flex justify-end w-[12%]">
                         <button class="flex justify-center items-center h-full lg:min-w-[48px] min-w-[36px] border-0" @click="onEditClick(record)">
@@ -217,14 +232,13 @@ function onRecordSave() {
 
         <Dialog
             v-model:visible="isAddRecordModal"
-            title="Добавление"
             class="category-adding-form"
-            style="top: 0;"
+            dialog-classes="md:top-0 top-[-200px]"
+            title="Добавление"
         >
             <CategoryForm
                 @cancel="isAddRecordModal = false"
-                :category="currentRecord"
-                class="sm:min-w-[390px]"
+                class="sm:min-w-[390px] max-w-[390px]"
                 goal="adding"
                 @processed="onRecordSave"
             />
@@ -233,12 +247,13 @@ function onRecordSave() {
 
         <Dialog
             v-model:visible="isEditRecordModal"
-            title="Редактирование"
             class="category-editing-form"
-            style="top: 0;"
+            dialog-classes="md:top-0 top-[-200px]"
+            title="Редактирование"
         >
             <CategoryForm
                 @cancel="isEditRecordModal = false"
+                class="sm:min-w-[390px] max-w-[390px]"
                 :category="currentRecord"
                 goal="editing"
                 @processed="onRecordSave"
@@ -247,11 +262,11 @@ function onRecordSave() {
 
         <Dialog
             v-model:visible="isDeleteSelectedModal"
-            class="category-form"
+            class="category-delete-form"
+            dialog-classes="md:top-0 top-[-200px]"
             title="Удаление"
-            style="top: 0;"
         >
-            <form action="" class="register flex flex-col items-center max-w-[450px]" name="register">
+            <form action="" class="register flex flex-col items-center sm:min-w-[390px] max-w-[390px]" name="register">
                 <p class="subtitle md:text-[14px] text-[12px] text-center mb-4">
                     Вы действительно хотите удалить выбранных Пользователей [всего {{ selectedRecords.length }}]?
                 </p>
@@ -278,10 +293,10 @@ function onRecordSave() {
         <Dialog
             v-model:visible="isDeleteRecordModal"
             class="category-form"
+            dialog-classes="md:top-0 top-[-200px]"
             title="Удаление"
-            style="top: 0;"
         >
-            <form action="" class="register flex flex-col items-center max-w-[450px]" name="register">
+            <form action="" class="register flex flex-col items-center sm:min-w-[390px] max-w-[390px]" name="register">
                 <p class="subtitle md:text-[14px] text-[12px] text-center mb-4">
                     Вы действительно хотите удалить Категорию «{{ currentRecord!.name }}»?
                 </p>
@@ -308,7 +323,7 @@ function onRecordSave() {
 </template>
 
 <style scoped>
-.row:hover {
-    background-color: rgba(255, 255, 255, .1);
+.category-adding-form {
+    top: 0;
 }
 </style>

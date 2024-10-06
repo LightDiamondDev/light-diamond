@@ -9,6 +9,7 @@ import {ref} from 'vue'
 import Select from '@/components/elements/Select.vue'
 import Input from '@/components/elements/Input.vue'
 import Button from '@/components/elements/Button.vue'
+import Checkbox from '@/components/elements/Checkbox.vue'
 
 interface ResponseData {
     success: boolean
@@ -101,8 +102,6 @@ function save() {
                     class="h-[48px]"
                     id="category-name"
                     placeholder="Название"
-                    autocomplete="name"
-                    type="name"
                 />
 
                 <span
@@ -120,7 +119,6 @@ function save() {
                     id="category-slug"
                     placeholder="Ярлык"
                     autocomplete="off"
-                    type="slug"
                 />
 
                 <span
@@ -153,6 +151,15 @@ function save() {
                 >
                     {{ errors['edition']?.[0] || '&nbsp;' }}
                 </span>
+
+                <label class="flex items-center border-0 md:text-[12px] text-[10px] gap-2" for="sds" style="background: none;">
+                    <Checkbox
+                        @check="selectedRecords.push(record)"
+                        @uncheck="selectedRecords.splice(selectedRecords.indexOf(record), 1)"
+                        id="sds"
+                    />
+                    <span>Тип: Статья</span>
+                </label>
             </div>
 
             <div class="flex justify-center w-[85%] gap-2 mb-6 mt-2">

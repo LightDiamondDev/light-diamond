@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import {computed, ref} from 'vue'
+import {computed} from 'vue'
 
 const props = defineProps({
-    checked: Boolean | undefined
+    checked: Boolean | undefined,
+    id: String
 })
 
 const model = defineModel<boolean>({default: false})
@@ -13,13 +14,11 @@ const emit = defineEmits(['check', 'uncheck'])
 function check() {
     emit('check')
     model.value = true
-    console.log(model.value)
 }
 
 function uncheck() {
     emit('uncheck')
     model.value = false
-    console.log(model.value)
 }
 </script>
 
@@ -27,8 +26,9 @@ function uncheck() {
     <input
         @click="isChecked ? uncheck() : check()"
         class="ld-checkbox"
-        :value="isChecked"
+        :checked="isChecked"
         type="checkbox"
+        :id="id"
     >
 </template>
 

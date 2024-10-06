@@ -41,7 +41,7 @@ const lastAction = computed(() => props.postVersion!.actions!.at(props.postVersi
                 <RouterLink class="post-title-wrap border-0" :to="{ name: 'post-version', params: {id: postVersion.id} }">
                     <h1 class="post-title md:text-[14px] text-[12px]">{{ postVersion.title }}</h1>
                 </RouterLink>
-                <p class="description xs:flex hidden md:text-[10px] text-[8px] opacity-80">{{ postVersion.description }}</p>
+                <p class="description xs:flex hidden md:text-[10px] text-[8px] opacity-80 mb-0.5">{{ postVersion.description }}</p>
                 <div class="flex flex-wrap items-center md:text-[12px] text-[10px] gap-2 mt-0.5">
                     <RouterLink v-if="postVersion.author" class="author-wrap flex flex-wrap border-0 gap-1" :to="{ name: 'home' }">
                         <UserAvatar
@@ -120,9 +120,6 @@ const lastAction = computed(() => props.postVersion!.actions!.at(props.postVersi
 }
 .post-version-card:hover .preview {
     transform: scale(1.2);
-}
-.post-version-card:hover {
-    background-color: rgba(255, 255, 255, .08);
 }
 .sm-show {
     display: none;

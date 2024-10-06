@@ -164,7 +164,10 @@ function onRecordSave() {
             <div class="table-header flex text-[var(--primary-color)] lg:text-[14px] text-[12px] min-w-[720px] w-full px-2">
                 <div class="row ld-primary-border-bottom flex w-full">
                     <label class="row-item flex items-center h-[48px] min-w-[48px] w-[8%] pl-1" for="">
-                        <Checkbox/>
+                        <Checkbox
+                            @check="selectedRecords = [...records]"
+                            @uncheck="selectedRecords = []"
+                        />
                     </label>
                     <span class="row-item flex items-center h-[48px] w-[23%]">Никнейм</span>
                     <span class="row-item flex items-center h-[48px] w-[35%]">E-Mail</span>
@@ -173,9 +176,14 @@ function onRecordSave() {
                 </div>
             </div>
             <div class="table-rows flex flex-col lg:text-[12px] text-[10px] min-w-[720px] w-full px-2">
-                <div v-for="(record) in records" class="row ld-primary-border-bottom flex w-full">
+                <div
+                    v-for="(record) in records"
+                    class="row ld-primary-border-bottom flex w-full"
+                    :class="{'transfusion': selectedRecords.includes(record) }"
+                >
                     <label class="row-item flex items-center h-[48px] min-w-[48px] w-[8%] pl-1" for="">
                         <Checkbox
+                            :checked="selectedRecords.includes(record)"
                             @check="selectedRecords.push(record)"
                             @uncheck="selectedRecords.splice(selectedRecords.indexOf(record), 1)"
                         />
@@ -229,7 +237,11 @@ function onRecordSave() {
             class="user-form"
             style="top: 0;"
         >
-            <UserForm :user="currentRecord" @cancel="isEditRecordModal = false" @processed="onRecordSave"/>
+            <UserForm
+                :user="currentRecord"
+                class="sm:min-w-[390px] max-w-[390px]"
+                @cancel="isEditRecordModal = false"
+                @processed="onRecordSave"/>
         </Dialog>
 
         <Dialog
@@ -238,7 +250,7 @@ function onRecordSave() {
             title="Удаление"
             style="top: 0;"
         >
-            <form action="" class="register flex flex-col items-center max-w-[450px]" name="register">
+            <form action="" class="register flex flex-col items-center sm:min-w-[390px] max-w-[390px]" name="register">
                 <p class="subtitle md:text-[14px] text-[12px] text-center mb-4">
                     Вы действительно хотите удалить выбранных Пользователей [всего {{ selectedRecords.length }}]?
                 </p>
@@ -268,7 +280,7 @@ function onRecordSave() {
             title="Удаление"
             style="top: 0;"
         >
-            <form action="" class="register flex flex-col items-center max-w-[450px]" name="register">
+            <form action="" class="register flex flex-col items-center sm:min-w-[390px] max-w-[390px]" name="register">
                 <p class="subtitle md:text-[14px] text-[12px] text-center mb-4">
                     Вы действительно хотите удалить Пользователя {{ currentRecord!.username }}?
                 </p>
@@ -295,7 +307,5 @@ function onRecordSave() {
 </template>
 
 <style scoped>
-.row:hover {
-    background-color: rgba(255, 255, 255, .1);
-}
+
 </style>
