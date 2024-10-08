@@ -8,6 +8,7 @@ import {useToastStore} from '@/stores/toast'
 import {RouterLink, useRouter} from 'vue-router'
 
 import {
+    convertObjectToFormData,
     getAppUrl,
     getErrorMessageByCode,
     getFullPresentableDate,
@@ -65,7 +66,6 @@ const moderators = ref<User[]>()
 const customSlug = ref<string>()
 
 const isFirstVersion = computed(() => !postVersion.value!.post || postVersion.value!.updated_at === postVersion.value!.post.created_at)
-const wasUpdated = computed(() => postVersion.value!.updated_at !== postVersion.value!.created_at)
 const isReviewing = computed(() => authStore.isModerator && postVersion.value!.status === PostVersionStatus.PENDING)
 const isOwnDraft = computed(() => postVersion.value!.author_id === authStore.id && postVersion.value!.status === PostVersionStatus.DRAFT)
 const postVersionStatusInfo = computed(() => getPostVersionStatusInfo(postVersion.value?.status!))
@@ -94,8 +94,6 @@ const isSubmitting = ref(false)
 const isUpdatingDraft = ref(false)
 
 const errors = ref<{ [key: string]: string[] }>({})
-
-const isModer = ref('true')
 
 const moderatorOptions = computed(() => {
     if (!moderators.value) {
@@ -169,11 +167,7 @@ function assignModerator(moderator: User) {
 function accept() {
     isAccepting.value = true
 
-    const formData = new FormData()
-    Object.keys(postVersion.value!).forEach(key => formData.append(key, postVersion.value![key]))
-    if (!postVersion.value?.post_id) {
-        formData.append('slug', slug.value)
-    }
+    const formData = convertObjectToFormData({...postVersion.value, ...{slug: slug.value}})
 
     axios.patch(`/api/post-versions/${props.id}/accept`, formData).then((response) => {
         if (response.data.success) {
@@ -199,8 +193,7 @@ function accept() {
 function submit() {
     isSubmitting.value = true
 
-    const formData = new FormData()
-    Object.keys(postVersion.value!).forEach(key => formData.append(key, postVersion.value![key]))
+    const formData = convertObjectToFormData(postVersion.value)
 
     axios.patch(`/api/post-versions/${props.id}/submit`, formData).then((response) => {
         if (response.data.success) {
@@ -228,9 +221,7 @@ function reconsider() {}
 function reject() {
     isRejecting.value = true
 
-    const formData = new FormData()
-    Object.keys(postVersion.value!).forEach(key => formData.append(key, postVersion.value![key]))
-    Object.keys(rejectDetails).forEach(key => formData.append(`details[${key}]`, rejectDetails[key]))
+    const formData = convertObjectToFormData({...postVersion.value, ...rejectDetails})
 
     axios.patch(`/api/post-versions/${props.id}/reject`, formData).then((response) => {
         if (response.data.success) {
@@ -253,12 +244,10 @@ function reject() {
     })
 }
 
-function revision() {
+function requestChanges() {
     isRequestingChanges.value = true
 
-    const formData = new FormData()
-    Object.keys(postVersion.value!).forEach(key => formData.append(key, postVersion.value![key]))
-    Object.keys(requestChangesDetails).forEach(key => formData.append(`details[${key}]`, requestChangesDetails[key]))
+    const formData = convertObjectToFormData({...postVersion.value, ...requestChangesDetails})
 
     axios.patch(`/api/post-versions/${props.id}/request-changes`, formData).then((response) => {
         if (response.data.success) {
@@ -284,8 +273,7 @@ function revision() {
 function updateDraft() {
     isUpdatingDraft.value = true
 
-    const formData = new FormData()
-    Object.keys(postVersion.value!).forEach(key => formData.append(key, postVersion.value![key]))
+    const formData = convertObjectToFormData(postVersion.value)
 
     axios.patch(`/api/post-versions/${props.id}`, formData).then((response) => {
         if (response.data.success) {
@@ -659,7 +647,7 @@ loadPostVersion()
                 />
                 <ShineButton
                     class="flex confirm"
-                    :loading="isRequestingChanges" @click="revision"
+                    :loading="isRequestingChanges" @click="requestChanges"
                     icon="icon-tick"
                     label="Отправить"
                 />

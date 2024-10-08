@@ -1,33 +1,38 @@
 <script setup lang="ts">
+import {computed, type PropType} from 'vue'
+import type {PostVersionFile} from '@/types'
+
 const props = defineProps({
+    file: {
+        type: Object as PropType<PostVersionFile>,
+        required: true
+    },
     disabled: {
         type: Boolean,
         default: false
     },
-    editable: {
-        type: Boolean,
-        default: false
-    },
-    fileFormat: {
-        type: String,
-        default: ''
-    },
-    fileName: {
-        type: String,
-        default: 'Загруженный Файл'
-    },
-    fileSize: {
-        type: String,
-        default: ''
-    },
-    id: String
 })
+
+const emit = defineEmits(['remove'])
 
 const model = defineModel()
 
-function deleteFile() {
+const fileExtension = computed(() => props.file!.path ? props.file!.path.slice(props.file!.path.lastIndexOf(".")) : '')
 
-}
+const fileSizeLabel = computed(() => {
+    if (props.file!.size === undefined) {
+        return ''
+    }
+
+    const kilobytes = props.file!.size / 1024
+
+    if (kilobytes < 1000) {
+        return Math.ceil(kilobytes) + ' КБ'
+    } else {
+        const megabytes = kilobytes / 1024
+        return megabytes.toFixed(2).toLocaleString() + ' МБ'
+    }
+})
 </script>
 
 <template>
@@ -37,17 +42,19 @@ function deleteFile() {
         ref="container"
     >
         <div class="loaded-file flex w-full">
-            <label class="loaded-file-label flex justify-between items-center w-full" :for="id">
+            <label class="loaded-file-label flex justify-between items-center w-full" for="">
                 <span class="loaded-file-span flex items-center w-full gap-4 pl-4">
                     <span class="icon-download icon min-w-[2rem]"/>
                     <span class="text flex flex-col">
-                        <span class="file-name flex duration-200">{{ fileName }}</span>
-                        <span class="title-font flex opacity-80">{{ fileFormat + ' — ' + fileSize }}</span>
+                        <span class="file-name flex duration-200">{{ file.name }}</span>
+                        <span class="title-font flex opacity-80">
+                            {{ `${fileExtension ? fileExtension + ' — ' : ''}` + `${fileSizeLabel || ''}` }}
+                        </span>
                     </span>
-                    <input class="hidden" :disabled="disabled" :id="id" type="file">
+                    <input class="hidden" :disabled="disabled" type="file">
                 </span>
             </label>
-            <button class="button-cross flex justify-center items-center" @click="deleteFile">
+            <button class="button-cross flex justify-center items-center" @click="emit('remove')">
                 <span class="icon-cross icon flex"/>
             </button>
         </div>

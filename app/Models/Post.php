@@ -64,7 +64,6 @@ class Post extends Model
         return PostVersion::wherePostId($this->id)
             ->whereStatus(PostVersionStatus::Accepted)
             ->orderBy('id', 'desc')
-            ->with(['author', 'category'])
             ->first();
     }
 

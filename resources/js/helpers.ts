@@ -246,3 +246,41 @@ export function isElementInOverflowedContainer(element: HTMLElement) {
     return false
 }
 
+export function convertObjectToFormData(obj: Object) {
+    const formData = new FormData()
+    putObjectInFormData(obj, formData)
+
+    return formData
+}
+
+function putObjectInFormData(obj: Object, formData: FormData) {
+    Object.keys(obj).forEach(key => {
+        const value = obj[key]
+        if (value === null) {
+            formData.append(key, null)
+            return
+        }
+
+        switch (value.constructor) {
+            case Array:
+                for (let i = 0; i < value.length; i++) {
+                    const arrayItem = value[i]
+                    if (arrayItem.constructor === Object) {
+                        for (let arrayItemKey of Object.keys(arrayItem)) {
+                            formData.append(`${key}[${i}][${arrayItemKey}]`, arrayItem[arrayItemKey])
+                        }
+                    } else {
+                        formData.append(`${key}[${i}]`, arrayItem)
+                    }
+                }
+                break
+
+            case Object:
+                putObjectInFormData(value, formData)
+                break
+
+            default:
+                formData.append(key, value)
+        }
+    })
+}

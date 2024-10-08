@@ -8,6 +8,9 @@ use Illuminate\Http\UploadedFile;
 
 class NewPostVersionDto
 {
+    /**
+     * @param PostVersionFileDto[] $files
+     */
     public function __construct(
         public readonly User         $author,
         public readonly PostCategory $category,
@@ -15,6 +18,7 @@ class NewPostVersionDto
         public readonly UploadedFile $coverFile,
         public readonly string       $description,
         public readonly string       $content,
+        public readonly array        $files,
     )
     {
     }

@@ -6,15 +6,17 @@ use App\Models\Enums\PostVersionActionType;
 use App\Models\Enums\PostVersionStatus;
 use App\Models\PostCategory;
 use App\Models\PostVersion;
+use App\Models\PostVersionFile;
 use App\Models\User;
 use App\Services\Dto\NewPostVersionDto;
 use App\Services\Dto\PostVersionActionDto;
+use App\Services\Dto\PostVersionFileDto;
 use App\Services\Dto\PostVersionUpdateDto;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PostVersionService
@@ -26,16 +28,8 @@ class PostVersionService
     {
     }
 
-    /**
-     * @throws Exception
-     */
-    public function assignModerator(PostVersion $postVersion, int $moderatorId): void
+    public function assignModerator(PostVersion $postVersion, User $moderator): void
     {
-        $moderator = User::find($moderatorId);
-        if ($moderator === null || !$moderator->is_moderator) {
-            throw new Exception('Не существует модератора с заданным id.');
-        }
-
         Model::withoutTimestamps(fn() => $postVersion->assignedModerator()->associate($moderator)->save());
 
         $this->postVersionActionService->create(
@@ -43,7 +37,7 @@ class PostVersionService
                 $postVersion,
                 Auth::user(),
                 PostVersionActionType::AssignModerator,
-                ['moderator_id' => $moderatorId]
+                ['moderator_id' => $moderator->id]
             ),
         );
     }
@@ -170,13 +164,17 @@ class PostVersionService
         }
         $postVersion->save();
 
+        foreach ($dto->files as $fileDto) {
+            $this->saveNewPostVersionFile($postVersion, $fileDto);
+        }
+
         return $postVersion;
     }
 
     private function updatePostVersion(PostVersion $postVersion, PostVersionUpdateDto $dto, PostVersionStatus $status, ?Carbon $dateTime = null): void
     {
-        if ($dto->category_id !== null && $postVersion->category_id !== $dto->category_id) {
-            $postVersion->category()->associate(PostCategory::find($dto->category_id));
+        if ($dto->categoryId !== null && $postVersion->category_id !== $dto->categoryId) {
+            $postVersion->category()->associate(PostCategory::find($dto->categoryId));
         }
         if ($dto->title !== null) {
             $postVersion->title = $dto->title;
@@ -194,6 +192,35 @@ class PostVersionService
             $postVersion->updated_at = $dateTime;
         }
 
+        if ($dto->files !== null) {
+            $fileIds = array_filter(array_map(fn(PostVersionFileDto $fileDto) => $fileDto->id, $dto->files));
+
+            $oldFiles = $postVersion->files;
+            foreach ($oldFiles as $oldFile) {
+                if (!in_array($oldFile->id, $fileIds)) {
+                    $oldFile->delete();
+                    if ($oldFile->path !== null && !PostVersionFile::where('path', $oldFile->path)->exists()) {
+                        Storage::disk('private')->delete($oldFile->path);
+                    }
+                }
+            }
+
+            foreach ($dto->files as $fileDto) {
+                if ($fileDto->id === null) {
+                    $this->saveNewPostVersionFile($postVersion, $fileDto);
+                } else {
+                    $file = PostVersionFile::find($fileDto->id);
+                    if ($fileDto->name !== null) {
+                        $file->name = $fileDto->name;
+                    }
+                    if ($fileDto->url !== null && $file->path === null) {
+                        $file->url = $fileDto->url;
+                    }
+                    $file->save();
+                }
+            }
+        }
+
         $postVersion->status = $status;
         $postVersion->save();
     }
@@ -202,5 +229,16 @@ class PostVersionService
     {
         $coverPath = $coverFile->store('images', ['disk' => 'public']);
         return str_replace('public/', '', $coverPath);
+    }
+
+    private function saveNewPostVersionFile(PostVersion $postVersion, PostVersionFileDto $fileDto): void
+    {
+        $file = PostVersionFile::make();
+        $file->postVersion()->associate($postVersion);
+        $file->name = $fileDto->name;
+        $file->path = $fileDto->path;
+        $file->url = $fileDto->path === null ? $fileDto->url : null;
+        $file->size = $fileDto->path === null ? $fileDto->size : Storage::disk('private')->size($fileDto->path);
+        $file->save();
     }
 }

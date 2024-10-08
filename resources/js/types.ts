@@ -58,6 +58,14 @@ export interface PostComment {
     updated_at: string
 }
 
+export interface PostVersionFile {
+    id?: bigint
+    name: string
+    path?: string
+    url?: string
+    size?: number
+}
+
 export enum PostVersionStatus {
     DRAFT = 'DRAFT',
     PENDING = 'PENDING',
@@ -83,6 +91,7 @@ export interface PostVersion {
     content?: string
     status?: PostVersionStatus
     actions?: PostVersionAction[]
+    files?: PostVersionFile[]
     created_at?: string
     updated_at?: string
 }

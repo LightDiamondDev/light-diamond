@@ -2,7 +2,7 @@
 import PostEditor from '@/components/post/editor/PostEditor.vue'
 import {ref} from 'vue'
 import axios, {type AxiosError} from 'axios'
-import {getErrorMessageByCode, getFullPresentableDate, getRelativeDate} from '@/helpers'
+import {convertObjectToFormData, getErrorMessageByCode, getFullPresentableDate, getRelativeDate} from '@/helpers'
 import { useToastStore } from '@/stores/toast'
 import OverlayPanel from '@/components/elements/OverlayPanel.vue'
 import {RouterLink, useRouter} from 'vue-router'
@@ -25,8 +25,7 @@ function submit() {
     isSubmitting.value = true
     errors.value = {}
 
-    const formData = new FormData()
-    Object.keys(postVersion.value).forEach(key => formData.append(key, postVersion.value[key]))
+    const formData = convertObjectToFormData(postVersion.value)
 
     axios.post('/api/post-versions/submit', formData).then((response) => {
         if (response.data.success) {
@@ -57,8 +56,7 @@ function saveAsDraft() {
     isSavingAsDraft.value = true
     errors.value = {}
 
-    const formData = new FormData()
-    Object.keys(postVersion.value!).forEach(key => formData.append(key, postVersion.value![key]))
+    const formData = convertObjectToFormData(postVersion.value)
 
     axios.post('/api/post-versions', formData).then((response) => {
         if (response.data.success) {

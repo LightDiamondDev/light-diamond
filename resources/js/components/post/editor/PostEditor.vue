@@ -22,7 +22,7 @@ import UploadImage from '@/components/elements/UploadImage.vue'
 import UploadFile from '@/components/elements/UploadFile.vue'
 import UserAvatar from '@/components/user/UserAvatar.vue'
 import Textarea from '@/components/elements/Textarea.vue'
-import LoadedFile from '@/components/elements/LoadedFile.vue'
+import UploadedPostVersionFile from '@/components/post/editor/UploadedPostVersionFile.vue'
 import axios, {type AxiosError} from 'axios'
 import {getErrorMessageByCode} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
@@ -54,6 +54,7 @@ const gameEdition = ref<GameEdition|null>(
 const categories = computed(() => postCategoryStore.categories.filter(
     (category) => category.edition === gameEdition.value || category.edition === null)
 )
+const files = computed(() => postVersion.value.files ?? [])
 
 const gameEditions = [
     {
@@ -138,6 +139,9 @@ function uploadFile(file: File) {
     axios.post('/api/upload-post-file', formData).then((response) => {
         if (response.data.success) {
             toastStore.success('Файл успешно загружен!')
+            let files = postVersion.value.files ?? []
+            files.push({name: file.name, path: response.data.file_path, size: file.size})
+            postVersion.value.files = files
         } else {
             if (response.data.errors) {
                 toastStore.error(response.data.errors['file'][0])
@@ -296,28 +300,17 @@ function uploadFile(file: File) {
 
                             <p class="error mt-2">{{ errors['description']?.[0] || ' ' }}</p>
 
-                            <LoadedFile
+                            <UploadedPostVersionFile
+                                v-for="file in files"
+                                :key="file.path || file.url"
+                                :file="file"
+                                :disabled="!editable"
                                 class="my-2"
-                                file-name="Light Diamond Addon — Craft & Survive [0.1.0]"
-                                file-format=".MCADDON"
-                                file-size="12,5 Мб
-                            "/>
-
-                            <LoadedFile
-                                class="my-2"
-                                file-name="LD Better Ores [0.2.1]"
-                                file-format=".MCPACK"
-                                file-size="587 Кб"
-                            />
-
-                            <LoadedFile
-                                class="my-2"
-                                file-name="Escape The Tower [2.3.0]"
-                                file-format=".MCWORLD"
-                                file-size="1,51 Мб"
+                                @remove="files.splice(files.indexOf(file), 1)"
                             />
 
                             <UploadFile
+                                v-if="files.length < 3"
                                 class="upload-post-preview flex mb-5 mt-2.5"
                                 :editable="editable"
                                 icon="icon-download"
@@ -327,7 +320,6 @@ function uploadFile(file: File) {
                                 @upload="uploadFile"
                                 :max-size-in-megabytes="20"
                             />
-
                         </div>
                     </div>
                 </div>

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('path')->nullable();
             $table->string('url')->nullable();
+            $table->integer('size')->nullable();
             $table->timestamps();
         });
     }

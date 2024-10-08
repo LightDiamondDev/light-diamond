@@ -23,6 +23,7 @@ const emit = defineEmits<{
 
 const model = defineModel<string>({default: ''})
 const fileSrc = ref(props.fileSrc)
+const input = ref<HTMLInputElement>()
 const toastStore = useToastStore()
 
 const allowedFileFormats = ['MCPACK', 'MCADDON', 'MCWORLD', 'MCSKIN', 'ZIP', 'PNG'];
@@ -34,6 +35,7 @@ function onChange(event: any) {
     if (props.editable && event.target && event.target.files[0]) {
         uploadFile(event.target.files![0])
     }
+    input.value!.value = null
 }
 
 function onDrop(event: DragEvent) {
@@ -102,6 +104,7 @@ function uploadFile(file: File) {
         <span class="text-center">Максимальный размер — {{ maxSizeInMegabytes }} Мб</span>
         <span class="text-center">{{ allowedFileFormats.join(" / ") }}</span>
         <input
+            ref="input"
             @change="onChange"
             accept="file/*"
             type="file"

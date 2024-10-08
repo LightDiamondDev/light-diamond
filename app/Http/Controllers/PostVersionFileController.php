@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\File;
 
-class UploadPostFileController extends Controller
+class PostVersionFileController extends Controller
 {
     use ApiJsonResponseTrait;
 
@@ -29,7 +31,15 @@ class UploadPostFileController extends Controller
         }
 
         $file = $request->file('file');
-        $filePath = $file->store('files', ['disk' => 'private']);
+
+        $fileBaseName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $fileExtension = $file->getClientOriginalExtension();
+        $filename = $fileBaseName . '.' . $fileExtension;
+        for ($i = 1; Storage::disk('private')->exists('files/' . $filename); $i++) {
+            $filename = $fileBaseName . '_' . Str::random(5) . '.' . $fileExtension;
+        }
+
+        $filePath = $file->storeAs('files', $filename, ['disk' => 'private']);
 
         return $this->successJsonResponse([
             'file_path' => $filePath

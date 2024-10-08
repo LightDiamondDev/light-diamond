@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Storage;
 
+
 /**
  * App\Models\PostVersion
  *
@@ -21,7 +22,7 @@ use Storage;
  * @property string $title
  * @property string $description
  * @property string $content
- * @property \App\Models\Enums\PostVersionStatus $status
+ * @property PostVersionStatus $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PostVersionAction> $actions
@@ -29,6 +30,8 @@ use Storage;
  * @property-read \App\Models\User|null $assignedModerator
  * @property-read \App\Models\User|null $author
  * @property-read \App\Models\PostCategory $category
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PostVersionFile> $files
+ * @property-read int|null $files_count
  * @property-read string $cover_url
  * @property-read \App\Models\Post|null $post
  * @method static \Illuminate\Database\Eloquent\Builder|PostVersion newModelQuery()
@@ -72,6 +75,11 @@ class PostVersion extends Model
         'status' => PostVersionStatus::Draft,
     ];
 
+    protected $with = [
+        'author',
+        'category',
+    ];
+
     protected $appends = [
         'cover_url',
     ];
@@ -104,5 +112,10 @@ class PostVersion extends Model
     public function actions(): HasMany
     {
         return $this->hasMany(PostVersionAction::class, 'version_id');
+    }
+
+    public function files(): HasMany
+    {
+        return $this->hasMany(PostVersionFile::class, 'post_version_id');
     }
 }

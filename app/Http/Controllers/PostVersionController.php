@@ -4,16 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Enums\PostVersionActionType;
 use App\Models\Enums\PostVersionStatus;
+use App\Models\Post;
 use App\Models\PostCategory;
 use App\Models\PostVersion;
 use App\Models\PostVersionAction;
 use App\Models\User;
 use App\Rules\ColumnExistsRule;
+use App\Rules\PostVersionFileRule;
 use App\Services\Dto\NewPostVersionDto;
+use App\Services\Dto\PostVersionFileDto;
 use App\Services\Dto\PostVersionUpdateDto;
 use App\Services\PostVersionService;
 use Auth;
-use Exception;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -29,6 +31,8 @@ class PostVersionController extends Controller
     const MAX_COVER_SIZE_MB = 5;
     const MIN_COVER_WIDTH = 768;
     const MIN_COVER_HEIGHT = 432;
+
+    const MAX_FILES_COUNT = 3;
 
     public function __construct(private readonly PostVersionService $postVersionService)
     {
@@ -65,7 +69,7 @@ class PostVersionController extends Controller
 
         $postVersionsPaginator = PostVersion::whereStatus($status)
             ->orderBy($sortField, $sortDirection)
-            ->with(['author', 'assignedModerator', 'actions.user'])
+            ->with(['assignedModerator', 'actions.user'])
             ->paginate($perPage);
 
         $postVersions = $postVersionsPaginator->getCollection()->each(
@@ -86,7 +90,7 @@ class PostVersionController extends Controller
     {
         $user = Auth::user();
 
-        $query = PostVersion::with(['author', 'post', 'category', 'actions.user'])->with([
+        $query = PostVersion::with(['post', 'actions.user', 'files'])->with([
                 'actions' => function (HasMany $query) use ($user) {
                     if (!$user->is_moderator) {
                         $query->whereNot('type', PostVersionActionType::AssignModerator);
@@ -171,7 +175,7 @@ class PostVersionController extends Controller
             ::whereAuthorId($userId)
             ->whereStatus($status)
             ->orderBy($sortField, $sortDirection)
-            ->with(['author', 'actions.user'])->with([
+            ->with(['actions.user'])->with([
                     'actions' => function (HasMany $query) use ($user) {
                         if (!$user->is_moderator) {
                             $query->whereNot('type', PostVersionActionType::AssignModerator);
@@ -225,32 +229,24 @@ class PostVersionController extends Controller
             return $this->errorJsonResponse('', $validator->errors());
         }
 
-        try {
-            $this->postVersionService->assignModerator($postVersion, $request->integer('moderator_id'));
-        } catch (Exception $e) {
-            return $this->errorJsonResponse($e->getMessage());
+        $moderator = User::find($request->integer('moderator_id'));
+        if ($moderator === null || !$moderator->is_moderator) {
+            return $this->errorJsonResponse('Не существует модератора с заданным id', $validator->errors());
         }
+
+        $this->postVersionService->assignModerator($postVersion, $moderator);
 
         return $this->successJsonResponse();
     }
 
     public function createDraft(Request $request): JsonResponse
     {
-        $validator = $this->getNewPostVersionValidator($request->all());
+        $validator = $this->makeNewPostVersionValidator($request->all());
         if ($validator->fails()) {
             return $this->errorJsonResponse('', $validator->errors());
         }
 
-        $postVersion = $this->postVersionService->createDraft(
-            new NewPostVersionDto(
-                Auth::user(),
-                PostCategory::find($request->integer('category_id')),
-                $request->string('title'),
-                $request->file('cover_file'),
-                $request->string('description'),
-                $request->string('content'),
-            )
-        );
+        $postVersion = $this->postVersionService->createDraft($this->makeNewPostVersionDto($request));
 
         return $this->successJsonResponse([
             'id' => $postVersion->id
@@ -259,21 +255,12 @@ class PostVersionController extends Controller
 
     public function submitNew(Request $request): JsonResponse
     {
-        $validator = $this->getNewPostVersionValidator($request->all());
+        $validator = $this->makeNewPostVersionValidator($request->all());
         if ($validator->fails()) {
             return $this->errorJsonResponse('', $validator->errors());
         }
 
-        $postVersion = $this->postVersionService->submitNew(
-            new NewPostVersionDto(
-                Auth::user(),
-                PostCategory::find($request->integer('category_id')),
-                $request->string('title'),
-                $request->file('cover_file'),
-                $request->string('description'),
-                $request->string('content'),
-            )
-        );
+        $postVersion = $this->postVersionService->submitNew($this->makeNewPostVersionDto($request));
 
         return $this->successJsonResponse([
             'id' => $postVersion->id
@@ -282,11 +269,6 @@ class PostVersionController extends Controller
 
     public function updateDraft(Request $request, int $id): JsonResponse
     {
-        $validator = $this->getPostVersionUpdateValidator($request->all());
-        if ($validator->fails()) {
-            return $this->errorJsonResponse('', $validator->errors());
-        }
-
         $postVersion = PostVersion::find($id);
         if ($postVersion === null
             || $postVersion->status !== PostVersionStatus::Draft
@@ -295,16 +277,12 @@ class PostVersionController extends Controller
             return $this->errorJsonResponse("У вас нет черновика с id $id.");
         }
 
-        $this->postVersionService->updateDraft(
-            $postVersion,
-            new PostVersionUpdateDto(
-                $request->integer('category_id', null),
-                $request->string('title'),
-                $request->file('cover_file'),
-                $request->string('description'),
-                $request->string('content'),
-            )
-        );
+        $validator = $this->makePostVersionUpdateValidator($request->all(), $postVersion);
+        if ($validator->fails()) {
+            return $this->errorJsonResponse('', $validator->errors());
+        }
+
+        $this->postVersionService->updateDraft($postVersion, $this->makePostVersionUpdateDto($request));
 
         return $this->successJsonResponse();
     }
@@ -312,11 +290,6 @@ class PostVersionController extends Controller
 
     public function submit(Request $request, int $id): JsonResponse
     {
-        $validator = $this->getPostVersionUpdateValidator($request->all());
-        if ($validator->fails()) {
-            return $this->errorJsonResponse('', $validator->errors());
-        }
-
         $postVersion = PostVersion::find($id);
         if ($postVersion === null
             || $postVersion->status !== PostVersionStatus::Draft
@@ -325,30 +298,18 @@ class PostVersionController extends Controller
             return $this->errorJsonResponse("У вас нет черновика с id $id.");
         }
 
-        $this->postVersionService->submit(
-            $postVersion,
-            new PostVersionUpdateDto(
-                $request->integer('category_id', null),
-                $request->string('title'),
-                $request->file('cover_file'),
-                $request->string('description'),
-                $request->string('content'),
-            )
-        );
+        $validator = $this->makePostVersionUpdateValidator($request->all(), $postVersion);
+        if ($validator->fails()) {
+            return $this->errorJsonResponse('', $validator->errors());
+        }
+
+        $this->postVersionService->submit($postVersion, $this->makePostVersionUpdateDto($request));
 
         return $this->successJsonResponse();
     }
 
     public function requestChanges(Request $request, int $id): JsonResponse
     {
-        $validator = $this->getPostVersionUpdateValidator($request->all(), [
-            'details' => ['required', 'array'],
-            'details.message' => ['required', 'string'],
-        ]);
-        if ($validator->fails()) {
-            return $this->errorJsonResponse('', $validator->errors());
-        }
-
         $postVersion = PostVersion::find($id);
         if ($postVersion === null) {
             return $this->errorJsonResponse("Не найдена версия материала с id $id.");
@@ -357,30 +318,21 @@ class PostVersionController extends Controller
             return $this->errorJsonResponse("Эту версию материала нельзя вернуть на доработку из-за её статуса.");
         }
 
-        $this->postVersionService->requestChanges(
-            $postVersion,
-            new PostVersionUpdateDto(
-                $request->integer('category_id', null),
-                $request->string('title'),
-                $request->file('cover_file'),
-                $request->string('description'),
-                $request->string('content'),
-                $request->input('details'),
-            )
-        );
+        $validator = $this->makePostVersionUpdateValidator($request->all(), $postVersion, [
+            'details' => ['required', 'array'],
+            'details.message' => ['required', 'string'],
+        ]);
+        if ($validator->fails()) {
+            return $this->errorJsonResponse('', $validator->errors());
+        }
+
+        $this->postVersionService->requestChanges($postVersion, $this->makePostVersionUpdateDto($request));
 
         return $this->successJsonResponse();
     }
 
     public function accept(Request $request, int $id): JsonResponse
     {
-        $validator = $this->getPostVersionUpdateValidator($request->all(), [
-            'slug' => ['string'],
-        ]);
-        if ($validator->fails()) {
-            return $this->errorJsonResponse('', $validator->errors());
-        }
-
         $postVersion = PostVersion::find($id);
         if ($postVersion === null) {
             return $this->errorJsonResponse("Не найдена версия материала с id $id.");
@@ -389,25 +341,30 @@ class PostVersionController extends Controller
             return $this->errorJsonResponse("Эту версию материала нельзя принять из-за её статуса.");
         }
 
-        $this->postVersionService->accept(
-            $postVersion,
-            new PostVersionUpdateDto(
-                $request->integer('category_id', null),
-                $request->string('title'),
-                $request->file('cover_file'),
-                $request->string('description'),
-                $request->string('content'),
-                null,
-                $request->string('slug')
-            )
-        );
+        $validator = $this->makePostVersionUpdateValidator($request->all(), $postVersion, [
+            'slug' => ['string'],
+        ]);
+        if ($validator->fails()) {
+            return $this->errorJsonResponse('', $validator->errors());
+        }
+
+        $this->postVersionService->accept($postVersion, $this->makePostVersionUpdateDto($request));
 
         return $this->successJsonResponse();
     }
 
     public function reject(Request $request, int $id): JsonResponse
     {
-        $validator = $this->getPostVersionUpdateValidator($request->all(), [
+        $postVersion = PostVersion::find($id);
+        if ($postVersion === null) {
+            return $this->errorJsonResponse("Не найдена версия материала с id $id.");
+        }
+
+        if ($postVersion->status !== PostVersionStatus::Pending) {
+            return $this->errorJsonResponse("Эту версию материала нельзя отклонить из-за её статуса.");
+        }
+
+        $validator = $this->makePostVersionUpdateValidator($request->all(), $postVersion, [
             'details' => ['required', 'array'],
             'details.reason' => ['required', 'string'],
         ]);
@@ -415,31 +372,66 @@ class PostVersionController extends Controller
             return $this->errorJsonResponse('', $validator->errors());
         }
 
-        $postVersion = PostVersion::find($id);
-        if ($postVersion === null) {
-            return $this->errorJsonResponse("Не найдена версия материала с id $id.");
-        }
-        if ($postVersion->status !== PostVersionStatus::Pending) {
-            return $this->errorJsonResponse("Эту версию материала нельзя отклонить из-за её статуса.");
-        }
-
-        $this->postVersionService->reject(
-            $postVersion,
-            new PostVersionUpdateDto(
-                $request->integer('category_id', null),
-                $request->string('title'),
-                $request->file('cover_file'),
-                $request->string('description'),
-                $request->string('content'),
-                $request->input('details'),
-            )
-        );
+        $this->postVersionService->reject($postVersion, $this->makePostVersionUpdateDto($request));
 
         return $this->successJsonResponse();
     }
 
-    private function getNewPostVersionValidator(array $data, array $additionalRules = []): ValidatorInstance
+    private function makeNewPostVersionDto(Request $request): NewPostVersionDto
     {
+        $files = array_map(
+            fn(array $file) => new PostVersionFileDto(
+                null,
+                $file['name'],
+                $file['path'] ?? null,
+                $file['url'] ?? null,
+                $file['size'] ?? null,
+            ),
+            $request->input('files')
+        );
+
+        return new NewPostVersionDto(
+            Auth::user(),
+            PostCategory::find($request->integer('category_id')),
+            $request->string('title'),
+            $request->file('cover_file'),
+            $request->string('description'),
+            $request->string('content'),
+            $files,
+        );
+    }
+
+    private function makePostVersionUpdateDto(Request $request): PostVersionUpdateDto
+    {
+        $files = array_map(
+            fn(array $file) => new PostVersionFileDto(
+                $file['id'] ?? null,
+                $file['name'] ?? null,
+                $file['path'] ?? null,
+                $file['url'] ?? null,
+                $file['size'] ?? null,
+            ),
+            $request->input('files')
+        );
+
+        return new PostVersionUpdateDto(
+            $request->integer('category_id', null),
+            $request->string('title'),
+            $request->file('cover_file'),
+            $request->string('description'),
+            $request->string('content'),
+            $request->input('details'),
+            $request->string('slug'),
+            $files,
+        );
+    }
+
+    private function makeNewPostVersionValidator(array $data, ?Post $post = null, array $additionalRules = []): ValidatorInstance
+    {
+        $postCategory = PostCategory::find($data['category_id'] ?? null);
+        $maxFilesCount = $postCategory === null || $postCategory->is_article ? 0 : self::MAX_FILES_COUNT;
+        $minFilesCount = $postCategory === null || $postCategory->is_article ? 0 : 1;
+
         return Validator::make($data, array_merge(
             [
                 'category_id' => ['required', 'integer', Rule::exists(PostCategory::class, 'id')],
@@ -457,13 +449,22 @@ class PostVersionController extends Controller
                 'title' => ['required', 'string', 'max:150'],
                 'description' => ['required', 'string', 'max:255'],
                 'content' => ['required', 'string', 'max:65535'],
+                'files' => ['required', 'array', 'max:' . $maxFilesCount, 'min:' . $minFilesCount],
+                'files.*.name' => ['required', 'string', 'max:100'],
+                'files.*.path' => ['required_without:files.*.url', 'string', 'max:255'],
+                'files.*.url' => ['required_without:files.*.path', 'string', 'max:255'],
+                'files.*.size' => ['required_without:files.*.url', 'integer'],
+                'files.*' => ['array', new PostVersionFileRule($post)],
             ],
             $additionalRules
         ));
     }
 
-    private function getPostVersionUpdateValidator(array $data, array $additionalRules = []): ValidatorInstance
+    private function makePostVersionUpdateValidator(array $data, PostVersion $version, array $additionalRules = []): ValidatorInstance
     {
+        $maxFilesCount = $version->category->is_article ? 0 : self::MAX_FILES_COUNT;
+        $minFilesCount = $version->category->is_article ? 0 : 1;
+
         return Validator::make($data, array_merge(
             [
                 'category_id' => ['integer', Rule::exists(PostCategory::class, 'id')],
@@ -480,6 +481,13 @@ class PostVersionController extends Controller
                 'title' => ['string', 'max:150'],
                 'description' => ['string', 'max:255'],
                 'content' => ['string', 'max:65535'],
+                'files' => ['array', 'max:' . $maxFilesCount, 'min:' . $minFilesCount],
+                'files.*.id' => ['required_without_all:files.*.path,files.*.url', 'integer'],
+                'files.*.name' => ['required_without:files.*.id', 'string', 'max:100'],
+                'files.*.path' => ['required_without_all:files.*.id,files.*.url', 'string', 'max:255'],
+                'files.*.url' => [ 'required_without_all:files.*.id,files.*.path', 'string', 'max:255'],
+                'files.*.size' => ['required_without_all:files.*.id,files.*.url', 'integer'],
+                'files.*' => ['array', new PostVersionFileRule($version->post, $version)],
             ],
             $additionalRules
         ));
