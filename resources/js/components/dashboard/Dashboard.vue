@@ -82,7 +82,7 @@ function setMobileMenu() {
                 <div class="h-[32px] w-[32px] arrow-tap"></div>
             </div>
         </div>
-        <div class="interface flex" style="contain: paint">
+        <div class="interface flex overflow-clip">
             <aside class="manager-aside" :class="{ 'on': isMobileMenu }">
                 <div class="units">
 

@@ -20,7 +20,7 @@ const emit = defineEmits<{
     (e: 'page-change', event: PageChangeEvent): void
 }>()
 
-const maxPageNumber = computed(() => 15)
+const maxPageNumber = computed(() => props.totalRecords / props.recordsAtPage)
 const currentPageNumber = ref(1)
 
 const isOneLeftSwitching = ref(false)
@@ -42,7 +42,6 @@ function setOnePageStep(number: number) {
 }
 
 function setPageNumberOneStep(number: number) {
-    console.log('Какого-то хера вызываюсь именно я, а не 2.')
     if (isPageChanging.value) return
     isPageChanging.value = true
     if (currentPageNumber.value < number && currentPageNumber.value < maxPageNumber.value - 2) {
