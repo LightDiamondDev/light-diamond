@@ -56,9 +56,9 @@ const loadRecordsData = ref({
     sort_order: -1
 })
 
-const currentRecord = ref<Category | null>(null)
+const currentRecord = ref<PostCategory | null>(null)
 
-const selectedRecords = ref<Category[]>([])
+const selectedRecords = ref<PostCategory[]>([])
 
 function loadRecords() {
     isLoading.value = true
@@ -81,19 +81,19 @@ function loadRecords() {
 
 loadRecords()
 
-function onChangePage(event: DataTablePageEvent) {
-    loadRecordsData.value.page = event.page + 1
-    loadRecords()
-}
+// function onChangePage(event: DataTablePageEvent) {
+//     loadRecordsData.value.page = event.page + 1
+//     loadRecords()
+// }
+//
+// function onSort(event: DataTableSortEvent) {
+//     loadRecordsData.value.sort_field = <string>event.sortField!
+//     loadRecordsData.value.sort_order = event.sortOrder!
+//     loadRecordsData.value.page = 1
+//     loadRecords()
+// }
 
-function onSort(event: DataTableSortEvent) {
-    loadRecordsData.value.sort_field = <string>event.sortField!
-    loadRecordsData.value.sort_order = event.sortOrder!
-    loadRecordsData.value.page = 1
-    loadRecords()
-}
-
-function deleteRecord(record: Category) {
+function deleteRecord(record: PostCategory) {
     axios.delete(`${apiUrl}/${record.id}`).then((response) => {
         const data: ResponseData = response.data
         if (data.success) {
@@ -122,12 +122,12 @@ function deleteSelected() {
     })
 }
 
-function onEditClick(record: Category) {
+function onEditClick(record: PostCategory) {
     currentRecord.value = {...record}
     isEditRecordModal.value = true
 }
 
-function onDeleteClick(record: Category) {
+function onDeleteClick(record: PostCategory) {
     currentRecord.value = record
     isDeleteRecordModal.value = true
 }
@@ -163,7 +163,7 @@ function onRecordSave() {
             />
         </div>
 
-        <div class="data-table flex flex-col overflow-x-auto">
+        <div class="data-table flex flex-col min-h-[100vh] overflow-x-auto">
             <div class="table-header flex text-[var(--primary-color)] lg:text-[14px] text-[12px] min-w-[720px] w-full px-2">
                 <div class="row ld-primary-border-bottom flex w-full">
                     <label class="row-item flex items-center h-[48px] min-w-[48px] w-[10%] pl-1" for="">
@@ -226,10 +226,6 @@ function onRecordSave() {
             </div>
         </div>
 
-        <Paginator
-            class="h-[48px] gap-6"
-        />
-
         <Dialog
             v-model:visible="isAddRecordModal"
             class="category-adding-form"
@@ -254,7 +250,7 @@ function onRecordSave() {
             <CategoryForm
                 @cancel="isEditRecordModal = false"
                 class="sm:min-w-[390px] max-w-[390px]"
-                :category="currentRecord"
+                :category="currentRecord!"
                 goal="editing"
                 @processed="onRecordSave"
             />

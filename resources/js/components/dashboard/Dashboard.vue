@@ -4,6 +4,7 @@ import {computed, ref, watch} from 'vue'
 import {useAuthStore} from '@/stores/auth'
 
 import ItemButton from '@/components/elements/ItemButton.vue'
+import Paginator from '@/components/elements/Paginator.vue'
 
 interface DashboardMenuItem {
     label: string
@@ -81,7 +82,7 @@ function setMobileMenu() {
                 <div class="h-[32px] w-[32px] arrow-tap"></div>
             </div>
         </div>
-        <div class="interface flex overflow-hidden">
+        <div class="interface flex" style="contain: paint">
             <aside class="manager-aside" :class="{ 'on': isMobileMenu }">
                 <div class="units">
 
@@ -108,7 +109,7 @@ function setMobileMenu() {
             <div
                 :class="{ 'on': !isMobileMenu }"
                 class="manager-container ld-fixed-background ld-primary-border
-                    flex flex-col min-h-[800px] w-full overflow-hidden relative"
+                    flex flex-col w-full relative"
             >
 
                 <RouterView v-slot="{ Component }">
@@ -191,7 +192,6 @@ function setMobileMenu() {
     }
     .interface .manager-container {
         transform: translateX(100%);
-        min-height: 1024px;
         transition: .5s;
         opacity: 0;
         border: 0;

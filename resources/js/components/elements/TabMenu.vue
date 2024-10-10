@@ -28,7 +28,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-    (e: 'tab-change'): TabMenuChangeEvent
+    (e: 'tab-change', event: TabMenuChangeEvent): void
 }>()
 
 const visibleItems = computed(() => props.items!.filter((item) => item.visible || item.visible === undefined))
@@ -36,8 +36,8 @@ const visibleItems = computed(() => props.items!.filter((item) => item.visible |
 const currentTabIndex = ref(0)
 
 function onTabClick(index) {
-    emit('tab-change', { tabIndex: index })
     currentTabIndex.value = index
+    emit('tab-change', { tabIndex: currentTabIndex.value })
 }
 
 </script>

@@ -3,17 +3,16 @@ import axios, {type AxiosError} from 'axios'
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
 import {getErrorMessageByCode} from '@/helpers'
-import {ref} from 'vue'
+import {reactive, ref} from 'vue'
 
-import {type PostCategory, type User, UserRole} from '@/types'
+import {type PostCategory, PostVersionStatus, type User, UserRole} from '@/types'
 
 import Button from '@/components/elements/Button.vue'
-import Dialog from '@/components/elements/Dialog.vue'
-import Paginator from '@/components/elements/Paginator.vue'
-import ShineButton from '@/components/elements/ShineButton.vue'
-import Input from '@/components/elements/Input.vue'
-import UserForm from '@/components/dashboard/UserForm.vue'
 import Checkbox from '@/components/elements/Checkbox.vue'
+import Dialog from '@/components/elements/Dialog.vue'
+import Paginator, {type PageChangeEvent} from '@/components/elements/Paginator.vue'
+import ShineButton from '@/components/elements/ShineButton.vue'
+import UserForm from '@/components/dashboard/UserForm.vue'
 
 interface ResponseData {
     success: boolean
@@ -41,9 +40,9 @@ const isDeleteRecordModal = ref(false)
 
 const loadRecordsData = ref({
     page: 1,
-    per_page: 10,
-    sort_field: 'created_at',
-    sort_order: -1
+    per_page: 20
+    // sort_field: 'created_at',
+    // sort_order: -1
 })
 
 const currentRecord = ref<User | null>(null)
@@ -80,17 +79,17 @@ function getUserRoleLabel(role: UserRole) {
     return userRoles.value.find((item) => item.value === role)?.label || ''
 }
 
-function onChangePage(event: DataTablePageEvent) {
-    loadRecordsData.value.page = event.page + 1
-    loadRecords()
-}
-
-function onSort(event: DataTableSortEvent) {
-    loadRecordsData.value.sort_field = <string>event.sortField!
-    loadRecordsData.value.sort_order = event.sortOrder!
-    loadRecordsData.value.page = 1
-    loadRecords()
-}
+// function onChangePage(event: DataTablePageEvent) {
+//     loadRecordsData.value.page = event.page + 1
+//     loadRecords()
+// }
+//
+// function onSort(event: DataTableSortEvent) {
+//     loadRecordsData.value.sort_field = <string>event.sortField!
+//     loadRecordsData.value.sort_order = event.sortOrder!
+//     loadRecordsData.value.page = 1
+//     loadRecords()
+// }
 
 function deleteRecord(record: User) {
     axios.delete(`${apiUrl}/${record.id}`).then((response) => {
@@ -147,7 +146,14 @@ function onRecordSave() {
     isEditRecordModal.value = false
 }
 
-// import DataTable, {type DataTablePageEvent, type DataTableSortEvent} from 'primevue/datatable'
+function onPageChange(event: PageChangeEvent) {
+    const selectedPage = event.pageNumber
+    if (selectedPage !== loadRecordsData.value.page) {
+        loadRecordsData.value.page = selectedPage
+        loadRecords()
+    }
+}
+
 </script>
 
 <template>
@@ -160,9 +166,9 @@ function onRecordSave() {
             />
         </div>
 
-        <div class="data-table flex flex-col overflow-x-auto">
+        <div class="data-table flex flex-col min-h-[100vh] overflow-x-auto">
             <div class="table-header flex text-[var(--primary-color)] lg:text-[14px] text-[12px] min-w-[720px] w-full px-2">
-                <div class="row ld-primary-border-bottom flex w-full">
+                <div class="row flex w-full">
                     <label class="row-item flex items-center h-[48px] min-w-[48px] w-[8%] pl-1" for="">
                         <Checkbox
                             @check="selectedRecords = [...records]"
@@ -178,7 +184,7 @@ function onRecordSave() {
             <div class="table-rows flex flex-col lg:text-[12px] text-[10px] min-w-[720px] w-full px-2">
                 <div
                     v-for="(record) in records"
-                    class="row ld-primary-border-bottom flex w-full"
+                    class="row ld-primary-border-top flex w-full"
                     :class="{'transfusion': selectedRecords.includes(record) }"
                 >
                     <label class="row-item flex items-center h-[48px] min-w-[48px] w-[8%] pl-1" for="">
@@ -208,28 +214,15 @@ function onRecordSave() {
             </div>
         </div>
 
-        <!--
-            :rows="loadRequestData.per_page"
-            :totalRecords="totalRecords"
-            :class="{'hidden': !isLoading && postVersions.length === 0}"
-            @page="onPageChange"
-            -->
-        <Paginator
-            class="h-[48px] gap-6"
-        />
-
-        <!--
-            :value="isLoading ? new Array(3) : records"
-            lazy
-            paginator
-            removable-sort
-            v-model:selection="selectedRecords"
-            selectionMode="multiple"
-            :rows="loadRecordsData.per_page"
-            :total-records="totalRecords"
-            @page="onChangePage($event)"
-            @sort="onSort($event)"
-        -->
+        <div class="flex sticky bottom-[0]" style="z-index: 1">
+            <Paginator
+                class="ld-primary-background ld-fixed-background ld-primary-border-top h-[48px] w-full"
+                :records-at-page="loadRecordsData.per_page"
+                :totalRecords="totalRecords"
+                v-model="loadRecordsData.page"
+                @page-change="onPageChange"
+            />
+        </div>
 
         <Dialog
             v-model:visible="isEditRecordModal"
@@ -238,7 +231,7 @@ function onRecordSave() {
             style="top: 0;"
         >
             <UserForm
-                :user="currentRecord"
+                :user="currentRecord!"
                 class="sm:min-w-[390px] max-w-[390px]"
                 @cancel="isEditRecordModal = false"
                 @processed="onRecordSave"/>

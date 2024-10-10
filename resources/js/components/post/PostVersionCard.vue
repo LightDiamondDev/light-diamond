@@ -25,7 +25,7 @@ const lastAction = computed(() => props.postVersion!.actions!.at(props.postVersi
 </script>
 
 <template>
-    <div class="post-version-card ld-primary-border-bottom flex sm:flex-row flex-col">
+    <div class="post-version-card ld-primary-border-top flex sm:flex-row flex-col">
         <div class="flex w-full gap-2 p-2">
             <RouterLink
                 class="preview-wrap ld-primary-border flex
