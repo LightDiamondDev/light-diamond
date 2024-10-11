@@ -243,8 +243,8 @@ function addPostImageClickListeners() {
                     {{ post!.version!.title }}
                 </h1>
 
-                <div class="flex mt-0 xs:mx-4 mx-2">
-                    <img alt="" class="mt-0" :src="post.version!.cover_url">
+                <div class="preview-wrap flex w-full mt-0 xs:mx-4 xs:px-4 px-2">
+                    <img alt="" class="preview w-full mt-0" :src="post.version!.cover_url">
                 </div>
 
                 <div class="ld-secondary-text xs:px-4 px-2 py-2" v-html="post.version!.content"/>
@@ -292,7 +292,7 @@ function addPostImageClickListeners() {
         </section>
         <section class="ld-primary-background ld-fixed-background flex w-full relative">
             <div class="ld-tinted-reversed-background darker flex justify-center w-full">
-                <div class="comments page-container max-w-[832px]" id="comments">
+                <div class="comments page-container max-w-[832px] mb-4" id="comments">
                     <div class="comments-title flex gap-3 xs:px-4 px-2 py-4">
                         <p class="md:text-[1.2rem] text-base">Комментарии</p>
                         <p class="text-[var(--primary-color)]">{{ post!.comment_count }}</p>
@@ -372,6 +372,12 @@ function addPostImageClickListeners() {
 </style>
 
 <style scoped>
+.preview-wrap,
+.preview {
+    object-position: center;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
 .smooth-dark-background.wide {
     background-color: rgba(0, 0, 0, .2);
 }

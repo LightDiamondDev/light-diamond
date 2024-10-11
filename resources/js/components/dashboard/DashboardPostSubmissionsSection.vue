@@ -118,8 +118,16 @@ loadPostVersions()
                     </div>
                 </div>
                 <div v-else>
-                    <div v-if="postVersions.length === 0">
-                        <p class="text-muted">Заявки не найдены.</p>
+                    <div
+                        v-if="postVersions.length === 0"
+                        class="flex flex-col justify-center items-center min-h-[480px] gap-6"
+                    >
+                        <p class="text-muted text-center text-[14px] max-w-[480px]">
+                            В очереди пока больше нет Материалов, ждём вдохновения Пользователей! ;D
+                        </p>
+                        <div class="mob wandering-trader flex justify-center items-center mb-4">
+                            <div class="animation-wandering-trader h-[244px] w-[130px]"></div>
+                        </div>
                     </div>
                     <div v-else class="flex flex-col">
                         <PostVersionCard v-for="postVersion in postVersions" :post-version="postVersion"/>

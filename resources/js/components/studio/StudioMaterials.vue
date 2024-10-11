@@ -1,99 +1,139 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
-import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
-import Button from '@/components/elements/Button.vue'
-import MaterialLine from '@/components/post/PostRowCard.vue'
+import {getErrorMessageByCode, getFullDate, getRelativeDate} from '@/helpers'
+import {reactive, ref} from 'vue'
+
+import {type Post} from '@/types'
+import Paginator, {type PageChangeEvent} from '@/components/elements/Paginator.vue'
+import PostStudioCard from '@/components/post/PostStudioCard.vue'
+
+import {RouterLink} from 'vue-router'
+import {useAuthStore} from '@/stores/auth'
+
+interface PostLoadResponseData {
+    success: boolean
+    message?: string
+    errors?: object
+    records?: Post[]
+    pagination?: {
+        total_records: number
+        current_page: number
+        total_pages: number
+    }
+}
 
 const authStore = useAuthStore()
 const toastStore = useToastStore()
 
+const posts = ref<Post[]>([])
+const totalRecords = ref(0)
+
+const loadRequestData = reactive({
+    page: 1,
+    per_page: 8
+})
+
+const isLoading = ref(false)
+
+function loadPosts() {
+    isLoading.value = true
+    posts.value = []
+
+    axios.get(`/api/users/${authStore.id}/posts`, {params: loadRequestData}).then((response) => {
+        const responseData: PostLoadResponseData = response.data
+        if (responseData.success) {
+            posts.value = responseData.records!
+            totalRecords.value = responseData.pagination!.total_records
+        } else {
+            toastStore.error('Произошла ошибка!')
+        }
+    }).catch((error: AxiosError) => {
+        toastStore.error(getErrorMessageByCode(error.response!.status))
+    }).finally(() => {
+        isLoading.value = false
+    })
+}
+
+function onPageChange(event: PageChangeEvent) {
+    const selectedPage = event.pageNumber
+    if (selectedPage !== loadRequestData.page) {
+        loadRequestData.page = selectedPage
+        loadPosts()
+    }
+}
+
+loadPosts()
 </script>
 
 <template>
-    <div class="section flex flex-col w-full">
-        <form action="" class="flex flex-col h-full w-full">
-
-            <div class="line flex items-center gap-4 pl-4">
-                <RouterLink class="ld-shine-button flex items-center" :to="{ name: 'create-post' }">
-                    <span class="press flex w-full">
-                        <span class="preset flex items-center gap-1">
-                            <span class="icon icon-brilliant"/>
-                            <span>Создать</span>
+    <section class="section">
+        <div class="ld-shadow-text flex flex-col min-h-[100vh]">
+            <div class="flex flex-col">
+                <div class="flex md:justify-start justify-center">
+                    <RouterLink class="ld-shine-button flex items-center md:m-2 mb-2" :to="{ name: 'create-post' }">
+                        <span class="press ld-title-font flex w-full">
+                            <span class="preset flex items-center gap-1 px-6 py-0.5">
+                                <span class="icon icon-brilliant"/>
+                                <span>Создать</span>
+                            </span>
                         </span>
-                    </span>
-                </RouterLink>
+                    </RouterLink>
+                </div>
+
+                <div v-if="isLoading" class="flex flex-col">
+                    <div v-for="i in 5" class="flex w-full gap-2 p-2">
+                        <div class="skeleton transfusion flex
+                            sm:h-[112px] sm:max-w-[196px] sm:min-w-[196px]
+                            xs:h-[76px] xs:max-w-[132px] xs:min-w-[132px]
+                            h-[58px] max-w-[100px] min-w-[100px]
+                            overflow-hidden"
+                        />
+                        <div class="flex flex-col w-full gap-2">
+                            <div class="skeleton transfusion flex h-4 max-w-[360px] w-full"/>
+                            <div class="skeleton transfusion flex h-3 max-w-[80%] w-full"/>
+                            <div class="skeleton transfusion flex h-3 max-w-[55%] w-full"/>
+                            <div class="flex flex-wrap items-center md:text-[12px] text-[10px] gap-2 mt-0.5">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <div class="skeleton transfusion flex h-7 w-7"/>
+                                    <p class="skeleton transfusion flex h-4 w-[96px]"/>
+                                    <p class="skeleton transfusion flex h-4 w-[72px]"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-else>
+                    <div
+                        v-if="posts.length === 0"
+                        class="flex flex-col justify-center items-center min-h-[480px] gap-6"
+                    >
+                        <p class="text-muted text-center text-[14px] max-w-[480px]">
+                            У Вас пока ещё нет собственных Материалов, начните творить! ;D
+                        </p>
+                        <div class="mob wandering-trader flex justify-center items-center mb-4">
+                            <div class="animation-wandering-trader h-[244px] w-[130px]"></div>
+                        </div>
+                    </div>
+                    <div v-else class="flex flex-col">
+                        <PostStudioCard v-for="post in posts" :post="post"/>
+                    </div>
+                </div>
             </div>
 
-            <div class="separator self-center w-[98%]"></div>
-
-            <MaterialLine
-                title="Ресурс-Пак Дядя Шнюк [Шлюх 2.0] [1.2.46]" class="h-[114px] pl-4 pr-4 gap-4"
-                cover="/images/users/boba.png" :likes="585" :subscribes="365" :comments="78"
-                :downloads="876" :views="965" time="1 нед. назад"
+        </div>
+        <div class="flex sticky bottom-[0]" style="z-index: 1">
+            <Paginator
+                class="ld-primary-background ld-fixed-background ld-primary-border-top h-[48px] w-full"
+                :records-at-page="loadRequestData.per_page"
+                :totalRecords="totalRecords"
+                v-model="loadRequestData.page"
+                @page-change="onPageChange"
             />
-
-            <div class="separator self-center w-[98%]"></div>
-
-            <MaterialLine
-                title="Аддон Light Diamond [0.1.2] Scary Nightmare" class="h-[114px] pl-4 pr-4 gap-4"
-                cover="/images/users/hoba.png" :likes="361" :subscribes="216" :comments="158"
-                :downloads="781" :views="812" time="3 дн. назад"
-            />
-
-            <div class="separator self-center w-[98%]"></div>
-
-            <MaterialLine
-                title="Аддон Barblgi Atakyut [1.1]" class="h-[114px] pl-4 pr-4 gap-4"
-                cover="/images/users/hobana.png" :likes="31" :subscribes="23" :comments="56"
-                :downloads="68" :views="341" time="1 нед. назад"
-            />
-
-            <div class="separator self-center w-[98%]"></div>
-
-            <MaterialLine
-                title="Ресурс-Пак Дядя Шнюк [Шлюх 2.0] [1.2.46]" class="h-[114px] pl-4 pr-4 gap-4"
-                cover="/images/users/content/cg.png" :likes="585" :subscribes="365" :comments="78"
-                :downloads="876" :views="965" time="1 нед. назад"
-            />
-
-            <div class="separator self-center w-[98%]"></div>
-
-            <MaterialLine
-                title="Ресурс-Пак Дядя Шнюк [Шлюх 2.0] [1.2.46]" class="h-[114px] pl-4 pr-4 gap-4"
-                cover="/images/users/boba.png" :likes="585" :subscribes="365" :comments="78"
-                :downloads="876" :views="965" time="1 нед. назад"
-            />
-
-            <div class="separator self-center w-[98%]"></div>
-
-            <div class="pages flex justify-center items-center h-[96px] gap-6">
-                <button class="flex min-w-[32px] relative" type="button">
-                    <span class="icon icon-left-arrow absolute" style="left: .8rem;"></span>
-                    <span class="icon icon-left-arrow"></span>
-                </button>
-                <button class="flex" type="button">
-                    <span class="icon icon-left-arrow flex"></span>
-                </button>
-                <div class="flex">1</div>
-                <button class="flex" type="button">
-                    <span class="icon icon-right-arrow flex"></span>
-                </button>
-                <button class="flex min-w-[32px] relative" type="button">
-                    <span class="icon icon-right-arrow absolute" style="right: .8rem;"></span>
-                    <span class="icon icon-right-arrow"></span>
-                </button>
-            </div>
-
-        </form>
-    </div>
+        </div>
+    </section>
 </template>
 
 <style scoped>
-.section .line {
-    height: 72px;
-}
-.ld-shine-button .preset {
-    padding: 0.2rem 1.5rem;
-}
+
 </style>

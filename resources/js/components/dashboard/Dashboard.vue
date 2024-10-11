@@ -4,7 +4,6 @@ import {computed, ref, watch} from 'vue'
 import {useAuthStore} from '@/stores/auth'
 
 import ItemButton from '@/components/elements/ItemButton.vue'
-import Paginator from '@/components/elements/Paginator.vue'
 
 interface DashboardMenuItem {
     label: string
@@ -76,7 +75,7 @@ function setMobileMenu() {
                 </button>
                 <div class="ld-shadow-text flex items-center text-[1.2rem] md:text-[2rem] gap-2">
                     <p :class="{ 'sm-hidden': !isMobileMenu }" class="ld-trinity-text">Панель Управления</p>
-                    <p class="opacity-80">></p>
+                    <p class="opacity-80 sm:flex hidden">></p>
                     <p class="text-center" :class="{ 'sm-hidden': isMobileMenu }">{{ activeMenuItem.label }}</p>
                 </div>
                 <div class="h-[32px] w-[32px] arrow-tap"></div>
@@ -95,7 +94,7 @@ function setMobileMenu() {
                         @click="onSectionSelect(item)"
                     >
                         <ItemButton
-                            class="h-[64px] md:text-[1rem] text-[14px] w-full gap-2 pl-6 pr-8"
+                            class="h-[64px] md:text-[1rem] text-[14px] w-full gap-2 pl-6 pr-8 whitespace-nowrap"
                             plain :text="item !== activeMenuItem"
                             :label="item.label"
                             :icon="item.icon"
@@ -113,7 +112,7 @@ function setMobileMenu() {
             >
 
                 <RouterView v-slot="{ Component }">
-                    <Transition name="smooth-settings-switch">
+                    <Transition name="smooth-manager-switch">
                         <Component class="w-full" :is="Component"/>
                     </Transition>
                 </RouterView>
@@ -178,7 +177,6 @@ function setMobileMenu() {
         border-left: none;
     }
     .interface .manager-aside {
-        transform: translateX(-100%);
         transition: .5s;
         min-width: 0;
         opacity: 0;

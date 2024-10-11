@@ -12,7 +12,7 @@ const authStore = useAuthStore()
 const toastStore = useToastStore()
 
 const avatarData = ref({
-    avatar: authStore.avatar,
+    avatar: authStore.user,
 })
 const avatarErrors = ref([])
 const isEditingAvatar = ref(false)
@@ -83,26 +83,32 @@ function submitChangeAvatar() {
 </script>
 
 <template>
-    <div class="section flex flex-col h-full">
-        <div class="banner flex justify-center items-center w-full">
-            <img alt="" class="profile" src="/images/elements/stylization-banner.png">
+    <div class="section flex flex-col min-h-[100vh]">
+        <div class="banner flex justify-center items-center max-h-[168px] w-full overflow-hidden">
+            <img
+                alt=""
+                class="profile sm:pt-0 pt-2"
+                src="/images/elements/stylization-banner.png"
+                style="animation: banner-scale-animation 15s infinite;"
+            >
         </div>
         <form action="" class="flex flex-col h-full w-full">
 
-            <div class="section-title flex justify-center transfusion text-[1.4rem] mt-4">Аватар</div>
+            <div class="section-title ld-title-font flex justify-center transfusion text-[20px] mt-2">Аватар</div>
 
-            <fieldset class="flex flex-col m-4">
-                <div class="flex flex-col-reverse md:flex-row">
-                    <div class="flex self-center mt-2 md:self-start md:mt-0">
+            <fieldset class="flex flex-col m-2">
+                <div class="flex flex-col xs:flex-row gap-2">
+                    <div class="flex self-center md:self-start">
                         <ImageLoader
+                            class="min-h-[72px] min-w-[72px]"
                             v-model="avatarData.avatar"
                             filler-icon="icon-white-pencil"
                             id="settings-profile-avatar"
                             image-path="/images/users/content/funny-girl.png"
                         />
                     </div>
-                    <div class="description flex flex-col md:ml-2">
-                        <p class="text-[0.8rem] min-h-[96px] p-3">
+                    <div class="description flex flex-col">
+                        <p class="sm:text-[12px] text-[10px] xs:text-start text-center">
                             Аватар — прекрасное средство графического самовыражения, а также идентификации!
                             Загрузите своё собственное изображение, чтобы другие Пользователи могли проще
                             и быстрее Вас отличить!
@@ -111,19 +117,19 @@ function submitChangeAvatar() {
                 </div>
             </fieldset>
 
-            <div class="section-title flex justify-center transfusion text-[1.4rem]">Никнейм</div>
+            <div class="section-title ld-title-font flex justify-center transfusion text-[20px]">Никнейм</div>
 
-            <fieldset class="flex flex-col m-4">
+            <fieldset class="flex flex-col m-2">
                 <div class="flex flex-col">
-                    <div class="flex flex-col">
+                    <div class="flex flex-col gap-3">
                         <div class="description">
-                            <p class="text-[0.8rem] p-2">
+                            <p class="sm:text-[12px] text-[10px] xs:text-start text-center">
                                 Что может быть лучше оригинального и звучного слогана? — оригинальный и звучный
-                                Никнейм! Главное подбирайте с умом: обновлять Никнейм можно только 1 раз в месяц!
+                                Никнейм! Главное — подбирайте с умом: обновлять Никнейм можно только 1 раз в месяц!
                             </p>
                         </div>
-                        <div v-if="!isEditingUsername" class="mt-4">
-                            <span class="subtitle">Никнейм</span>
+                        <div v-if="!isEditingUsername">
+                            <span class="subtitle text-[14px]">Никнейм</span>
                             <div
                                 class="
                                     current-data-field
@@ -144,9 +150,10 @@ function submitChangeAvatar() {
                             </div>
                         </div>
                         <div v-else class="flex flex-col mt-4">
-                            <span class="subtitle">Новый Никнейм</span>
+                            <span class="subtitle text-[14px]">Новый Никнейм</span>
                             <Input
                                 v-model="usernameData.username"
+                                class="h-[48px]"
                                 id="settings-profile-nickname"
                                 :placeholder="authStore.username"
                                 autocomplete="username"
@@ -154,7 +161,7 @@ function submitChangeAvatar() {
                         </div>
                         <span
                             :class="{ 'error': usernameErrors['username'], 'success': !usernameErrors['username']}"
-                            class="status text-[0.8rem] locked"
+                            class="status sm:text-[12px] text-[10px] my-0.5 locked"
                         >
                             {{ usernameErrors['username']?.[0] || '&nbsp;' }}
                         </span>

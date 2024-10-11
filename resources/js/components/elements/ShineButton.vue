@@ -6,6 +6,8 @@ const props = defineProps({
         type: String,
         default: 'button'
     },
+    classPreset: String,
+    classPress: String,
     disabled: {
         type: Boolean,
         default: false
@@ -33,8 +35,8 @@ const props = defineProps({
         :disabled="disabled"
         :type="buttonType"
     >
-        <span class="press ld-shadow-text flex">
-            <span class="preset flex items-center" :class="{'gap-2': label}">
+        <span class="press ld-shadow-text flex" :class="classPress">
+            <span class="preset flex items-center" :class="classPreset">
                 <ProcessingMovingItems v-if="loading" class="loading-icon" :item="loadingItem" height="28px" width="28px"/>
                 <span
                     v-if="!loading && icon !== ''"

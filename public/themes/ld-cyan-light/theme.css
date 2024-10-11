@@ -1505,6 +1505,18 @@
 
     /* =============== [ Анимации ] =============== */
 
+    @keyframes banner-scale-animation {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
     @keyframes comment-link-color-animation
     {
         0% { color: rgba(0, 165, 185, 1); }
@@ -1534,6 +1546,31 @@
     @media screen and (max-width: 1023px) {
         .user-menu .profile-link {
             min-height: 64px;
+        }
+    }
+
+    /* =============== [ Медиа-Запрос { 769px > ?px } ] =============== */
+
+    @media screen and (min-width: 769px) {
+
+        /* =============== [ Классовые Анимации ] =============== */
+
+        .smooth-manager-switch-enter-active,
+        .smooth-auth-switch-leave-active {
+            transition: .8s ease;
+            position: absolute;
+        }
+
+        .smooth-manager-switch-enter-from {
+            transform: translateY(100%);
+            transition: .8s;
+            opacity: 0;
+        }
+
+        .smooth-manager-switch-leave-to {
+            transform: translateY(-100%);
+            transition: .8s;
+            opacity: 0;
         }
     }
 

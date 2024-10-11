@@ -143,6 +143,7 @@
     .animation-elder-guardian { background-image: url('/public/images/mobs/elder-guardian-animation.gif'); }
     .animation-flying-phantom { background-image: url('/public/images/mobs/flying-phantom-animation.gif'); }
     .animation-walking-iron-golem { background-image: url('/public/images/mobs/walking-iron-golem-animation.gif'); }
+    .animation-wandering-trader { background-image: url('/public/images/mobs/wandering_trader.png'); }
 
     .block-diamond-ore-block { background-image: url('/public/images/blocks/diamond-ore.png'); }
     .block-diamond-block { background-image: url('/public/images/blocks/diamond-block.png'); }

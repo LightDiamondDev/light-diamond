@@ -40,13 +40,19 @@ const userMenu = ref<InstanceType<typeof Menu>>()
 
 const userMenuItems = computed<MenuItem[]>(() => [
     {
-        label: 'Контент-студия',
+        label: 'Панель Управления',
+        icon: 'icon-crown',
+        visible: authStore.isModerator,
+        route: {name: 'dashboard'}
+    },
+    {
+        label: 'Контент-Студия',
         icon: 'icon-bottle',
         visible: authStore.isAuthenticated,
         route: {name: 'studio'}
     },
     {
-        label: 'Создать материал',
+        label: 'Создать Материал',
         icon: 'icon-plus',
         visible: authStore.isAuthenticated,
         route: {name: 'create-post'}
