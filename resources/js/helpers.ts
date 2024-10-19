@@ -20,7 +20,7 @@ export function countHTMLTag(html: string, tag: string) {
 }
 
 export function getHeaderHeight() {
-    return remToPixels(getCssVariableValue('--header-height'))
+    return convertToPixels(getCssVariableValue('--header-height'))
 }
 
 export function getErrorMessageByCode(code: number) {
@@ -165,10 +165,13 @@ export function getPostVersionStatusInfo(status: PostVersionStatus) {
 export function getCssVariableValue(variable: string) {
     return getComputedStyle(document.documentElement).getPropertyValue(variable).trim()
 }
-
-export function remToPixels(remValue: string) {
-    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize)
-    return parseFloat(remValue) * rootFontSize
+export function convertToPixels(value: string) {
+    let tempElement = document.createElement('div')
+    document.body.appendChild(tempElement)
+    tempElement.style.width = value
+    let pixels = window.getComputedStyle(tempElement).width
+    document.body.removeChild(tempElement)
+    return parseFloat(pixels)
 }
 
 export function lockGlobalScroll() {

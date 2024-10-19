@@ -41,11 +41,10 @@ const verticalMenus = reactive<{ [key: string]: InstanceType<typeof EditorVertic
                         <span :class="menuItem.icon"/>
                     </ItemButton>
                 </template>
-
                 <template v-else>
                     <ItemButton
                         class="flex-shrink-0"
-                        @click="addNodeMenu?.toggle"
+                        @click="menuItem.callback"
                         :severity="menuItem.isActive ? 'primary' : 'secondary'"
                         :icon="menuItem.icon"
                     />

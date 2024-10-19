@@ -470,9 +470,6 @@ function unsetLink() {
 </template>
 
 <style scoped>
-.content .item-button .text {
-    line-height: 1.5;
-}
 .tippy-content .item-button {
     justify-content: center;
     background: none;

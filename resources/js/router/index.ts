@@ -2,7 +2,7 @@ import {createRouter, createWebHistory} from 'vue-router'
 import {type Component} from 'vue'
 import routes from '@/router/routes'
 import {useAuthStore} from '@/stores/auth'
-import {changeTitle} from '@/helpers'
+import {changeTitle, getHeaderHeight} from '@/helpers'
 import AuthRequired from '@/components/auth/AuthRequired.vue'
 import NoPermission from '@/components/NoPermission.vue'
 
@@ -19,17 +19,7 @@ function disconnectHashObserver() {
 }
 
 function getHashScrollTopOffset() {
-    function getCssVariableValue(variable: string) {
-        return getComputedStyle(document.documentElement).getPropertyValue(variable).trim()
-    }
-
-    function remToPixels(remValue: string) {
-        const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize)
-        return parseFloat(remValue) * rootFontSize
-    }
-
-    const headerHeight = remToPixels(getCssVariableValue('--header-height'))
-    return headerHeight + 16
+    return getHeaderHeight() + 16
 }
 
 const router = createRouter({
@@ -41,7 +31,7 @@ const router = createRouter({
                 disconnectHashObserver()
 
                 if (to.path === from.path) {
-                    resolve({el: to.hash, top: getHashScrollTopOffset(), behavior: 'smooth'})
+                    resolve({el: to.hash, behavior: 'smooth'})
                 } else {
                     let resolveTimeout: NodeJS.Timeout | undefined = undefined
 
