@@ -166,16 +166,22 @@ export function getCssVariableValue(variable: string) {
     return getComputedStyle(document.documentElement).getPropertyValue(variable).trim()
 }
 export function convertToPixels(value: string) {
-    let tempElement = document.createElement('div')
+    const tempElement = document.createElement('div')
+
     document.body.appendChild(tempElement)
+
     tempElement.style.width = value
-    let pixels = window.getComputedStyle(tempElement).width
+
+    const pixels = window.getComputedStyle(tempElement).width
+
     document.body.removeChild(tempElement)
+
     return parseFloat(pixels)
 }
 
 export function lockGlobalScroll() {
     const currentScrollbarWidth = window.innerWidth - document.documentElement.offsetWidth
+
     document.body.style.setProperty('--current-global-scrollbar-width', currentScrollbarWidth + 'px')
     document.body.classList.add('lock-scroll')
 }
