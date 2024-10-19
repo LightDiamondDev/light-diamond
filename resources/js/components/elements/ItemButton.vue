@@ -27,9 +27,5 @@ const props = defineProps({
 </template>
 
 <style scoped>
-.left-header-sidebar .item-button .text,
-.right-header-sidebar .item-button .text {
-    line-height: 1.2;
-    max-width: 90%;
-}
+
 </style>

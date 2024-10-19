@@ -82,7 +82,7 @@ function onFavouriteClick() {
 </script>
 
 <template>
-    <div class="flex sm:text-[12px] text-[10px]">
+    <div class="flex text-[12px]">
         <button :class="{ 'active': post.is_liked }" class="set-mark flex items-center" @click="onLikeClick">
             <EffectIcon icon="icon-heart"/>
             <span class="counter flex p-1">{{ post.like_count }}</span>
@@ -109,7 +109,7 @@ function onFavouriteClick() {
             :to="{name: 'post', params: {slug: post.slug}}"
             class="set-mark flex items-center mini"
         >
-            <span class="icon icon-download flex opacity-85 sm:h-[32px] h-[24px] sm:min-w-[32px] min-w-[24px]"/>
+            <span class="icon icon-download flex opacity-85 sm:h-[32px] h-[24px] sm:w-[32px] w-[24px]"/>
             <span class="counter flex p-1">1,1K</span>
         </RouterLink>
     </div>

@@ -26,7 +26,6 @@ const props = defineProps({
         <input
             v-model="model"
             :autocomplete="autocomplete"
-            class="text-[0.9rem]"
             :id="id"
             :placeholder="placeholder"
             :type="currentType"

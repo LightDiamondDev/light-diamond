@@ -156,6 +156,11 @@
     .item-diamond { background-image: url('/public/images/items/diamond.png'); }
     .item-ender-pearl { background-image: url('/public/images/items/ender-pearl.png'); }
     .item-gold-ingot { background-image: url('/public/images/items/gold-ingot.png'); }
+    .item-leave-gold { background-image: url('/public/images/items/leave-gold.png'); }
+    .item-leave-lime { background-image: url('/public/images/items/leave-lime.png'); }
+    .item-leave-orange { background-image: url('/public/images/items/leave-orange.png'); }
+    .item-leave-red { background-image: url('/public/images/items/leave-red.png'); }
+    .item-leave-yellow { background-image: url('/public/images/items/leave-yellow.png'); }
 
     /* =============== [ Анимации ] =============== */
 
@@ -288,7 +293,9 @@
     .post-cover, .post-cover img {
         object-position: center;
         aspect-ratio: 16/9;
+        /*
         object-fit: cover;
+        */
     }
 
     .post hr {
@@ -296,9 +303,11 @@
     }
 
     .post, .post-comment {
-        * { font-size: 14px; }
 
-        a { white-space: nowrap; }
+        a {
+            white-space: nowrap;
+            font-size: 14px;
+        }
 
         blockquote {
             padding-left: 1rem;
@@ -316,6 +325,7 @@
 
         ol, ul {
             padding-left: 2rem;
+            font-size: 14px;
         }
 
         ol {
@@ -332,6 +342,7 @@
 
         code {
             padding: 0.2rem 0.5rem;
+            font-size: 14px;
         }
 
         pre {
@@ -339,13 +350,14 @@
             overflow-x: auto;
 
             code {
-                padding: 0;
                 background: none;
+                padding: 0;
             }
         }
 
         p, pre, img, blockquote {
             margin-top: 1.2rem;
+            font-size: 14px;
         }
 
         p:first-child {
@@ -359,7 +371,7 @@
         /* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
 
         @media screen and (max-width: 450px) {
-            * { font-size: 12px; }
+            a, code, li, ol, p, pre, ul { font-size: 12px; }
 
             img {
                 max-height: 220px;

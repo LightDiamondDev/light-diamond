@@ -9,14 +9,16 @@ const props = defineProps({
     id: String,
     maxLength: Number,
     minLength: Number,
-    placeholder: String
+    placeholder: String,
+    textAreaClasses: String
 })
 </script>
 
 <template>
     <label class="label-input-text flex h-full max-w-full" :for="id">
         <textarea
-            class="ld-tinted-background flex h-full w-full"
+            class="flex h-full w-full"
+            :class="textAreaClasses"
             :disabled="!editable"
             v-model="model"
             :maxlength="maxLength"

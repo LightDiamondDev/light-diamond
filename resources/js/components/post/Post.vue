@@ -225,20 +225,20 @@ function addPostImageClickListeners() {
             <aside class="left-post-interaction xl-left-post-interaction
                 xl:flex hidden xl:flex-col sticky text-[12px] mb-12"
             >
-                <PostActionBar class="flex-col gap-4" :post="post"/>
+                <PostActionBar class="ld-secondary-background-container flex-col gap-4" :post="post"/>
             </aside>
 
             <div class="post center-interaction bright-background ld-fixed-background flex flex-col items-center max-w-[832px] w-full" ref="postContent">
 
                 <div class="post-info-dates xl:hidden flex lg:justify-between justify-center w-full xs:px-4 px-2">
-                    <PostInfoBar class="xl:flex-col flex-wrap justify-center xl:gap-4 gap-2 lg:mt-0 mt-4 duration-500" :post="post"/>
+                    <PostInfoBar class="xl:flex-col flex-wrap justify-center gap-4 lg:mt-0 mt-4 duration-500" :post="post"/>
                     <button class="lg:flex hidden items-start" @click="isWide = !isWide">
                         <span class="icon flex my-4" :class="{'icon-right-arrow': isWide, 'icon-left-arrow': !isWide}"/>
                     </button>
                 </div>
 
                 <h1 class="post-name ld-secondary-text text-center
-                    md:text-[2rem] text-[1.5rem] my-4 xs:px-4 px-2"
+                    md:text-[3rem] sm:text-[2rem] text-[1.5rem] my-4 xs:px-4 px-2"
                 >
                     {{ post!.version!.title }}
                 </h1>
@@ -263,7 +263,7 @@ function addPostImageClickListeners() {
                 <div class="ld-secondary-background ld-fixed-background ld-trinity-border-top xl:hidden
                     flex sm:justify-start justify-center sticky w-full bottom-0 mt-2 xs:px-4 px-2 py-2"
                 >
-                    <PostActionBar class="xs:gap-4 gap-2" :post="post"/>
+                    <PostActionBar class="ld-secondary-background-container xs:gap-4 gap-2" :post="post"/>
                 </div>
 
             </div>
@@ -278,7 +278,7 @@ function addPostImageClickListeners() {
                         />
                     </button>
                     <PostInfoBar
-                        class="right-post-info-bar xl:flex-col justify-center xl:gap-4 gap-2 duration-500"
+                        class="right-post-info-bar xl:flex-col justify-center gap-4 duration-500"
                         :post="post"
                     />
                 </div>

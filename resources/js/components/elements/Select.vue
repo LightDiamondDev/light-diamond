@@ -4,12 +4,17 @@ import ItemButton from '@/components/elements/ItemButton.vue'
 
 const props = defineProps({
     buttonClasses: String,
+    buttonWrapClasses: String,
     buttonLabelClasses: String,
     disabled: {
         type: Boolean,
         default: false
     },
     editable: {
+        type: Boolean,
+        default: false
+    },
+    isCustomOptionItem: {
         type: Boolean,
         default: false
     },
@@ -109,32 +114,36 @@ function change(option: any) {
         ref="container"
     >
         <button
+            class="select-button flex items-center w-full"
             :class="buttonClasses"
-            class="select-button flex justify-between items-center"
             :disabled="disabled"
             type="button"
             @click="toggleSelect"
         >
-            <span class="select-span flex items-center w-full gap-4" :class="optionClasses">
+                <span class="select-span flex items-center w-full" :class="optionClasses">
                 <template v-if="currentOption">
                     <slot name="option-icon" :option="currentOption">
-                        <span v-if="optionIconKey" :class="getOptionIcon(currentOption)" class="icon"></span>
+                        <span v-if="optionIconKey" :class="getOptionIcon(currentOption)" class="icon"/>
                     </slot>
                 </template>
 
-                <span :class="buttonLabelClasses" class="text">
-                    <span v-if="currentOption">{{ getOptionLabel(currentOption) }}</span>
+                <span :class="buttonLabelClasses" class="text overflow-hidden">
+                    <span v-if="currentOption" class="truncate">{{ getOptionLabel(currentOption) }}</span>
                     <span v-else class="opacity-80 ml-2">{{ placeholder }}</span>
                 </span>
             </span>
-            <span v-if="!disabled" class="button-arrow flex justify-center items-center">
+            <span v-if="!disabled" class="button-arrow flex justify-center items-center mr-2">
                 <span class="icon icon-down-arrow flex"></span>
             </span>
         </button>
         <Transition name="smooth-select-switch">
             <div v-if="isSelectOpen" :class="optionsClasses" class="options flex flex-col w-full absolute">
                 <template v-for="option in props.options">
+                    <div v-if="isCustomOptionItem" class="option item-button flex" @click="change(option)">
+                        <slot name="option-item" :option="option"/>
+                    </div>
                     <ItemButton
+                        v-else
                         @click="change(option)"
                         :label="getOptionLabel(option)"
                         :icon="getOptionIcon(option)"
@@ -152,12 +161,9 @@ function change(option: any) {
 </template>
 
 <style scoped>
-.select-button.cursor-default {
-    cursor: default;
-}
 .button-arrow {
-    height: 72px;
-    width: 72px;
+    height: 48px;
+    width: 48px;
 }
 
 .select .options {
@@ -165,7 +171,6 @@ function change(option: any) {
     overflow-y: auto;
     transition: .2s;
     z-index: 1;
-    top: 72px;
 }
 
 .select.disabled {
@@ -179,7 +184,10 @@ function change(option: any) {
 .select-button {
     overflow: hidden;
     cursor: pointer;
-    height: 72px;
+}
+
+.select-button:focus-visible {
+    background-color: var(--primary-bg-color);
 }
 
 .select-button .icon {
@@ -217,16 +225,8 @@ function change(option: any) {
 
 @media screen and (max-width: 1023px) {
     .button-arrow {
-        min-width: 64px;
-        height: 64px;
-    }
-
-    .select .options {
-        top: 64px;
-    }
-
-    .select-button {
-        height: 64px;
+        min-width: 48px;
+        height: 48px;
     }
 }
 </style>

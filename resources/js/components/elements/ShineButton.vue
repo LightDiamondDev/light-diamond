@@ -2,12 +2,17 @@
 import ProcessingMovingItems from '@/components/elements/ProcessingMovingItems.vue'
 
 const props = defineProps({
+    as: {
+        type: String,
+        default: 'button'
+    },
     buttonType: {
         type: String,
         default: 'button'
     },
     classPreset: String,
     classPress: String,
+    classWrap: String,
     disabled: {
         type: Boolean,
         default: false
@@ -29,24 +34,28 @@ const props = defineProps({
 </script>
 
 <template>
-    <button
+    <Component
         class="ld-shine-button flex items-center option"
         :class="{ 'disabled': disabled }"
         :disabled="disabled"
         :type="buttonType"
+        :is="as"
     >
-        <span class="press ld-shadow-text flex" :class="classPress">
-            <span class="preset flex items-center" :class="classPreset">
-                <ProcessingMovingItems v-if="loading" class="loading-icon" :item="loadingItem" height="28px" width="28px"/>
-                <span
-                    v-if="!loading && icon !== ''"
-                    :class="icon"
-                    class="icon"
-                />
-                <span class="label text-center flex items-center duration-200">{{ label }}</span>
+        <span class="wrap flex w-full" :class="classWrap">
+            <span class="press ld-shadow-text flex w-full" :class="classPress">
+                <span class="preset flex items-center w-full" :class="classPreset">
+                    <ProcessingMovingItems v-if="loading" class="loading-icon" :item="loadingItem" height="28px" width="28px"/>
+                    <span
+                        v-if="!loading && icon !== ''"
+                        :class="icon"
+                        class="icon"
+                    />
+                    <span class="label text-center flex items-center duration-200">{{ label }}</span>
+                </span>
             </span>
         </span>
-    </button>
+
+    </Component>
 </template>
 
 <style scoped>

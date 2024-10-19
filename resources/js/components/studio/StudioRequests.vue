@@ -90,7 +90,7 @@ loadPostVersions()
             <div>
                 <div class="flex md:justify-start justify-center">
                     <TabMenu
-                        item-classes="justify-center h-[48px] min-w-[64px] md:text-[1rem] text-[14px] gap-1 lg:px-4 px-1"
+                        item-classes="ld-title-font justify-center h-[48px] min-w-[64px] md:text-[1rem] text-[14px] gap-1 lg:px-4 px-1"
                         item-label-classes="sm:flex hidden"
                         :items="tabMenuItems"
                         @tab-change="onTabChange"

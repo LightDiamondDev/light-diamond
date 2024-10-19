@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import EffectIcon from '@/components/elements/EffectIcon.vue'
+import UserAvatar from '@/components/user/UserAvatar.vue'
 
 const isLiked = ref(false)
 const isSubscribed = ref(false)
@@ -24,31 +25,33 @@ function subscribe() {
     <RouterLink class="preview-wrap flex" :to="{ name: 'home' }">
         <img alt="" class="preview flex w-full full-locked" src="/images/users/boba.png">
     </RouterLink>
-    <div class="description-wrap flex flex-col text-[0.9rem] w-full">
+    <div class="description-wrap flex flex-col text-[12px] w-full">
         <RouterLink class="post-title-wrap transfusion p-2" :to="{ name: 'home' }">
-            <h1 class="post-title text-base">Light Diamond Addon: Craft & Survive [0.1.0]</h1>
+            <h2 class="post-title text-[15px]">Light Diamond Addon: Craft & Survive [0.1.0]</h2>
         </RouterLink>
-        <p class="description flex text-[0.8rem] p-2">
+        <p class="description flex text-[11px] p-2">
             Глобальный Аддон Light Diamond призван улучшить многие аспекты игрового процесса и обновить Ваши
             представления о Ванильной Игре!
         </p>
-        <div class="material-info info flex flex-wrap justify-between p-2">
-            <div class="types flex flex-wrap gap-2">
+        <div class="material-info info flex flex-wrap justify-between px-2">
+            <div class="types flex flex-wrap gap-3">
                 <p class="type flex items-center">Addon</p>
                 <p class="type flex items-center">16x16</p>
                 <p class="type flex items-center">1.19+</p>
             </div>
             <div class="progress-bar flex relative">
                 <div class="progress flex items-center transfusion" style="width: 35%;">
-                    <p class="text-[0.7rem] absolute pl-1">35%</p>
+                    <p class="text-[11px] absolute pl-1">35%</p>
                 </div>
             </div>
         </div>
         <div class="author-info info flex justify-between">
-            <RouterLink class="author-wrap flex flex-wrap gap-2" :to="{ name: 'home' }">
-                <div class="author-avatar-frame flex min-w-[36px]">
-                    <img alt="" class="author-avatar flex min-w-[32px] h-[32px]" src="/images/elements/cherry-blossom-grove-background.png">
-                </div>
+            <RouterLink class="author-wrap flex flex-wrap gap-1" :to="{ name: 'home' }">
+                <UserAvatar
+                    border-class-list="h-10 w-10"
+                    icon-class-list="h-7 w-7"
+                    :user="option"
+                />
                 <p class="author-username flex items-center">GrostLight15</p>
             </RouterLink>
             <p class="type ago flex items-center text-end">Неделю назад</p>
@@ -56,7 +59,7 @@ function subscribe() {
 
 
         <div class="menu-separator flex self-center w-[95%]"/>
-        <div class="actions flex flex-wrap gap-2 text-[0.7rem]">
+        <div class="actions ld-primary-background-container flex flex-wrap gap-2 text-[0.7rem]">
             <div class="line basic flex flex-wrap gap-2">
                 <button :class="{ 'active': isLiked }" class="set-mark flex items-center" @click="like">
                     <EffectIcon icon="icon-heart"/>

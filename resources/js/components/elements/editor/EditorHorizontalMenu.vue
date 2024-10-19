@@ -29,15 +29,14 @@ const verticalMenus = reactive<{ [key: string]: InstanceType<typeof EditorVertic
                         :items="menuItem.children"
                         :title="menuItem.displayName"
                     />
-
                     <ItemButton
                         v-if="verticalMenus[`editor-vertical-menu-${id}`]"
-                        :severity="menuItem.isActive ? 'primary' : 'secondary'"
-                        icon="icon-down-arrow"
-                        aria-haspopup="true"
                         :aria-controls="`editor-vertical-menu-${id}`"
+                        aria-haspopup="true"
                         class="flex-shrink-0"
                         @click="verticalMenus[`editor-vertical-menu-${id}`].toggle"
+                        :severity="menuItem.isActive ? 'primary' : 'secondary'"
+                        icon="icon-down-arrow"
                     >
                         <span :class="menuItem.icon"/>
                     </ItemButton>
@@ -45,10 +44,10 @@ const verticalMenus = reactive<{ [key: string]: InstanceType<typeof EditorVertic
 
                 <template v-else>
                     <ItemButton
-                        :icon="menuItem.icon"
-                        :severity="menuItem.isActive ? 'primary' : 'secondary'"
                         class="flex-shrink-0"
-                        @click="menuItem.callback"
+                        @click="addNodeMenu?.toggle"
+                        :severity="menuItem.isActive ? 'primary' : 'secondary'"
+                        :icon="menuItem.icon"
                     />
                 </template>
             </template>
@@ -66,7 +65,7 @@ const verticalMenus = reactive<{ [key: string]: InstanceType<typeof EditorVertic
 </style>
 
 <style scoped>
-.content .item-button {
+.item-button {
     justify-content: center;
     min-height: 48px;
     width: 48px;

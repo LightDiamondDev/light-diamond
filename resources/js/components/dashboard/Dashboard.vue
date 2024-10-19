@@ -73,8 +73,8 @@ function setMobileMenu() {
                 >
                     <span class="flex icon icon-left-arrow"/>
                 </button>
-                <div class="ld-shadow-text flex items-center text-[1.2rem] md:text-[2rem] gap-2">
-                    <p :class="{ 'sm-hidden': !isMobileMenu }" class="ld-trinity-text">Панель Управления</p>
+                <div class="ld-title-font ld-shadow-text flex items-center text-[1.2rem] md:text-[2rem] gap-2">
+                    <p :class="{ 'sm-hidden': !isMobileMenu }" class="ld-brilliant-text text-center">Панель Управления</p>
                     <p class="opacity-80 sm:flex hidden">></p>
                     <p class="text-center" :class="{ 'sm-hidden': isMobileMenu }">{{ activeMenuItem.label }}</p>
                 </div>
@@ -94,7 +94,7 @@ function setMobileMenu() {
                         @click="onSectionSelect(item)"
                     >
                         <ItemButton
-                            class="h-[64px] md:text-[1rem] text-[14px] w-full gap-2 pl-6 pr-8 whitespace-nowrap"
+                            class="ld-title-font h-[64px] md:text-[1rem] text-[14px] w-full gap-2 pl-6 pr-8 whitespace-nowrap"
                             plain :text="item !== activeMenuItem"
                             :label="item.label"
                             :icon="item.icon"

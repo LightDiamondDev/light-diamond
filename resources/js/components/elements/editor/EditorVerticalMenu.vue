@@ -46,7 +46,7 @@ function toggle(event: Event) {
 <template>
     <Menu
         class="ld-primary-background ld-primary-border max-w-[100vw]"
-        item-classes="h-[64px] px-4"
+        item-classes="ld-title-font md:h-[64px] h-[48px] gap-3 px-4"
         :items="convertToMenuItems(items)"
         @mousedown.prevent
         ref="menu"
@@ -58,7 +58,5 @@ function toggle(event: Event) {
 </template>
 
 <style scoped>
-.content .menu .item-button {
-    min-width: 64px;
-}
+
 </style>

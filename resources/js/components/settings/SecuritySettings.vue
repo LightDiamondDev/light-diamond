@@ -192,7 +192,7 @@ function submitChangePassword() {
                             <span class="subtitle text-[14px]">Новый Email</span>
                             <Input
                                 v-model="emailData.email"
-                                class="h-[48px]"
+                                class="text-[14px] h-[48px]"
                                 id="settings-security-email"
                                 :placeholder="hiddenEmail"
                                 autocomplete="email"
@@ -206,7 +206,7 @@ function submitChangePassword() {
                             <span class="subtitle text-[14px]">Новый повторный Email</span>
                             <Input
                                 v-model="emailData.email_confirmation"
-                                class="h-[48px]"
+                                class="text-[14px] h-[48px]"
                                 id="settings-security-email-confirmation"
                                 :placeholder="hiddenEmail"
                                 autocomplete="email"
@@ -295,7 +295,7 @@ function submitChangePassword() {
                             <span class="subtitle text-[14px]">Новый пароль</span>
                             <Input
                                 v-model="passwordData.password"
-                                class="h-[48px]"
+                                class="text-[14px] h-[48px]"
                                 id="settings-security-password"
                                 autocomplete="password"
                                 placeholder="Пароль"
@@ -309,7 +309,7 @@ function submitChangePassword() {
                             <span class="subtitle text-[14px]">Новый повторный пароль</span>
                             <Input
                                 v-model="passwordData.password_confirmation"
-                                class="h-[48px]"
+                                class="text-[14px] h-[48px]"
                                 id="settings-security-password-confirmation"
                                 placeholder="Повторный пароль"
                                 autocomplete="password"

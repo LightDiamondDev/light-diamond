@@ -153,7 +153,7 @@ function submitChangeAvatar() {
                             <span class="subtitle text-[14px]">Новый Никнейм</span>
                             <Input
                                 v-model="usernameData.username"
-                                class="h-[48px]"
+                                class="text-[14px] h-[48px]"
                                 id="settings-profile-nickname"
                                 :placeholder="authStore.username"
                                 autocomplete="username"

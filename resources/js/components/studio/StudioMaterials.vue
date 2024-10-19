@@ -10,6 +10,8 @@ import PostStudioCard from '@/components/post/PostStudioCard.vue'
 
 import {RouterLink} from 'vue-router'
 import {useAuthStore} from '@/stores/auth'
+import ItemButton from '@/components/elements/ItemButton.vue'
+import ShineButton from '@/components/elements/ShineButton.vue'
 
 interface PostLoadResponseData {
     success: boolean
@@ -70,15 +72,16 @@ loadPosts()
     <section class="section">
         <div class="ld-shadow-text flex flex-col min-h-[100vh]">
             <div class="flex flex-col">
-                <div class="flex md:justify-start justify-center">
-                    <RouterLink class="ld-shine-button flex items-center md:m-2 mb-2" :to="{ name: 'create-post' }">
-                        <span class="press ld-title-font flex w-full">
-                            <span class="preset flex items-center gap-1 px-6 py-0.5">
-                                <span class="icon icon-brilliant"/>
-                                <span>Создать</span>
-                            </span>
-                        </span>
-                    </RouterLink>
+                <div class="flex md:justify-start justify-center gap-2 p-2">
+
+                    <ShineButton
+                        as="RouterLink"
+                        class-preset="ld-title-font gap-1 px-6 py-0.5"
+                        label="Создать"
+                        icon="icon-brilliant"
+                        :to="{ name: 'create-post' }"
+                    />
+
                 </div>
 
                 <div v-if="isLoading" class="flex flex-col">

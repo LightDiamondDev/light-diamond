@@ -144,6 +144,14 @@ function uploadImage(file: File) {
 </template>
 
 <style scoped>
+.upload-image-container {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    width: 100%;
+}
 .upload-image-container:active .icon,
 .upload-image-container:hover .icon,
 .upload-image-container.dragover .icon {
@@ -167,6 +175,9 @@ em {
 em span {
     text-shadow: none;
 }
+em:not(.loaded) {
+    color: var(--secondary-text-color);
+}
 em.loaded span {
     text-shadow: 0 0 8px black;
 }
@@ -176,6 +187,7 @@ em.loaded {
 em.loaded .upload-image-heading {
     color: var(--hover-text-color);
 }
+
 .upload-image-container:hover em.loaded:not(:hover) {
     opacity: 1;
 }

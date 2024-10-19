@@ -253,7 +253,7 @@ function logout() {
     </Dialog>
 
     <Menu
-        item-classes="h-[64px] md:text-[1rem] text-[14px] gap-3 pl-6 pr-4"
+        item-classes="ld-title-font h-[64px] md:text-[1rem] text-[14px] gap-3 pl-6 pr-4"
         :items="userMenuItems"
         align-right
         class="user-menu mt-[-4px]
@@ -277,7 +277,7 @@ function logout() {
                     :user="authStore.user!"
                 />
                 <div class="flex flex-col">
-                    <span class="title text-sm">{{ authStore.username }}</span>
+                    <span class="text-sm">{{ authStore.username }}</span>
                     <span class="subtitle text-[12px] opacity-70">Профиль</span>
                 </div>
             </a>
@@ -393,7 +393,7 @@ function logout() {
                         >
                             <template v-for="childSection of section.children">
                                 <ItemButton
-                                    class="h-[64px] md:text-[1rem] text-[14px] gap-3 pl-8 pr-4"
+                                    class="ld-title-font h-[64px] md:text-[1rem] text-[14px] gap-3 pl-8 pr-4"
                                     v-if="childSection.route"
                                     as="RouterLink"
                                     :label="childSection.label"
@@ -403,7 +403,7 @@ function logout() {
                                 />
                                 <ItemButton
                                     v-else
-                                    class="h-[64px] md:text-[1rem] text-[14px] gap-3 pl-8 pr-4"
+                                    class="ld-title-font h-[64px] md:text-[1rem] text-[14px] gap-3 pl-8 pr-4"
                                     :as="childSection.url ? 'a' : 'button'"
                                     :label="childSection.label"
                                     :icon="childSection.icon"

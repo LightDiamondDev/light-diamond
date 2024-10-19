@@ -238,13 +238,6 @@ function onReplyClick() {
     }
     replyData.value = {}
 }
-function verifyCommentAnswerOld(content: string) {
-    let parser = new DOMParser();
-    let result = content.replace(/<img[^>]+(>|$)/g, '<span class="icon-image icon"></span>')
-    result = result.replace(/<blockquote[^>]+(>|$)/g, '<span>[Цитата]</span>')
-    result = result.replace(/<code[^>]+(>|$)/g, '<span>[Код]</span>')
-    return parser.parseFromString(result, 'text/html')
-}
 
 function verifyCommentAnswer(content: string) {
     return content.replace(/<blockquote>(.+)<\/blockquote>/g, '<span class="icon-quote icon flex"></span>')
@@ -310,9 +303,11 @@ const currentCommentHTMLHeight = computed(() =>
                             <div class="flex md:items-center items-end gap-2">
                                 <p class="comment-username flex flex-wrap flex-row overflow-visible gap-3">
                                     <span class="flex gap-2">
-                                        <span class="nickname text-[var(--primary-color)] lg:text-base">{{ comment.user!.username }}</span>
+                                        <span class="nickname text-[var(--primary-color)] lg:text-[14px] ml-1">
+                                            {{ comment.user ? comment.user!.username : 'Некто' }}
+                                        </span>
                                         <span
-                                            v-if="comment.user?.username === comment.post?.version?.author?.username"
+                                            v-if="comment.user && comment.user?.username === comment.post?.version?.author?.username"
                                             class="ld-lightgray-text flex items-center text-[12px] pl-1"
                                         >
                                             Автор
@@ -344,7 +339,9 @@ const currentCommentHTMLHeight = computed(() =>
                                     class="mention ld-tinted-background darker left ld-secondary-text
                                         flex flex-col sm:text-[14px] text-[12px] mb-2 pl-3 py-2"
                                 >
-                                    <span class="text-[var(--primary-color)]">{{ comment.parent_comment!.user!.username }}</span>
+                                    <span class="text-[var(--primary-color)]">
+                                        {{ comment.parent_comment!.user ? comment.parent_comment!.user!.username : 'Некто' }}
+                                    </span>
                                     <span class="ld-primary-text comment-answer truncate whitespace-nowrap inline-block"
                                           v-html="verifyCommentAnswer(comment.parent_comment!.content)"
                                     />

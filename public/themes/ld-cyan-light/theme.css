@@ -12,7 +12,7 @@
         --trinity-text-color: #005565;
         --hover-text-color: #00ffff;
         --surface-border: #4d848f;
-        --primary-color: #5aedda;
+        --brilliant-color: #5aedda;
         --border-color: #dadada;
         --autofill-color: rgba(0, 125, 125, .5);
         --global-scrollbar-width: 12px;
@@ -138,11 +138,19 @@
     }
 
     .ld-trinity-text {
-        color: var(--primary-color);
+        color: var(--trinity-text-color);
+    }
+
+    .ld-brilliant-text {
+        color: var(--brilliant-color);
+    }
+
+    .ld-brilliant-link:hover {
+        color: var(--brilliant-color);
     }
 
     .ld-default-link {
-        color: var(--primary-color);
+        color: var(--brilliant-color);
     }
 
     .ld-default-link:hover {
@@ -388,153 +396,133 @@
         border: 2px solid rgba(255, 255, 255, .8);
     }
 
-    .content {
-        color: var(--secondary-text-color);
-    }
-
-    .content .author-wrap:focus-visible .username,
-    .content .author-wrap:hover .username {
+    .post .author-wrap:focus-visible .username,
+    .post .author-wrap:hover .username {
         color: var(--trinity-text-color);
     }
 
-    .content .editor-link-text,
-    .content .editor-link-url {
+    .post .editor-link-text,
+    .post .editor-link-url {
         color: var(--primary-text-color);
     }
 
-    .content .text-muted,
-    .content .item-button .label {
+    .post .text-muted,
+    .post .item-button .label {
         color: var(--primary-text-color);
     }
 
-    .content .text-muted {
+    .post .text-muted {
         text-align: center;
     }
 
-    .content .upload-image-container,
-    .content .upload-file-container {
+    .post .upload-image-container,
+    .post .upload-file-container {
         outline: 2px dashed var(--secondary-text-color);
         transition: .5s;
     }
 
-    .content .loaded {
+    .post .loaded {
         color: var(--primary-text-color);
     }
 
-    .content textarea::placeholder {
+    .post textarea::placeholder {
         color: var(--secondary-text-color);
         opacity: .8;
     }
 
-    .content .interface .author-wrap:hover span.username {
+    .post .interface .author-wrap:hover span.username {
         color: var(--trinity-text-color);
     }
 
-    .content .upload-image-container:hover,
-    .content .upload-file-container:hover {
+    .post .upload-image-container:hover,
+    .post .upload-file-container:hover {
         outline: 2px dashed rgb(0, 150, 150);
     }
 
-    .content .upload-image-container.dragover,
-    .content .upload-file-container.dragover {
+    .post .upload-image-container.dragover,
+    .post .upload-file-container.dragover {
         outline: 8px dashed rgba(0, 150, 150, 1);
     }
 
-    .content .upload-file-container.dragover .upload-file-heading,
-    .content .upload-image-container.dragover .upload-image-heading,
-    .content .upload-file-container:hover .upload-file-heading,
-    .content .upload-image-container:hover .upload-image-heading {
+    .post .upload-file-container.dragover .upload-file-heading,
+    .post .upload-image-container.dragover .upload-image-heading,
+    .post .upload-file-container:hover .upload-file-heading,
+    .post .upload-image-container:hover .upload-image-heading {
         color: rgba(0, 85, 101, .8);
     }
 
-    .content blockquote {
+    .post blockquote {
         border-left: 4px solid rgba(0, 85, 101, .8);
     }
 
-    .content * {
+    .post * {
         line-height: 1.8;
     }
 
-    .content h1 {
+    .post h1 {
         font-size: 3rem;
         line-height: 1.2;
         margin: 1rem 0;
     }
 
-    .content h2 {
+    .post h2 {
         font-size: 2.5rem;
         line-height: 1.2;
         margin: 1rem 0;
     }
 
-    .content h3 {
+    .post h3 {
         font-size: 2rem;
         line-height: 1.2;
         margin: .5rem 0;
     }
 
-    .content h4 {
+    .post h4 {
         font-size: 1.5rem;
     }
 
-    .content h5 {
+    .post h5 {
         font-size: 1.2rem;
     }
 
-    .content h6 {
+    .post h6 {
         font-size: 1rem;
     }
 
-    .content ul {
+    .post ul {
         list-style-type: square;
     }
 
-    .content a,
-    .content b,
-    .content code,
-    .content .post-content em,
-    .content i,
-    .content li,
-    .content pre,
-    .content p,
-    .content strong,
-    .content s,
-    .content textarea,
-    .content .username,
-    .content u {
-        text-shadow: none;
-    }
-
-    .content strong,
-    .content b {
+    .post strong,
+    .post b {
         font-weight: 800;
     }
 
-    .content .origin-info .username {
+    .post .origin-info .username {
         color: var(--secondary-text-color);
     }
 
-    .content .post-moderator {
+    .post .post-moderator {
         border: 0;
     }
 
-    .error {
-        color: rgba(255, 30, 50, 1);
-    }
-
-    .content .label-input-text textarea {
+    .post .label-input-text textarea {
         color: var(--primary-text-color);
         padding: 1rem;
     }
-    .content .label-input-text textarea::placeholder {
+    .post .label-input-text textarea::placeholder {
         color: var(--primary-text-color);
         opacity: .5;
     }
 
-    .content hr {
+    .post hr {
         border: 1px solid var(--secondary-text-color);
         opacity: .8;
         width: 95%;
+    }
+
+    .error {
+        color: rgba(255, 30, 50, 1);
     }
 
     .left-header-sidebar .button-link:hover {
@@ -808,12 +796,19 @@
         height: 32px;
         width: 32px;
     }
+
     .set-mark .counter,
     .set-mark .icon {
-        color: var(--primary-color);
         filter: grayscale(100%);
         transition: .2s;
     }
+    .ld-primary-background-container .set-mark .counter {
+        color: var(--primary-text-color);
+    }
+    .ld-secondary-background-container .set-mark .counter {
+        color: var(--secondary-text-color);
+    }
+
     .set-mark:hover .counter,
     .set-mark:hover .icon {
         filter: grayscale(60%);
@@ -822,9 +817,16 @@
     .set-mark.standby .icon {
         filter: grayscale(70%);
     }
+
     .set-mark.active .counter,
     .set-mark.active .icon {
         filter: grayscale(0);
+    }
+    .ld-primary-background-container .set-mark.active .counter {
+        color: var(--hover-text-color);
+    }
+    .ld-secondary-background-container .set-mark.active .counter {
+        color: var(--trinity-text-color);
     }
 
     .left-post-interaction .set-mark .counter {
@@ -849,17 +851,20 @@
         background: none;
     }
 
-    .ld-shine-button .press {
-        background: radial-gradient(100% 100% at 100% 0, rgba(0, 200, 255, .3) 0, rgba(0, 70, 100, .3) 100%);
+    .ld-shine-button .wrap {
         transition: box-shadow .1s, transform .1s;
-        border: 2px solid rgba(0, 255, 255, .3);
         will-change: box-shadow,transform;
         touch-action: manipulation;
         appearance: none;
     }
 
-    .ld-shine-button:focus-visible .press,
-    .ld-shine-button:hover .press {
+    .ld-shine-button .press {
+        background: radial-gradient(100% 100% at 100% 0, rgba(0, 200, 255, .3) 0, rgba(0, 70, 100, .3) 100%);
+        border: 2px solid rgba(0, 255, 255, .3);
+    }
+
+    .ld-shine-button:focus-visible .wrap,
+    .ld-shine-button:hover .wrap {
         box-shadow: rgba(0, 55, 65, .5) 0 4px 8px, rgba(10, 35, 65, .5) 0 7px 13px -3px, rgba(0, 120, 150, .5) 0 4px 8px 0 inset;
         transform: translateY(-2px);
     }
@@ -878,8 +883,7 @@
         background-size: 400% 100%;
     }
 
-    .ld-shine-button:active .press,
-    .ld-shine-button:active .press {
+    .ld-shine-button:active .wrap {
         box-shadow: rgba(0, 255, 255, .2) 0 4px 8px inset;
         transform: translateY(2px);
     }
@@ -1035,10 +1039,6 @@
         gap: 0.75rem;
     }
 
-    .user-menu .menu-item-label {
-        font-size: 1.1rem;
-    }
-
     .user-menu .profile-link:focus-visible,
     .user-menu .ld-pay-link:focus-visible {
         border: 2px solid #00ffff;
@@ -1052,25 +1052,22 @@
     .catalog-panel .filters-button,
     .catalog-panel .line a span,
     .catalog-panel .line button span,
-    .content h1,
-    .content h2,
-    .content h3,
-    .content h4,
-    .content h5,
-    .content h6,
     .design-settings-form div,
     .dialog-header h1,
     .global-error-container h1,
     .head-font,
-    .item-button,
     .left-header-sidebar .unit-title,
     .list-label-text,
+    .post h1,
+    .post h2,
+    .post h3,
+    .post h4,
+    .post h5,
+    .post h6,
     .select .label,
     .settings .settings-container form .section-title,
     .settings-button span,
     .ld-title-font,
-    .title-font,
-    .title,
     .toast .content h1,
     footer nav a span {
         font-family: "Minecraft Ten", sans-serif;

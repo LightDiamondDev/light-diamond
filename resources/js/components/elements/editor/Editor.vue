@@ -425,7 +425,12 @@ function unsetLink() {
             class="hidden lg:block"
             :editor="editor"
         >
-            <ItemButton icon="icon-plus" rounded severity="secondary" @click="addNodeMenu?.toggle"/>
+            <ItemButton
+                class="ld-title-font h-[64px] md:text-[1rem] text-[14px] w-full gap-2 pl-6 pr-8 whitespace-nowrap"
+                @click="addNodeMenu?.toggle"
+                severity="secondary"
+                icon="icon-plus"
+            />
             <EditorVerticalMenu ref="addNodeMenu" title="Добавить" :items="menuItems"/>
         </FloatingMenu>
 
@@ -434,8 +439,18 @@ function unsetLink() {
             <form class="content-link-editor ld-primary-background" @submit.prevent="setLink">
                 <div class="flex">
                     <Input v-model="currentLink.href" class="editor-link-url w-full" placeholder="https://" autocomplete="off"/>
-                    <ItemButton icon="icon-tick" outlined title="Сохранить ссылку" type="submit"/>
-                    <ItemButton icon="icon-small-cross" outlined title="Удалить ссылку" severity="danger" @click="unsetLink"/>
+                    <ItemButton
+                        title="Сохранить ссылку"
+                        severity="secondary"
+                        icon="icon-tick"
+                        type="submit"
+                    />
+                    <ItemButton
+                        title="Удалить ссылку"
+                        severity="danger"
+                        icon="icon-small-cross"
+                        @click="unsetLink"
+                    />
                 </div>
                 <div class="separator"></div>
                 <Input v-model="currentLink.text" class="editor-link-text w-full h-[3rem]" placeholder="Текст..." autocomplete="off"/>
@@ -448,7 +463,7 @@ function unsetLink() {
 
         <EditorHorizontalMenu
             v-if="editor && editable && !withoutMenus"
-            class="block lg:hidden sticky bottom-0 overflow-x-auto whitespace-nowrap"
+            class="block lg:hidden sticky bottom-0 whitespace-nowrap"
             :items="menuItems"
         />
     </div>

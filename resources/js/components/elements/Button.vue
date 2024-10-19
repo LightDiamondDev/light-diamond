@@ -17,6 +17,7 @@
             default: ''
         },
         labelClasses: String,
+        pressClasses: String,
         loading: {
             type: Boolean,
             default: false
@@ -37,7 +38,7 @@
         :type="buttonType"
     >
         <span class="action-button ld-shadow-text flex flex-col" :class="actionButtonClasses">
-            <span class="press flex justify-center items-center">
+            <span class="press flex justify-center items-center" :class="pressClasses">
                 <ProcessingMovingItems v-if="loading" class="mr-4" :item="loadingItem" height="28px" width="28px"/>
                 <span
                     v-if="!loading && icon !== ''"

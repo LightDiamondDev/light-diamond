@@ -29,6 +29,8 @@ import Button from '@/components/elements/Button.vue'
 import PostCommentComponent from '@/components/post/comment/PostComment.vue'
 import PostCommentEditor from '@/components/post/comment/PostCommentEditor.vue'
 import PostActionBar from '@/components/post/PostActionBar.vue'
+import ShineButton from '@/components/elements/ShineButton.vue'
+import Banner from '@/components/elements/Banner.vue'
 
 defineProps({
     author: {
@@ -139,73 +141,109 @@ function onEditionChange() {
     postVersion.value.category_id = undefined
 }
 
+const isWide = ref(true)
+
 </script>
 
 <template>
-    <div class="smooth-dark-background flex flex-col items-center w-full duration-500">
-
+    <div v-if="postVersion" class="smooth-dark-background flex flex-col items-center w-full duration-500"
+         :class="{'wide': isWide}"
+    >
+        <slot name="banner"/>
         <section class="section flex justify-between xl:flex-row flex-col-reverse xl:items-start items-center
             xl:max-w-[1280px] max-w-[832px] w-full gap-4 lg:mt-4">
 
             <aside class="left-post-interaction xl-left-post-interaction
                 xl:flex hidden xl:flex-col sticky text-[12px] mb-12"
             >
-                <p>PostActionBar</p>
+                <slot name="left-sidebar"/>
             </aside>
 
-            <div class="post center-interaction bright-background ld-fixed-background flex flex-col items-center max-w-[832px] w-full" ref="postContent">
+            <div
+                class="post center-interaction bright-background ld-fixed-background
+                    flex flex-col items-center max-w-[832px] w-full"
+                ref="postContent"
+            >
 
                 <div class="post-info-dates xl:hidden flex lg:justify-between justify-center w-full xs:px-4 px-2">
-                    <p>PostActionBar</p>
+                    <p>PostActionBar :post="postVersion"</p>
+                    <button class="lg:flex hidden items-start" @click="isWide = !isWide">
+                        <span class="icon flex my-4" :class="{'icon-right-arrow': isWide, 'icon-left-arrow': !isWide}"/>
+                    </button>
+                </div>
+
+                <div class="origin-info flex justify-between w-full xs:px-4 px-2">
+                    <RouterLink class="author-wrap flex items-center w-fit gap-2 ml-[-2px] pb-2 pt-2" :to="{name: 'home'}">
+                        <UserAvatar
+                            border-class-list="h-10 w-10"
+                            icon-class-list="h-7 w-7"
+                            :user="author"
+                        />
+                        <span class="username duration-200">{{ author.username }}</span>
+                    </RouterLink>
+                    <slot name="mark"/>
                 </div>
 
                 <Editor
                     v-model="postVersion.title"
                     :class="{'red-overlay': errors['title']}"
-                    class="material-name flex justify-center max-w-[1280px]"
+                    class="post-name ld-secondary-text text-center
+                        flex justify-center max-w-[1280px] md:text-[2rem]
+                        text-[1.5rem] mb-2 xs:px-4 px-2"
                     :extensions="titleEditorExtensions"
                     :editable="editable"
                     plain-text
                     without-menus
                 />
 
-                <p class="error mb-6">{{ errors['title']?.[0] || ' ' }}</p>
+                <p class="error mb-2 mt-0">{{ errors['title']?.[0] || ' ' }}</p>
 
-                <UploadImage
-                    :class="{'red-overlay': errors['cover_file']}"
-                    class="upload-post-preview flex"
-                    :editable="editable"
-                    icon="icon-download"
-                    id="upload-post-preview"
-                    :image-src="postVersion.cover_url"
-                    title="Загрузить обложку"
-                    @upload="(file) => postVersion.cover_file = file"
-                    :max-size-in-megabytes="5"
-                    :min-height="432"
-                    :min-width="768"
-                />
+                <div class="preview-wrap flex w-full mt-0 xs:mx-4 xs:px-4 px-2">
+                    <UploadImage
+                        class="upload-post-preview flex"
+                        :class="{'red-overlay': errors['cover_file']}"
+                        :editable="editable"
+                        icon="icon-download"
+                        id="upload-post-preview"
+                        :image-src="postVersion.cover_url"
+                        title="Загрузить обложку"
+                        @upload="(file) => postVersion.cover_file = file"
+                        :max-size-in-megabytes="5"
+                        :min-height="432"
+                        :min-width="768"
+                    />
+                </div>
 
                 <p class="error my-2">{{ errors['cover_file']?.[0] || ' ' }}</p>
 
-                <Editor
-                    v-model="postVersion.content"
-                    :class="{'red-overlay': errors['content']}"
-                    editor-class="post-content min-h-[12rem]"
-                    :extensions="contentEditorExtensions"
-                    :editable="editable"
-                />
+                <div class="xs:px-4 px-2 w-full">
+                    <Editor
+                        v-model="postVersion.content"
+                        :class="{'red-overlay': errors['content']}"
+                        class="ld-secondary-text"
+                        editor-class="post-content min-h-[12rem]"
+                        :extensions="contentEditorExtensions"
+                        :editable="editable"
+                    />
+                </div>
 
                 <p class="error">{{ errors['content']?.[0] || ' ' }}</p>
 
+                <div
+                    class="separator self-center w-[96.2%] opacity-40 my-2"
+                    style="background-color: var(--secondary-text-color);"
+                />
+
                 <Select
-                    button-classes="ld-primary-background ld-primary-border ld-title-font"
-                    options-classes="ld-primary-background ld-primary-border mt-[-2px]"
-                    class="post-edition flex my-4"
+                    button-classes="ld-primary-background ld-primary-border ld-title-font w-full"
+                    options-classes="ld-primary-background ld-primary-border md:top-[66px]
+                        top-[50px] md:w-[96.2%] sm:w-[95.2%] xs:w-[93.2%] w-[96%]"
+                    option-classes="md:min-h-[64px] min-h-[48px] gap-4 pl-6"
+                    class="post-edition flex items-center w-full my-4 xs:px-4 px-2"
                     v-model="gameEdition"
                     :disabled="!editable"
                     input-id="edition"
                     :options="gameEditions"
-                    option-classes="h-[64] pl-6"
                     option-label-key="label"
                     option-icon-key="icon"
                     option-value-key="value"
@@ -215,16 +253,18 @@ function onEditionChange() {
                 </Select>
 
                 <Select
-                    button-classes="ld-primary-background ld-primary-border ld-title-font"
-                    options-classes="ld-primary-background ld-primary-border mt-[-2px]"
+                    button-classes="ld-primary-background ld-primary-border ld-title-font w-full"
+                    options-classes="ld-primary-background ld-primary-border md:top-[66px]
+                        top-[50px] md:w-[96.2%] sm:w-[95.2%] xs:w-[93.2%] w-[96%]"
+                    option-classes="md:min-h-[64px] min-h-[48px] gap-4 pl-6"
+                    class="post-category flex items-center w-full my-4 xs:px-4 px-2"
                     :class="{'red-border': errors['category_id']}"
-                    class="post-category flex my-4"
                     v-model="postVersion.category_id"
                     :disabled="!editable"
                     input-id="category"
                     :options="categories"
-                    option-classes="h-[64] pl-6"
                     option-label-key="name"
+                    option-icon-key="icon"
                     option-value-key="id"
                     placeholder="Выберите Категорию"
                 >
@@ -233,56 +273,60 @@ function onEditionChange() {
 
                 <p class="error my-2">{{ errors['category_id']?.[0] || ' ' }}</p>
 
-                <Textarea
-                    :class="{'red-border': errors['description']}"
-                    class="post-description ld-primary-background ld-primary-border"
-                    v-model="postVersion.description"
-                    :editable="editable"
-                    id="post-description"
-                    :max-length="165"
-                    :min-length="15"
-                    placeholder="Описание"
-                    rows="3"
-                />
+                <div class="xs:px-4 px-2 w-full">
+                    <Textarea
+                        class="post-description ld-primary-background ld-primary-border md:text-[14px] text-[12px]"
+                        :class="{'red-border': errors['description']}"
+                        text-area-classes="ld-tinted-background min-h-[108px]"
+                        v-model="postVersion.description"
+                        :editable="editable"
+                        id="post-description"
+                        :max-length="165"
+                        :min-length="15"
+                        placeholder="Описание"
+                        rows="3"
+                    />
+                </div>
 
-                <p class="error mt-2">{{ errors['description']?.[0] || ' ' }}</p>
+                <p class="error my-2">{{ errors['description']?.[0] || ' ' }}</p>
 
-                <LoadedFile
-                    class="my-2"
-                    file-name="Light Diamond Addon — Craft & Survive [0.1.0]"
-                    file-format=".MCADDON"
-                    file-size="12,5 Мб
-                        "/>
+                <div class="flex flex-col w-full gap-3 my-4 xs:px-4 px-2">
+                    <LoadedFile
+                        file-name="Light Diamond Addon — Craft & Survive [0.1.0]"
+                        file-format=".MCADDON"
+                        file-size="12,5 Мб"
+                    />
 
-                <LoadedFile
-                    class="my-2"
-                    file-name="LD Better Ores [0.2.1]"
-                    file-format=".MCPACK"
-                    file-size="587 Кб"
-                />
+                    <LoadedFile
+                        file-name="LD Better Ores [0.2.1]"
+                        file-format=".MCPACK"
+                        file-size="587 Кб"
+                    />
 
-                <LoadedFile
-                    class="my-2"
-                    file-name="Escape The Tower [2.3.0]"
-                    file-format=".MCWORLD"
-                    file-size="1,51 Мб"
-                />
+                    <LoadedFile
+                        file-name="Escape The Tower [2.3.0]"
+                        file-format=".MCWORLD"
+                        file-size="1,51 Мб"
+                    />
+                </div>
 
-                <UploadFile
-                    class="upload-post-preview flex mb-5 mt-2.5"
-                    :editable="editable"
-                    icon="icon-download"
-                    id="upload-post-preview"
-                    :image-src="postVersion.cover_url"
-                    title="Загрузить Файл Материала"
-                    @upload="(file) => postVersion.cover_file = file"
-                    :max-size-in-megabytes="20"
-                />
+                <div class="ld-secondary-text w-full mt-2 xs:px-4 px-2">
+                    <UploadFile
+                        class="upload-post-preview flex mb-5 mt-2.5"
+                        :editable="editable"
+                        icon="icon-download"
+                        id="upload-post-preview"
+                        :image-src="postVersion.cover_url"
+                        title="Загрузить Файл Материала"
+                        @upload="(file) => postVersion.cover_file = file"
+                        :max-size-in-megabytes="20"
+                    />
+                </div>
 
                 <div class="ld-secondary-background ld-fixed-background ld-trinity-border-top xl:hidden
                     flex sm:justify-start justify-center sticky w-full bottom-0 mt-2 xs:px-4 px-2 py-2"
                 >
-                    <p>PostActionBar</p>
+                    <p>PostActionBar :post="postVersion"</p>
                 </div>
 
             </div>
@@ -291,7 +335,12 @@ function onEditionChange() {
                 text-[12px] xl:max-w-[336px] gap-4"
             >
                 <div class="bright-background flex flex-col">
-                    <p>PostInfoBar</p>
+                    <button class="flex justify-end p-[4px]" @click="isWide = !isWide">
+                        <span class="icon flex"
+                              :class="{'icon-right-direction-arrow': isWide, 'icon-left-direction-arrow': !isWide}"
+                        />
+                    </button>
+                    <slot name="right-sidebar"/>
                 </div>
                 <div class="last-bright-block bright-background xl:flex hidden flex-col overflow-hidden">
                     <div class="post-addition-content flex flex-col w-full p-4 duration-500" style="color: dimgray">

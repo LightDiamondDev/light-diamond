@@ -7,6 +7,8 @@ import {useAuthStore} from '@/stores/auth'
 import {useRouter} from 'vue-router'
 import Posts from '@/components/catalog/Posts.vue'
 import Banner from '@/components/elements/Banner.vue'
+import {getFullPresentableDate, getRelativeDate} from '@/helpers'
+import ShineButton from '@/components/elements/ShineButton.vue'
 
 const props = defineProps({
     edition: {
@@ -18,6 +20,8 @@ const props = defineProps({
 
 const authStore = useAuthStore()
 const router = useRouter()
+
+const bannerImagesSrc = [ '/images/elements/general-banner-ancient-city.png' ]
 
 const isFresh = ref(true)
 const isFilters = ref(false)
@@ -48,17 +52,15 @@ function switchEdition() {
 </script>
 
 <template>
-<Banner title="Каталог Light Diamond" :is-title-visible="false"/>
-<div class="catalog-container ld-secondary-background flex justify-center w-full">
-    <section class="catalog flex flex-col items-center w-full">
-
-        <div class="title flex flex-col justify-center items-center w-full">
-            <RouterLink
-                class="logo-wrap flex items-center full-locked relative orange"
-                :to="{ name: `catalog.${edition?.toLowerCase()}` }"
-            >
-                <img alt="Logo" class="materials-logo h-[48px] md:h-[100px]" src="/images/elements/light-diamond-materials-logo.png"/>
-                <span class="base flex justify-center items-center">
+    <Banner class="md:h-[208px] h-[178px]" :images-src="bannerImagesSrc">
+        <template v-slot:banner-content>
+            <div class="title flex flex-col justify-center items-center w-full">
+                <RouterLink
+                    class="logo-wrap flex items-center full-locked relative orange"
+                    :to="{ name: `catalog.${edition?.toLowerCase()}` }"
+                >
+                    <img alt="Logo" class="materials-logo h-[48px] md:h-[100px]" src="/images/elements/light-diamond-materials-logo.png"/>
+                    <span class="base flex justify-center items-center">
                     <span
                         class="splash flex justify-center"
                         :class="{
@@ -71,203 +73,169 @@ function switchEdition() {
                         {{ activeSplash }}
                     </span>
                 </span>
-            </RouterLink>
-        </div>
+                </RouterLink>
+            </div>
+        </template>
+    </Banner>
+    <div class="catalog-container ld-secondary-background flex justify-center w-full">
+        <section class="catalog flex flex-col items-center w-full">
 
-        <form class="catalog-panel ld-primary-background ld-primary-border flex flex-col w-full self-center" name="catalog">
+            <form class="catalog-panel ld-primary-background ld-primary-border flex flex-col w-full self-center" name="catalog">
 
-            <nav class="flex flex-col">
+                <nav class="flex flex-col">
 
-                <div class="line flex flex-wrap justify-between gap-4 p-4">
-                    <div class="sub-line flex justify-center flex-wrap gap-4">
-                        <button
-                            :class="{ 'active': isFresh }"
-                            class="ld-shine-button flex items-center option"
-                            type="button"
-                            @click="isFresh = true"
-                        >
-                            <span class="press flex">
-                                <span class="preset flex items-center gap-1">
-                                    <span class="icon icon-clock"/>
-                                    <span>Свежие</span>
-                                </span>
-                            </span>
-                        </button>
-                        <button
-                            :class="{ 'active': !isFresh }"
-                            class="ld-shine-button flex items-center option"
-                            type="button"
-                            @click="isFresh = false"
-                        >
-                            <span class="press flex">
-                                <span class="preset flex items-center gap-1">
-                                    <span class="icon icon-crown"/>
-                                    <span>Популярные</span>
-                                </span>
-                            </span>
-                        </button>
-                        <button
-                            v-if="!isFresh"
-                            class="ld-shine-button active flex items-center option w-[200px]"
-                            type="button"
-                            @click="switchTimePeriod()"
-                        >
-                            <span class="press flex">
-                                <span class="preset flex items-center gap-1">
-                                    <span class="icon icon-crown"/>
-                                    <span style="white-space: nowrap;">{{ currentTimePeriod }}</span>
-                                </span>
-                            </span>
-                        </button>
+                    <div class="line flex flex-wrap justify-between gap-3 p-3">
+                        <div class="sub-line flex justify-center flex-wrap gap-3">
+                            <ShineButton
+                                class="flex items-center"
+                                class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
+                                :class="{ 'active': isFresh }"
+                                label="Свежие"
+                                icon="icon-clock"
+                                @click="isFresh = true"
+                            />
+                            <ShineButton
+                                class="flex items-center"
+                                class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
+                                :class="{ 'active': !isFresh }"
+                                label="Популярные"
+                                icon="icon-crown"
+                                @click="isFresh = false"
+                            />
+                            <ShineButton
+                                v-if="!isFresh"
+                                class="active flex items-center option w-[200px]"
+                                class-preset="ld-title-font justify-center sm:text-[16px]
+                                    xs:text-[14px] text-[12px] gap-1 px-6 py-0.5 whitespace-nowrap"
+                                :label="currentTimePeriod"
+                                icon="icon-crown"
+                                @click="switchTimePeriod()"
+                            />
+                        </div>
+                        <div class="sub-line flex flex-wrap justify-center gap-3">
+                            <ShineButton
+                                class="flex items-center option edition xl:min-w-[158px]"
+                                class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
+                                :label="edition === GameEdition.BEDROCK ? 'Bedrock' : 'Java'"
+                                :icon="edition === GameEdition.BEDROCK ? 'icon-bedrock-dev-small' : 'icon-minecraft-materials'"
+                                @click="switchEdition"
+                            />
+                        </div>
                     </div>
-                    <div class="sub-line flex flex-wrap justify-center gap-4">
-                        <button
-                            class="ld-shine-button flex items-center option edition"
-                            type="button"
-                            @click="switchEdition"
-                        >
-                            <span class="press flex">
-                                <span class="preset flex items-center gap-1">
-                                    <span
-                                        :class="{ 'icon-bedrock-dev-small': edition === GameEdition.BEDROCK,
-                                        'icon-minecraft-materials': edition === GameEdition.JAVA }"
-                                        class="icon"
-                                    />
-                                    <span>{{ edition === GameEdition.BEDROCK ? 'Bedrock' : 'Java' }}</span>
-                                </span>
-                            </span>
-                        </button>
+
+                    <div class="menu-separator flex self-center"></div>
+
+                    <div class="line flex flex-wrap sm:justify-start justify-center gap-3 p-3">
+                        <ShineButton
+                            as="RouterLink"
+                            class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
+                            label="Все"
+                            icon="icon-brilliant"
+                            :to="{ name: `catalog.${edition?.toLowerCase()}` }"
+                        />
+                        <ShineButton
+                            as="RouterLink"
+                            class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
+                            label="Новости"
+                            icon="icon-news"
+                            :to="{ name: `catalog.${edition?.toLowerCase()}` }"
+                        />
+                        <ShineButton
+                            as="RouterLink"
+                            class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
+                            label="Ресурс-Паки"
+                            icon="icon-axolotl-bucket"
+                            :to="{ name: `catalog.${edition?.toLowerCase()}` }"
+                        />
+                        <ShineButton
+                            as="RouterLink"
+                            class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
+                            label="Аддоны"
+                            icon="icon-spawn-egg"
+                            :to="{ name: `catalog.${edition?.toLowerCase()}` }"
+                        />
+                        <ShineButton
+                            as="RouterLink"
+                            class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
+                            label="Карты"
+                            icon="icon-map"
+                            :to="{ name: `catalog.${edition?.toLowerCase()}` }"
+                        />
+                        <ShineButton
+                            as="RouterLink"
+                            class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
+                            label="Скины"
+                            icon="icon-skin"
+                            :to="{ name: `catalog.${edition?.toLowerCase()}` }"
+                        />
+                        <ShineButton
+                            as="RouterLink"
+                            class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
+                            label="Статьи"
+                            icon="icon-script"
+                            :to="{ name: `catalog.${edition?.toLowerCase()}` }"
+                        />
                     </div>
-                </div>
 
-                <div class="menu-separator flex self-center"></div>
+                    <div class="menu-separator flex self-center"></div>
 
-                <div class="line flex flex-wrap gap-4 p-4">
+                    <button
+                        class="filters-button line flex items-center gap-3 p-3"
+                        @click="isFilters = !isFilters"
+                        type="button">
+                        <span :class="{ 'down-arrow-up': isFilters }" class="icon icon-down-arrow"></span>
+                        <span>Фильтры</span>
+                    </button>
 
-                    <RouterLink class="ld-shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
-                        <span class="press flex">
-                            <span class="preset flex items-center gap-1">
-                                <span class="icon icon-brilliant"/>
-                                <span>Все</span>
-                            </span>
-                        </span>
-                    </RouterLink>
-                    <RouterLink class="ld-shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
-                        <span class="press flex">
-                            <span class="preset flex items-center gap-1">
-                                <span class="icon icon-news"/>
-                                <span>Новости</span>
-                            </span>
-                        </span>
-                    </RouterLink>
-                    <RouterLink class="ld-shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
-                        <span class="press flex">
-                            <span class="preset flex items-center gap-1">
-                                <span class="icon icon-axolotl-bucket"/>
-                                <span>Ресурс-Паки</span>
-                            </span>
-                        </span>
-                    </RouterLink>
-                    <RouterLink class="ld-shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
-                        <span class="press flex">
-                            <span class="preset flex items-center gap-1">
-                                <span class="icon icon-spawn-egg"/>
-                                <span>Аддоны</span>
-                            </span>
-                        </span>
-                    </RouterLink>
-                    <RouterLink class="ld-shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
-                        <span class="press flex">
-                            <span class="preset flex items-center gap-1">
-                                <span class="icon icon-map"/>
-                                <span>Карты</span>
-                            </span>
-                        </span>
-                    </RouterLink>
-                    <RouterLink class="ld-shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
-                        <span class="press flex">
-                            <span class="preset flex items-center gap-1">
-                                <span class="icon icon-skin"/>
-                                <span>Скины</span>
-                            </span>
-                        </span>
-                    </RouterLink>
-                    <RouterLink class="ld-shine-button flex items-center" :to="{ name: `catalog.${edition?.toLowerCase()}` }">
-                        <span class="press flex">
-                            <span class="preset flex items-center gap-1">
-                                <span class="icon icon-script"/>
-                                <span>Статьи</span>
-                            </span>
-                        </span>
-                    </RouterLink>
-                </div>
+                    <div v-if="isFilters" class="filters gap-3 p-3">
+                        <p>Фильтры всякие там да</p>
+                        <p>Ну вот Ресус Пики да</p>
+                        <p>ДА Резус Факи да</p>
+                        <p>Всякие там да филтры</p>
+                        <p>А когда ВЫайП?</p>
+                        <p>АбоБс, Это тебе не Сервер</p>
+                        <p>А да Фильтры всякие там да</p>
+                    </div>
 
-                <div class="menu-separator flex self-center"></div>
+                </nav>
+            </form>
 
-                <button
-                    class="filters-button line flex items-center gap-4 p-4"
-                    @click="isFilters = !isFilters"
-                    type="button">
-                    <span :class="{ 'down-arrow-up': isFilters }" class="icon icon-down-arrow"></span>
-                    <span>Фильтры</span>
-                </button>
+            <Posts/>
 
-                <div v-if="isFilters" class="filters gap-4 p-4">
-                    <p>Фильтры всякие там да</p>
-                    <p>Ну вот Ресус Пики да</p>
-                    <p>ДА Резус Факи да</p>
-                    <p>Всякие там да филтры</p>
-                    <p>А когда ВЫайП?</p>
-                    <p>АбоБс, Это тебе не Сервер</p>
-                    <p>А да Фильтры всякие там да</p>
-                </div>
-
-            </nav>
-        </form>
-
-        <Posts/>
-
-    </section>
-</div>
+        </section>
+    </div>
 </template>
 
 <style scoped>
-footer {
-    margin-top: 208px;
-}
 .catalog-container {
     background-attachment: fixed;
-    position: relative;
-    margin-top: 208px;
 }
-.catalog-container .title {
+.title {
     position: relative;
     line-height: 1.1;
-    font-size: 3rem;
     height: 208px
 }
-.catalog-container .title {
-    margin-top: -208px;
+.title {
     overflow: hidden;
     height: 208px
 }
-.catalog-container .base {
+.base {
     transform: rotate(-15deg);
     transform-origin: center;
     position: absolute;
     height: 10px;
     width: 10px;
-    bottom: -8%;
+    bottom: 0;
     right: 5%;
 }
-.catalog-container .splash {
+.splash {
     animation: splash-animation 1s infinite;
     text-shadow: 2px 2px black;
     position: absolute;
     text-align: center;
     width: 240px;
 }
-.catalog-container .splash.bottom-splash {
+.splash.bottom-splash {
     bottom: -1.5rem;
     width: 230px;
 }
@@ -306,9 +274,6 @@ section.catalog {
 }
 .menu-separator {
     width: 98%;
-}
-.catalog-panel .filters-button {
-    font-size: 1.1rem;
 }
 .catalog-panel .filters {
     height: 240px;
@@ -395,9 +360,6 @@ section.catalog {
     .catalog-panel .line button .preset {
         padding: 0 .2rem;
         height: 36px;
-    }
-    .catalog-panel .line .preset span {
-        font-size: .8rem;
     }
     .menu-separator {
         width: 95%;
