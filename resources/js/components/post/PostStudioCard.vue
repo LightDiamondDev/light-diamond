@@ -61,12 +61,12 @@ const isFirstVersion = computed(() => props.post!.updated_at === props.post!.cre
                         <span class="opacity-80">{{ getRelativeDate(post!.updated_at!) }}</span>
                     </p>
                 </div>
-                <PostActionBar class="sm:flex hidden gap-4 mt-2" :post="post"/>
+                <PostActionBar class="ld-primary-background-container sm:flex hidden gap-4 mt-2" :post="post"/>
             </div>
         </div>
         <div class="sm-wrap ld-tinted-background sm:hidden flex xs:flex-row flex-col p-1">
             <div class="flex justify-between items-center sm:w-fit w-full">
-                <PostActionBar class="gap-4" :post="post"/>
+                <PostActionBar class="ld-secondary-background-container gap-4" :post="post"/>
             </div>
         </div>
     </div>
