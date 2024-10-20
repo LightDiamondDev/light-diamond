@@ -145,9 +145,6 @@ dialogClasses.value = props.position === 'center' ? 'items-center ' + props.dial
                 </div>
             </div>
 
-
-
-
             <div style="position: absolute; z-index: 1;">
                 <div>
                     <div>

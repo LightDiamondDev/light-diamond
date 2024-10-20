@@ -338,7 +338,7 @@ loadPostVersion()
             :errors="errors"
         >
             <template v-slot:banner>
-                <Banner class="md:h-[208px] h-[178px]" :images-src="bannerImagesSrc">
+                <Banner class="md:h-[208px] h-[178px] w-full" :images-src="bannerImagesSrc">
                     <template v-slot:banner-content>
                         <div class="banner-title page-container flex flex-col justify-center items-center md:items-end max-w-[800px]">
 
@@ -380,8 +380,8 @@ loadPostVersion()
                                 v-model="postVersion!.assigned_moderator_id"
                                 button-classes="ld-primary-background ld-primary-border max-h-[64px]"
                                 options-classes="ld-primary-background ld-primary-border top-[56px]"
-                                class="post-moderator flex items-center md:min-w-[240px] min-w-fit w-full mx-2"
-                                button-label-classes="hidden xs:flex"
+                                class="post-moderator flex items-center w-full mx-2"
+                                :button-label-classes="{'hidden xs:flex max-w-[72px]': postVersion, 'hidden xs:1flex max-w-[72px]': !postVersion}"
                                 :disabled="postVersion!.status !== PostVersionStatus.PENDING"
                                 :is-custom-option-item="true"
                                 input-id="moderator"

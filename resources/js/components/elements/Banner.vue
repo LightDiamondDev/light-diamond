@@ -36,7 +36,7 @@ launchBannerSwitchSlidesAnimation()
 <template>
     <div class="banner flex justify-center max-w-[100vw] w-full overflow-hidden">
         <div
-            class="banner-slide flex h-full w-full duration-500"
+            class="banner-slide bg-fixed flex h-full w-full duration-500"
             :style="{ 'background-image': `url(${bannerImagesSrc[currentBannerImageSrc]})` }"
         >
             <div class="banner-effects flex justify-center leaves h-full w-full relative" :class="{ 'effects-off': !isBannerAnimation }">
@@ -164,7 +164,6 @@ launchBannerSwitchSlidesAnimation()
 
 <style scoped>
 .banner-slide {
-    background-attachment: fixed;
     background-repeat: no-repeat;
 }
 

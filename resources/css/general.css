@@ -7,10 +7,11 @@
         outline: none;
     }
     html {
+        scrollbar-gutter: stable;
         scroll-behavior: smooth;
     }
     body {
-        overflow-y: scroll;
+        overflow-y: auto;
         padding: 0;
         margin: 0;
     }
@@ -256,14 +257,9 @@
         }
     }
 
-    body.lock-scroll {
-        /*noinspection CssUnresolvedCustomProperty*/
-        padding-right: var(--current-global-scrollbar-width);
-    }
-
     body.lock-scroll .fixed.w-full {
         /*noinspection CssUnresolvedCustomProperty*/
-        width: calc(100% - var(--current-global-scrollbar-width)) !important;
+        padding-right: var(--current-global-scrollbar-width);
     }
 
     :root {
