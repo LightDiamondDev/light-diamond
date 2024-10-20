@@ -197,7 +197,7 @@ em.loaded .upload-image-heading {
 .upload-image-container.dragover .upload-image-info-wrap {
     opacity: 1;
 }
-.upload-image-container.disabled .upload-image-info {
+.upload-image-container.disabled em {
     display: none;
 }
 input {

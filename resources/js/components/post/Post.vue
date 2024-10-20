@@ -260,8 +260,9 @@ function addPostImageClickListeners() {
                     />
                 </div>
 
-                <div class="ld-secondary-background ld-fixed-background ld-trinity-border-top xl:hidden
-                    flex sm:justify-start justify-center sticky w-full bottom-0 mt-2 xs:px-4 px-2 py-2"
+                <div
+                    class="ld-secondary-background ld-fixed-background ld-trinity-border-top xl:hidden
+                        flex sm:justify-start justify-center sticky w-full bottom-0 mt-2 xs:px-4 px-2 py-2"
                 >
                     <PostActionBar class="ld-secondary-background-container xs:gap-4 gap-2" :post="post"/>
                 </div>
@@ -273,16 +274,15 @@ function addPostImageClickListeners() {
             >
                 <div class="bright-background flex flex-col">
                     <button class="flex justify-end p-[4px]" @click="isWide = !isWide">
-                        <span class="icon flex"
-                              :class="{'icon-right-direction-arrow': isWide, 'icon-left-direction-arrow': !isWide}"
+                        <span
+                            class="icon flex"
+                            :class="{'icon-right-direction-arrow': isWide, 'icon-left-direction-arrow': !isWide}"
                         />
                     </button>
-                    <PostInfoBar
-                        class="right-post-info-bar xl:flex-col justify-center gap-4 duration-500"
-                        :post="post"
-                    />
+                    <PostInfoBar class="right-post-info-bar xl:flex-col justify-center gap-4 duration-500" :post="post"/>
                 </div>
-                <div class="last-bright-block bright-background xl:flex hidden flex-col overflow-hidden">
+                <!-- xl:flex -->
+                <div class="last-bright-block bright-background hidden flex-col overflow-hidden">
                     <div class="post-addition-content flex flex-col w-full p-4 duration-500" style="color: dimgray">
                         Дополнительный Контент
                     </div>

@@ -71,10 +71,12 @@ const lastAction = computed(() => props.postVersion!.actions!.at(props.postVersi
             </div>
         </div>
         <div class="sm-wrap flex xs:flex-row flex-col">
-            <div class="flex justify-between items-center sm:w-fit w-full">
+            <div
+                class="flex justify-end items-center sm:w-fit w-full"
+            >
                 <PostVersionAction
                     v-if="[ActionType.ACCEPT, ActionType.REJECT, ActionType.REQUEST_CHANGES].includes(lastAction?.type!)"
-                    class="sm-hidden m-2"
+                    class="sm-hidden w-full m-2"
                     :action="lastAction"
                     :minimized="true"
                 />

@@ -15,6 +15,7 @@
         --brilliant-color: #5aedda;
         --border-color: #dadada;
         --autofill-color: rgba(0, 125, 125, .5);
+        --autofill-text-color: rgb(0, 125, 125);
         --global-scrollbar-width: 12px;
         --bar-scrollbar-width: 8px;
         --variable-full-width: 100%;
@@ -155,6 +156,14 @@
 
     .ld-default-link:hover {
         color: var(--hover-text-color);
+    }
+
+    .ld-special-link {
+        color: var(--trinity-text-color);
+    }
+
+    .ld-special-link:hover {
+        color: var(--autofill-text-color);
     }
 
     .ld-shadow-text * {
@@ -1579,6 +1588,10 @@
             border-top: var(--primary-border);
             border-right: none;
             border-left: none;
+        }
+        .post h1 {
+            font-size: 2rem;
+            margin: .5rem 0;
         }
         .user-menu .profile-link {
             min-height: 64px;

@@ -325,7 +325,7 @@ loadPostVersion()
             :header="true"
             :modal="true"
         >
-            <div class="post-version-actions flex flex-col gap-2 md:p-6 xs:p-4 p-2">
+            <div class="post-version-actions flex flex-col gap-4 md:p-6 xs:p-4 p-2">
                 <PostVersionAction v-for="action in postVersion.actions" :action="action"/>
             </div>
         </Dialog>
@@ -364,7 +364,7 @@ loadPostVersion()
                 </Banner>
             </template>
 
-            <template v-slot:right-sidebar>
+            <template v-slot:sidebar>
                 <div class="flex flex-col w-full">
 
                     <div
@@ -372,15 +372,15 @@ loadPostVersion()
                             (postVersion.status !== PostVersionStatus.DRAFT || postVersion.assigned_moderator)"
                         class="flex xl:flex-col flex-row"
                     >
-                        <div class="ld-secondary-text flex items-center max-w-[100px] xl:px-2.5 px-5 py-1">
-                            <p class="xl:mt-1">Модератор</p>
+                        <div class="ld-secondary-text flex items-center min-w-[100px] xl:px-2.5 px-5 py-1">
+                            <p class="text-[12px] xl:mt-1">Модератор</p>
                         </div>
                         <div class="flex xl:max-w-none max-w-[200px] w-full">
                             <Select
                                 v-model="postVersion!.assigned_moderator_id"
                                 button-classes="ld-primary-background ld-primary-border max-h-[64px]"
                                 options-classes="ld-primary-background ld-primary-border top-[56px]"
-                                class="post-moderator flex items-center w-full mx-2"
+                                class="post-moderator flex items-center md:min-w-[240px] min-w-fit w-full mx-2"
                                 button-label-classes="hidden xs:flex"
                                 :disabled="postVersion!.status !== PostVersionStatus.PENDING"
                                 :is-custom-option-item="true"
@@ -398,7 +398,7 @@ loadPostVersion()
                                     <UserAvatar
                                         border-class-list="h-10 w-10"
                                         icon-class-list="h-7 w-7"
-                                        :user="option"
+                                        :user="postVersion.author"
                                     />
                                 </template>
 
@@ -407,23 +407,28 @@ loadPostVersion()
                                         <UserAvatar
                                             border-class-list="h-10 w-10"
                                             icon-class-list="h-7 w-7"
-                                            :user="option"
+                                            :user="postVersion.author"
                                         />
-                                        <p class="text-[12px] line-clamp-1">{{ option.username }}</p>
+                                        <p
+                                            class="text-[12px] line-clamp-1"
+                                            style="margin-top: 0;"
+                                        >
+                                            {{ option.username }}
+                                        </p>
                                     </button>
                                 </template>
                             </Select>
                         </div>
                     </div>
 
-                    <div v-if="postVersion!.post" class="header-details-item flex xl:flex-col flex-row">
-                        <div class="ld-secondary-text flex items-center max-w-[100px] xl:px-2.5 px-5 py-1">
-                            <p>Материал</p>
+                    <div v-if="postVersion!.post" class="header-details-item flex xl:flex-col flex-row mt-1">
+                        <div class="ld-secondary-text flex items-center min-w-[100px] xl:px-2.5 px-5 py-1">
+                            <p class="text-[12px]">Материал</p>
                         </div>
-                        <div class="ld-shadow-text flex items-center xl:px-2.5 px-4 py-1">
+                        <div class="flex items-center xl:px-2.5 px-4 py-1">
                             <RouterLink
                                 :to="{name: 'post', params: {slug: postVersion!.post.slug}}"
-                                class="ld-default-link line-clamp-2
+                                class="ld-special-link line-clamp-2
                                     text-[12px] border-0 hover:underline duration-200"
                             >
                                 {{ postVersion!.post.version!.title }}
@@ -433,10 +438,10 @@ loadPostVersion()
 
                     <div class="flex xl:flex-col flex-row">
                         <div
-                            class="ld-secondary-text flex items-cen ter min-w-[100px] xl:px-2.5 px-5 py-1"
+                            class="ld-secondary-text flex xl:min-w-[100px] min-w-[114px] xl:px-2.5 px-5 py-1"
                             :class="{'xl:mt-0 mt-3': !authStore.isModerator}"
                         >
-                            <p>Статус</p>
+                            <p class="flex items-center text-[12px]">Статус</p>
                         </div>
                         <div
                             class="flex items-center xl:px-2.5 px-4 py-1"
@@ -445,7 +450,7 @@ loadPostVersion()
                             <div class="ld-primary-background">
                                 <p
                                     :class="postVersionStatusInfo.colorClass"
-                                    class="transfusion bordered px-1 py-0.5"
+                                    class="transfusion bordered text-[12px] px-1 py-0.5"
                                 >
                                     {{ postVersionStatusInfo.name }}
                                 </p>
@@ -454,17 +459,19 @@ loadPostVersion()
                     </div>
 
                     <div v-if="postVersion.actions!.length !== 0" class="flex flex-col xl:gap-1 gap-2 mt-1 xl:pb-1 xl:px-2 px-4">
-                        <div class="separator flex opacity-40" style="background-color: var(--secondary-text-color);"/>
-                        <div class="flex items-center">
+                        <div class="separator flex opacity-40 xl:mb-1" style="background-color: var(--secondary-text-color);"/>
+                        <div
+                            v-if="[PostVersionActionType.REJECT, PostVersionActionType.REQUEST_CHANGES].includes(lastAction?.type!)"
+                            class="flex items-center"
+                        >
                             <PostVersionAction
-                                v-if="[PostVersionActionType.REJECT, PostVersionActionType.REQUEST_CHANGES].includes(lastAction?.type!)"
-                                class="sidebar-last-action px-2 md:px-1"
+                                class="sidebar-last-action ld-secondary-background-action px-2 md:px-1"
                                 :action="lastAction!"
                                 :minimized="true"
                             />
                         </div>
                         <ShineButton
-                            class="ld-shine-button self-center text-[0.7rem] w-full xl:mb-1 mb-4"
+                            class="ld-shine-button self-center text-[0.7rem] w-full xl:mb-1 mb-2"
                             :class="{
                                 'non-mb-0': postVersion.status === PostVersionStatus.ACCEPTED ||
                                 postVersion.status === PostVersionStatus.REJECTED
@@ -491,7 +498,7 @@ loadPostVersion()
                         />
                     </div>
 
-                    <div v-if="isReviewing" class="upper-unavailable flex flex-col xl:gap-2 gap-4 xl:px-2 px-4 xl:pb-2 pb-4">
+                    <div v-if="isReviewing" class="upper-unavailable flex flex-col gap-2 xl:px-2 px-4 xl:pb-2 pb-4">
                         <div class="separator flex opacity-40" style="background-color: var(--secondary-text-color);"/>
                         <ShineButton
                             class-wrap="ld-primary-background"

@@ -150,14 +150,10 @@ const isWide = ref(true)
          :class="{'wide': isWide}"
     >
         <slot name="banner"/>
-        <section class="section flex justify-between xl:flex-row flex-col-reverse xl:items-start items-center
+        <section class="section flex justify-between xl:items-start items-center
             xl:max-w-[1280px] max-w-[832px] w-full gap-4 lg:mt-4">
 
-            <aside class="left-post-interaction xl-left-post-interaction
-                xl:flex hidden xl:flex-col sticky text-[12px] mb-12"
-            >
-                <slot name="left-sidebar"/>
-            </aside>
+            <aside class="xl-left-post-interaction xl:flex hidden xl:flex-col sticky text-[12px] mb-12"/>
 
             <div
                 class="post center-interaction bright-background ld-fixed-background
@@ -165,8 +161,14 @@ const isWide = ref(true)
                 ref="postContent"
             >
 
+                <aside
+                    class="left-post-interaction xl-left-post-interaction upper-interaction
+                        xl:hidden flex flex-col text-[12px] w-full mt-4"
+                >
+                    <slot name="sidebar"/>
+                </aside>
+
                 <div class="post-info-dates xl:hidden flex lg:justify-between justify-center w-full xs:px-4 px-2">
-                    <p>PostActionBar :post="postVersion"</p>
                     <button class="lg:flex hidden items-start" @click="isWide = !isWide">
                         <span class="icon flex my-4" :class="{'icon-right-arrow': isWide, 'icon-left-arrow': !isWide}"/>
                     </button>
@@ -323,11 +325,12 @@ const isWide = ref(true)
                     />
                 </div>
 
-                <div class="ld-secondary-background ld-fixed-background ld-trinity-border-top xl:hidden
-                    flex sm:justify-start justify-center sticky w-full bottom-0 mt-2 xs:px-4 px-2 py-2"
+                <aside
+                    class="right-post-interaction xl-right-post-interaction
+                        xl:hidden flex flex-col text-[12px] w-full"
                 >
-                    <p>PostActionBar :post="postVersion"</p>
-                </div>
+                    <slot name="sidebar"/>
+                </aside>
 
             </div>
 
@@ -340,9 +343,10 @@ const isWide = ref(true)
                               :class="{'icon-right-direction-arrow': isWide, 'icon-left-direction-arrow': !isWide}"
                         />
                     </button>
-                    <slot name="right-sidebar"/>
+                    <slot name="sidebar"/>
                 </div>
-                <div class="last-bright-block bright-background xl:flex hidden flex-col overflow-hidden">
+                <!-- xl:flex -->
+                <div class="last-bright-block bright-background hidden flex-col overflow-hidden">
                     <div class="post-addition-content flex flex-col w-full p-4 duration-500" style="color: dimgray">
                         Дополнительный Контент
                     </div>

@@ -35,7 +35,7 @@ const props = defineProps({
             <span v-else-if="action.type === PostVersionActionType.REJECT" class="line-height-small flex items-center md:text-[12px] text-[10px]">
                 <span class="icon-round-cross icon flex min-w-[2rem] mr-1"/>
                 <span class="flex flex-col w-full">
-                    <span>Отклонено: </span>
+                    <span class="hot-subtitle">Отклонено: </span>
                     <!-- xl:max-w-[160px] -->
                     <span class="text-muted truncate ld-lightgray-text max-w-[90%]">
                         {{ (action.details as PostVersionActionReject).reason }}
@@ -77,9 +77,9 @@ const props = defineProps({
                                 xs:top-[-12px] right-[-8px] top-[-8px]"
                         />
                         <UserAvatar
-                            border-class-list="xs:h-12 xs:w-12 h-9 w-9"
-                            icon-class-list="xs:h-8 xs:w-8 h-6 w-6"
-                            :user="action.user!"
+                            border-class-list="h-10 w-10"
+                            icon-class-list="h-7 w-7"
+                            :user="action.user"
                         />
                     </div>
                     <span
@@ -151,6 +151,12 @@ const props = defineProps({
 </template>
 
 <style scoped>
+.ld-secondary-background-action .hot-subtitle {
+    color: var(--secondary-text-color);
+}
+.ld-secondary-background-action .ld-lightgray-text {
+    color: var(--trinity-text-color);
+}
 .minimized-action {
     @apply text-sm line-clamp-2
 }
