@@ -5,7 +5,7 @@ import ItemButton from '@/components/elements/ItemButton.vue'
 const props = defineProps({
     buttonClasses: String,
     buttonWrapClasses: String,
-    buttonLabelClasses: String,
+    buttonLabelClasses: Object as PropType<string | object>,
     disabled: {
         type: Boolean,
         default: false
@@ -110,7 +110,7 @@ function change(option: any) {
 <template>
     <div
         :class="{ 'disabled': disabled, 'open': isSelectOpen }"
-        class="select ld-shadow-text flex flex-col relative"
+        class="select ld-shadow-text flex flex-col relative min-w-0"
         ref="container"
     >
         <button
@@ -120,7 +120,7 @@ function change(option: any) {
             type="button"
             @click="toggleSelect"
         >
-                <span class="select-span flex items-center w-full" :class="optionClasses">
+                <span class="select-span flex items-center w-full min-w-0" :class="optionClasses">
                 <template v-if="currentOption">
                     <slot name="option-icon" :option="currentOption">
                         <span v-if="optionIconKey" :class="getOptionIcon(currentOption)" class="icon"/>

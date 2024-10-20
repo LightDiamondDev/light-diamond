@@ -381,7 +381,7 @@ loadPostVersion()
                                 button-classes="ld-primary-background ld-primary-border max-h-[64px]"
                                 options-classes="ld-primary-background ld-primary-border top-[56px]"
                                 class="post-moderator flex items-center w-full mx-2"
-                                :button-label-classes="{'hidden xs:flex max-w-[72px]': postVersion, 'hidden xs:1flex max-w-[72px]': !postVersion}"
+                                :button-label-classes="{'hidden xs:flex': postVersion, 'hidden xs:1flex': !postVersion}"
                                 :disabled="postVersion!.status !== PostVersionStatus.PENDING"
                                 :is-custom-option-item="true"
                                 input-id="moderator"
