@@ -379,9 +379,9 @@ loadPostVersion()
                             <Select
                                 v-model="postVersion!.assigned_moderator_id"
                                 button-classes="ld-primary-background ld-primary-border max-h-[64px]"
+                                button-label-classes="hidden xs:flex"
                                 options-classes="ld-primary-background ld-primary-border top-[56px]"
                                 class="post-moderator flex items-center w-full mx-2"
-                                :button-label-classes="{'hidden xs:flex': postVersion, 'hidden xs:1flex': !postVersion}"
                                 :disabled="postVersion!.status !== PostVersionStatus.PENDING"
                                 :is-custom-option-item="true"
                                 input-id="moderator"
@@ -396,8 +396,8 @@ loadPostVersion()
                             >
                                 <template #option-icon="{option}: {option: User}">
                                     <UserAvatar
-                                        border-class-list="h-10 w-10"
-                                        icon-class-list="h-7 w-7"
+                                        border-class-list="h-10 min-w-10"
+                                        icon-class-list="h-7 min-w-7"
                                         :user="postVersion.author"
                                     />
                                 </template>
@@ -405,8 +405,8 @@ loadPostVersion()
                                 <template #option-item="{option}: { option: User}">
                                     <button class="flex gap-1 items-center cursor-pointer py-1 px-2 w-full" type="button">
                                         <UserAvatar
-                                            border-class-list="h-10 w-10"
-                                            icon-class-list="h-7 w-7"
+                                            border-class-list="h-10 min-w-10"
+                                            icon-class-list="h-7 min-w-7"
                                             :user="postVersion.author"
                                         />
                                         <p
@@ -428,8 +428,8 @@ loadPostVersion()
                         <div class="flex items-center xl:px-2.5 px-4 py-1">
                             <RouterLink
                                 :to="{name: 'post', params: {slug: postVersion!.post.slug}}"
-                                class="ld-special-link line-clamp-2
-                                    text-[12px] border-0 hover:underline duration-200"
+                                class="ld-special-link line-clamp-2 text-[12px]
+                                    border-0 hover:underline duration-200"
                             >
                                 {{ postVersion!.post.version!.title }}
                             </RouterLink>

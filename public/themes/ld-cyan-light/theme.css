@@ -158,14 +158,6 @@
         color: var(--hover-text-color);
     }
 
-    .ld-special-link {
-        color: var(--trinity-text-color);
-    }
-
-    .ld-special-link:hover {
-        color: var(--autofill-text-color);
-    }
-
     .ld-shadow-text * {
         text-shadow: 1px 1px rgba(0, 0, 0, .5);
     }
@@ -526,8 +518,7 @@
 
     .post hr {
         border: 1px solid var(--secondary-text-color);
-        opacity: .8;
-        width: 95%;
+        opacity: .4;
     }
 
     .error {
@@ -734,8 +725,14 @@
         list-style-type: square;
     }
 
+    .ld-special-link,
     .post a {
         animation: content-link-color-animation 5s infinite;
+        cursor: pointer;
+    }
+
+    .post a:hover {
+        text-decoration: underline;
     }
 
     .post code,
@@ -1589,12 +1586,36 @@
             border-right: none;
             border-left: none;
         }
-        .post h1 {
-            font-size: 2rem;
-            margin: .5rem 0;
-        }
         .user-menu .profile-link {
             min-height: 64px;
+        }
+    }
+
+    /* =============== [ Медиа-Запрос { ?px < 641px } ] =============== */
+
+    @media screen and (max-width: 640px) {
+        .post h1 {
+            font-size: 2.5rem;
+        }
+
+        .post h2 {
+            font-size: 2rem;
+        }
+
+        .post h3 {
+            font-size: 1.5rem;
+        }
+
+        .post h4 {
+            font-size: 1.2rem;
+        }
+
+        .post h5 {
+            font-size: 1rem;
+        }
+
+        .post h6 {
+            font-size: .8rem;
         }
     }
 }

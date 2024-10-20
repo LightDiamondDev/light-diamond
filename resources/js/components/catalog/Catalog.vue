@@ -59,6 +59,7 @@ function switchEdition() {
                     class="logo-wrap flex items-center full-locked relative orange"
                     :to="{ name: `catalog.${edition?.toLowerCase()}` }"
                 >
+                    <h1 class="flex justify-center w-full absolute invisible">Каталог Light Diamond</h1>
                     <img alt="Logo" class="materials-logo h-[48px] md:h-[100px]" src="/images/elements/light-diamond-materials-logo.png"/>
                     <span class="base flex justify-center items-center">
                     <span

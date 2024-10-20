@@ -358,6 +358,9 @@ const isWide = ref(true)
 </template>
 
 <style>
+.post-title {
+    overflow-wrap: anywhere;
+}
 .tooltip::before {
     margin-left: -100px;
 }

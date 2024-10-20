@@ -15,51 +15,50 @@ const verticalMenus = reactive<{ [key: string]: InstanceType<typeof EditorVertic
 </script>
 
 <template>
-    <div class="editor-horizontal-menu ld-primary-background flex z-[1]"> <!-- @mousedown.prevent -->
-        <template v-for="(menuItem, id) in items">
-            <template v-if="menuItem.isVisible !== false">
-                <template v-if="menuItem.isSeparator">
-                    <div class="separator flex self-center h-[40px] w-[2px]"/>
-                </template>
-
-                <template v-else-if="menuItem.children">
-                    <EditorVerticalMenu
-                        :ref="(val: InstanceType<typeof EditorVerticalMenu>) => verticalMenus[`editor-vertical-menu-${id}`] = val"
-                        :id="`editor-vertical-menu-${id}`"
-                        :items="menuItem.children"
-                        :title="menuItem.displayName"
-                    />
-                    <ItemButton
-                        v-if="verticalMenus[`editor-vertical-menu-${id}`]"
-                        :aria-controls="`editor-vertical-menu-${id}`"
-                        aria-haspopup="true"
-                        class="flex-shrink-0"
-                        @click="verticalMenus[`editor-vertical-menu-${id}`].toggle"
-                        :severity="menuItem.isActive ? 'primary' : 'secondary'"
-                        icon="icon-down-arrow"
-                    >
-                        <span :class="menuItem.icon"/>
-                    </ItemButton>
-                </template>
-                <template v-else>
-                    <ItemButton
-                        class="flex-shrink-0"
-                        @click="menuItem.callback"
-                        :severity="menuItem.isActive ? 'primary' : 'secondary'"
-                        :icon="menuItem.icon"
-                    />
+    <div class="editor-horizontal-menu ld-primary-background flex z-[1]">
+        <!-- @mousedown.prevent -->
+        <div class="flex overflow-x-auto" style="scrollbar-width: thin;">
+            <template v-for="(menuItem, id) in items">
+                <template v-if="menuItem.isVisible !== false">
+                    <template v-if="menuItem.isSeparator">
+                        <div class="separator flex self-center h-[40px] w-[2px]"/>
+                    </template>
+                    <template v-else-if="menuItem.children">
+                        <EditorVerticalMenu
+                            :ref="(val: InstanceType<typeof EditorVerticalMenu>) => verticalMenus[`editor-vertical-menu-${id}`] = val"
+                            :id="`editor-vertical-menu-${id}`"
+                            :items="menuItem.children"
+                            :title="menuItem.displayName"
+                        />
+                        <ItemButton
+                            v-if="verticalMenus[`editor-vertical-menu-${id}`]"
+                            :aria-controls="`editor-vertical-menu-${id}`"
+                            aria-haspopup="true"
+                            class="flex-shrink-0"
+                            @click="verticalMenus[`editor-vertical-menu-${id}`].toggle"
+                            :severity="menuItem.isActive ? 'primary' : 'secondary'"
+                            icon="icon-down-arrow"
+                        >
+                            <span :class="menuItem.icon"/>
+                        </ItemButton>
+                    </template>
+                    <template v-else>
+                        <ItemButton
+                            class="flex-shrink-0"
+                            @click="menuItem.callback"
+                            :severity="menuItem.isActive ? 'primary' : 'secondary'"
+                            :icon="menuItem.icon"
+                        />
+                    </template>
                 </template>
             </template>
-        </template>
+        </div>
     </div>
 </template>
 
 <style>
 .content .editor-horizontal-menu .space-y-2 div {
     display: flex;
-}
-.content .editor-horizontal-menu::-webkit-scrollbar {
-    scrollbar-width: none;
 }
 </style>
 
