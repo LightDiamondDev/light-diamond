@@ -45,11 +45,11 @@ import Button from '@/components/elements/Button.vue'
     width: calc(100% - 20px);
     pointer-events: visible;
     max-width: 768px;
-    margin: 10px;
+    margin: 9px;
 }
 .search-form form label button {
-    min-width: 48px;
-    height: 48px;
+    min-width: 42px;
+    height: 42px;
 }
 .search-form form label button { user-select: none; }
 .search-form form label button .icon-magnifier {
@@ -67,7 +67,7 @@ import Button from '@/components/elements/Button.vue'
     padding: 0;
 }
 .search-form form fieldset {
-    min-height: 72px;
+    min-height: 64px;
     width: 100%;
 }
 </style>

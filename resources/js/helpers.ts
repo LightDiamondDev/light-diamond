@@ -15,8 +15,12 @@ export function changeTitle(title: string) {
     document.title = title + ' - ' + import.meta.env.VITE_APP_NAME
 }
 
+export function countHTMLTag(html: string, tag: string) {
+    return (html.match(new RegExp(tag, 'g')) || []).length;
+}
+
 export function getHeaderHeight() {
-    return remToPixels(getCssVariableValue('--header-height'))
+    return convertToPixels(getCssVariableValue('--header-height'))
 }
 
 export function getErrorMessageByCode(code: number) {
@@ -161,14 +165,23 @@ export function getPostVersionStatusInfo(status: PostVersionStatus) {
 export function getCssVariableValue(variable: string) {
     return getComputedStyle(document.documentElement).getPropertyValue(variable).trim()
 }
+export function convertToPixels(value: string) {
+    const tempElement = document.createElement('div')
 
-export function remToPixels(remValue: string) {
-    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize)
-    return parseFloat(remValue) * rootFontSize
+    document.body.appendChild(tempElement)
+
+    tempElement.style.width = value
+
+    const pixels = window.getComputedStyle(tempElement).width
+
+    document.body.removeChild(tempElement)
+
+    return parseFloat(pixels)
 }
 
 export function lockGlobalScroll() {
     const currentScrollbarWidth = window.innerWidth - document.documentElement.offsetWidth
+
     document.body.style.setProperty('--current-global-scrollbar-width', currentScrollbarWidth + 'px')
     document.body.classList.add('lock-scroll')
 }

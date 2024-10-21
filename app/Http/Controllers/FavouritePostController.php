@@ -15,7 +15,7 @@ class FavouritePostController extends Controller
     {
         $post = Post::find($postId);
         if ($post === null) {
-            return $this->errorJsonResponse("Не найден материал с id $postId.");
+            return $this->errorJsonResponse("Не найден Материал с id $postId.");
         }
 
         $user = Auth::user();
@@ -35,7 +35,7 @@ class FavouritePostController extends Controller
     {
         $post = Post::find($postId);
         if ($post === null) {
-            return $this->errorJsonResponse("Не найден материал с id $postId.");
+            return $this->errorJsonResponse("Не найден Материал с id $postId.");
         }
 
         $user = Auth::user();

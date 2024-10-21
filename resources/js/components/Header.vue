@@ -40,13 +40,19 @@ const userMenu = ref<InstanceType<typeof Menu>>()
 
 const userMenuItems = computed<MenuItem[]>(() => [
     {
-        label: 'Контент-студия',
+        label: 'Панель Управления',
+        icon: 'icon-crown',
+        visible: authStore.isModerator,
+        route: {name: 'dashboard'}
+    },
+    {
+        label: 'Контент-Студия',
         icon: 'icon-bottle',
         visible: authStore.isAuthenticated,
         route: {name: 'studio'}
     },
     {
-        label: 'Создать материал',
+        label: 'Создать Материал',
         icon: 'icon-plus',
         visible: authStore.isAuthenticated,
         route: {name: 'create-post'}
@@ -247,34 +253,32 @@ function logout() {
     </Dialog>
 
     <Menu
+        item-classes="ld-title-font h-[64px] md:text-[1rem] text-[14px] gap-3 pl-6 pr-4"
         :items="userMenuItems"
         align-right
-        class="user-menu
+        class="user-menu mt-[-4px]
             ld-primary-background
             ld-primary-border-bottom
             ld-primary-border-right
             ld-primary-border-left"
-        ref="userMenu">
+        ref="userMenu"
+    >
         <template v-slot:header>
             <a
                 v-if="authStore.isAuthenticated"
-                class="profile-link laminated-link transfusion bordered flex items-center m-1"
+                class="profile-link laminated-link transfusion bordered flex items-center min-h-[64px] m-1"
                 href="#"
             >
                 <span class="notifications-counter flex justify-center items-center absolute">15</span>
                 <UserAvatar
-                    border-class-list="h-12 w-12"
-                    icon-class-list="h-8 w-8"
+                    v-if="authStore.isAuthenticated"
+                    border-class-list="h-10 w-10"
+                    icon-class-list="h-7 w-7"
                     :user="authStore.user!"
                 />
                 <div class="flex flex-col">
-                    <span
-                        :class="{ 'text-sm': authStore.username!.length > 15 }"
-                        class="title"
-                    >
-                        {{ authStore.username }}
-                    </span>
-                    <span class="subtitle text-sm opacity-70">Профиль</span>
+                    <span class="text-sm">{{ authStore.username }}</span>
+                    <span class="subtitle text-[12px] opacity-70">Профиль</span>
                 </div>
             </a>
         </template>
@@ -287,7 +291,7 @@ function logout() {
         <aside
             class="
                 left-header-sidebar  ld-primary-background ld-shadow-text
-                overflow-y-scroll max-w-[320px]
+                overflow-y-scroll max-w-[300px]
                 transition duration-500 h-full
                 flex flex-col fixed"
             :class="{
@@ -299,7 +303,7 @@ function logout() {
             <div
                 class="left-header-sidebar-interaction flex h-[var(--header-height)] w-full justify-between items-center px-3"
             >
-                <div class="w-[32px]"></div>
+                <div class="w-[32px]"/>
                 <RouterLink
                     :to="{name: 'home'}"
                     class="logo-wrap flex items-center transition-opacity duration-200 h-[70%]"
@@ -311,12 +315,12 @@ function logout() {
                     class="closing-header-sidebar-button flex justify-center items-center"
                     :class="{'closing-button': !isHeaderSidebar, 'opening-button': isHeaderSidebar}"
                     @click="closeHeaderSidebar">
-                    <span class="icon icon-cross"></span>
+                    <span class="icon icon-cross"/>
                 </button>
             </div>
 
             <template v-for="section of navigationSections">
-                <div class="unit-title flex justify-center transfusion text-[1.1rem]">{{ section.label }}</div>
+                <div class="unit-title flex justify-center transfusion md:text-[1rem] text-[14px]">{{ section.label }}</div>
 
                 <template v-for="childSection of section.children">
                     <ItemButton
@@ -325,7 +329,7 @@ function logout() {
                         :label="childSection.label"
                         :icon="childSection.icon"
                         :to="childSection.route"
-                        class="pl-12 pr-4"
+                        class="min-h-[64px] text-[14px] gap-3 pl-12 pr-4"
                     />
                     <ItemButton
                         v-else
@@ -333,7 +337,7 @@ function logout() {
                         :label="childSection.label"
                         :icon="childSection.icon"
                         :href="childSection.url"
-                        class="pl-12 pr-4"
+                        class="min-h-[64px] text-[14px] gap-3 pl-12 pr-4"
                     />
                 </template>
 
@@ -342,21 +346,16 @@ function logout() {
         <div class="close-header-sidebar-background h-full w-full" @click="closeHeaderSidebar"></div>
     </div>
 
-    <div
-        class="h-[var(--header-height)]"
-        :class="{'-translate-y-full': !preferenceManager.isHeaderFixedVisible() && isHeaderHidden}"
-    />
-
     <header
         class="ld-primary-background ld-primary-border-bottom ld-shadow-text transition-transform
-        flex justify-center duration-300 select-none fixed
+        flex justify-center duration-300 select-none sticky
         h-[var(--header-height)] z-[2] w-full top-0 left-0"
         :class="{'-translate-y-full': !preferenceManager.isHeaderFixedVisible() && isHeaderHidden}"
     >
-        <nav class="header page-container flex justify-between">
+        <nav class="header page-container flex justify-between xl:px-0 xs:px-4 px-2">
             <div class="flex items-center xs:gap-2">
                 <button
-                    class="burger duration-100 flex justify-center items-center h-full p-2 md:-ml-3"
+                    class="burger duration-100 flex justify-center items-center h-full"
                     :class="{'xl:hidden': !preferenceManager.isDesktopSidebarVisible(), 'opacity-0': isHeaderSidebar}"
                     type="button"
                     @click="openHeaderSidebar"
@@ -394,20 +393,21 @@ function logout() {
                         >
                             <template v-for="childSection of section.children">
                                 <ItemButton
+                                    class="ld-title-font h-[64px] md:text-[1rem] text-[14px] gap-3 pl-8 pr-4"
                                     v-if="childSection.route"
                                     as="RouterLink"
                                     :label="childSection.label"
                                     :icon="childSection.icon"
                                     :to="childSection.route"
-                                    class="pl-8 pr-4"
+
                                 />
                                 <ItemButton
                                     v-else
+                                    class="ld-title-font h-[64px] md:text-[1rem] text-[14px] gap-3 pl-8 pr-4"
                                     :as="childSection.url ? 'a' : 'button'"
                                     :label="childSection.label"
                                     :icon="childSection.icon"
                                     :href="childSection.url"
-                                    class="pl-8 pr-4"
                                 />
                             </template>
                         </div>
@@ -425,16 +425,21 @@ function logout() {
                 </button>
 
                 <button
-                    class="user-menu-button flex list-label justify-center items-center md:mr-0 mr-1.5"
+                    class="user-menu-button flex list-label justify-center items-center"
                     type="button"
                     @click="userMenu?.toggle"
                 >
-                    <span v-if="authStore.isAuthenticated" class="notifications-counter flex justify-center items-center absolute">15</span>
+                    <span
+                        v-if="authStore.isAuthenticated"
+                        class="notifications-counter flex justify-center items-center absolute"
+                    >
+                        15
+                    </span>
 
                     <UserAvatar
                         v-if="authStore.isAuthenticated"
-                        border-class-list="h-12 w-12"
-                        icon-class-list="h-8 w-8"
+                        border-class-list="h-10 w-10"
+                        icon-class-list="h-7 w-7"
                         :user="authStore.user!"
                     />
 
@@ -462,7 +467,6 @@ function logout() {
 }
 
 header .list-label-text {
-    font-size: 1.1rem;
     transition: .2s;
     padding: 4px;
 }
@@ -522,18 +526,10 @@ button.list-label:focus-visible .icon, button.list-label:hover .icon,
 .notifications-counter {
     background-color: rgb(210, 10, 30);
     color: var(--primary-text-color);
-    margin: 0 0 36px 36px;
+    margin: 0 0 28px 28px;
     text-align: center;
     font-size: .5rem;
     z-index: 1;
-}
-
-/* =============== [ Медиа-Запрос { ?px < 426px } ] =============== */
-
-@media screen and (max-width: 450px) {
-    .header {
-        padding: 0 4px;
-    }
 }
 
 </style>

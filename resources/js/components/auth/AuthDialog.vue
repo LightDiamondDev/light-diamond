@@ -89,8 +89,7 @@ const activeSplash = getRandomAuthSplash()
     transition: .5s;
 }
 
-.auth-dialog form fieldset,
-.auth-dialog form .button-container {
+.auth-dialog form fieldset {
     width: 85%;
 }
 
@@ -230,7 +229,6 @@ const activeSplash = getRandomAuthSplash()
 
 .button-container {
     height: 80px;
-    width: 80%;
 }
 
 .auth-dialog form .help-button span {

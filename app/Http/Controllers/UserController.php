@@ -92,7 +92,7 @@ class UserController extends Controller
         $user = User::find($id);
 
         if ($user === null) {
-            return $this->errorJsonResponse('Не найдено пользователя с id ' . $id);
+            return $this->errorJsonResponse('Не найдено Пользователя с id ' . $id);
         }
 
         $validator = Validator::make($request->all(), [
@@ -123,7 +123,7 @@ class UserController extends Controller
         $user = User::find($id);
 
         if ($user === null) {
-            return $this->errorJsonResponse('Не найдено пользователя с id ' . $id);
+            return $this->errorJsonResponse('Не найдено Пользователя с id ' . $id);
         }
 
         $user->delete();

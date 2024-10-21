@@ -38,10 +38,13 @@ const props = defineProps({
     class: {
         type: String,
         default: ''
-    }
+    },
+    dialogClasses: String
 })
 
 const emit = defineEmits(['back'])
+
+let dialogClasses = ref('')
 
 const container = ref<Element>()
 const isMaskMouseDown = ref(false)
@@ -86,6 +89,8 @@ function onMaskMouseUp(event: MouseEvent) {
     isMaskMouseDown.value = false
 }
 
+dialogClasses.value = props.position === 'center' ? 'items-center ' + props.dialogClasses : 'items-start ' + props.dialogClasses
+
 </script>
 
 <template>
@@ -94,11 +99,8 @@ function onMaskMouseUp(event: MouseEvent) {
 
         <div
             v-if="isVisible"
-            class="dialog-background outer flex fixed w-full h-full left-0 z-[3]"
-            :class="{
-                'justify-center items-center': position === 'center',
-                'justify-center items-start': position === 'top-center',
-            }"
+            class="dialog-background outer flex justify-center fixed w-full h-full left-0 z-[3]"
+            :class="dialogClasses"
             @mousedown="onMaskMouseDown"
             @mouseup="onMaskMouseUp"
         >
@@ -142,6 +144,34 @@ function onMaskMouseUp(event: MouseEvent) {
 
                 </div>
             </div>
+
+            <div style="position: absolute; z-index: 1;">
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <div style="position: absolute; z-index: 10;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <div style="position: absolute; z-index: 20;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
 
         </div>
 

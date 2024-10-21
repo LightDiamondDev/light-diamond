@@ -12,13 +12,12 @@ const props = defineProps({
         type: String,
         default: 'item-diamond-pickaxe'
     },
-    height: String,
-    width: String
+    processingClasses: String
 });
 </script>
 
 <template>
-    <div class="processing flex flex-wrap" :style="{ 'height': height, 'width': width, }">
+    <div :class="processingClasses" class="processing flex flex-wrap">
         <div :class="block" class="block"></div>
         <div class="destroying"></div>
         <div :class="loot" class="loot"></div>

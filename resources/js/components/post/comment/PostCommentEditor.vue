@@ -42,6 +42,7 @@ const editorExtensions = [
         v-model="content"
         :extensions="editorExtensions"
         editor-class="post-comment-content min-h-[4rem]"
+        :is-comment-editor="true"
     />
 </template>
 
@@ -49,17 +50,18 @@ const editorExtensions = [
     .editor-horizontal-menu .item-button {
         min-height: 48px;
     }
+    .post-comment-editor .tiptap {
+        padding: 1rem 3rem;
+    }
+    /* =============== [ Медиа-Запрос { ?px < 769px } ] =============== */
+
+    @media screen and (max-width: 768px) {
+        .post-comment-editor .tiptap {
+            padding: .5rem;
+        }
+    }
 </style>
 
 <style scoped>
-.post-comment-editor {
-    padding: 1rem 3rem;
-}
-/* =============== [ Медиа-Запрос { ?px < 769px } ] =============== */
 
-@media screen and (max-width: 768px) {
-    .post-comment-editor {
-        padding: .5rem;
-    }
-}
 </style>

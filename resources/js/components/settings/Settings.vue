@@ -1,114 +1,111 @@
 <script setup lang="ts">
 import {useRoute} from 'vue-router'
-import {ref, watch} from 'vue'
-import ProfileSettings from '@/components/settings/ProfileSettings.vue'
-import SecuritySettings from '@/components/settings/SecuritySettings.vue'
+import {computed, ref, watch} from 'vue'
+
 import ItemButton from '@/components/elements/ItemButton.vue'
 
-enum Section {
-    PROFILE,
-    SECURITY
+interface SettingsMenuItem {
+    label: string
+    icon: string
+    route?: string
+    visible?: boolean | ((...args: any) => boolean)
 }
-const route = useRoute()
 
-let currentSection = ref(Section.PROFILE)
-let isMobileMenu = ref(true)
-let settingsTitle;
+const route = useRoute()
+const isMobileMenu = ref(true)
+
+const menuItems = ref<SettingsMenuItem[]>([
+    {
+        label: 'Профиль',
+        icon: 'icon-diamond',
+        route: 'settings.profile',
+    },
+    {
+        label: 'Безопасность',
+        icon: 'icon-apple',
+        route: 'settings.security',
+    }
+])
+
+const activeMenuItem = ref<SettingsMenuItem>(getActualActiveMenuItem())
 
 watch(route, () => {
-    updateCurrentSectionByRoute()
+    activeMenuItem.value = getActualActiveMenuItem()
 })
 
-function updateCurrentSectionByRoute() {
-    switch (route.name) {
-        case 'settings.profile':
-            currentSection.value = Section.PROFILE
-            break
-        case 'settings.security':
-            currentSection.value = Section.SECURITY
-            break
-    }
+function getActualActiveMenuItem() {
+    return menuItems.value.find(item => item.route === route.name)!
 }
+
+function onSectionSelect(item: SettingsMenuItem) {
+    isMobileMenu.value = false
+    activeMenuItem.value = item
+}
+
+const visibleMenuItems = computed<SettingsMenuItem[]>(() => {
+    return menuItems.value.filter(
+        (item) => typeof item.visible === 'function' ? item.visible() : item.visible !== false
+    )
+})
 
 function setMobileMenu() {
     isMobileMenu.value = true
 }
 
-function setProfileSection() {
-    currentSection.value = Section.PROFILE
-    settingsTitle = 'Профиль'
-    isMobileMenu.value = false
-}
-
-function setSecuritySection() {
-    currentSection.value = Section.SECURITY
-    settingsTitle = 'Безопасность'
-    isMobileMenu.value = false
-}
-
-updateCurrentSectionByRoute()
 </script>
 
 <template>
-    <div class="settings flex flex-col w-full p-2">
-        <div class="title ld-primary-background ld-primary-border flex items-center mb-2 pl-2 pr-2">
-            <button
-                class="h-[48px] w-[48px] justify-center items-center arrow locked"
-                :class="{ 'invisible': isMobileMenu }"
-                @click="setMobileMenu()"
-            >
-                <span class="flex icon icon-left-arrow"></span>
-            </button>
-            <div class="flex items-center">
-                <span class="text-[1.2rem] md:text-[2rem]">Настройки</span>
-                <span v-if="!isMobileMenu" class="text-[1.1rem] md:text-[2rem] opacity-80 locked">ﾠ>ﾠ</span>
-                <span v-if="!isMobileMenu" class="text-[0.9rem] md:text-[1.8rem] opacity-80">{{ settingsTitle }}</span>
+    <div class="manager ld-fixed-background flex flex-col max-w-[1280px] w-full">
+        <div class="title-header w-full">
+            <div class="title flex justify-between items-center w-full p-2">
+                <button
+                    class="justify-center items-center arrow-tap locked"
+                    :class="{'invisible': isMobileMenu}"
+                    @click="setMobileMenu()"
+                >
+                    <span class="flex icon icon-left-arrow"/>
+                </button>
+                <div class="ld-title-font ld-shadow-text flex items-center text-[1.2rem] md:text-[2rem] gap-2">
+                    <h1 :class="{ 'sm-hidden': !isMobileMenu }" class="ld-brilliant-text text-center">Настройки</h1>
+                    <p class="opacity-80 sm:flex hidden">></p>
+                    <p class="text-center" :class="{ 'sm-hidden': isMobileMenu }">{{ activeMenuItem.label }}</p>
+                </div>
+                <div class="h-[32px] w-[32px] arrow-tap"></div>
             </div>
-            <div class="h-[48px] w-[48px] arrow locked"></div>
         </div>
         <div class="interface flex">
-            <aside class="ld-primary-background ld-primary-border" :class="{ 'on': isMobileMenu }">
+            <aside class="manager-aside md:min-w-[280px]" :class="{ 'on': isMobileMenu }">
                 <div class="units">
 
-                    <RouterLink
-                        :class="{ 'transfusion': currentSection === Section.PROFILE }"
-                        class="h-fit flex"
-                        :to="{ name: 'settings.profile' }"
+                    <Component
+                        v-for="(item) of visibleMenuItems"
+                        :class="{ 'transfusion': activeMenuItem.route === item.route }"
+                        class="flex border-0"
+                        :is="item.route ? 'RouterLink' : 'a'"
+                        :to="{ name: item.route }"
+                        @click="onSectionSelect(item)"
                     >
                         <ItemButton
-                            class="pl-8 pr-4 w-full text-[1.1rem]"
-                            @click="setProfileSection()"
-                            icon="icon-diamond"
-                            label="Профиль"
+                            class="ld-title-font h-[64px] md:text-[1rem] text-[14px] w-full gap-2 pl-6 pr-8 whitespace-nowrap"
+                            plain :text="item !== activeMenuItem"
+                            :label="item.label"
+                            :icon="item.icon"
                             tabindex="-1"
                         />
-                    </RouterLink>
-
-                    <RouterLink
-                        :class="{ 'transfusion': currentSection === Section.SECURITY }"
-                        class="h-fit flex"
-                        :to="{name: 'settings.security'}"
-                    >
-                        <ItemButton
-                            class="pl-8 pr-4 w-full text-[1.1rem]"
-                            @click="setSecuritySection()"
-                            label="Безопасность"
-                            icon="icon-apple"
-                            tabindex="-1"
-                        />
-                    </RouterLink>
+                    </Component>
 
                 </div>
             </aside>
 
             <div
                 :class="{ 'on': !isMobileMenu }"
-                class="settings-container ld-primary-background flex flex-col"
+                class="manager-container ld-fixed-background ld-primary-border
+                    flex flex-col w-full relative"
             >
 
                 <RouterView v-slot="{ Component }">
-                    <Transition name="smooth-settings-switch">
-                        <Component :is="Component"/>
+                    <Transition name="smooth-manager-switch">
+                        <Component class="w-full" :is="Component"/>
                     </Transition>
                 </RouterView>
 
@@ -117,162 +114,102 @@ updateCurrentSectionByRoute()
     </div>
 </template>
 
-<style>
-.settings {
-    max-width: 1280px;
+<style scoped>
+.manager-container,
+.manager-aside,
+.title-header {
+    background-color: var(--primary-bg-color);
+    background-image: var(--bg-image);
 }
-.settings aside {
-    margin-right: .5rem;
-    min-width: 280px;
+.manager {
+    padding: .5rem;
+    gap: .5rem;
 }
-.settings aside .units a {
-    background-size: 400% 100%;
+.title {
+    border: var(--primary-border);
 }
-.settings .title {
-    justify-content: center;
-    height: 72px;
+.arrow-tap {
+    visibility: hidden;
 }
-.settings .title .arrow {
-    display: none;
+.interface {
+    gap: .5rem;
 }
-.settings .interface {
-    overflow: hidden;
-}
-.settings .settings-container {
-    position: relative;
-    min-height: 800px;
-    overflow: hidden;
-}
-.settings .banner {
-    overflow: hidden;
-    height: 200px;
-    width: 100%;
-}
-.settings .banner .profile {
-    animation: banner-scale-animation 15s infinite;
-    width: 100%;
-}
-.settings form .section-title {
-    background-size: 400% 100%;
-}
-.settings form fieldset label {
-    height: 48px;
-    width: 100%;
-}
-.settings form fieldset .image-loader {
-    height: 96px;
-    width: 96px
-}
-.settings form fieldset label input {
-    height: 100%;
-    width: 100%;
+.manager-aside {
+    border: var(--primary-border);
 }
 
-.settings form fieldset .status.error {
-    color: #ff3050;
-}
+/* =============== [ Медиа-Запрос { 769px > ? } ] =============== */
 
-.settings form fieldset .status.success {
-    color: var(--hover-text-color);
-}
-
-/* =============== [ Анимации ] =============== */
-
-.smooth-settings-switch-enter-active,
-.smooth-auth-switch-leave-active {
-    transition: .8s ease;
-    position: absolute;
-}
-
-.smooth-settings-switch-enter-from {
-    transform: translateY(100%);
-    transition: .8s;
-    opacity: 0;
-}
-
-.smooth-settings-switch-leave-to {
-    transform: translateY(-100%);
-    transition: .8s;
-    opacity: 0;
-}
-
-@keyframes banner-scale-animation {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-    100% {
-        transform: scale(1);
+@media screen and (min-width: 769px) {
+    .manager .interface {
+        overflow: clip;
     }
 }
-
 /* =============== [ Медиа-Запрос { ?px < 769px } ] =============== */
 
 @media screen and (max-width: 768px) {
-    .settings {
-        margin: 0 .5rem;
+    .manager-container,
+    .manager-aside,
+    .title-header {
+        background-color: transparent;
+        background-image: none;
     }
-    .settings .title {
-        justify-content: space-between;
-        height: 64px;
+    .manager {
+        background-color: var(--primary-bg-color);
+        background-image: var(--bg-image);
+        padding: 0;
+        gap: 0;
     }
-    .settings .title .arrow {
-        display: flex;
+    .title {
+        background: var(--tinted-bg-color);
+        border: none;
     }
-    .settings .interface aside {
-        transform: translateX(-100%);
+    .arrow-tap {
+        visibility: visible;
+    }
+    .interface {
+        gap: 0;
+    }
+    .manager-aside {
+        border-bottom: var(--primary-border);
+        border-top: var(--primary-border);
+        border-right: none;
+        border-left: none;
+    }
+    .invisible {
+        visibility: hidden;
+    }
+    .interface .manager-aside {
         transition: .5s;
-        margin-right: 0;
         min-width: 0;
         opacity: 0;
         width: 0;
     }
-    .settings .interface aside.on {
+    .interface .manager-aside.on {
         transform: translateX(0);
         max-width: 100%;
         width: 100%;
         opacity: 1;
     }
-    .settings .interface .settings-container {
+    .interface .manager-container {
         transform: translateX(100%);
-        min-height: 1024px;
         transition: .5s;
         opacity: 0;
         border: 0;
         width: 0;
     }
-    .settings .interface .settings-container.on {
+    .interface .manager-container.on {
         transform: translateX(0);
         width: 100%;
         opacity: 1;
-        right: 2px;
-    }
-    .settings .banner {
-        height: fit-content;
-    }
-    .smooth-settings-switch-enter-active,
-    .smooth-auth-switch-leave-active {
-        transition: none;
-    }
-
-    .smooth-settings-switch-enter-from {
-        transform: translateY(0);
-        transition: none;
-    }
-
-    .smooth-settings-switch-leave-to {
-        transform: translateY(0);
-        transition: none;
     }
 }
 
-/* =============== [ Медиа-Запрос { ?px < 350px } ] =============== */
+/* =============== [ Медиа-Запрос { ?px < 641px } ] =============== */
 
-@media screen and (max-width: 349px) {
-    .settings {
-        margin: 0 .5rem;
+@media screen and (max-width: 640px) {
+    .sm-hidden {
+        display: none;
     }
 }
 </style>

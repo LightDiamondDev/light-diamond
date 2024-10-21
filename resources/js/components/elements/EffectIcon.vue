@@ -9,8 +9,8 @@ const props = defineProps ({
 
 <template>
     <span class="set-mark icon-group flex justify-center items-center relative">
-        <span :class="icon" class="effect-set-sub-like icon flex absolute"></span>
-        <span :class="icon" class="effect-set-like icon flex"></span>
+        <span :class="icon" class="effect-set-sub-like icon flex absolute sm:h-[32px] h-[24px] sm:w-[32px] w-[24px]"/>
+        <span :class="icon" class="effect-set-like icon flex sm:h-[32px] h-[24px] sm:w-[32px] w-[24px]"/>
         <span class="particle n1"/>
         <span class="particle n2"/>
         <span class="particle n3"/>

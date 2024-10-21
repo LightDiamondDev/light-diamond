@@ -72,7 +72,7 @@ function submitChangeEmail() {
             toastStore.info(
                 `Мы отправили Вам письмо со ссылкой для подтверждения Вашей НОВОЙ электронной почты!`,
                 'Подтверждение E-Mail',
-                '15000',
+                15000,
                 'icon-letter'
             )
             authStore.fetchUser()
@@ -135,24 +135,29 @@ function submitChangePassword() {
 </script>
 
 <template>
-    <div class="section flex flex-col h-full">
-        <div class="banner flex justify-center items-center w-full">
-            <img alt="" class="profile" src="/images/elements/security-banner.png">
+    <div class="section flex flex-col min-h-[100vh]">
+        <div class="banner flex justify-center items-center max-h-[168px] w-full overflow-hidden">
+            <img
+                alt=""
+                class="profile sm:pt-0 pt-2"
+                src="/images/elements/security-banner.png"
+                style="animation: banner-scale-animation 15s infinite;"
+            >
         </div>
         <form action="" class="flex flex-col h-full w-full">
 
-            <div class="section-title flex justify-center transfusion text-[1.5rem] mt-4">Email</div>
+            <div class="section-title ld-title-font flex justify-center transfusion text-[20px] mt-2">Email</div>
 
-            <fieldset class="flex flex-col m-4">
+            <fieldset class="flex flex-col m-2">
                 <div class="flex flex-col">
-                    <div class="flex flex-col">
+                    <div class="flex flex-col gap-3">
                         <div class="description">
-                            <p class="text-[0.9rem] p-2">
+                            <p class="sm:text-[12px] text-[10px] xs:text-start text-center">
                                 Адрес электронной почты, к которому привязана Ваша учётная запись.
                             </p>
                         </div>
-                        <div v-if="!isEditingEmail" class="mt-4">
-                            <span class="subtitle text-[1.1rem]">Email</span>
+                        <div v-if="!isEditingEmail">
+                            <span class="subtitle text-[14px]">Email</span>
                             <div
                                 class="
                                     current-data-field
@@ -184,29 +189,31 @@ function submitChangePassword() {
                             </div>
                         </div>
                         <div v-else class="flex flex-col mt-4">
-                            <span class="subtitle text-[1.1rem]">Новый Email</span>
+                            <span class="subtitle text-[14px]">Новый Email</span>
                             <Input
                                 v-model="emailData.email"
+                                class="text-[14px] h-[48px]"
                                 id="settings-security-email"
                                 :placeholder="hiddenEmail"
                                 autocomplete="email"
                             />
                             <span
                                 :class="{ 'error': emailErrors['email'], 'success': !emailErrors['email']}"
-                                class="status text-[0.8rem] locked"
+                                class="status sm:text-[12px] text-[10px] my-0.5 locked"
                             >
                                 {{ emailErrors['email']?.[0] || '&nbsp;' }}
                             </span>
-                            <span class="subtitle text-[1.1rem]">Новый повторный Email</span>
+                            <span class="subtitle text-[14px]">Новый повторный Email</span>
                             <Input
                                 v-model="emailData.email_confirmation"
+                                class="text-[14px] h-[48px]"
                                 id="settings-security-email-confirmation"
                                 :placeholder="hiddenEmail"
                                 autocomplete="email"
                             />
                             <span
                                 :class="{ 'error': emailErrors['email_confirmation'], 'success': !emailErrors['email_confirmation']}"
-                                class="status text-[0.8rem] locked"
+                                class="status sm:text-[12px] text-[10px] my-0.5 locked"
                             >
                                 {{ emailErrors['email_confirmation']?.[0] || '&nbsp;' }}
                             </span>
@@ -215,14 +222,14 @@ function submitChangePassword() {
                     <div v-if="isEditingEmail" class="flex gap-2">
                         <Button
                             :disabled="emailData.email === authStore.email || emailData.email !== emailData.email_confirmation || !emailData.email"
-                            class="confirm max-h-[64px] max-w-[200px]"
+                            class="confirm max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="submit"
                             :loading="isProcessingEmail"
                             label="Подтвердить"
                             @click.prevent="submitChangeEmail()"
                         />
                         <Button
-                            class="cancel max-h-[64px] max-w-[200px]"
+                            class="cancel max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="button"
                             label="Отменить"
                             :loading="isProcessingEmail"
@@ -232,15 +239,16 @@ function submitChangePassword() {
                     <!-- Message | type="warning" | :closable="false" -->
                     <div v-if="!authStore.hasVerifiedEmail" class="message warning flex mt-4">
                         <div class="flex items-center p-2">
-                            <span class="icon icon-share flex h-[48px] w-[48px]"></span>
+                            <span class="icon icon-share flex sm:h-[48px] h-[32px] sm:w-[48px] w-[32px]"/>
                         </div>
                         <div class="flex flex-col">
-                            <p class="text-[0.9rem] pr-3 pt-3">
+                            <p class="sm:text-[12px] text-[10px] pr-3 pt-3">
                                 Подтвердите свой адрес электронной почты, перейдя по ссылке из письма.
                             </p>
                             <ShineButton
                                 :loading="isProcessingSendEmailVerificationLink"
-                                class="ld-shine-button warning min-h-[64px] max-w-[300px] pb-3 pr-3 pt-3"
+                                class="ld-shine-button warning max-w-[240px] mr-2 my-2"
+                                class-preset="text-[12px] gap-2 px-2"
                                 @click="sendEmailVerificationLink"
                                 label="Отправить повторно"
                                 button-type="button"
@@ -251,19 +259,19 @@ function submitChangePassword() {
                 </div>
             </fieldset>
 
-            <div class="section-title flex justify-center transfusion text-[1.5rem]">Пароль</div>
+            <div class="section-title ld-title-font flex justify-center transfusion text-[20px]">Пароль</div>
 
-            <fieldset class="flex flex-col m-4">
+            <fieldset class="flex flex-col m-2">
                 <div class="flex flex-col">
-                    <div class="flex flex-col">
+                    <div class="flex flex-col gap-3">
                         <div class="description">
-                            <p class="text-[0.9rem] p-2">
-                                Пароль должен быть надёжным, содержать заглавные и строчные буквы,
-                                а также цифры и спец. символы! Хороший пароль — ключ к неуязвимости!
+                            <p class="sm:text-[12px] text-[10px] xs:text-start text-center">
+                                Пароль должен быть надёжным, содержать заглавные и строчные буквы, а также цифры и
+                                спец. символы, ведь хороший пароль — это ключ к эффекту стойкости, а значит и победе!
                             </p>
                         </div>
-                        <div v-if="!isEditingPassword" class="mt-4">
-                            <span class="subtitle text-[1.1rem]">Пароль</span>
+                        <div v-if="!isEditingPassword">
+                            <span class="subtitle text-[14px]">Пароль</span>
                             <div
                                 class="
                                     current-data-field
@@ -284,9 +292,10 @@ function submitChangePassword() {
                             </div>
                         </div>
                         <div v-else class="flex flex-col mt-4">
-                            <span class="subtitle text-[1.1rem]">Новый пароль</span>
+                            <span class="subtitle text-[14px]">Новый пароль</span>
                             <Input
                                 v-model="passwordData.password"
+                                class="text-[14px] h-[48px]"
                                 id="settings-security-password"
                                 autocomplete="password"
                                 placeholder="Пароль"
@@ -297,16 +306,17 @@ function submitChangePassword() {
                             >
                                 {{ passwordErrors['password']?.[0] || '&nbsp;' }}
                             </span>
-                            <span class="subtitle text-[1.1rem]">Новый повторный пароль</span>
+                            <span class="subtitle text-[14px]">Новый повторный пароль</span>
                             <Input
                                 v-model="passwordData.password_confirmation"
+                                class="text-[14px] h-[48px]"
                                 id="settings-security-password-confirmation"
                                 placeholder="Повторный пароль"
                                 autocomplete="password"
                             />
                             <span
                                 :class="{ 'error': passwordErrors['password_confirmation'], 'success': !passwordErrors['password_confirmation']}"
-                                class="status text-[0.8rem] locked"
+                                class="status sm:text-[12px] text-[10px] my-0.5 locked"
                             >
                                 {{ passwordErrors['password_confirmation']?.[0] || '&nbsp;' }}
                             </span>
@@ -315,14 +325,14 @@ function submitChangePassword() {
                     <div v-if="isEditingPassword" class="flex gap-2">
                         <Button
                             :disabled="passwordData.password !== passwordData.password_confirmation || !passwordData.password"
-                            class="confirm max-h-[64px] max-w-[200px]"
+                            class="confirm max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="submit"
                             label="Подтвердить"
                             :loading="isProcessingPassword"
                             @click.prevent="submitChangePassword()"
                         />
                         <Button
-                            class="cancel max-h-[64px] max-w-[200px]"
+                            class="cancel max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="button"
                             label="Отменить"
                             :loading="isProcessingPassword"

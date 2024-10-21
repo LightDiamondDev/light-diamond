@@ -28,22 +28,23 @@ const props = defineProps({
             <span>Отправлена заявка</span>
         </span>
         <span v-else>
-            <span v-if="action.type === PostVersionActionType.ACCEPT">
-                <span class="icon-tick icon flex text-confirm"/>
+            <span v-if="action.type === PostVersionActionType.ACCEPT" class="flex items-center md:text-[12px] text-[10px]">
+                <span class="icon-round-tick icon flex text-confirm mr-1"/>
                 <span>Принято</span>
             </span>
-            <span v-else-if="action.type === PostVersionActionType.REJECT" class="flex items-center">
-                <span class="icon-red-cross icon flex min-w-[2rem] mr-1"/>
+            <span v-else-if="action.type === PostVersionActionType.REJECT" class="line-height-small flex items-center md:text-[12px] text-[10px]">
+                <span class="icon-round-cross icon flex min-w-[2rem] mr-1"/>
                 <span class="flex flex-col w-full">
-                    <span>Отклонено: </span>
-                    <span class="text-muted truncate ld-lightgray-text max-w-[90%] xl:max-w-[160px]">
+                    <span class="hot-subtitle">Отклонено: </span>
+                    <!-- xl:max-w-[160px] -->
+                    <span class="text-muted truncate ld-lightgray-text max-w-[90%]">
                         {{ (action.details as PostVersionActionReject).reason }}
                     </span>
                 </span>
             </span>
             <span v-else-if="action.type === PostVersionActionType.REQUEST_CHANGES" class="flex items-center">
-                <span class="icon-white-rotate-left icon flex min-w-[2rem] mr-1"/>
-                <span class="flex flex-col w-full">
+                <span class="icon-round-eye icon flex min-w-[2rem] mr-1"/>
+                <span class="flex flex-col w-full md:text-[12px] text-[10px]">
                     <span>Возвращено на доработку: </span>
                     <span class="text-muted truncate ld-lightgray-text max-w-[90%] xl:max-w-[160px]">
                         {{ (action.details as PostVersionActionRequestChanges).message }}
@@ -76,9 +77,9 @@ const props = defineProps({
                                 xs:top-[-12px] right-[-8px] top-[-8px]"
                         />
                         <UserAvatar
-                            border-class-list="xs:h-12 xs:w-12 h-9 w-9"
-                            icon-class-list="xs:h-8 xs:w-8 h-6 w-6"
-                            :user="action.user!"
+                            border-class-list="h-10 w-10"
+                            icon-class-list="h-7 w-7"
+                            :user="action.user"
                         />
                     </div>
                     <span
@@ -150,6 +151,12 @@ const props = defineProps({
 </template>
 
 <style scoped>
+.ld-secondary-background-action .hot-subtitle {
+    color: var(--secondary-text-color);
+}
+.ld-secondary-background-action .ld-lightgray-text {
+    color: var(--trinity-text-color);
+}
 .minimized-action {
     @apply text-sm line-clamp-2
 }
@@ -160,6 +167,9 @@ const props = defineProps({
 .tooltip::before {
     height: 2rem;
     left: -2rem;
+}
+.line-height-small {
+    line-height: 1.2;
 }
 
 /* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */

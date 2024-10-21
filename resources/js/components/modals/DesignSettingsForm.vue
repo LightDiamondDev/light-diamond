@@ -36,7 +36,7 @@ const preferenceManager = usePreferenceManager()
 
 <style>
 .design-settings-form .settings-button {
-    height: 72px;
+    height: 64px;
     width: 98%;
 }
 .design-settings-form .settings-button .icon {

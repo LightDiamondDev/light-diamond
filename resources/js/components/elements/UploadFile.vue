@@ -95,14 +95,14 @@ function uploadFile(file: File) {
 >
     <em
         :class="{ 'loaded': fileSrc }"
-        class="upload-file-info flex flex-col items-center gap-2 p-4"
+        class="upload-file-info flex flex-col items-center gap-2 py-8 px-4"
     >
         <span class="upload-file-heading flex gap-2">
             <span :class="icon" class="icon relative"></span>
-            <span class="head-font md:text-[1.2rem] text-center duration-200">{{ title }}</span>
+            <span class="head-font text-center md:text-[16px] text-[14px] duration-200">{{ title }}</span>
         </span>
-        <span class="text-center">Максимальный размер — {{ maxSizeInMegabytes }} Мб</span>
-        <span class="text-center">{{ allowedFileFormats.join(" / ") }}</span>
+        <span class="text-center md:text-[14px] text-[12px]">Максимальный размер — {{ maxSizeInMegabytes }} Мб</span>
+        <span class="text-center md:text-[14px] text-[12px]">{{ allowedFileFormats.join(" / ") }}</span>
         <input
             ref="input"
             @change="onChange"
@@ -152,21 +152,5 @@ em.loaded .upload-file-heading {
 input {
     height: 0;
     width: 0;
-}
-
-/* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
-
-@media screen and (max-width: 767px) {
-    em span {
-        font-size: .9rem;
-    }
-}
-
-/* =============== [ Медиа-Запрос { ?px < 425px } ] =============== */
-
-@media screen and (max-width: 425px) {
-    em span {
-        font-size: .7rem;
-    }
 }
 </style>

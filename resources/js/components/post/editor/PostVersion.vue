@@ -55,6 +55,8 @@ const authStore = useAuthStore()
 const toastStore = useToastStore()
 const router = useRouter()
 
+const bannerImagesSrc = [ '/images/elements/general-banner-ancient-city.png' ]
+
 const acceptOverlayPanel = ref<InstanceType<typeof OverlayPanel>>()
 const reconsiderOverlayPanel = ref<InstanceType<typeof OverlayPanel>>()
 const revisionOverlayPanel = ref<InstanceType<typeof OverlayPanel>>()
@@ -293,6 +295,7 @@ function updateDraft() {
         isUpdatingDraft.value = false
     })
 }
+
 loadPostVersion()
 </script>
 
@@ -312,7 +315,7 @@ loadPostVersion()
             :header="true"
             :modal="true"
         >
-            <div class="post-version-actions flex flex-col gap-2 md:p-6 xs:p-4 p-2">
+            <div class="post-version-actions flex flex-col gap-4 md:p-6 xs:p-4 p-2">
                 <PostVersionAction v-for="action in postVersion.actions" :action="action"/>
             </div>
         </Dialog>
@@ -325,97 +328,98 @@ loadPostVersion()
             :errors="errors"
         >
             <template v-slot:banner>
-                <Banner :is-title-display="false"/>
-            </template>
+                <Banner class="md:h-[208px] h-[178px] w-full" :images-src="bannerImagesSrc">
+                    <template v-slot:banner-content>
+                        <div class="banner-title page-container flex flex-col justify-center items-center md:items-end max-w-[800px]">
 
-            <template v-slot:header>
-                <div class="banner-title page-container flex flex-col justify-center items-center md:items-end max-w-[800px]">
+                            <h1 class="ld-title-font flex self-center text-center md:text-[3rem] text-[1.5rem] locked">Заявка на публикацию</h1>
 
-                    <RouterLink
-                        class="logo-wrap flex justify-center items-center relative xs:w-full full-locked"
-                        :to="{ name: 'home' }"
-                    >
-                        <h1 class="title-font text-center">Заявка на публикацию</h1>
-                    </RouterLink>
+                            <div class="mark-block flex absolute bottom-2 gap-2">
+                                <div :class="{ 'new': isFirstVersion, 'update': !isFirstVersion }" class="material-type new flex items-center h-fit gap-2 locked">
+                                    <span class="icon-apple icon flex"/>
+                                    <p v-if="isFirstVersion" class="text-[9px] xs:text-[.7rem]">Новый Материал</p>
+                                    <p v-else class="text-[9px] xs:text-[.7rem]">Обновление</p>
+                                </div>
+                                <div
+                                    class="time-ago time flex items-center h-fit gap-2 locked tooltip whitespace-nowrap"
+                                    v-tooltip.top="getFullPresentableDate(postVersion!.updated_at!)"
+                                >
+                                    <span class="icon-clock icon flex"/>
+                                    <p class="text-[9px] xs:text-[.7rem]">{{ getRelativeDate(postVersion!.updated_at!) }}</p>
+                                </div>
+                            </div>
 
-                    <div class="mark-block flex absolute bottom-2 gap-2">
-                        <div :class="{ 'new': isFirstVersion, 'update': !isFirstVersion }" class="material-type new flex items-center h-fit gap-2 locked">
-                            <span class="icon-apple icon flex"/>
-                            <p v-if="isFirstVersion" class="text-[9px] xs:text-[.7rem]">Новый Материал</p>
-                            <p v-else class="text-[9px] xs:text-[.7rem]">Обновление</p>
                         </div>
-                        <div
-                            class="time-ago time flex items-center h-fit gap-2 locked tooltip whitespace-nowrap"
-                            v-tooltip.top="getFullPresentableDate(postVersion!.updated_at!)"
-                        >
-                            <span class="icon-clock icon flex"/>
-                            <p class="text-[9px] xs:text-[.7rem]">{{ getRelativeDate(postVersion!.updated_at!) }}</p>
-                        </div>
-                    </div>
-
-                </div>
+                    </template>
+                </Banner>
             </template>
 
             <template v-slot:sidebar>
                 <div class="flex flex-col w-full">
 
-                    <div v-if="authStore.isModerator &&
+                    <div
+                        v-if="authStore.isModerator &&
                             (postVersion.status !== PostVersionStatus.DRAFT || postVersion.assigned_moderator)"
-                         class="flex xl:flex-col flex-row"
+                        class="flex xl:flex-col flex-row"
                     >
-                        <div class="flex items-center max-w-[100px] xl:px-2.5 px-5 py-1">
-                            <p class="xl:mt-1">Модератор</p>
+                        <div class="ld-secondary-text flex items-center min-w-[100px] xl:px-2.5 px-5 py-1">
+                            <p class="text-[12px] xl:mt-1">Модератор</p>
                         </div>
                         <div class="flex xl:max-w-none max-w-[200px] w-full">
                             <Select
-                                options-classes="ld-primary-background ld-primary-border mt-[-10px]"
-                                :disabled="postVersion!.status !== PostVersionStatus.PENDING"
-                                class="post-moderator flex self-center w-full"
                                 v-model="postVersion!.assigned_moderator_id"
+                                button-classes="ld-primary-background ld-primary-border max-h-[64px]"
                                 button-label-classes="hidden xs:flex"
-                                button-classes="max-h-[64px]"
+                                options-classes="ld-primary-background ld-primary-border top-[56px]"
+                                class="post-moderator flex items-center w-full mx-2"
+                                :disabled="postVersion!.status !== PostVersionStatus.PENDING"
+                                :is-custom-option-item="true"
                                 input-id="moderator"
                                 :options="moderatorOptions"
-                                option-classes="xl:pl-2 pl-4"
+                                option-classes="min-h-[54px] gap-1 px-2"
                                 option-label-key="username"
                                 option-value-key="id"
                                 placeholder="Не назначен"
+                                option-icon-key="icon"
                                 @show="loadModerators"
                                 @change="assignModerator"
                             >
-
                                 <template #option-icon="{option}: {option: User}">
                                     <UserAvatar
-                                        border-class-list="h-12 w-12"
-                                        icon-class-list="h-8 w-8"
-                                        :user="option"
+                                        border-class-list="h-10 min-w-10"
+                                        icon-class-list="h-7 min-w-7"
+                                        :user="postVersion.author"
                                     />
                                 </template>
 
-                                <template #option="{option}: { option: User}">
-                                    <div class="flex gap-2 items-center py-2 px-3 w-full"
-                                         @click="assignModerator(option)">
+                                <template #option-item="{option}: { option: User}">
+                                    <button class="flex gap-1 items-center cursor-pointer py-1 px-2 w-full" type="button">
                                         <UserAvatar
-                                            border-class-list="h-12 w-12"
-                                            icon-class-list="h-8 w-8"
-                                            :user="option"
+                                            border-class-list="h-10 min-w-10"
+                                            icon-class-list="h-7 min-w-7"
+                                            :user="postVersion.author"
                                         />
-                                        <p class="text-sm line-clamp-1">{{ option.username }}</p>
-                                    </div>
+                                        <p
+                                            class="text-[12px] line-clamp-1"
+                                            style="margin-top: 0;"
+                                        >
+                                            {{ option.username }}
+                                        </p>
+                                    </button>
                                 </template>
-
                             </Select>
                         </div>
                     </div>
 
-                    <div v-if="postVersion!.post" class="header-details-item flex xl:flex-col flex-row">
-                        <div class="flex items-center max-w-[100px] xl:px-2.5 px-5 py-1">
-                            <p>Материал</p>
+                    <div v-if="postVersion!.post" class="header-details-item flex xl:flex-col flex-row mt-1">
+                        <div class="ld-secondary-text flex items-center min-w-[100px] xl:px-2.5 px-5 py-1">
+                            <p class="text-[12px]">Материал</p>
                         </div>
                         <div class="flex items-center xl:px-2.5 px-4 py-1">
                             <RouterLink
                                 :to="{name: 'post', params: {slug: postVersion!.post.slug}}"
-                                class="ld-default-link line-clamp-2 text-[12px] border-0 hover:underline duration-200"
+                                class="ld-special-link line-clamp-2 text-[12px]
+                                    border-0 hover:underline duration-200"
                             >
                                 {{ postVersion!.post.version!.title }}
                             </RouterLink>
@@ -423,33 +427,47 @@ loadPostVersion()
                     </div>
 
                     <div class="flex xl:flex-col flex-row">
-                        <div :class="{'xl:mt-0 mt-3': !authStore.isModerator}" class="flex items-center min-w-[100px] xl:px-2.5 px-5 py-1">
-                            <p>Статус</p>
+                        <div
+                            class="ld-secondary-text flex xl:min-w-[100px] min-w-[114px] xl:px-2.5 px-5 py-1"
+                            :class="{'xl:mt-0 mt-3': !authStore.isModerator}"
+                        >
+                            <p class="flex items-center text-[12px]">Статус</p>
                         </div>
-                        <div :class="{'xl:mt-0 mt-3': !authStore.isModerator}" class="flex items-center xl:px-2.5 px-4 py-1">
-                            <p
-                                :class="postVersionStatusInfo.colorClass"
-                                class="transfusion bordered px-1 py-0.5"
-                            >
-                                {{ postVersionStatusInfo.name }}
-                            </p>
+                        <div
+                            class="flex items-center xl:px-2.5 px-4 py-1"
+                            :class="{'xl:mt-0 mt-3': !authStore.isModerator}"
+                        >
+                            <div class="ld-primary-background">
+                                <p
+                                    :class="postVersionStatusInfo.colorClass"
+                                    class="transfusion bordered text-[12px] px-1 py-0.5"
+                                >
+                                    {{ postVersionStatusInfo.name }}
+                                </p>
+                            </div>
                         </div>
                     </div>
 
                     <div v-if="postVersion.actions!.length !== 0" class="flex flex-col xl:gap-1 gap-2 mt-1 xl:pb-1 xl:px-2 px-4">
-                        <div class="separator"></div>
-                        <div class="flex items-center">
+                        <div class="separator flex opacity-40 xl:mb-1" style="background-color: var(--secondary-text-color);"/>
+                        <div
+                            v-if="[PostVersionActionType.REJECT, PostVersionActionType.REQUEST_CHANGES].includes(lastAction?.type!)"
+                            class="flex items-center"
+                        >
                             <PostVersionAction
-                                v-if="[PostVersionActionType.REJECT, PostVersionActionType.REQUEST_CHANGES].includes(lastAction?.type!)"
-                                class="sidebar-last-action px-2 md:px-1"
+                                class="sidebar-last-action ld-secondary-background-action px-2 md:px-1"
                                 :action="lastAction!"
                                 :minimized="true"
                             />
                         </div>
                         <ShineButton
-                            class="ld-shine-button self-center text-[0.7rem] xl:mb-1 mb-4"
-                            :class="{ 'non-mb-0': postVersion.status === PostVersionStatus.ACCEPTED
-                            || postVersion.status === PostVersionStatus.REJECTED }"
+                            class="ld-shine-button self-center text-[0.7rem] w-full xl:mb-1 mb-2"
+                            :class="{
+                                'non-mb-0': postVersion.status === PostVersionStatus.ACCEPTED ||
+                                postVersion.status === PostVersionStatus.REJECTED
+                            }"
+                            class-wrap="ld-primary-background"
+                            class-preset="gap-1 px-2 py-0.5 whitespace-nowrap"
                             @click="isHistoryDialog = true"
                             label="История действий"
                             icon="icon-script"
@@ -462,27 +480,35 @@ loadPostVersion()
                     >
                         <ShineButton
                             class="ld-shine-button upper-unavailable w-full reconsider"
+                            class-wrap="ld-primary-background"
+                            class-preset="gap-2 px-2 py-0.5"
                             @click="reconsiderOverlayPanel?.toggle"
                             label="Вернуть на рассмотрение"
                             icon="icon-eye"
                         />
                     </div>
 
-                    <div v-if="isReviewing" class="upper-unavailable flex flex-col xl:gap-2 gap-4 xl:px-2 px-4 xl:pb-2 pb-4">
-                        <div class="separator"></div>
+                    <div v-if="isReviewing" class="upper-unavailable flex flex-col gap-2 xl:px-2 px-4 xl:pb-2 pb-4">
+                        <div class="separator flex opacity-40" style="background-color: var(--secondary-text-color);"/>
                         <ShineButton
+                            class-wrap="ld-primary-background"
+                            class-preset="gap-2 px-2 py-0.5"
                             class="ld-shine-button confirm"
                             @click="acceptOverlayPanel?.toggle"
                             label="Принять"
                             icon="icon-tick"
                         />
                         <ShineButton
+                            class-wrap="ld-primary-background"
+                            class-preset="gap-2 px-2 py-0.5"
                             class="ld-shine-button cancel"
                             @click="rejectOverlayPanel?.toggle"
                             label="Отклонить"
                             icon="icon-small-cross"
                         />
                         <ShineButton
+                            class-wrap="ld-primary-background"
+                            class-preset="gap-2 px-2 py-0.5"
                             class="ld-shine-button"
                             @click="revisionOverlayPanel?.toggle"
                             label="На доработку"
@@ -491,14 +517,18 @@ loadPostVersion()
                     </div>
                 </div>
                 <div v-if="isOwnDraft" class="upper-unavailable flex flex-col w-full xl:gap-2 gap-4 xl:px-2 px-4 xl:pb-2 pb-4">
-                    <div class="separator"></div>
+                    <div class="separator flex opacity-40" style="background-color: var(--secondary-text-color);"/>
                     <ShineButton
                         class="ld-shine-button w-full confirm"
+                        class-wrap="ld-primary-background"
+                        class-preset="gap-2 px-2 py-0.5"
                         @click="submitOverlayPanel?.toggle"
                         label="На рассмотрение"
                         icon="icon-eye"
                     />
                     <ShineButton
+                        class-wrap="ld-primary-background"
+                        class-preset="gap-2 px-2 py-0.5"
                         class="ld-shine-button w-full"
                         @click="updateDraft"
                         label="Сохранить изменения"
@@ -517,20 +547,31 @@ loadPostVersion()
                     <div class="animation-flying-phantom"></div>
                 </div>
                 <RouterLink class="flex justify-center max-w-[480px] w-full mb-8" :to="{ name: 'home' }">
-                    <Button button-type="submit" icon="item-ender-pearl" icon-size="32px" label="Телепортироваться Домой"/>
+                    <Button
+                        press-classes="px-4"
+                        button-type="submit"
+                        icon="item-ender-pearl"
+                        icon-size="32px"
+                        label="Телепортироваться Домой"
+                    />
                 </RouterLink>
             </div>
         </div>
     </template>
 
-    <OverlayPanel class="overlay-panel ld-primary-background max-w-[100vw] p-4 mt-24rem" ref="acceptOverlayPanel">
+    <OverlayPanel
+        class="overlay-panel ld-primary-background max-w-[100vw] p-4 mt-24rem"
+        style="z-index: 1;"
+        ref="acceptOverlayPanel"
+    >
         <div class="flex flex-col gap-2">
 
             <p class="flex">URL-идентификатор</p>
 
             <Input
                 v-model="slug"
-                class="material-url-id py-2"
+                class="material-url-id ld-tinted-background ld-secondary-border h-[40px]"
+                placeholder="Ярлык Материала"
                 id="material-url-id"
             />
 
@@ -542,10 +583,12 @@ loadPostVersion()
                 <ShineButton
                     class="flex"
                     @click="acceptOverlayPanel?.hide()"
+                    class-preset="gap-2 px-2 py-0.5"
                     icon="icon-small-cross"
                     label="Отмена"
                 />
                 <ShineButton
+                    class-preset="gap-2 px-2 py-0.5"
                     class="flex confirm"
                     :loading="isAccepting"
                     @click="accept"
@@ -556,7 +599,11 @@ loadPostVersion()
         </div>
     </OverlayPanel>
 
-    <OverlayPanel class="overlay-panel ld-primary-background max-w-[100vw] p-4 mt-24rem" ref="reconsiderOverlayPanel">
+    <OverlayPanel
+        class="overlay-panel ld-primary-background max-w-[100vw] p-4 mt-24rem"
+        ref="reconsiderOverlayPanel"
+        style="z-index: 1;"
+    >
         <div class="flex flex-col gap-2">
 
             <p class="flex">Вернуть на рассмотрение?</p>
@@ -573,10 +620,12 @@ loadPostVersion()
                 <ShineButton
                     class="flex"
                     @click="reconsiderOverlayPanel?.hide()"
+                    class-preset="gap-2 px-2 py-0.5"
                     icon="icon-small-cross"
                     label="Отмена"
                 />
                 <ShineButton
+                    class-preset="gap-2 px-2 py-0.5"
                     class="flex reconsider"
                     :loading="isReconsidering"
                     @click="reconsider"
@@ -587,14 +636,18 @@ loadPostVersion()
         </div>
     </OverlayPanel>
 
-    <OverlayPanel class="overlay-panel ld-primary-background max-w-[100vw] p-4 mt-24rem" ref="rejectOverlayPanel">
+    <OverlayPanel
+        class="overlay-panel ld-primary-background max-w-[100vw] p-4 mt-24rem"
+        style="z-index: 1;"
+        ref="rejectOverlayPanel"
+    >
         <div class="flex flex-col gap-2">
 
             <p class="flex">Причина отклонения</p>
 
             <Textarea
                 v-model="rejectDetails.reason"
-                class="material-reject-reason"
+                class="material-reject-reason ld-tinted-background ld-secondary-border"
                 id="material-reject-reason"
                 :max-length="185"
                 :min-length="15"
@@ -608,12 +661,14 @@ loadPostVersion()
                 <ShineButton
                     class="flex"
                     @click="rejectOverlayPanel?.hide()"
+                    class-preset="gap-2 px-2 py-0.5"
                     icon="icon-small-cross"
                     label="Отмена"
                 />
                 <ShineButton
                     class="flex cancel"
                     :loading="isRejecting" @click="reject"
+                    class-preset="gap-2 px-2 py-0.5"
                     icon="icon-tick"
                     label="Отклонить"
                 />
@@ -621,14 +676,18 @@ loadPostVersion()
         </div>
     </OverlayPanel>
 
-    <OverlayPanel class="overlay-panel ld-primary-background max-w-[100vw] p-4 mt-24rem" ref="revisionOverlayPanel">
+    <OverlayPanel
+        class="overlay-panel ld-primary-background max-w-[100vw] p-4 mt-24rem"
+        style="z-index: 1;"
+        ref="revisionOverlayPanel"
+    >
         <div class="flex flex-col gap-2">
 
             <p class="flex">Что не так?</p>
 
             <Textarea
                 v-model="requestChangesDetails.message"
-                class="material-revision-reason"
+                class="material-revision-reason ld-tinted-background ld-secondary-border"
                 id="material-revision-reason"
                 :max-length="185"
                 :min-length="15"
@@ -642,12 +701,14 @@ loadPostVersion()
                 <ShineButton
                     class="flex"
                     @click="revisionOverlayPanel?.hide()"
+                    class-preset="gap-2 px-2 py-0.5"
                     icon="icon-small-cross"
                     label="Отмена"
                 />
                 <ShineButton
                     class="flex confirm"
                     :loading="isRequestingChanges" @click="requestChanges"
+                    class-preset="gap-2 px-2 py-0.5"
                     icon="icon-tick"
                     label="Отправить"
                 />
@@ -664,12 +725,14 @@ loadPostVersion()
                 <ShineButton
                     class="flex confirm"
                     :loading="isSubmitting" @click="submit"
+                    class-preset="gap-2 px-2 py-0.5"
                     label="Да, отправить"
                     icon="icon-tick"
                 />
                 <ShineButton
                     class="flex"
                     @click="submitOverlayPanel?.hide()"
+                    class-preset="gap-2 px-2 py-0.5"
                     icon="icon-small-cross"
                     label="Отмена"
                 />
@@ -684,24 +747,6 @@ loadPostVersion()
     text-align: center;
     line-height: 1.2;
 }
-.post-moderator.select .select-button,
-.post-moderator.select .options {
-    border-right: 0;
-    border-left: 0;
-}
-.post-moderator.select .options {
-    max-height: 216px;
-}
-.post-moderator.select .options .icon-border,
-.post-moderator.select .select-button .icon-border {
-    height: 42px;
-    width: 42px;
-}
-.post-moderator.select .options .icon-border img,
-.post-moderator.select .select-button .icon-border img {
-    height: 28px;
-    width: 28px;
-}
 .material-reject-reason textarea,
 .material-revision-reason textarea {
     min-height: 136px;
@@ -710,15 +755,8 @@ loadPostVersion()
 .upper-interaction .upper-unavailable {
     display: none;
 }
-.ld-shine-button .press,
-.ld-shine-button .preset {
-    width: 100%;
-}
 .ld-shine-button .text {
     height: 2rem;
-}
-.ld-shine-button .preset {
-    padding: .5rem;
 }
 .loading-icon {
     min-width: 28px;

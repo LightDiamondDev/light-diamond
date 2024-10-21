@@ -1,126 +1,155 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
-import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
-import Button from '@/components/elements/Button.vue'
-import MaterialLine from '@/components/post/PostRowCard.vue'
+import {getErrorMessageByCode} from '@/helpers'
+import {computed, reactive, ref} from 'vue'
+
+import {type Post, type PostVersion, PostVersionStatus} from '@/types'
+import PostVersionCard from '@/components/post/PostVersionCard.vue'
+
+import Paginator, {type PageChangeEvent} from '@/components/elements/Paginator.vue'
+import TabMenu, {type TabMenuChangeEvent} from '@/components/elements/TabMenu.vue'
+import {useAuthStore} from '@/stores/auth'
+
+interface PostVersionLoadResponseData {
+    success: boolean
+    message?: string
+    errors?: object
+    records?: Post[]
+    pagination?: {
+        total_records: number
+        current_page: number
+        total_pages: number
+    }
+}
 
 const authStore = useAuthStore()
 const toastStore = useToastStore()
 
+const isLoading = ref(false)
+
+const postVersions = ref<PostVersion[]>([])
+const totalRecords = ref(0)
+
+const loadRequestData = reactive({
+    status: PostVersionStatus.DRAFT,
+    page: 1,
+    per_page: 8
+})
+
+const tabMenuItems = computed(() => [
+    {label: 'Черновики', icon: 'icon-script', status: PostVersionStatus.DRAFT},
+    {label: 'Ожидающие', icon: 'icon-clock', status: PostVersionStatus.PENDING},
+    {label: 'Принятые', icon: 'icon-tick', status: PostVersionStatus.ACCEPTED},
+    {label: 'Отклонённые', icon: 'icon-small-cross', status: PostVersionStatus.REJECTED},
+])
+
+function loadPostVersions() {
+    isLoading.value = true
+    postVersions.value = []
+
+    axios.get(`/api/users/${authStore.id}/post-versions`, {params: loadRequestData}).then((response) => {
+        const responseData: PostVersionLoadResponseData = response.data
+        if (responseData.success) {
+            postVersions.value = responseData.records!
+            totalRecords.value = responseData.pagination!.total_records
+        } else {
+            toastStore.error('Произошла ошибка!')
+        }
+    }).catch((error: AxiosError) => {
+        toastStore.error(getErrorMessageByCode(error.response!.status))
+    }).finally(() => {
+        isLoading.value = false
+    })
+}
+
+function onPageChange(event: PageChangeEvent) {
+    const selectedPage = event.pageNumber
+    if (selectedPage !== loadRequestData.page) {
+        loadRequestData.page = selectedPage
+        loadPostVersions()
+    }
+}
+
+function onTabChange(event: TabMenuChangeEvent) {
+    const selectedStatus = tabMenuItems.value[event.tabIndex].status
+    if (loadRequestData.status !== selectedStatus) {
+        loadRequestData.status = selectedStatus
+        loadRequestData.page = 1
+        totalRecords.value = 0
+        loadPostVersions()
+    }
+}
+
+loadPostVersions()
 </script>
 
 <template>
-    <div class="section flex flex-col w-full">
-        <form action="" class="flex flex-col h-full w-full">
+    <section class="section">
+        <div class="ld-shadow-text flex flex-col min-h-[100vh]">
+            <div>
+                <div class="flex md:justify-start justify-center">
+                    <TabMenu
+                        item-classes="ld-title-font justify-center h-[48px] min-w-[64px] md:text-[1rem] text-[14px] gap-1 lg:px-4 px-1"
+                        item-label-classes="sm:flex hidden"
+                        :items="tabMenuItems"
+                        @tab-change="onTabChange"
+                    />
+                </div>
 
-            <div class="line flex items-center gap-4 pl-4">
-                <RouterLink class="ld-shine-button flex items-center" :to="{ name: 'create-post' }">
-                    <span class="press flex w-full">
-                        <span class="preset flex items-center gap-1">
-                            <span class="icon icon-brilliant"/>
-                            <span>Создать</span>
-                        </span>
-                    </span>
-                </RouterLink>
+                <div v-if="isLoading" class="flex flex-col">
+                    <div v-for="i in 5" class="flex w-full gap-2 p-2">
+                        <div class="skeleton transfusion flex
+                            sm:h-[112px] sm:max-w-[196px] sm:min-w-[196px]
+                            xs:h-[76px] xs:max-w-[132px] xs:min-w-[132px]
+                            h-[58px] max-w-[100px] min-w-[100px]
+                            overflow-hidden"
+                        />
+                        <div class="flex flex-col w-full gap-2">
+                            <div class="skeleton transfusion flex h-4 max-w-[360px] w-full"/>
+                            <div class="skeleton transfusion flex h-3 max-w-[80%] w-full"/>
+                            <div class="skeleton transfusion flex h-3 max-w-[55%] w-full"/>
+                            <div class="flex flex-wrap items-center md:text-[12px] text-[10px] gap-2 mt-0.5">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <div class="skeleton transfusion flex h-7 w-7"/>
+                                    <p class="skeleton transfusion flex h-4 w-[96px]"/>
+                                    <p class="skeleton transfusion flex h-4 w-[72px]"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-else>
+                    <div
+                        v-if="postVersions.length === 0"
+                        class="flex flex-col justify-center items-center min-h-[480px] gap-6"
+                    >
+                        <p class="text-muted text-center text-[14px] max-w-[480px]">
+                            У Вас пока ещё нет собственных Материалов, начните творить! ;D
+                        </p>
+                        <div class="mob wandering-trader flex justify-center items-center mb-4">
+                            <div class="animation-wandering-trader h-[244px] w-[130px]"></div>
+                        </div>
+                    </div>
+                    <div v-else class="flex flex-col">
+                        <PostVersionCard v-for="postVersion in postVersions" :post-version="postVersion"/>
+                    </div>
+                </div>
             </div>
 
-            <div class="separator self-center w-[98%]"></div>
-
-            <div class="types flex gap-4 pb-2 pl-4 pr-4 pt-2">
-                <button class="unit flex items-center gap-2">
-                    <span class="icon icon-script flex"></span>
-                    <span class="text">Черновики</span>
-                </button>
-                <button class="unit flex items-center gap-2">
-                    <span class="icon icon-clock flex"></span>
-                    <span class="text">Проверяются</span>
-                </button>
-                <button class="unit flex items-center gap-2">
-                    <span class="icon icon-tick flex"></span>
-                    <span class="text">Принятые</span>
-                </button>
-                <button class="unit flex items-center gap-2">
-                    <span class="icon icon-small-cross flex"></span>
-                    <span class="text">Отклонённые</span>
-                </button>
-            </div>
-
-            <div class="separator self-center w-[98%]"></div>
-
-            <MaterialLine
-                title="Ресурс-Пак Дядя Шнюк [Шлюх 2.0] [1.2.46]" class="h-[114px] pl-4 pr-4 gap-4"
-                cover="/images/users/boba.png" :likes="585" :subscribes="365" :comments="78"
-                :downloads="876" :views="965" time="1 нед. назад"
+        </div>
+        <div class="flex sticky bottom-[0]" style="z-index: 1">
+            <Paginator
+                class="ld-primary-background ld-fixed-background ld-primary-border-top h-[48px] w-full"
+                :records-at-page="loadRequestData.per_page"
+                :totalRecords="totalRecords"
+                v-model="loadRequestData.page"
+                @page-change="onPageChange"
             />
-
-            <div class="separator self-center w-[98%]"></div>
-
-            <MaterialLine
-                title="Аддон Light Diamond [0.1.2] Scary Nightmare" class="h-[114px] pl-4 pr-4 gap-4"
-                cover="/images/users/hoba.png" :likes="361" :subscribes="216" :comments="158"
-                :downloads="781" :views="812" time="3 дн. назад"
-            />
-
-            <div class="separator self-center w-[98%]"></div>
-
-            <MaterialLine
-                title="Аддон Barygi Atakyut [1.1]" class="h-[114px] pl-4 pr-4 gap-4"
-                cover="/images/users/hobana.png" :likes="31" :subscribes="23" :comments="56"
-                :downloads="68" :views="341" time="1 нед. назад"
-            />
-
-            <div class="separator self-center w-[98%]"></div>
-
-            <MaterialLine
-                title="Ресурс-Пак Дядя Шнюк [Шлюх 2.0] [1.2.46]" class="h-[114px] pl-4 pr-4 gap-4"
-                cover="/images/users/content/cg.png" :likes="585" :subscribes="365" :comments="78"
-                :downloads="876" :views="965" time="1 нед. назад"
-            />
-
-            <div class="separator self-center w-[98%]"></div>
-
-            <MaterialLine
-                title="Ресурс-Пак Дядя Шнюк [Шлюх 2.0] [1.2.46]" class="h-[114px] pl-4 pr-4 gap-4"
-                cover="/images/users/boba.png" :likes="585" :subscribes="365" :comments="78"
-                :downloads="876" :views="965" time="1 нед. назад"
-            />
-
-            <div class="separator self-center w-[98%]"></div>
-
-            <div class="pages flex justify-center items-center h-[96px] gap-6">
-                <button class="flex min-w-[32px] relative" type="button">
-                    <span class="icon icon-left-arrow absolute" style="left: .8rem;"></span>
-                    <span class="icon icon-left-arrow"></span>
-                </button>
-                <button class="flex" type="button">
-                    <span class="icon icon-left-arrow flex"></span>
-                </button>
-                <div class="flex">1</div>
-                <button class="flex" type="button">
-                    <span class="icon icon-right-arrow flex"></span>
-                </button>
-                <button class="flex min-w-[32px] relative" type="button">
-                    <span class="icon icon-right-arrow absolute" style="right: .8rem;"></span>
-                    <span class="icon icon-right-arrow"></span>
-                </button>
-            </div>
-
-        </form>
-    </div>
+        </div>
+    </section>
 </template>
 
 <style scoped>
-.section .line {
-    height: 72px;
-}
-.ld-shine-button .preset {
-    padding: 0.2rem 1.5rem;
-}
-.unit {
-    transition: .2s;
-}
-.unit:hover {
-    color: var(--hover-text-color);
-}
+
 </style>

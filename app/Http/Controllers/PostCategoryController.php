@@ -64,7 +64,7 @@ class PostCategoryController extends Controller
         $validator = Validator::make($request->all(), [
             'slug' => ['required', 'string', new UniqueCategorySlugRule($edition), new SlugSyntaxRule()],
             'name' => ['required', 'string'],
-            'edition' => ['required', Rule::enum(GameEdition::class), 'nullable'],
+            'edition' => ['nullable', Rule::enum(GameEdition::class)],
             'is_article' => ['required', 'boolean'],
         ]);
 
@@ -80,7 +80,7 @@ class PostCategoryController extends Controller
     {
         $category = PostCategory::find($id);
         if ($category === null) {
-            return $this->errorJsonResponse('Не найдено категории с id ' . $id);
+            return $this->errorJsonResponse('Не найдено Категории с ID ' . $id . '.');
         }
 
         $edition = $request->has('edition')
@@ -107,7 +107,7 @@ class PostCategoryController extends Controller
         $category = PostCategory::find($id);
 
         if ($category === null) {
-            return $this->errorJsonResponse('Не найдено категории с id ' . $id);
+            return $this->errorJsonResponse('Не найдено Категории с ID ' . $id . '.');
         }
 
         $category->delete();

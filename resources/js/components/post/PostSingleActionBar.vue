@@ -36,7 +36,7 @@ function toggleLike() {
 
 function onLikeClick() {
     if (!authStore.isAuthenticated) {
-        modalStore.auth = true
+        // modalStore.auth = true
         return
     }
 
