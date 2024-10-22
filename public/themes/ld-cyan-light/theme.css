@@ -249,6 +249,11 @@
         color: #00ffff;
     }
 
+    a:focus-visible .focus-highlighted-icon, button:focus-visible .focus-highlighted-icon {
+        background-color: rgba(0, 255, 255, .2);
+        outline: 2px solid #00ffff;
+    }
+
     input::placeholder {
         color: var(--primary-text-color);
         opacity: .7;
@@ -390,7 +395,7 @@
     }
 
     .comment-read-more-button:hover {
-        color: var(--primary-color);
+        color: var(--brilliant-color);
     }
 
     .content-studio .material-line .cover-wrap {
@@ -692,6 +697,11 @@
         background-size: 400% 100%;
     }
 
+    .post-comment-editor blockquote {
+        border-left: 4px solid rgba(0, 255, 255, .8);
+        padding: 0 0 0 16px;
+    }
+
     .post-comment blockquote,
     .post-comment .mention {
         border-left: 4px solid rgba(0, 255, 255, .8);
@@ -703,24 +713,58 @@
         border-top: none;
     }
 
+    .post-comment-editor code,
+    .post-comment-editor pre,
     .post-comment code,
     .post-comment pre {
         background-color: rgba(0, 15, 15, .2);
         color: rgba(255, 255, 255, .9);
     }
 
+    .post-comment-editor pre code,
+    .post-comment pre code {
+        background-color: transparent;
+    }
+
+    .post-comment-editor code,
+    .post-comment code {
+        padding: .5rem;
+    }
+
+    .post-comment-editor pre {
+        padding: .5rem;
+    }
+
+    .post-comment-editor pre code,
+    .post-comment pre code {
+        padding: 0;
+    }
+
+    .post-comment-editor code,
+    .post-comment code,
+    .post-comment-editor pre,
     .post-comment pre {
         border: 2px solid rgba(0, 255, 255, .2);
     }
 
+    .post-comment-editor pre code,
+    .post-comment pre code {
+        border: none;
+    }
+
     .post-comment-reply-button {
-        color: var(--primary-color);
+        color: var(--brilliant-color);
     }
 
     .post-comment-reply-button:hover {
         color: var(--hover-text-color);
     }
 
+    .post-comment-editor ol {
+        list-style-type: decimal;
+    }
+
+    .post-comment-editor ul,
     .post-comment ul {
         list-style-type: square;
     }
@@ -1081,6 +1125,8 @@
 
     .catalog .splash,
     .left-header-sidebar .item-button,
+    .post-comment-editor code,
+    .post-comment-editor pre,
     .post-comment code,
     .post-comment pre,
     .post code,
@@ -1616,6 +1662,38 @@
 
         .post h6 {
             font-size: .8rem;
+        }
+    }
+
+    /* =============== [ Медиа-Запрос { 451px > ?px } ] =============== */
+
+    @media screen and (min-width: 451px) {
+        .post-comment-editor a,
+        .post-comment-editor code,
+        .post-comment-editor li,
+        .post-comment-editor ol,
+        .post-comment-editor p,
+        .post-comment-editor pre,
+        .post-comment-editor ul {
+            font-size: 14px;
+        }
+    }
+
+    /* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
+
+    @media screen and (max-width: 450px) {
+        .post-comment-editor a,
+        .post-comment-editor code,
+        .post-comment-editor li,
+        .post-comment-editor ol,
+        .post-comment-editor p,
+        .post-comment-editor pre,
+        .post-comment-editor ul {
+            font-size: 12px;
+        }
+
+        img {
+            max-height: 220px;
         }
     }
 }

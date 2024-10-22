@@ -53,6 +53,13 @@ const editorExtensions = [
     .post-comment-editor .tiptap {
         padding: 1rem 3rem;
     }
+    .post-comment-editor .editor-plus-button {
+        position: relative;
+        left: 8px;
+    }
+    .wide .post-comment-editor .editor-plus-button {
+        left: 16px;
+    }
     /* =============== [ Медиа-Запрос { ?px < 769px } ] =============== */
 
     @media screen and (max-width: 768px) {

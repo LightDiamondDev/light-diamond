@@ -355,8 +355,8 @@ const currentCommentHTMLHeight = computed(() =>
                             />
                             <button
                                 v-if="commentHTMLRef && commentHTMLRef.scrollHeight > 300"
-                                class="comment-read-more-button flex items-center
-                                opacity-80 min-h-[32px] w-full px-4 duration-200"
+                                class="comment-read-more-button flex items-center xs:text-[14px]
+                                text-[12px] opacity-80 min-h-[32px] w-full px-4 duration-200"
                                 :class="{'ld-secondary-border-top': !isExpanded}"
                                 @click="isExpanded = !isExpanded" type="button"
                             >

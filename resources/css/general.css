@@ -342,8 +342,8 @@
         }
 
         pre {
-            padding: 0.6rem 0.9rem;
             overflow-x: auto;
+            padding: .5rem;
 
             code {
                 background: none;

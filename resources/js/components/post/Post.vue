@@ -272,7 +272,7 @@ function addPostImageClickListeners() {
             <aside class="right-post-interaction xl-right-post-interaction xl:flex hidden xl:flex-col xl:sticky
                 text-[12px] xl:max-w-[336px] gap-4"
             >
-                <div class="bright-background flex flex-col">
+                <div class="first-bright-block bright-background flex flex-col">
                     <button class="flex justify-end p-[4px]" @click="isWide = !isWide">
                         <span
                             class="icon flex"
@@ -282,7 +282,7 @@ function addPostImageClickListeners() {
                     <PostInfoBar class="right-post-info-bar xl:flex-col justify-center gap-4 duration-500" :post="post"/>
                 </div>
                 <!-- xl:flex -->
-                <div class="last-bright-block bright-background hidden flex-col overflow-hidden">
+                <div class="next-bright-block bright-background hidden flex-col overflow-hidden">
                     <div class="post-addition-content flex flex-col w-full p-4 duration-500" style="color: dimgray">
                         Дополнительный Контент
                     </div>
@@ -439,10 +439,16 @@ function addPostImageClickListeners() {
     .wide #comments {
         margin-right: 256px;
     }
-    .last-bright-block {
-        margin-bottom: .5rem;
+    .first-bright-block {
+        margin-bottom: 3rem;
     }
-    .wide .last-bright-block {
+    .wide .first-bright-block {
+        margin-bottom: 1rem;
+    }
+    .next-bright-block {
+        margin-bottom: 1rem;
+    }
+    .wide .next-bright-block {
         margin-bottom: 3rem;
     }
 }
