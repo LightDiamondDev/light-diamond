@@ -1125,19 +1125,22 @@
 
     .catalog .splash,
     .left-header-sidebar .item-button,
+    .post-interaction .post-moderator.select .options .label,
+    .post-interaction .post-moderator .select-button .label,
+    .post-moderator.select .options .label,
+    .regular-font,
+    .user-menu .profile-link .title {
+        font-family: Monocraft, sans-serif;
+    }
+
     .post-comment-editor code,
     .post-comment-editor pre,
     .post-comment code,
     .post-comment pre,
     .post code,
     .post pre,
-    .post-interaction .post-moderator.select .options .label,
-    .post-interaction .post-moderator .select-button .label,
-    .post-moderator.select .options .label,
-    .regular-font,
-    .user-menu .profile-link .title,
     pre, pre.is-empty {
-        font-family: Monocraft, sans-serif;
+        font-family: "Pixel Code Pro", sans-serif;
     }
 
     .icon {
