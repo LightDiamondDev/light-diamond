@@ -39,7 +39,7 @@ defineProps({
     },
     editable: {
         type: Boolean,
-        default: true,
+        default: true
     },
     errors: {
         type: Object as PropType<{ [key: string]: string[] }>,
@@ -155,16 +155,19 @@ function addFileUrl() {
         isCurrentFileUrlError.value = true
         return
     }
+    const checkUrl = new RegExp(/^(ftp|http|https):\/\/[^ "]+$/);
+    if (!checkUrl.test(currentFileUrl.value)) {
+        toastStore.error('Указанный текст не является ссылкой!')
+        return
+    }
     if (postVersion.value.files?.find((file) => file.url === currentFileUrl.value)) {
         toastStore.error('Такая Ссылка уже прикреплена!')
         return
     }
-    else {
-        toastStore.success('Ссылка успешно указана!')
-        let urls = postVersion.value.files ?? []
-        urls.push({name: currentFileUrlName.value, url: currentFileUrl.value})
-        postVersion.value.files = urls
-    }
+    toastStore.success('Ссылка успешно указана!')
+    let urls = postVersion.value.files ?? []
+    urls.push({name: currentFileUrlName.value, url: currentFileUrl.value})
+    postVersion.value.files = urls
 }
 
 function onEditionChange() {
@@ -343,7 +346,7 @@ function uploadFile(file: File) {
                 <p class="error my-2">{{ errors['description']?.[0] || ' ' }}</p>
 
 
-                <div class="flex flex-col w-full gap-3 mb-4 xs:px-4 px-2">
+                <div v-if="editable" class="flex flex-col w-full gap-3 mb-4 xs:px-4 px-2">
                     <h4 class="ld-secondary-text flex xs:flex-row flex-col justify-center text-center xs:gap-2 mt-0">
                         <span>Прикреплённые Материалы</span>
                         <span>{{ ' [ ' + files.length + ' / 3 ]' }}</span>
@@ -357,7 +360,7 @@ function uploadFile(file: File) {
                     />
                 </div>
 
-                <div v-if="files.length < 3" class="ld-secondary-text w-full mt-2 xs:px-4 px-2">
+                <div v-if="editable && files.length < 3" class="ld-secondary-text w-full mt-2 xs:px-4 px-2">
                     <UploadFile
                         v-model="postVersion.files"
                         class="upload-post-preview flex mb-5 mt-2.5"

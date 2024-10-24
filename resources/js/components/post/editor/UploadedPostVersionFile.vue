@@ -11,16 +11,14 @@ const props = defineProps({
     disabled: {
         type: Boolean,
         default: false
-    },
+    }
 })
 
 const emit = defineEmits(['remove'])
-
 const model = defineModel()
 
-const isEditingName = ref('false')
-const isEditingUrl = ref('false')
-const isSavingUrl = ref('false')
+const isEditingName = ref(false)
+const isEditingUrl = ref(false)
 
 const fileExtension = computed(
     () => props.file!.path ? props.file!.path.slice(props.file!.path.lastIndexOf('.') + 1) : ''
@@ -48,19 +46,16 @@ const fileSizeLabel = computed(() => {
 function editName() {
     isEditingName.value = true
     isEditingUrl.value = false
-    isSavingUrl.value = true
 }
 
 function editUrl() {
     isEditingName.value = false
     isEditingUrl.value = true
-    isSavingUrl.value = true
 }
 
 function saveUrl() {
     isEditingName.value = false
     isEditingUrl.value = false
-    isSavingUrl.value = false
 }
 </script>
 
@@ -94,8 +89,7 @@ function saveUrl() {
                         <Input
                             v-model="file.name"
                             class="ld-tinted-background ld-primary-border sm:text-[14px]
-                                text-[12px] md:h-[48px] h-[40px] w-full"
-                            :class="{ 'md:w-[92%] xs:w-[85%] w-[72%]': !file.path }"
+                                text-[12px] md:h-[48px] h-[40px] xs:w-full w-[80%]"
                             id="post-version-file-name"
                             :max-length="80"
                             :min-length="3"
@@ -103,7 +97,7 @@ function saveUrl() {
                         />
                         <span
                             v-if="file.path"
-                            class="sm:visible invisible md:text-[14px] text-[12px] opacity-80 sm:min-w-[72px] pl-2"
+                            class="xs:visible invisible md:text-[14px] text-[12px] opacity-80 xs:min-w-[72px] pl-2"
                         >
                             {{ fileExtension }}
                         </span>
@@ -112,7 +106,7 @@ function saveUrl() {
                         <Input
                             v-model="file.url"
                             class="ld-tinted-background ld-primary-border sm:text-[14px] text-[12px]
-                                md:h-[48px] h-[40px] md:w-[92%] xs:w-[85%] w-[80%]"
+                                md:h-[48px] h-[40px] xs:w-full w-[80%]"
                             id="post-version-file-name"
                             :max-length="80"
                             :min-length="3"
@@ -137,44 +131,50 @@ function saveUrl() {
                 <input class="hidden" :disabled="disabled" type="file">
             </label>
             <button
-                v-if="file.path"
+                v-if="!isEditingName && !isEditingUrl"
                 class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
-                @click="isEditingName = !isEditingName"
-            >
-                <span class="icon flex" :class="{ 'icon-quote': !isEditingName, 'icon-tick': isEditingName, }"/>
-            </button>
-            <button
-                v-if="!isSavingUrl"
-                class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
+                v-tooltip.top="'Изменить название'"
                 @click="editName"
             >
-                <span class="icon-quote icon flex"/>
+                <span class="icon-small-pencil icon flex"/>
             </button>
             <button
-                v-if="!isSavingUrl"
+                v-if="!file.path && !isEditingUrl && !isEditingName"
                 class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
+                v-tooltip.top="'Изменить ссылку'"
                 @click="editUrl"
             >
                 <span class="icon-link-round icon flex"/>
             </button>
             <button
-                v-if="!file.path && isSavingUrl"
-                class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
+                v-if="isEditingName || isEditingUrl"
+                class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[64px] min-w-[48px]"
+                v-tooltip.top="'Сохранить'"
                 @click="saveUrl"
             >
                 <span class="icon-tick icon flex"/>
             </button>
             <button
+                v-if="!isEditingName && !isEditingUrl"
                 class="button-cross flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
+                v-tooltip.top="'Удалить'"
                 @click="emit('remove')"
             >
-                <span class="icon-small-cross icon flex"/>
+                <span class="icon-trash icon flex"/>
             </button>
         </div>
     </div>
 </template>
 
 <style scoped>
+.tooltip::before {
+    white-space: nowrap;
+    margin-top: 8px;
+    height: 2rem;
+}
+.tooltip::after {
+    top: 8px;
+}
 .loaded-file-span {
     transform: translateY(-25%);
 }
