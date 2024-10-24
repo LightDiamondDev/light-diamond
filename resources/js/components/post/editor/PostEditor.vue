@@ -16,17 +16,21 @@ import {Text} from '@tiptap/extension-text'
 import {Underline} from '@tiptap/extension-underline'
 
 import CharacterCount from '@tiptap/extension-character-count'
+
 import Editor from '@/components/elements/editor/Editor.vue'
+import Input from '@/components/elements/Input.vue'
 import Select from '@/components/elements/Select.vue'
-import UploadImage from '@/components/elements/UploadImage.vue'
-import UploadFile from '@/components/elements/UploadFile.vue'
-import UserAvatar from '@/components/user/UserAvatar.vue'
 import Textarea from '@/components/elements/Textarea.vue'
 import Button from '@/components/elements/Button.vue'
+import UploadImage from '@/components/elements/UploadImage.vue'
+import UploadFile from '@/components/elements/UploadFile.vue'
 import UploadedPostVersionFile from '@/components/post/editor/UploadedPostVersionFile.vue'
+import UserAvatar from '@/components/user/UserAvatar.vue'
+
 import axios, {type AxiosError} from 'axios'
 import {getErrorMessageByCode} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
+import ShineButton from '@/components/elements/ShineButton.vue'
 
 defineProps({
     author: {
@@ -135,11 +139,37 @@ const contentEditorExtensions = [
     Image
 ]
 
+const currentFileUrlName = ref('')
+const currentFileUrl = ref('')
+
+const isWide = ref(true)
+const isCurrentFileUrlNameError = ref(false)
+const isCurrentFileUrlError = ref(false)
+
+function addFileUrl() {
+    isCurrentFileUrlNameError.value = false
+    isCurrentFileUrlError.value = false
+    if (currentFileUrlName.value.length < 3 || currentFileUrl.value.length < 3) {
+        toastStore.error('Название Материала и Ссылка должны содержать не менее 3-х символов!')
+        isCurrentFileUrlNameError.value = true
+        isCurrentFileUrlError.value = true
+        return
+    }
+    if (postVersion.value.files?.find((file) => file.url === currentFileUrl.value)) {
+        toastStore.error('Такая Ссылка уже прикреплена!')
+        return
+    }
+    else {
+        toastStore.success('Ссылка успешно указана!')
+        let urls = postVersion.value.files ?? []
+        urls.push({name: currentFileUrlName.value, url: currentFileUrl.value})
+        postVersion.value.files = urls
+    }
+}
+
 function onEditionChange() {
     postVersion.value.category_id = undefined
 }
-
-const isWide = ref(true)
 
 function uploadFile(file: File) {
     const formData = new FormData()
@@ -171,7 +201,7 @@ function uploadFile(file: File) {
         <slot name="banner"/>
         <section
             class="section flex justify-between xl:items-start items-center
-                   xl:max-w-[1280px] max-w-[832px] w-full gap-4 lg:mt-4"
+                xl:max-w-[1280px] max-w-[832px] w-full gap-4 lg:mt-4"
         >
             <aside class="xl-left-post-interaction xl:flex hidden xl:flex-col sticky text-[12px] mb-12"/>
 
@@ -211,7 +241,7 @@ function uploadFile(file: File) {
                     :class="{'red-overlay': errors['title']}"
                     class="post-name ld-secondary-text text-center
                         flex justify-center max-w-[1280px] md:text-[2rem]
-                        text-[1.5rem] mb-2 xs:px-4 px-2"
+                        text-[1.5rem] mb-2 xs:mx-4 mx-2"
                     :extensions="titleEditorExtensions"
                     :editable="editable"
                     plain-text
@@ -297,7 +327,7 @@ function uploadFile(file: File) {
 
                 <div class="xs:px-4 px-2 w-full">
                     <Textarea
-                        class="post-description ld-primary-background ld-primary-border md:text-[14px] text-[12px]"
+                        class="post-description ld-primary-background ld-primary-border ld-red-bordered md:text-[14px] text-[12px]"
                         :class="{'red-border': errors['description']}"
                         text-area-classes="ld-tinted-background min-h-[108px]"
                         v-model="postVersion.description"
@@ -313,7 +343,11 @@ function uploadFile(file: File) {
                 <p class="error my-2">{{ errors['description']?.[0] || ' ' }}</p>
 
 
-                <div class="flex flex-col w-full gap-3 my-4 xs:px-4 px-2">
+                <div class="flex flex-col w-full gap-3 mb-4 xs:px-4 px-2">
+                    <h4 class="ld-secondary-text flex xs:flex-row flex-col justify-center text-center xs:gap-2 mt-0">
+                        <span>Прикреплённые Материалы</span>
+                        <span>{{ ' [ ' + files.length + ' / 3 ]' }}</span>
+                    </h4>
                     <UploadedPostVersionFile
                         v-for="file in files"
                         :key="file.path || file.url"
@@ -323,18 +357,55 @@ function uploadFile(file: File) {
                     />
                 </div>
 
-                <div class="ld-secondary-text w-full mt-2 xs:px-4 px-2">
+                <div v-if="files.length < 3" class="ld-secondary-text w-full mt-2 xs:px-4 px-2">
                     <UploadFile
-                        v-if="files.length < 3"
+                        v-model="postVersion.files"
                         class="upload-post-preview flex mb-5 mt-2.5"
                         :editable="editable"
                         icon="icon-download"
                         id="upload-post-file"
-                        :image-src="postVersion.cover_url"
                         title="Загрузить Файл Материала"
                         @upload="uploadFile"
                         :max-size-in-megabytes="20"
                     />
+                    <p class="flex justify-center w-full mb-2">или</p>
+                    <em class="upload-file-heading flex justify-center gap-2">
+                        <span class="icon-link-square icon"/>
+                        <span class="head-font ld-secondary-text text-center md:text-[16px] text-[14px] duration-200">Указать Ссылку Материала</span>
+                    </em>
+                    <div class="flex flex-col gap-4 mt-4">
+                        <Input
+                            v-model="currentFileUrlName"
+                            class="ld-primary-background ld-primary-border ld-primary-text
+                                sm:text-[14px] text-[12px] md:h-[48px] h-[40px] w-full"
+                            :class="{ 'red-border': isCurrentFileUrlNameError }"
+                            id="post-version-file-name"
+                            input-classes="ld-tinted-background"
+                            :max-length="255"
+                            :min-length="1"
+                            placeholder="Название Материала по Ссылке"
+                        />
+                        <Input
+                            v-model="currentFileUrl"
+                            class="ld-primary-background ld-primary-border ld-primary-text
+                                sm:text-[14px] text-[12px] md:h-[48px] h-[40px] w-full"
+                            :class="{ 'red-border': isCurrentFileUrlError }"
+                            id="post-version-file-name"
+                            input-classes="ld-tinted-background"
+                            :max-length="255"
+                            :min-length="1"
+                            placeholder="Ссылка на Файл"
+                        />
+                        <ShineButton
+                            class="flex items-center"
+                            class-wrap="ld-primary-background"
+                            class-preset="ld-primary-text ld-title-font justify-center xs:text-[14px] text-[12px] gap-1 py-0.5"
+                            label="Добавить Ссылку"
+                            icon="icon-tick"
+                            @click="addFileUrl"
+                        />
+                    </div>
+                    <p class="error flex justify-center w-full my-2">{{ errors['category_id']?.[0] || ' ' }}</p>
                 </div>
 
                 <aside

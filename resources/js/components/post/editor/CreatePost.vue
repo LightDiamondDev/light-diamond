@@ -117,7 +117,7 @@ function saveAsDraft() {
                 </Banner>
             </template>
 
-            <template v-slot:right-sidebar>
+            <template v-slot:sidebar>
                 <div class="create-post-upper-interaction flex flex-col w-full">
 
                     <div class="create-post-upper-interaction flex flex-col gap-2 p-2">

@@ -66,7 +66,7 @@ const isFirstVersion = computed(() => props.post!.updated_at === props.post!.cre
         </div>
         <div class="sm-wrap ld-tinted-background sm:hidden flex xs:flex-row flex-col p-1">
             <div class="flex justify-between items-center sm:w-fit w-full">
-                <PostActionBar class="ld-secondary-background-container gap-4" :post="post"/>
+                <PostActionBar class="ld-primary-background-container gap-4" :post="post"/>
             </div>
         </div>
     </div>

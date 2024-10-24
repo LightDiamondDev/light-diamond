@@ -12,6 +12,9 @@ const props = defineProps({
         type: String
     },
     id: String,
+    inputClasses: String,
+    maxLength: Number,
+    minLength: Number,
     type: {
         type: String,
         validator: (val) => ['email', 'file', 'password', 'text'].includes(val),
@@ -26,7 +29,10 @@ const props = defineProps({
         <input
             v-model="model"
             :autocomplete="autocomplete"
+            :class="inputClasses"
             :id="id"
+            :maxlength="maxLength"
+            :minlength="minLength"
             :placeholder="placeholder"
             :type="currentType"
         >

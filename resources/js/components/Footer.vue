@@ -6,16 +6,14 @@ function scrollToTop() {
 
 <template>
 
-    <footer class="ld-primary-background ld-primary-border-top ld-shadow-text flex flex-col items-center">
-        <nav class="flex justify-between">
-
-            <div class="sm:hidden ml-4 w-12"></div>
-
+    <footer class="ld-primary-background ld-primary-border-top ld-shadow-text flex flex-col items-center w-full">
+        <nav class="flex justify-between max-w-[1200px] w-full">
+            <div class="sm:hidden ml-4 w-12"/>
             <RouterLink
                 :to="{name: 'home'}"
-                class="logo-wrap flex items-center duration-200 h-[72px] sm:ml-4"
+                class="logo-wrap flex items-center self-center duration-200 h-[70%] sm:ml-4"
             >
-                <img alt="Logo" class="hidden xs:flex h-[52px] min-w-152" src="/images/elements/light-diamond-logo.png"/>
+                <img alt="Logo" class="hidden xs:flex h-full min-w-152" src="/images/elements/light-diamond-logo.png"/>
                 <img alt="Logo" class="flex xs:hidden h-[52px]" src="/images/elements/light-diamond-logo-mobile.png"/>
             </RouterLink>
 
@@ -35,12 +33,15 @@ function scrollToTop() {
                 <span class="icon icon-faq"></span>
                 <span>О Проекте</span>
             </a>
-            <a class="footer-anchor flex justify-center items-center self-center mr-4" @click="scrollToTop">
+            <a
+                class="footer-anchor flex justify-center items-center self-center h-[48px] w-[48px] mr-4"
+                @click="scrollToTop"
+            >
                 <span class="icon icon-top-arrow"></span>
             </a>
         </nav>
         <div class="ld-tinted-background darker ld-primary-border-top flex flex-col items-center w-full">
-            <div class="media flex justify-between mt-4 mb-4">
+            <div class="media flex justify-between h-[48px] max-w-[320px] w-[75%] mt-4 mb-4">
                 <a class="flex justify-center items-center" href="https://vk.com/light.diamond">
                     <span class="icon icon-vk"></span>
                 </a>
@@ -75,48 +76,25 @@ function scrollToTop() {
 </template>
 
 <style scoped>
+
 /* =============== [ Структура ] =============== */
+
 footer {
-    background-color: var(--primary-bg-color);
     transition-property: background-color;
     user-select: none;
-    width: 100%;
 }
 
 footer nav {
     height: var(--header-height);
-    max-width: 1200px;
-    width: 100%;
-}
-
-footer nav .logo-wrap {
-    height: 100%;
-}
-
-footer nav a {
-    cursor: pointer;
-    height: 100%;
 }
 
 footer nav a span {
-    color: var(--primary-text-color);
     transition: .2s;
     padding: 4px;
 }
 
-footer nav a .icon {
-    transition: .2s;
-    height: 32px;
-    width: 32px;
-}
-
 footer nav a:focus-visible span, footer nav a:hover span {
     color: var(--hover-text-color);
-}
-
-footer nav .footer-anchor {
-    height: 48px;
-    width: 48px;
 }
 
 footer nav a:focus-visible .icon, footer nav a:hover .icon,
@@ -126,12 +104,6 @@ footer .media a:focus-visible .icon, footer .media a:hover .icon {
 
 footer .footer-anchor .icon-top-arrow {
     animation: footer-anchor-icon-animation 1s infinite;
-}
-
-footer .media {
-    max-width: 320px;
-    height: 48px;
-    width: 75%;
 }
 
 footer .media a {

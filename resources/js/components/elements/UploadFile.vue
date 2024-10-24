@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useToastStore} from '@/stores/toast'
 import {ref} from 'vue'
+import type {PostVersionFile} from '@/types'
 
 const props = defineProps({
     id: String,
@@ -10,7 +11,7 @@ const props = defineProps({
     },
     icon: String,
     title: String,
-    fileSrc: String,
+    files: String,
     maxSizeInMegabytes: {
         type: Number,
         required: true
@@ -21,7 +22,7 @@ const emit = defineEmits<{
     (e: 'upload', file: File): void
 }>()
 
-const model = defineModel<string>({default: ''})
+const model = defineModel<PostVersionFile[]>()
 const fileSrc = ref(props.fileSrc)
 const input = ref<HTMLInputElement>()
 const toastStore = useToastStore()

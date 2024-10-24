@@ -509,7 +509,7 @@
 
     .post .label-input-text textarea {
         color: var(--primary-text-color);
-        padding: 1rem;
+        padding: .5rem .8rem;
     }
     .post .label-input-text textarea::placeholder {
         color: var(--primary-text-color);
@@ -577,7 +577,7 @@
         background-color: var(--secondary-bg-color);
     }
 
-    form fieldset label  {
+    form fieldset label {
         border: 2px solid var(--border-color);
     }
 
@@ -640,6 +640,7 @@
     }
 
     form fieldset label,
+    .ld-input,
     .search-form form fieldset,
     .settings form .description p {
         background: linear-gradient(rgba(0, 15, 15, .5), transparent);
@@ -773,8 +774,11 @@
         background-color: rgba(255, 255, 255, .1);
     }
 
-    .red-border.label-input-text textarea,
     .red-border.select .select-button {
+        border: 2px solid rgba(255, 30, 50, 1);
+    }
+
+    .ld-red-bordered.red-border {
         border: 2px solid rgba(255, 30, 50, 1);
     }
 
