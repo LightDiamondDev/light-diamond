@@ -8,6 +8,10 @@ const props = defineProps({
         type: Object as PropType<PostVersionFile>,
         required: true
     },
+    editable: {
+        type: Boolean,
+        default: true
+    },
     disabled: {
         type: Boolean,
         default: false
@@ -89,7 +93,7 @@ function saveUrl() {
                         <Input
                             v-model="file.name"
                             class="ld-tinted-background ld-primary-border sm:text-[14px]
-                                text-[12px] md:h-[48px] h-[40px] xs:w-full w-[80%]"
+                                text-[12px] md:h-[48px] h-[40px] xs:w-full w-[90%]"
                             id="post-version-file-name"
                             :max-length="80"
                             :min-length="3"
@@ -97,7 +101,7 @@ function saveUrl() {
                         />
                         <span
                             v-if="file.path"
-                            class="xs:visible invisible md:text-[14px] text-[12px] opacity-80 xs:min-w-[72px] pl-2"
+                            class="xs:flex hidden md:text-[14px] text-[12px] opacity-80 xs:min-w-[80px] pl-2"
                         >
                             {{ fileExtension }}
                         </span>
@@ -131,7 +135,7 @@ function saveUrl() {
                 <input class="hidden" :disabled="disabled" type="file">
             </label>
             <button
-                v-if="!isEditingName && !isEditingUrl"
+                v-if="editable && !isEditingName && !isEditingUrl"
                 class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
                 v-tooltip.top="'Изменить название'"
                 @click="editName"
@@ -139,7 +143,7 @@ function saveUrl() {
                 <span class="icon-small-pencil icon flex"/>
             </button>
             <button
-                v-if="!file.path && !isEditingUrl && !isEditingName"
+                v-if="editable && !file.path && !isEditingUrl && !isEditingName"
                 class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
                 v-tooltip.top="'Изменить ссылку'"
                 @click="editUrl"
@@ -147,7 +151,7 @@ function saveUrl() {
                 <span class="icon-link-round icon flex"/>
             </button>
             <button
-                v-if="isEditingName || isEditingUrl"
+                v-if="editable && isEditingName || isEditingUrl"
                 class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[64px] min-w-[48px]"
                 v-tooltip.top="'Сохранить'"
                 @click="saveUrl"
@@ -155,7 +159,7 @@ function saveUrl() {
                 <span class="icon-tick icon flex"/>
             </button>
             <button
-                v-if="!isEditingName && !isEditingUrl"
+                v-if="editable && !isEditingName && !isEditingUrl"
                 class="button-cross flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
                 v-tooltip.top="'Удалить'"
                 @click="emit('remove')"

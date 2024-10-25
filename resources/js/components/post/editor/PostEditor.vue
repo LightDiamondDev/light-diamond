@@ -168,6 +168,8 @@ function addFileUrl() {
     let urls = postVersion.value.files ?? []
     urls.push({name: currentFileUrlName.value, url: currentFileUrl.value})
     postVersion.value.files = urls
+    currentFileUrlName.value = ''
+    currentFileUrl.value = ''
 }
 
 function onEditionChange() {
@@ -296,7 +298,7 @@ function uploadFile(file: File) {
                     option-classes="md:min-h-[64px] min-h-[48px] gap-4 pl-6"
                     class="post-edition flex items-center w-full my-4 xs:px-4 px-2"
                     v-model="gameEdition"
-                    :disabled="!editable"
+                    :editable="editable"
                     input-id="edition"
                     :options="gameEditions"
                     option-label-key="label"
@@ -315,7 +317,7 @@ function uploadFile(file: File) {
                     class="post-category flex items-center w-full my-4 xs:px-4 px-2"
                     :class="{'red-border': errors['category_id']}"
                     v-model="postVersion.category_id"
-                    :disabled="!editable"
+                    :editable="editable"
                     input-id="category"
                     :options="categories"
                     option-label-key="name"
@@ -346,7 +348,7 @@ function uploadFile(file: File) {
                 <p class="error my-2">{{ errors['description']?.[0] || ' ' }}</p>
 
 
-                <div v-if="editable" class="flex flex-col w-full gap-3 mb-4 xs:px-4 px-2">
+                <div class="flex flex-col w-full gap-3 mb-4 xs:px-4 px-2">
                     <h4 class="ld-secondary-text flex xs:flex-row flex-col justify-center text-center xs:gap-2 mt-0">
                         <span>Прикреплённые Материалы</span>
                         <span>{{ ' [ ' + files.length + ' / 3 ]' }}</span>
@@ -356,6 +358,7 @@ function uploadFile(file: File) {
                         :key="file.path || file.url"
                         :file="file"
                         :disabled="!editable"
+                        :editable="editable"
                         @remove="files.splice(files.indexOf(file), 1)"
                     />
                 </div>
@@ -408,7 +411,7 @@ function uploadFile(file: File) {
                             @click="addFileUrl"
                         />
                     </div>
-                    <p class="error flex justify-center w-full my-2">{{ errors['category_id']?.[0] || ' ' }}</p>
+                    <p class="error flex justify-center w-full my-2">{{ errors['files']?.[0] || ' ' }}</p>
                 </div>
 
                 <aside

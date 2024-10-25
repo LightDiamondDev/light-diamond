@@ -367,12 +367,12 @@ loadPostVersion()
                         </div>
                         <div class="flex xl:max-w-none max-w-[200px] w-full">
                             <Select
-                                v-model="postVersion!.assigned_moderator_id"
+                                v-model="postVersion.assigned_moderator_id"
                                 button-classes="ld-primary-background ld-primary-border max-h-[64px]"
                                 button-label-classes="hidden xs:flex"
                                 options-classes="ld-primary-background ld-primary-border top-[56px]"
                                 class="post-moderator flex items-center w-full mx-2"
-                                :disabled="postVersion!.status !== PostVersionStatus.PENDING"
+                                :editable="postVersion.status === PostVersionStatus.PENDING"
                                 :is-custom-option-item="true"
                                 input-id="moderator"
                                 :options="moderatorOptions"

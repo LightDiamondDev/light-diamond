@@ -12,7 +12,7 @@ const props = defineProps({
     },
     editable: {
         type: Boolean,
-        default: false
+        default: true
     },
     isCustomOptionItem: {
         type: Boolean,
@@ -116,7 +116,7 @@ function change(option: any) {
         <button
             class="select-button flex items-center w-full"
             :class="buttonClasses"
-            :disabled="disabled"
+            :disabled="disabled || !editable"
             type="button"
             @click="toggleSelect"
         >
@@ -132,7 +132,7 @@ function change(option: any) {
                     <span v-else class="opacity-80 ml-2">{{ placeholder }}</span>
                 </span>
             </span>
-            <span v-if="!disabled" class="button-arrow flex justify-center items-center mr-2">
+            <span v-if="!disabled && editable" class="button-arrow flex justify-center items-center mr-2">
                 <span class="icon icon-down-arrow flex"></span>
             </span>
         </button>
