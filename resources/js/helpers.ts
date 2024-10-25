@@ -266,9 +266,13 @@ export function convertObjectToFormData(obj: Object) {
     return formData
 }
 
-function putObjectInFormData(obj: Object, formData: FormData) {
+function putObjectInFormData(obj: Object, formData: FormData, rootKey: string = '') {
     Object.keys(obj).forEach(key => {
         const value = obj[key]
+        key = rootKey === ''
+            ? key
+            : rootKey + '[' + key + ']'
+
         if (value === null) {
             formData.append(key, null)
             return
@@ -289,7 +293,7 @@ function putObjectInFormData(obj: Object, formData: FormData) {
                 break
 
             case Object:
-                putObjectInFormData(value, formData)
+                putObjectInFormData(value, formData, key)
                 break
 
             default:

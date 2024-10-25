@@ -411,7 +411,7 @@ class PostVersionController extends Controller
                 $file['url'] ?? null,
                 $file['size'] ?? null,
             ),
-            $request->input('files')
+            $request->input('files', [])
         );
 
         return new PostVersionUpdateDto(
@@ -422,7 +422,7 @@ class PostVersionController extends Controller
             $request->string('content'),
             $request->input('details'),
             $request->string('slug'),
-            $files,
+            $files
         );
     }
 

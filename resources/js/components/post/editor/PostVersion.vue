@@ -223,7 +223,7 @@ function reconsider() {}
 function reject() {
     isRejecting.value = true
 
-    const formData = convertObjectToFormData({...postVersion.value, ...rejectDetails})
+    const formData = convertObjectToFormData({...postVersion.value, details: rejectDetails})
 
     axios.patch(`/api/post-versions/${props.id}/reject`, formData).then((response) => {
         if (response.data.success) {
@@ -249,7 +249,7 @@ function reject() {
 function requestChanges() {
     isRequestingChanges.value = true
 
-    const formData = convertObjectToFormData({...postVersion.value, ...requestChangesDetails})
+    const formData = convertObjectToFormData({...postVersion.value, details: requestChangesDetails})
 
     axios.patch(`/api/post-versions/${props.id}/request-changes`, formData).then((response) => {
         if (response.data.success) {
