@@ -244,7 +244,8 @@ function logout() {
     <Dialog
         v-model:visible="isSearchDialog"
         animation="top-translate"
-        class="search-dialog outer max-w-[1280px] w-full"
+        class="search-dialog outer w-full"
+        form-container-classes="max-w-[1280px] w-full"
         :header="false"
         position="top-center"
         title="Поиск"

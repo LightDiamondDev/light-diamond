@@ -319,7 +319,7 @@ loadPostVersion()
     <template v-else>
         <Dialog
             v-if="postVersion"
-            class="post-version-history page-container max-w-[800px] top-0"
+            class="post-version-history w-full top-0"
             v-model:visible="isHistoryDialog"
             title="История Действий"
             :dismissable-mask="true"

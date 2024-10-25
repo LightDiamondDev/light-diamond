@@ -36,7 +36,6 @@ const props = defineProps({
                 <span class="icon-round-cross icon flex min-w-[2rem] mr-1"/>
                 <span class="flex flex-col w-full">
                     <span class="hot-subtitle">Отклонено: </span>
-                    <!-- xl:max-w-[160px] -->
                     <span class="text-muted truncate ld-lightgray-text max-w-[90%]">
                         {{ (action.details as PostVersionActionReject).reason }}
                     </span>
@@ -45,7 +44,7 @@ const props = defineProps({
             <span v-else-if="action.type === PostVersionActionType.REQUEST_CHANGES" class="flex items-center">
                 <span class="icon-round-eye icon flex min-w-[2rem] mr-1"/>
                 <span class="flex flex-col w-full md:text-[12px] text-[10px]">
-                    <span>Возвращено на доработку: </span>
+                    <span class="hot-subtitle">Возвращено на доработку: </span>
                     <span class="text-muted truncate ld-lightgray-text max-w-[90%] xl:max-w-[160px]">
                         {{ (action.details as PostVersionActionRequestChanges).message }}
                     </span>

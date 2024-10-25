@@ -91,7 +91,6 @@ const lastAction = computed(() => props.postVersion!.actions!.at(props.postVersi
                             sm:top-[-10px] right-[-8px] top-[-8px]"
                     />
                     <UserAvatar
-                        v-if="postVersion.status !== PostVersionStatus.DRAFT"
                         v-tooltip.top="`Закреплено за ${postVersion.assigned_moderator.username}`"
                         :user="postVersion.assigned_moderator"
                         class="moder"

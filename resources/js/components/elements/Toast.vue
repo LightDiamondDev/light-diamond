@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type {Toast} from '@/stores/toast'
-import {ToastType, useToastStore} from '@/stores/toast'
 import {computed, onMounted, onUnmounted, type PropType} from 'vue'
+import {ToastType, useToastStore} from '@/stores/toast'
+import type {Toast} from '@/stores/toast'
 
 const toastStore = useToastStore()
 
@@ -65,7 +65,7 @@ function close() {
     >
         <div class="indicator flex justify-center">
             <div class="set icon icon-border flex justify-center items-center">
-                <span class="icon" :class="icon"></span>
+                <span class="icon" :class="icon"/>
             </div>
         </div>
         <div class="ld-primary-border-bottom
@@ -76,13 +76,13 @@ function close() {
         >
             <div class="description ld-shadow-text flex flex-col">
                 <h1 class="ld-title-font">{{ toast.title }}</h1>
-                <p>{{ toast.message }}</p>
+                <p class="ld-primary-text text-[12px]">{{ toast.message }}</p>
             </div>
             <button
                 class="close flex justify-center items-center"
                 @click="close"
             >
-                <span class="icon icon-cross"></span>
+                <span class="icon icon-cross"/>
             </button>
         </div>
     </div>
@@ -90,7 +90,8 @@ function close() {
 
 <style scoped>
 .toast {
-    margin: .5rem .5rem 0 .5rem;
+    height: fit-content;
+    margin-right: .5rem;
     min-height: 72px;
 }
 
@@ -153,11 +154,6 @@ function close() {
 }
 .toast.warning h1 {
     color: rgb(200, 180, 0);
-}
-
-.toast p {
-    color: var(--primary-text-color);
-    font-size: .8rem;
 }
 
 /* =============== [ Анимации Элементов ] =============== */
