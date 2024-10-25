@@ -35,10 +35,7 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
-    class: {
-        type: String,
-        default: ''
-    },
+    formContainerClasses: String,
     dialogClasses: String
 })
 
@@ -108,7 +105,7 @@ dialogClasses.value = props.position === 'center' ? 'items-center ' + props.dial
             <div
                 v-if="isVisible"
                 class="dialog-form-container inner flex"
-                :class="props.class"
+                :class="formContainerClasses"
                 ref="container"
             >
 

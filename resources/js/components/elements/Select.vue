@@ -5,7 +5,7 @@ import ItemButton from '@/components/elements/ItemButton.vue'
 const props = defineProps({
     buttonClasses: String,
     buttonWrapClasses: String,
-    buttonLabelClasses: Object as PropType<string | object>,
+    buttonLabelClasses: String,
     disabled: {
         type: Boolean,
         default: false

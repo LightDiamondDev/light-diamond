@@ -229,7 +229,8 @@ function onRecordSave() {
         <Dialog
             v-model:visible="isAddRecordModal"
             class="category-adding-form"
-            dialog-classes="md:top-0 top-[-200px]"
+            dialog-classes="md:top-0"
+            form-container-classes="md:mt-0 mt-[-200px]"
             title="Добавление"
         >
             <CategoryForm
@@ -244,7 +245,8 @@ function onRecordSave() {
         <Dialog
             v-model:visible="isEditRecordModal"
             class="category-editing-form"
-            dialog-classes="md:top-0 top-[-200px]"
+            dialog-classes="md:top-0"
+            form-container-classes="md:mt-0 mt-[-200px]"
             title="Редактирование"
         >
             <CategoryForm
@@ -319,7 +321,5 @@ function onRecordSave() {
 </template>
 
 <style scoped>
-.category-adding-form {
-    top: 0;
-}
+
 </style>

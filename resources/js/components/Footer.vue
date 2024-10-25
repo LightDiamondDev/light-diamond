@@ -18,38 +18,38 @@ function scrollToTop() {
             </RouterLink>
 
             <a class="xl:flex hidden items-center" href="#">
-                <span class="icon icon-apple"></span>
+                <span class="icon icon-apple static"/>
                 <span>Аддон LD</span>
             </a>
             <a class="sm:flex hidden items-center" href="#">
-                <span class="icon icon-diamond"></span>
+                <span class="icon icon-diamond static"/>
                 <span>Обновления</span>
             </a>
             <a class="md:flex hidden items-center" href="#">
-                <span class="icon icon-dagger"></span>
+                <span class="icon icon-dagger static"/>
                 <span>Помощь</span>
             </a>
             <a class="sm:flex hidden items-center" href="#">
-                <span class="icon icon-faq"></span>
+                <span class="icon icon-faq static"/>
                 <span>О Проекте</span>
             </a>
             <a
                 class="footer-anchor flex justify-center items-center self-center h-[48px] w-[48px] mr-4"
                 @click="scrollToTop"
             >
-                <span class="icon icon-top-arrow"></span>
+                <span class="icon icon-top-arrow static"/>
             </a>
         </nav>
         <div class="ld-tinted-background darker ld-primary-border-top flex flex-col items-center w-full">
             <div class="media flex justify-between h-[48px] max-w-[320px] w-[75%] mt-4 mb-4">
                 <a class="flex justify-center items-center" href="https://vk.com/light.diamond">
-                    <span class="icon icon-vk"></span>
+                    <span class="icon icon-vk"/>
                 </a>
                 <a class="flex justify-center items-center" href="https://t.me/light_diamond_channel">
-                    <span class="icon icon-telegram"></span>
+                    <span class="icon icon-telegram"/>
                 </a>
                 <a class="flex justify-center items-center" href="https://www.youtube.com/@grostlight3303">
-                    <span class="icon icon-youtube"></span>
+                    <span class="icon icon-youtube"/>
                 </a>
             </div>
             <div class="row flex sm:flex-row flex-col items-center mb-1">

@@ -154,9 +154,8 @@ function save() {
 
                 <label class="flex items-center border-0 md:text-[12px] text-[10px] gap-2" for="sds" style="background: none;">
                     <Checkbox
-                        @check="selectedRecords.push(record)"
-                        @uncheck="selectedRecords.splice(selectedRecords.indexOf(record), 1)"
-                        id="sds"
+                        v-model="category.is_article"
+                        id="is-article-category-check"
                     />
                     <span>Тип: Статья</span>
                 </label>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
 
-import {computed, reactive, ref} from 'vue'
+import {computed, nextTick, reactive, ref} from 'vue'
 
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
@@ -85,6 +85,8 @@ const postUrl = computed(() =>
 const lastAction = computed(() => postVersion.value!.actions!.at(postVersion.value!.actions!.length - 1))
 const rejectDetails = reactive<PostVersionActionReject>({reason: ''})
 const requestChangesDetails = reactive<PostVersionActionRequestChanges>({message: ''})
+
+const postVersionHistory = ref<HTMLElement>()
 
 const isAccepting = ref(false)
 const isHistoryDialog = ref(false)
@@ -199,7 +201,7 @@ function submit() {
 
     axios.patch(`/api/post-versions/${props.id}/submit`, formData).then((response) => {
         if (response.data.success) {
-            toastStore.success('Материал отправлен на модерацию.')
+            toastStore.success('Материал отправлен на рассмотрение.')
             submitOverlayPanel.value?.hide()
             loadPostVersion()
         } else {
@@ -296,6 +298,17 @@ function updateDraft() {
     })
 }
 
+function openHistoryDialog() {
+    isHistoryDialog.value = true
+    nextTick(() => {
+        scrollToBottomPostVersionHistory()
+    })
+}
+
+function scrollToBottomPostVersionHistory() {
+    postVersionHistory.value.scrollTo({ top: postVersionHistory.value.scrollHeight, behavior: 'smooth' })
+}
+
 loadPostVersion()
 </script>
 
@@ -315,7 +328,7 @@ loadPostVersion()
             :header="true"
             :modal="true"
         >
-            <div class="post-version-actions flex flex-col gap-4 md:p-6 xs:p-4 p-2">
+            <div class="post-version-actions flex flex-col gap-4 md:p-6 xs:p-4 p-2" ref="postVersionHistory">
                 <PostVersionAction v-for="action in postVersion.actions" :action="action"/>
             </div>
         </Dialog>
@@ -468,7 +481,7 @@ loadPostVersion()
                             }"
                             class-wrap="ld-primary-background"
                             class-preset="gap-1 px-2 py-0.5 whitespace-nowrap"
-                            @click="isHistoryDialog = true"
+                            @click="openHistoryDialog"
                             label="История действий"
                             icon="icon-script"
                         />
@@ -609,7 +622,7 @@ loadPostVersion()
             <p class="flex">Вернуть на рассмотрение?</p>
 
             <p v-if="postVersion!.status === PostVersionStatus.ACCEPTED" class="flex">
-                Материал будет убран с Каталога и пользователи потеряют к нему доступ.
+                Материал будет убран с Каталога и Пользователи потеряют к нему доступ.
             </p>
 
             <p v-else-if="postVersion!.status === PostVersionStatus.REJECTED" class="flex">
