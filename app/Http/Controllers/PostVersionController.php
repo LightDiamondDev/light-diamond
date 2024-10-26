@@ -453,7 +453,7 @@ class PostVersionController extends Controller
                 'files.*.name' => ['required', 'string', 'max:100'],
                 'files.*.path' => ['required_without:files.*.url', 'string', 'max:255'],
                 'files.*.url' => ['required_without:files.*.path', 'string', 'max:255'],
-                'files.*.size' => ['required_without:files.*.url', 'integer'],
+                'files.*.size' => ['integer'],
                 'files.*' => ['array', new PostVersionFileRule($post)],
             ],
             $additionalRules
@@ -486,7 +486,7 @@ class PostVersionController extends Controller
                 'files.*.name' => ['required_without:files.*.id', 'string', 'max:100'],
                 'files.*.path' => ['required_without_all:files.*.id,files.*.url', 'string', 'max:255'],
                 'files.*.url' => [ 'required_without_all:files.*.id,files.*.path', 'string', 'max:255'],
-                'files.*.size' => ['required_without_all:files.*.id,files.*.url', 'integer'],
+                'files.*.size' => ['integer'],
                 'files.*' => ['array', new PostVersionFileRule($version->post, $version)],
             ],
             $additionalRules
