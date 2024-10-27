@@ -34,6 +34,7 @@ const activeSplash = getRandomAuthSplash()
     <Dialog
         v-model:visible="isVisible"
         class="auth-dialog"
+        form-container-classes="overflow-hidden"
         :title="authDialogTitle"
         :back-button="formType !== AuthFormType.LOGIN"
         @back="formType = AuthFormType.LOGIN"
@@ -41,7 +42,7 @@ const activeSplash = getRandomAuthSplash()
         <template v-slot:left-content>
             <div class="illustration flex justify-center items-center">
                 <div class="background-auth flex justify-center items-center">
-                    <a class="logo element-light-diamond-logo" href="#">
+                    <RouterLink class="logo element-light-diamond-logo" :to="{ name: 'home' }">
                         <span class="base">
                             <span
                                 class="splash"
@@ -53,8 +54,8 @@ const activeSplash = getRandomAuthSplash()
                                 {{ activeSplash }}
                             </span>
                         </span>
-                    </a>
-                    <div class="back-background background-cherry-blossom-grove"></div>
+                    </RouterLink>
+                    <div class="back-background background-cherry-blossom-grove"/>
                 </div>
             </div>
         </template>
@@ -80,13 +81,12 @@ const activeSplash = getRandomAuthSplash()
 
 .auth-dialog {
     box-shadow: 0 0 10px 10px rgba(0, 0, 0, .5);
-    overflow: hidden;
 }
 
 .auth-dialog .interface {
     position: relative;
-    width: 380px;
     transition: .5s;
+    width: 380px;
 }
 
 .auth-dialog form fieldset {

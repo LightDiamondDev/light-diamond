@@ -108,7 +108,8 @@ const toastStore = useToastStore()
 */
 
 .bounce-enter-from {
-
+    transition: all 1s ease-in-out;
+    transform: translateX(110%);
 }
 .bounce-enter-active {
     transform: translateX(110%);

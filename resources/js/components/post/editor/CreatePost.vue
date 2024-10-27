@@ -2,7 +2,7 @@
 import PostEditor from '@/components/post/editor/PostEditor.vue'
 import {ref} from 'vue'
 import axios, {type AxiosError} from 'axios'
-import {convertObjectToFormData, getErrorMessageByCode, getFullPresentableDate, getRelativeDate} from '@/helpers'
+import {convertObjectToFormData, getErrorMessageByCode} from '@/helpers'
 import { useToastStore } from '@/stores/toast'
 import OverlayPanel from '@/components/elements/OverlayPanel.vue'
 import {RouterLink, useRouter} from 'vue-router'
@@ -10,14 +10,9 @@ import type {PostVersion} from '@/types'
 import {useAuthStore} from '@/stores/auth'
 import ShineButton from '@/components/elements/ShineButton.vue'
 import Banner from '@/components/elements/Banner.vue'
-import Input from '@/components/elements/Input.vue'
 import Button from '@/components/elements/Button.vue'
 import ProcessingMovingItems from '@/components/elements/ProcessingMovingItems.vue'
-import PostVersionAction from '@/components/post/PostVersionAction.vue'
 import Textarea from '@/components/elements/Textarea.vue'
-import Select from '@/components/elements/Select.vue'
-import Dialog from '@/components/elements/Dialog.vue'
-import UserAvatar from '@/components/user/UserAvatar.vue'
 
 const authStore = useAuthStore()
 const toastStore = useToastStore()
@@ -181,7 +176,7 @@ function saveAsDraft() {
                 <ShineButton
                     class-preset="gap-2 px-2 py-0.5"
                     class="flex"
-                    :loading="isAccepting"
+                    :loading="isSubmitting"
                     @click="submitOverlayPanel?.hide()"
                     label="Отмена"
                     icon="icon-small-cross"

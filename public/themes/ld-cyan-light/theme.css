@@ -589,12 +589,6 @@
         color: var(--hover-text-color);
     }
 
-    .loaded-file {
-        background: linear-gradient(90deg, rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05));
-        animation: transfusion-animation 15s linear infinite;
-        background-size: 400% 100%;
-    }
-
     .loaded-file-background {
         border: 2px solid rgba(0, 255, 255, .3);
     }
@@ -957,6 +951,12 @@
 
     .transfusion {
         background: linear-gradient(90deg, rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1));
+        animation: transfusion-animation 10s linear infinite;
+        background-size: 400% 100%;
+    }
+
+    .transfusion-light {
+        background: linear-gradient(90deg, rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05));
         animation: transfusion-animation 10s linear infinite;
         background-size: 400% 100%;
     }

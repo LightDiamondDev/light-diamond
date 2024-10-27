@@ -23,6 +23,10 @@ export const usePostCategoryStore = defineStore('postCategory', {
 
         getBySlug(slug: string): PostCategory | undefined {
             return this.categories.find(category => category.slug === slug)
+        },
+
+        getById(id: number) {
+            return this.categories.find(category => category.id === id)
         }
     }
 })
