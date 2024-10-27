@@ -324,6 +324,7 @@ function uploadFile(file: File) {
                     option-icon-key="icon"
                     option-value-key="id"
                     placeholder="Выберите Категорию"
+                    @change="postVersion.category = postCategoryStore.getById(postVersion.category_id)"
                 >
                     <template #option-icon/>
                 </Select>
@@ -348,7 +349,7 @@ function uploadFile(file: File) {
                 <p class="error my-2">{{ errors['description']?.[0] || ' ' }}</p>
 
 
-                <div class="flex flex-col w-full gap-3 mb-4 xs:px-4 px-2">
+                <div v-if="!postVersion.category?.is_article" class="flex flex-col w-full gap-3 mb-4 xs:px-4 px-2">
                     <h4 class="ld-secondary-text flex xs:flex-row flex-col justify-center text-center xs:gap-2 mt-0">
                         <span>Прикреплённые Материалы</span>
                         <span>{{ ' [ ' + files.length + ' / 3 ]' }}</span>
@@ -363,7 +364,7 @@ function uploadFile(file: File) {
                     />
                 </div>
 
-                <div v-if="editable && files.length < 3" class="ld-secondary-text w-full mt-2 xs:px-4 px-2">
+                <div v-if="!postVersion.category?.is_article && editable && files.length < 3" class="ld-secondary-text w-full mt-2 xs:px-4 px-2">
                     <UploadFile
                         v-model="postVersion.files"
                         class="upload-post-preview flex mb-5 mt-2.5"

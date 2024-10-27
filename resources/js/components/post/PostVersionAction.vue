@@ -54,7 +54,11 @@ const props = defineProps({
                 <span class="icon-eye icon flex"/>
                 Назначен Модератор
                 <span class="text-[var(--primary-color)]">
-                    {{ (action.details as PostVersionActionAssignModerator).moderator!.username}}
+                    {{
+                        (action.details as PostVersionActionAssignModerator).moderator ?
+                        (action.details as PostVersionActionAssignModerator).moderator!.username :
+                        'Некто'
+                    }}
                 </span>
             </span>
         </span>
@@ -98,7 +102,7 @@ const props = defineProps({
                             action.user === undefined
                                 ? 'Модератор'
                                 : (action.user === null
-                                        ? 'Удалённый Пользователь'
+                                        ? 'Некто'
                                         : action.user!.username
                                 )
                         }}
@@ -115,7 +119,11 @@ const props = defineProps({
                         <span v-else-if="action.type === PostVersionActionType.ASSIGN_MODERATOR">
                         назначил Модератора
                         <span class="text-[var(--hover-text-color)]">
-                            {{ (action.details as PostVersionActionAssignModerator).moderator!.username }}
+                            {{
+                                (action.details as PostVersionActionAssignModerator).moderator ?
+                                    (action.details as PostVersionActionAssignModerator).moderator.username :
+                                    'Некто'
+                            }}
                         </span>
                         <span>.</span>
                     </span>

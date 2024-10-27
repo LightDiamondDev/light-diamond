@@ -6,20 +6,21 @@ import {computed, nextTick, onMounted, onUnmounted, onUpdated, reactive, ref, wa
 import {useAuthStore} from '@/stores/auth'
 import {useGlobalModalStore} from '@/stores/global-modal'
 import {useToastStore} from '@/stores/toast'
-import {RouterLink, useRoute} from 'vue-router'
+import {useRoute} from 'vue-router'
 
 import {changeTitle, convertDateToString, countHTMLTag, getErrorMessageByCode} from '@/helpers'
 
 import {type Post, type PostComment} from '@/types'
 
 import Button from '@/components/elements/Button.vue'
+import Dialog from '@/components/elements/Dialog.vue'
 
 import ProcessingDiggingBlocks from '@/components/elements/ProcessingDiggingBlocks.vue'
-import EffectIcon from '@/components/elements/EffectIcon.vue'
 import PostInfoBar from '@/components/post/PostInfoBar.vue'
 import PostActionBar from '@/components/post/PostActionBar.vue'
 import PostCommentComponent from '@/components/post/comment/PostComment.vue'
 import PostCommentEditor from '@/components/post/comment/PostCommentEditor.vue'
+import PostVersionFile from '@/components/post/editor/PostVersionFile.vue'
 
 const props = defineProps({
     slug: {
@@ -50,6 +51,7 @@ const postImageUrls = ref<string[]>([])
 const isLoading = ref(true)
 const isLoadingComments = ref(true)
 const isSubmittingNewComment = ref(false)
+const isDownloadWindow = ref(false)
 const isWide = ref(true)
 
 const isFullPostImage = ref(false)
@@ -209,6 +211,11 @@ function addPostImageClickListeners() {
     });
 }
 
+function openDownloadWindow() {
+    isDownloadWindow.value = true
+    console.log(post.version?.files)
+}
+
 </script>
 
 <template>
@@ -218,6 +225,28 @@ function addPostImageClickListeners() {
     <div v-else-if="post" class="smooth-dark-background flex flex-col items-center w-full duration-500"
          :class="{'wide': isWide}"
     >
+        <Dialog
+            v-if="!post.version?.category?.is_article"
+            class="post-version-history w-full top-0"
+            form-container-classes="max-w-[800px] w-full"
+            v-model:visible="isDownloadWindow"
+            title="Скачать"
+            style="top: 0"
+            :header="true"
+            :modal="true"
+        >
+            <div class="ld-tinted-background darker flex justify-center xs:p-4 p-2">
+                <h2 class="ld-title-font">
+                    {{ post.version?.title }}
+
+                    <PostVersionFile
+                        v-for="file in post.version?.files ?? []"
+                        :key="file.path || file.url"
+                        :file="file"
+                    />
+                </h2>
+            </div>
+        </Dialog>
         <div></div>
         <section class="section flex justify-between xl:flex-row flex-col-reverse xl:items-start items-center
             xl:max-w-[1280px] max-w-[832px] w-full gap-4 lg:mt-4">
@@ -247,13 +276,13 @@ function addPostImageClickListeners() {
                     <img alt="" class="preview w-full mt-0" :src="post.version!.cover_url">
                 </div>
 
-                <div class="ld-secondary-text xs:px-4 px-2 py-2" v-html="post.version!.content"/>
+                <div class="ld-secondary-text max-w-full xs:px-4 px-2 py-2" v-html="post.version!.content"/>
 
-                <div class="page-container flex justify-center max-w-[800px] xl:my-8 my-4">
+                <div v-if="!post.version?.category?.is_article" class="page-container flex justify-center max-w-[800px] xl:my-8 my-4">
                     <Button
                         :loading="isSubmittingNewComment"
                         label-classes="text-base"
-                        @click="submitNewComment"
+                        @click="openDownloadWindow"
                         class="max-w-[320px] w-[80%]"
                         icon="icon-download"
                         label="Скачать"

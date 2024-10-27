@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {computed, type PropType, ref} from 'vue'
-import type {PostVersionFile} from '@/types'
+import {FileMaterialFormat, FileSizeUnit, type PostVersionFile} from '@/types'
 import Input from '@/components/elements/Input.vue'
+import Select from '@/components/elements/Select.vue'
 
 const props = defineProps({
     file: {
@@ -21,8 +22,27 @@ const props = defineProps({
 const emit = defineEmits(['remove'])
 const model = defineModel()
 
-const isEditingName = ref(false)
-const isEditingUrl = ref(false)
+const fileSizeUnit = ref<FileSizeUnit|null>()
+
+const fileSizeUnits = [
+    { label: 'МБ', value: FileSizeUnit.MB },
+    { label: 'КБ', value: FileSizeUnit.KB },
+    { label: 'Б', value: FileSizeUnit.B }
+]
+
+const fileMaterialFormat = ref<FileMaterialFormat|null>()
+
+const fileMaterialFormats = [
+    { icon: 'icon-spawn-egg', label: 'MCADDON', value: FileMaterialFormat.MCADDON },
+    { icon: 'icon-brilliant', label: 'MCPACK', value: FileMaterialFormat.MCPACK },
+    { icon: 'icon-map', label: 'MCWORLD', value: FileMaterialFormat.MCWORLD },
+    { icon: 'icon-unordered-list', label: 'ZIP', value: FileMaterialFormat.ZIP },
+    { icon: 'icon-image', label: 'PNG', value: FileMaterialFormat.PNG },
+]
+
+const isEditingFile = ref(false)
+const isEditingLink = ref(false)
+const isLinkFileSize = ref(false)
 
 const fileExtension = computed(
     () => props.file!.path ? props.file!.path.slice(props.file!.path.lastIndexOf('.') + 1) : ''
@@ -47,49 +67,36 @@ const fileSizeLabel = computed(() => {
     }
 })
 
-function editName() {
-    isEditingName.value = true
-    isEditingUrl.value = false
+function editFile() {
+    isEditingFile.value = true
 }
 
-function editUrl() {
-    isEditingName.value = false
-    isEditingUrl.value = true
+function editLink() {
+    isEditingLink.value = true
 }
 
-function saveUrl() {
-    isEditingName.value = false
-    isEditingUrl.value = false
+function save() {
+    isEditingFile.value = false
+    isEditingLink.value = false
 }
 </script>
-
+FileSizeUnit
 <template>
     <div
-        :class="{ 'disabled': disabled }"
         class="loaded-file-background ld-primary-background ld-shadow-text flex"
+        :class="{ 'disabled': disabled }"
         ref="container"
     >
-        <div class="loaded-file flex w-full">
-            <label
-                class="loaded-file-label flex items-center md:h-[64px] h-[48px] w-full
-                    sm:gap-4 gap-2 sm:pl-4 pl-2 overflow-hidden cursor-pointer" for=""
-            >
-                <span class="flex items-center md:min-h-[64px] min-h-[48px]">
-                    <span
-                        class="icon-download icon min-w-[2rem]"
-                        :class="{'icon-download': file.path, 'icon-link-square': !file.path }"
-                    />
-                </span>
+        <div class="loaded-file transfusion-light flex w-full sm:gap-4 gap-2 sm:pl-4 pl-2 cursor-pointer">
+            <div class="flex items-center md:h-[64px] h-[48px]">
                 <span
-                    class="flex flex-col w-full duration-500"
-                    :class="{
-                        'loaded-file-span': file.path,
-                        'loaded-link-span': file.url,
-                        'editing-name': isEditingName,
-                        'editing-url': isEditingUrl
-                    }"
-                >
-                    <span class="uploaded-file-name-input flex items-center md:h-[64px] h-[48px]">
+                    class="icon-download icon min-w-[2rem]"
+                    :class="{ 'icon-download': file.path, 'icon-link-square': !file.path }"
+                />
+            </div>
+            <div v-if="file.path" class="flex md:max-h-[64px] max-h-[48px] w-full overflow-hidden">
+                <div class="loaded-file-bar flex flex-col w-full duration-500" :class="{ 'editing-file': isEditingFile }">
+                    <span class="uploaded-file-name-input flex items-center md:min-h-[64px] min-h-[48px]">
                         <Input
                             v-model="file.name"
                             class="ld-tinted-background ld-primary-border sm:text-[14px]
@@ -99,73 +106,167 @@ function saveUrl() {
                             :min-length="3"
                             placeholder="Название Файла"
                         />
-                        <span
-                            v-if="file.path"
-                            class="xs:flex hidden md:text-[14px] text-[12px] opacity-80 xs:min-w-[80px] pl-2"
-                        >
-                            {{ fileExtension }}
-                        </span>
-                    </span>
-                    <span v-if="!file.path" class="uploaded-file-url-input flex items-center md:h-[64px] h-[48px]">
-                        <Input
-                            v-model="file.url"
-                            class="ld-tinted-background ld-primary-border sm:text-[14px] text-[12px]
-                                md:h-[48px] h-[40px] xs:w-full w-[80%]"
-                            id="post-version-file-name"
-                            :max-length="80"
-                            :min-length="3"
-                            placeholder="Ссылка на Файл"
-                        />
+                        <span class="xs:flex hidden md:text-[14px] text-[12px] opacity-80 pl-2">{{ fileExtension }}</span>
                     </span>
                     <span
                         class="uploaded-file-info flex flex-col justify-center
-                            md:text-[14px] text-[12px] md:h-[64px] h-[48px]"
+                        md:text-[14px] text-[12px] md:min-h-[64px] min-h-[48px]"
                     >
                         <span class="overflow-hidden -mb-1 truncate xs:max-w-[90%] max-w-[70%]">
                             <span class="file-name">{{ file.name }}</span>
                         </span>
-                        <span v-if="file.path" class="title-font truncate opacity-80 xs:max-w-[90%] max-w-[70%]">
+                        <span class="title-font truncate opacity-80 xs:max-w-[90%] max-w-[70%]">
                             {{ `${fileExtension ? fileExtensionUpperCase + ' — ' : ''}` + `${fileSizeLabel || ''}` }}
                         </span>
-                        <span v-else class="title-font truncate opacity-80 xs:max-w-[90%] max-w-[70%]">
-                            {{ file.url }}
+                    </span>
+                </div>
+            </div>
+            <div
+                v-else
+                class="loaded-link-span flex flex-col sm:w-full duration-500"
+                :class="{
+                    'md:max-h-[278px] max-h-[282px] overflow-link-animation': isEditingLink && isLinkFileSize,
+                    'md:max-h-[128px] max-h-[96px] overflow-hidden': isEditingLink && !isLinkFileSize,
+                    'md:max-h-[64px] max-h-[48px] overflow-hidden': !isEditingLink
+                }"
+                style="width: calc(100% - 136px);"
+            >
+                <div
+                    class="loaded-link-bar flex flex-col w-full duration-500"
+                    :class="{ 'editing-link': isEditingLink }"
+                >
+                    <span
+                        v-if="!isEditingLink"
+                        class="uploaded-file-info flex flex-col justify-center
+                            md:text-[14px] text-[12px] md:min-h-[64px] min-h-[48px]"
+                    >
+                        <span class="overflow-hidden -mb-1 truncate xs:max-w-[90%] max-w-[70%]">
+                            <span class="file-name">{{ file.name }}</span>
+                        </span>
+                        <span class="title-font truncate opacity-80 xs:max-w-[90%] max-w-[70%]">
+                            {{ isLinkFileSize ? file.size + ' | ' + file.url : file.url }}
                         </span>
                     </span>
-                </span>
-                <input class="hidden" :disabled="disabled" type="file">
-            </label>
-            <button
-                v-if="editable && !isEditingName && !isEditingUrl"
-                class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
-                v-tooltip.top="'Изменить название'"
-                @click="editName"
-            >
-                <span class="icon-small-pencil icon flex"/>
-            </button>
-            <button
-                v-if="editable && !file.path && !isEditingUrl && !isEditingName"
-                class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
-                v-tooltip.top="'Изменить ссылку'"
-                @click="editUrl"
-            >
-                <span class="icon-link-round icon flex"/>
-            </button>
-            <button
-                v-if="editable && isEditingName || isEditingUrl"
-                class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[64px] min-w-[48px]"
-                v-tooltip.top="'Сохранить'"
-                @click="saveUrl"
-            >
-                <span class="icon-tick icon flex"/>
-            </button>
-            <button
-                v-if="editable && !isEditingName && !isEditingUrl"
-                class="button-cross flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
-                v-tooltip.top="'Удалить'"
-                @click="emit('remove')"
-            >
-                <span class="icon-trash icon flex"/>
-            </button>
+                    <span class="uploaded-file-name-input flex items-center md:min-h-[64px] min-h-[48px]">
+                        <Input
+                            v-model="file.name"
+                            class="ld-tinted-background ld-primary-border sm:text-[14px] text-[12px]
+                                md:h-[48px] h-[40px] w-full"
+                            id="post-version-file-name"
+                            :max-length="80"
+                            :min-length="3"
+                            placeholder="Название Файла"
+                        />
+                    </span>
+                    <span class="uploaded-file-url-input flex items-center md:h-[64px] h-[48px]">
+                        <Input
+                            v-model="file.url"
+                            class="ld-tinted-background ld-primary-border sm:text-[14px] text-[12px]
+                                md:h-[48px] h-[40px] w-full"
+                            id="post-version-file-name"
+                            :max-length="255"
+                            :min-length="3"
+                            placeholder="Ссылка на Файл"
+                        />
+                    </span>
+                </div>
+                <div v-if="isLinkFileSize" class="max-w-full w-full">
+                    <span class="uploaded-file-url-input flex items-center md:h-[64px] h-[48px]">
+                        <Input
+                            v-model="file.size"
+                            class="ld-tinted-background ld-primary-border sm:text-[14px] text-[12px]
+                                md:h-[48px] h-[40px] w-full"
+                            id="post-version-file-name"
+                            :max-length="8"
+                            :min-length="3"
+                            placeholder="Вес Файла"
+                        />
+                    </span>
+                    <div class="sm:text-[12px] text-[10px] max-w-full overflow-hidden">
+                        <span class="truncate opacity-80">
+                            Пример: 15 / 7,5 / 128 / 65,8 / 33,68
+                        </span>
+                    </div>
+                    <div class="flex sm:flex-row flex-col gap-2 mb-2" style="z-index: 1">
+                        <Select
+                            button-classes="ld-primary-background ld-primary-border ld-title-font w-full
+                                whitespace-nowrap text-[14px]"
+                            options-classes="ld-primary-background ld-primary-border top-[50px]"
+                            option-classes="text-[14px] md:min-h-[48px] min-h-[40px] gap-4 sm:pl-6 pl-2"
+                            class="post-edition flex items-center w-full"
+                            placeholder="Единица измерения"
+                            v-model="fileSizeUnit"
+                            :editable="editable"
+                            input-id="edition"
+                            :options="fileSizeUnits"
+                            option-label-key="label"
+                            option-value-key="value"
+                        >
+                            <template #option-icon/>
+                        </Select>
+                        <Select
+                            button-classes="ld-primary-background ld-primary-border ld-title-font w-full
+                                whitespace-nowrap text-[14px]"
+                            options-classes="ld-primary-background ld-primary-border top-[50px]"
+                            option-classes="text-[14px] md:min-h-[48px] min-h-[40px] gap-4 sm:pl-6 pl-2"
+                            class="post-edition flex items-center w-full"
+                            placeholder="Расширение Файла"
+                            v-model="fileMaterialFormat"
+                            :editable="editable"
+                            input-id="edition"
+                            :options="fileMaterialFormats"
+                            option-label-key="label"
+                            option-icon-key="icon"
+                            option-value-key="value"
+                        >
+                            <template #option-icon/>
+                        </Select>
+                    </div>
+                </div>
+            </div>
+            <input class="hidden" :disabled="disabled" type="file">
+            <div class="flex justify-end min-w-[96px]">
+                <button
+                    v-if="editable && !file.path && isEditingLink"
+                    class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
+                    v-tooltip.top="'Размер Файла'"
+                    @click="isLinkFileSize = !isLinkFileSize"
+                >
+                    <span class="icon flex" :class="{ 'icon-eye': isLinkFileSize, 'icon-eye-cross': !isLinkFileSize }"/>
+                </button>
+                <button
+                    v-if="editable && (isEditingFile || isEditingLink)"
+                    class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px] pr-3"
+                    v-tooltip.top="'Сохранить'"
+                    @click="save"
+                >
+                    <span class="icon-tick icon flex"/>
+                </button>
+                <button
+                    v-if="editable && file.path && !isEditingFile"
+                    class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
+                    v-tooltip.top="'Изменить Файл'"
+                    @click="editFile"
+                >
+                    <span class="icon-small-pencil icon flex"/>
+                </button>
+                <button
+                    v-if="editable && !file.path && !isEditingLink"
+                    class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
+                    v-tooltip.top="'Изменить Ссылку'"
+                    @click="editLink"
+                >
+                    <span class="icon-small-pencil icon flex"/>
+                </button>
+                <button
+                    v-if="editable && !isEditingFile && !isEditingLink"
+                    class="button-cross flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
+                    v-tooltip.top="'Удалить'"
+                    @click="emit('remove')"
+                >
+                    <span class="icon-trash icon flex"/>
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -179,25 +280,23 @@ function saveUrl() {
 .tooltip::after {
     top: 8px;
 }
-.loaded-file-span {
-    transform: translateY(-25%);
+.loaded-file-bar {
+    transform: translateY(-100%);
 }
 
-.loaded-file-span.editing-name {
-    transform: translateY(25%);
-}
-
-.loaded-link-span {
-    transform: translateY(-33%);
-}
-
-.loaded-link-span.editing-name {
-    transform: translateY(33%);
-}
-
-.loaded-link-span.editing-url {
+.loaded-file-bar.editing-file {
     transform: translateY(0);
 }
+
+/*
+.loaded-link-bar {
+    transform: translateY(0);
+}
+
+.loaded-link-bar.editing-link {
+    transform: translateY(-64px);
+}
+*/
 
 .loaded-file:hover .icon-download {
     animation: icon-trigger-up-animation .3s ease;
@@ -210,4 +309,29 @@ function saveUrl() {
 .loaded-file:hover .file-name {
     color: var(--hover-text-color);
 }
+
+.overflow-link-animation {
+    animation: overflow-link-animation .5s ease;
+}
+
+/* =============== [ Анимации ] =============== */
+
+@keyframes overflow-link-animation {
+    0% {
+        overflow: hidden;
+    }
+    100% {
+        overflow: hidden;
+    }
+}
+
+/* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
+
+/*
+@media screen and (max-width: 767px) {
+    .loaded-link-bar.editing-link {
+        transform: translateY(-48px);
+    }
+}
+*/
 </style>
