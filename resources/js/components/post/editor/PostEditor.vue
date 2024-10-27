@@ -35,7 +35,7 @@ import ShineButton from '@/components/elements/ShineButton.vue'
 defineProps({
     author: {
         type: Object as PropType<User>,
-        required: true,
+        default: null,
     },
     editable: {
         type: Boolean,
@@ -236,7 +236,7 @@ function uploadFile(file: File) {
                             icon-class-list="h-7 w-7"
                             :user="author"
                         />
-                        <span class="username duration-200">{{ author.username }}</span>
+                        <span class="username duration-200">{{ author !== null ? author.username : 'Некто' }}</span>
                     </RouterLink>
                     <slot name="mark"/>
                 </div>

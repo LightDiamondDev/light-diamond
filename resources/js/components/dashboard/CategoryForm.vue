@@ -152,13 +152,20 @@ function save() {
                     {{ errors['edition']?.[0] || '&nbsp;' }}
                 </span>
 
-                <label class="flex items-center border-0 md:text-[12px] text-[10px] gap-2" for="sds" style="background: none;">
+                <label class="flex items-center border-0 md:text-[12px] text-[10px] gap-2" for="is-article-category-check" style="background: none;">
                     <Checkbox
                         v-model="category.is_article"
                         id="is-article-category-check"
                     />
                     <span>Тип: Статья</span>
                 </label>
+
+                <span
+                    class="status md:text-[12px] text-[10px] mt-2"
+                    :class="{ 'error': errors['is_article'] }"
+                >
+                    {{ errors['is_article']?.[0] || '&nbsp;' }}
+                </span>
             </div>
 
             <div class="flex justify-center w-[85%] gap-2 mb-6 mt-2">

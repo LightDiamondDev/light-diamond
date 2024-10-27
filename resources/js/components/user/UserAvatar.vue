@@ -7,7 +7,7 @@ defineProps({
     iconClassList: String,
     user: {
         type: Object as PropType<User>,
-        required: true,
+        default: null,
     }
 })
 

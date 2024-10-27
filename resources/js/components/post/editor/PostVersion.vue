@@ -336,7 +336,7 @@ loadPostVersion()
         <PostEditor
             v-if="postVersion"
             v-model="postVersion"
-            :author="postVersion.author!"
+            :author="postVersion.author"
             :editable="isOwnDraft || isReviewing"
             :errors="errors"
         >
@@ -401,7 +401,7 @@ loadPostVersion()
                                     <UserAvatar
                                         border-class-list="h-10 min-w-10"
                                         icon-class-list="h-7 min-w-7"
-                                        :user="postVersion.author"
+                                        :user="postVersion.author ? postVersion.author : 'Некто'"
                                     />
                                 </template>
 
@@ -410,7 +410,7 @@ loadPostVersion()
                                         <UserAvatar
                                             border-class-list="h-10 min-w-10"
                                             icon-class-list="h-7 min-w-7"
-                                            :user="postVersion.author"
+                                            :user="postVersion.author ? postVersion.author : 'Некто'"
                                         />
                                         <p
                                             class="text-[12px] line-clamp-1"
