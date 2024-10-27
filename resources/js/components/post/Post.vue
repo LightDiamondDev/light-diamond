@@ -51,7 +51,7 @@ const postImageUrls = ref<string[]>([])
 const isLoading = ref(true)
 const isLoadingComments = ref(true)
 const isSubmittingNewComment = ref(false)
-const isDownloadWindow = ref(false)
+const isDownloadWindow = ref(true)
 const isWide = ref(true)
 
 const isFullPostImage = ref(false)
@@ -235,16 +235,15 @@ function openDownloadWindow() {
             :header="true"
             :modal="true"
         >
-            <div class="ld-tinted-background darker flex justify-center xs:p-4 p-2">
-                <h2 class="ld-title-font">
-                    {{ post.version?.title }}
-
+            <div class="ld-tinted-background darker flex flex-col sm:gap-4 gap-2 sm:p-4 p-2">
+                <h2 class="ld-title-font text-center">{{ post.version?.title }}</h2>
+                <div class="flex flex-col w-full sm:gap-4 gap-2">
                     <PostVersionFile
                         v-for="file in post.version?.files ?? []"
                         :key="file.path || file.url"
                         :file="file"
                     />
-                </h2>
+                </div>
             </div>
         </Dialog>
         <div></div>
@@ -280,7 +279,6 @@ function openDownloadWindow() {
 
                 <div v-if="!post.version?.category?.is_article" class="page-container flex justify-center max-w-[800px] xl:my-8 my-4">
                     <Button
-                        :loading="isSubmittingNewComment"
                         label-classes="text-base"
                         @click="openDownloadWindow"
                         class="max-w-[320px] w-[80%]"

@@ -406,7 +406,7 @@ const currentCommentHTMLHeight = computed(() =>
 
         <Menu
             class="post-comment-actions ld-primary-background ld-primary-border"
-            item-classes="case-font text-[0.8rem] min-h-[32px] p-1"
+            item-classes="case-font text-[0.8rem] min-h-[32px] gap-3 p-1"
             :items="actionsMenuItems"
             :align-right="true"
             style="z-index: 1"
