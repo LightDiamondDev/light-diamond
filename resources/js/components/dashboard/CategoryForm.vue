@@ -27,7 +27,7 @@ const authStore = useAuthStore()
 const toastStore = useToastStore()
 const apiUrl = '/api/post-categories'
 
-const category = ref<PostCategory>(props.category || {})
+const category = ref<PostCategory>(props.category || {edition: null, is_article: false})
 const errors = ref<string[][]>([])
 const isProcessing = ref(false)
 
