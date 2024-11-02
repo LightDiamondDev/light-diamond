@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $path
  * @property string|null $url
  * @property int|null $size
+ * @property string|null $extension
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\PostVersion $postVersion
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|PostVersionFile newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PostVersionFile query()
  * @method static \Illuminate\Database\Eloquent\Builder|PostVersionFile whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PostVersionFile whereExtension($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PostVersionFile whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PostVersionFile whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PostVersionFile wherePath($value)
@@ -40,6 +42,7 @@ class PostVersionFile extends Model
         'path',
         'url',
         'size',
+        'extension',
     ];
 
     public function postVersion(): BelongsTo

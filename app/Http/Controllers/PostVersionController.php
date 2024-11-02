@@ -386,6 +386,7 @@ class PostVersionController extends Controller
                 $file['path'] ?? null,
                 $file['url'] ?? null,
                 $file['size'] ?? null,
+                $file['extension'] ?? null,
             ),
             $request->input('files')
         );
@@ -410,6 +411,7 @@ class PostVersionController extends Controller
                 $file['path'] ?? null,
                 $file['url'] ?? null,
                 $file['size'] ?? null,
+                $file['extension'] ?? null,
             ),
             $request->input('files', [])
         );

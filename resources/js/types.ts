@@ -21,20 +21,6 @@ export enum GameEdition {
     JAVA = 'JAVA'
 }
 
-export enum FileSizeUnit {
-    MB = 'МБ',
-    KB = 'КБ',
-    B = 'Б'
-}
-
-export enum FileMaterialFormat {
-    MCADDON = 'MCADDON',
-    MCPACK = 'MCPACK',
-    MCWORLD = 'MCWORLD',
-    ZIP = 'ZIP',
-    PNG = 'PNG'
-}
-
 export interface PostCategory {
     id?: bigint
     slug?: string
@@ -74,10 +60,12 @@ export interface PostComment {
 
 export interface PostVersionFile {
     id?: bigint
+    post_version_id?: bigint
     name: string
-    path?: string
-    url?: string
-    size?: number
+    path?: string | null
+    url?: string | null
+    size?: number | null
+    extension?: string | null
 }
 
 export enum PostVersionStatus {

@@ -37,7 +37,9 @@ Route::get('/post-categories', [PostCategoryController::class, 'get']);
 Route::get('/posts', [PostController::class, 'get']);
 Route::get('/posts/{slug}', [PostController::class, 'getBySlug']);
 
-Route::get('/posts/{postId}/comments', [PostCommentController::class, 'getByPostId'])->where('id', '[0-9]+');
+Route::get('/posts/{postId}/comments', [PostCommentController::class, 'getByPostId'])->where('postId', '[0-9]+');
+
+Route::get('/post-versions/{versionId}/download/{fileId}', [PostVersionFileController::class, 'download'])->where('versionId', '[0-9]+')->where('fileId', '[0-9]+');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::put('/settings/profile', [SettingsController::class, 'changeProfileSettings']);

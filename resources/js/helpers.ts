@@ -274,7 +274,7 @@ function putObjectInFormData(obj: Object, formData: FormData, rootKey: string = 
             : rootKey + '[' + key + ']'
 
         if (value === null) {
-            formData.append(key, null)
+            formData.append(key, '')
             return
         }
 

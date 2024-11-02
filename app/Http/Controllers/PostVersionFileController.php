@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PostVersionFile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\File;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PostVersionFileController extends Controller
 {
@@ -20,7 +22,7 @@ class PostVersionFileController extends Controller
         $validator = Validator::make($request->all(), [
             'file' => [
                 'required',
-                File::types(['zip', 'mcpack', 'mcaddon', 'mcworld', 'mcpack', 'png']),
+                File::types(['zip', 'mcaddon', 'mcworld', 'mcpack', 'png']),
                 File::default()
                     ->max(self::MAX_FILE_SIZE_MB * 1024)
             ],
@@ -44,5 +46,16 @@ class PostVersionFileController extends Controller
         return $this->successJsonResponse([
             'file_path' => $filePath
         ]);
+    }
+
+    public function download(Request $request, int $versionId, int $fileId): StreamedResponse
+    {
+        $postVersionFile = PostVersionFile::find($fileId);
+
+        if ($postVersionFile === null || $postVersionFile->post_version_id !== $versionId || $postVersionFile->path === null) {
+            abort(404, 'Файл для скачивания не найден.');
+        }
+
+        return Storage::disk('private')->download($postVersionFile->path, basename($postVersionFile->path));
     }
 }

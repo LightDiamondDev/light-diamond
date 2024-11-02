@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('path')->nullable();
             $table->string('url')->nullable();
             $table->integer('size')->nullable();
+            $table->string('extension')->nullable();
             $table->timestamps();
         });
     }

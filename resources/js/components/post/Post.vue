@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import axios, {type AxiosError, type AxiosResponse} from 'axios'
+import axios, {type AxiosError} from 'axios'
 
 import {computed, nextTick, onMounted, onUnmounted, onUpdated, reactive, ref, watch} from 'vue'
 
@@ -46,18 +46,13 @@ const commentsBlock = ref<Element>()
 const newComment = reactive<EditedComment>({})
 const commentsBlockObserver = new IntersectionObserver(observeCommentsBlock)
 
-const postImageUrls = ref<string[]>([])
-
 const isLoading = ref(true)
 const isLoadingComments = ref(true)
 const isSubmittingNewComment = ref(false)
-const isDownloadWindow = ref(true)
+const isDownloadWindow = ref(false)
 const isWide = ref(true)
 
-const isFullPostImage = ref(false)
-const currentFullImageUrl = ref('')
-
-const rootComments = computed(() => comments.value?.filter((comment) => !comment.parent_comment_id))
+const rootComments = computed(() => comments.value!.filter((comment) => !comment.parent_comment_id))
 
 onUpdated(() => {
     if (commentsBlock.value && !comments.value) {
@@ -78,10 +73,6 @@ function updateTitle() {
         changeTitle(post.value!.version!.title!)
     })
 }
-
-watch(postContent, () => {
-    addPostImageClickListeners()
-})
 
 function observeCommentsBlock([entry]: IntersectionObserverEntry[]) {
     if (entry.isIntersecting) {
@@ -199,21 +190,8 @@ function onNewCommentEditorClick() {
     }
 }
 
-function addPostImageClickListeners() {
-    let postImages = document.querySelectorAll('.post img');
-    postImages.forEach(image => {
-        postImageUrls.value.push(image.getAttribute('src')!)
-        image.addEventListener('click', function() {
-            isFullPostImage.value = true
-            console.log(isFullPostImage.value)
-            // currentFullImageUrl.value = 'url(' + image.src + ')'
-        });
-    });
-}
-
 function openDownloadWindow() {
     isDownloadWindow.value = true
-    console.log(post.version?.files)
 }
 
 </script>
@@ -272,12 +250,12 @@ function openDownloadWindow() {
                 </h1>
 
                 <div class="preview-wrap flex w-full mt-0 xs:mx-4 xs:px-4 px-2">
-                    <img alt="" class="preview w-full mt-0" :src="post.version!.cover_url">
+                    <img alt="" class="preview w-full mt-0" :src="post!.version!.cover_url">
                 </div>
 
-                <div class="ld-secondary-text max-w-full xs:px-4 px-2 py-2" v-html="post.version!.content"/>
+                <div class="ld-secondary-text max-w-full xs:px-4 px-2 py-2" v-html="post!.version!.content"/>
 
-                <div v-if="!post.version?.category?.is_article" class="page-container flex justify-center max-w-[800px] xl:my-8 my-4">
+                <div v-if="!post!.version?.category?.is_article" class="page-container flex justify-center max-w-[800px] xl:my-8 my-4">
                     <Button
                         label-classes="text-base"
                         @click="openDownloadWindow"

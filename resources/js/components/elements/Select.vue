@@ -114,13 +114,13 @@ function change(option: any) {
         ref="container"
     >
         <button
-            class="select-button flex items-center w-full"
+            class="select-button flex items-center w-full gap-2"
             :class="buttonClasses"
             :disabled="disabled || !editable"
             type="button"
             @click="toggleSelect"
         >
-                <span class="select-span flex items-center w-full min-w-0" :class="optionClasses">
+            <span class="select-span flex items-center w-full min-w-0" :class="optionClasses">
                 <template v-if="currentOption">
                     <slot name="option-icon" :option="currentOption">
                         <span v-if="optionIconKey" :class="getOptionIcon(currentOption)" class="icon"/>

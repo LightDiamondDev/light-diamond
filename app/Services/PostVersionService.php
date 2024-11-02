@@ -216,6 +216,12 @@ class PostVersionService
                     if ($fileDto->url !== null && $file->path === null) {
                         $file->url = $fileDto->url;
                     }
+                    if ($fileDto->size !== null && $file->path === null) {
+                        $file->size = $fileDto->size;
+                    }
+                    if ($fileDto->extension !== null && $file->path === null) {
+                        $file->extension = strtolower($fileDto->extension);
+                    }
                     $file->save();
                 }
             }
@@ -239,6 +245,10 @@ class PostVersionService
         $file->path = $fileDto->path;
         $file->url = $fileDto->path === null ? $fileDto->url : null;
         $file->size = $fileDto->path === null ? $fileDto->size : Storage::disk('private')->size($fileDto->path);
+        $file->extension = $fileDto->path === null ? $fileDto->extension : pathinfo($fileDto->path, PATHINFO_EXTENSION);
+        if ($file->extension !== null) {
+            $file->extension = strtolower($file->extension);
+        }
         $file->save();
     }
 }

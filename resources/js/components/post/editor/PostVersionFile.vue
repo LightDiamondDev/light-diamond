@@ -2,6 +2,7 @@
 import {computed, type PropType, ref} from 'vue'
 import type {PostVersionFile} from '@/types'
 import Input from '@/components/elements/Input.vue'
+import axios from 'axios'
 
 const props = defineProps({
     file: {
@@ -21,14 +22,6 @@ const props = defineProps({
 const emit = defineEmits(['remove'])
 const model = defineModel()
 
-const fileExtension = computed(
-    () => props.file!.path ? props.file!.path.slice(props.file!.path.lastIndexOf('.') + 1) : ''
-)
-
-const fileExtensionUpperCase = computed(
-    () => props.file!.path ? props.file!.path.slice(props.file!.path.lastIndexOf('.') + 1).toUpperCase() : ''
-)
-
 const fileSizeLabel = computed(() => {
     if (props.file!.size === undefined) {
         return ''
@@ -43,6 +36,25 @@ const fileSizeLabel = computed(() => {
         return megabytes.toFixed(2).toLocaleString() + ' МБ'
     }
 })
+
+function download() {
+    if (props.file!.path) {
+        axios.get(`/api/post-versions/${props.file!.post_version_id}/download/${props.file!.id}`, {responseType: 'blob'}).then((response) => {
+            const href = URL.createObjectURL(response.data)
+
+            const link = document.createElement('a')
+            link.href = href
+            link.download = props.file!.path!.replace(/^.*[\\/]/, '')
+            document.body.appendChild(link)
+            link.click()
+
+            document.body.removeChild(link)
+            URL.revokeObjectURL(href)
+        })
+    } else {
+        window.open(props.file!.url!, '_blank')
+    }
+}
 </script>
 
 <template>
@@ -51,7 +63,7 @@ const fileSizeLabel = computed(() => {
         class="loaded-file-background ld-primary-background ld-shadow-text flex"
         :download="file.path"
         ref="container"
-        :href="file.url"
+        @click="download"
     >
         <div class="loaded-file transfusion-light flex w-full">
             <label
@@ -79,10 +91,10 @@ const fileSizeLabel = computed(() => {
                             <span class="file-name">{{ file.name }}</span>
                         </span>
                         <span v-if="file.path" class="title-font truncate opacity-80 xs:max-w-[90%] max-w-[70%]">
-                            {{ `${fileExtension ? fileExtensionUpperCase + ' — ' : ''}` + `${fileSizeLabel || ''}` }}
+                            {{ `${file.extension.toUpperCase()} — ${fileSizeLabel}` }}
                         </span>
                         <span v-else class="title-font truncate opacity-80 xs:max-w-[90%] max-w-[70%]">
-                            {{ file.size === null ? file.url : file.size + ' | ' + file.url }}
+                            {{ `${file.extension ? file.extension.toUpperCase() + (file.size ? ' — ' : '') : ''}` + `${file.size ? fileSizeLabel : ''}` }}
                         </span>
                     </span>
                 </span>

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import {computed, type PropType, ref} from 'vue'
-import {FileMaterialFormat, FileSizeUnit, type PostVersionFile} from '@/types'
+import {type PostVersionFile} from '@/types'
 import Input from '@/components/elements/Input.vue'
 import Select from '@/components/elements/Select.vue'
+import axios from 'axios'
 
 const props = defineProps({
     file: {
@@ -20,37 +21,36 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['remove'])
-const model = defineModel()
 
-const fileSizeUnit = ref<FileSizeUnit|null>()
-
+const urlSize = ref<number|undefined>(props.file!.size ? props.file!.size / 1024 : undefined)
+enum FileSizeUnit {
+    KB = 'КБ',
+    MB = 'МБ'
+}
+const fileSizeUnit = ref<FileSizeUnit>(FileSizeUnit.KB)
 const fileSizeUnits = [
-    { label: 'МБ', value: FileSizeUnit.MB },
-    { label: 'КБ', value: FileSizeUnit.KB },
-    { label: 'Б', value: FileSizeUnit.B }
+    FileSizeUnit.KB,
+    FileSizeUnit.MB
 ]
 
-const fileMaterialFormat = ref<FileMaterialFormat|null>()
+function updateUrlFileSize() {
+    props.file!.size = urlSize.value * 1024
+    if (fileSizeUnit.value === FileSizeUnit.MB) {
+        props.file!.size *= 1024
+    }
+}
 
-const fileMaterialFormats = [
-    { icon: 'icon-spawn-egg', label: 'MCADDON', value: FileMaterialFormat.MCADDON },
-    { icon: 'icon-brilliant', label: 'MCPACK', value: FileMaterialFormat.MCPACK },
-    { icon: 'icon-map', label: 'MCWORLD', value: FileMaterialFormat.MCWORLD },
-    { icon: 'icon-unordered-list', label: 'ZIP', value: FileMaterialFormat.ZIP },
-    { icon: 'icon-image', label: 'PNG', value: FileMaterialFormat.PNG },
+const urlFileExtensions = [
+    {icon: 'icon-spawn-egg', label: 'MCADDON', value: 'mcaddon'},
+    {icon: 'icon-brilliant', label: 'MCPACK', value: 'mcpack'},
+    {icon: 'icon-map', label: 'MCWORLD', value: 'mcworld'},
+    {icon: 'icon-unordered-list', label: 'ZIP', value: 'zip'},
+    {icon: 'icon-image', label: 'PNG', value: 'png'},
 ]
 
 const isEditingFile = ref(false)
 const isEditingLink = ref(false)
-const isLinkFileSize = ref(false)
-
-const fileExtension = computed(
-    () => props.file!.path ? props.file!.path.slice(props.file!.path.lastIndexOf('.') + 1) : ''
-)
-
-const fileExtensionUpperCase = computed(
-    () => props.file!.path ? props.file!.path.slice(props.file!.path.lastIndexOf('.') + 1).toUpperCase() : ''
-)
+const isExtendedUrlProperties = ref(false)
 
 const fileSizeLabel = computed(() => {
     if (props.file!.size === undefined) {
@@ -79,8 +79,31 @@ function save() {
     isEditingFile.value = false
     isEditingLink.value = false
 }
+
+function download() {
+    if (props.file!.path) {
+        if (props.file!.post_version_id === undefined || props.file!.id === undefined) {
+            return
+        }
+
+        axios.get(`/api/post-versions/${props.file!.post_version_id}/download/${props.file!.id}`, {responseType: 'blob'}).then((response) => {
+            const href = URL.createObjectURL(response.data)
+
+            const link = document.createElement('a')
+            link.href = href
+            link.download = props.file!.path!.replace(/^.*[\\/]/, '')
+            document.body.appendChild(link)
+            link.click()
+
+            document.body.removeChild(link)
+            URL.revokeObjectURL(href)
+        })
+    } else {
+        window.open(props.file!.url!, '_blank')
+    }
+}
 </script>
-FileSizeUnit
+
 <template>
     <div
         class="loaded-file-background ld-primary-background ld-shadow-text flex"
@@ -95,7 +118,8 @@ FileSizeUnit
                 />
             </div>
             <div v-if="file.path" class="flex md:max-h-[64px] max-h-[48px] w-full overflow-hidden">
-                <div class="loaded-file-bar flex flex-col w-full duration-500" :class="{ 'editing-file': isEditingFile }">
+                <div class="loaded-file-bar flex flex-col w-full duration-500"
+                     :class="{ 'editing-file': isEditingFile }">
                     <span class="uploaded-file-name-input flex items-center md:min-h-[64px] min-h-[48px]">
                         <Input
                             v-model="file.name"
@@ -106,17 +130,20 @@ FileSizeUnit
                             :min-length="3"
                             placeholder="Название Файла"
                         />
-                        <span class="xs:flex hidden md:text-[14px] text-[12px] opacity-80 pl-2">{{ fileExtension }}</span>
+                        <span class="xs:flex hidden md:text-[14px] text-[12px] opacity-80 pl-2">{{
+                                file.extension
+                            }}</span>
                     </span>
                     <span
                         class="uploaded-file-info flex flex-col justify-center
                         md:text-[14px] text-[12px] md:min-h-[64px] min-h-[48px]"
+                        @click="download"
                     >
                         <span class="overflow-hidden -mb-1 truncate xs:max-w-[90%] max-w-[70%]">
                             <span class="file-name">{{ file.name }}</span>
                         </span>
                         <span class="title-font truncate opacity-80 xs:max-w-[90%] max-w-[70%]">
-                            {{ `${fileExtension ? fileExtensionUpperCase + ' — ' : ''}` + `${fileSizeLabel || ''}` }}
+                            {{ `${file.extension ? file.extension.toUpperCase() + ' — ' : ''}` + `${fileSizeLabel || ''}` }}
                         </span>
                     </span>
                 </div>
@@ -125,8 +152,8 @@ FileSizeUnit
                 v-else
                 class="loaded-link-span flex flex-col sm:w-full duration-500"
                 :class="{
-                    'md:max-h-[278px] max-h-[282px] overflow-link-animation': isEditingLink && isLinkFileSize,
-                    'md:max-h-[128px] max-h-[96px] overflow-hidden': isEditingLink && !isLinkFileSize,
+                    'md:max-h-[278px] max-h-[282px] overflow-link-animation': isEditingLink && isExtendedUrlProperties,
+                    'md:max-h-[128px] max-h-[96px] overflow-hidden': isEditingLink && !isExtendedUrlProperties,
                     'md:max-h-[64px] max-h-[48px] overflow-hidden': !isEditingLink
                 }"
                 style="width: calc(100% - 136px);"
@@ -139,12 +166,13 @@ FileSizeUnit
                         v-if="!isEditingLink"
                         class="uploaded-file-info flex flex-col justify-center
                             md:text-[14px] text-[12px] md:min-h-[64px] min-h-[48px]"
+                        @click="download"
                     >
                         <span class="overflow-hidden -mb-1 truncate xs:max-w-[90%] max-w-[70%]">
                             <span class="file-name">{{ file.name }}</span>
                         </span>
                         <span class="title-font truncate opacity-80 xs:max-w-[90%] max-w-[70%]">
-                            {{ isLinkFileSize ? file.size + ' | ' + file.url : file.url }}
+                            {{ `${file.extension ? file.extension.toUpperCase() + ' — ' : ''}` + `${file.size ? fileSizeLabel + ' — ' : ''}` + file.url }}
                         </span>
                     </span>
                     <span class="uploaded-file-name-input flex items-center md:min-h-[64px] min-h-[48px]">
@@ -170,40 +198,35 @@ FileSizeUnit
                         />
                     </span>
                 </div>
-                <div v-if="isLinkFileSize" class="max-w-full w-full">
+                <div v-if="isExtendedUrlProperties" class="max-w-full w-full">
                     <span class="uploaded-file-url-input flex items-center md:h-[64px] h-[48px]">
                         <Input
-                            v-model="file.size"
+                            v-model="urlSize"
                             class="ld-tinted-background ld-primary-border sm:text-[14px] text-[12px]
                                 md:h-[48px] h-[40px] w-full"
                             id="post-version-file-name"
                             :max-length="8"
                             :min-length="3"
                             placeholder="Вес Файла"
+                            @change="updateUrlFileSize"
                         />
-                    </span>
-                    <div class="sm:text-[12px] text-[10px] max-w-full overflow-hidden">
-                        <span class="truncate opacity-80">
-                            Пример: 15 / 7,5 / 128 / 65,8 / 33,68
-                        </span>
-                    </div>
-                    <div class="flex sm:flex-row flex-col gap-2 mb-2" style="z-index: 1">
                         <Select
                             button-classes="ld-primary-background ld-primary-border ld-title-font w-full
                                 whitespace-nowrap text-[14px]"
                             options-classes="ld-primary-background ld-primary-border top-[50px]"
                             option-classes="text-[14px] md:min-h-[48px] min-h-[40px] gap-4 sm:pl-6 pl-2"
-                            class="post-edition flex items-center w-full"
-                            placeholder="Единица измерения"
+                            class="post-edition flex items-center w-[200px]"
                             v-model="fileSizeUnit"
                             :editable="editable"
                             input-id="edition"
                             :options="fileSizeUnits"
-                            option-label-key="label"
-                            option-value-key="value"
+                            @change="updateUrlFileSize"
                         >
                             <template #option-icon/>
                         </Select>
+                    </span>
+                    <div class="flex sm:flex-row flex-col gap-2 mb-2" style="z-index: 1">
+
                         <Select
                             button-classes="ld-primary-background ld-primary-border ld-title-font w-full
                                 whitespace-nowrap text-[14px]"
@@ -211,12 +234,12 @@ FileSizeUnit
                             option-classes="text-[14px] md:min-h-[48px] min-h-[40px] gap-4 sm:pl-6 pl-2"
                             class="post-edition flex items-center w-full"
                             placeholder="Расширение Файла"
-                            v-model="fileMaterialFormat"
+                            v-model="file.extension"
                             :editable="editable"
                             input-id="edition"
-                            :options="fileMaterialFormats"
-                            option-label-key="label"
+                            :options="urlFileExtensions"
                             option-icon-key="icon"
+                            option-label-key="value"
                             option-value-key="value"
                         >
                             <template #option-icon/>
@@ -229,15 +252,15 @@ FileSizeUnit
                 <button
                     v-if="editable && !file.path && isEditingLink"
                     class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px]"
-                    v-tooltip.top="'Размер Файла'"
-                    @click="isLinkFileSize = !isLinkFileSize"
+                    v-tooltip.top="'Дополнительно'"
+                    @click="isExtendedUrlProperties = !isExtendedUrlProperties"
                 >
-                    <span class="icon flex" :class="{ 'icon-eye': isLinkFileSize, 'icon-eye-cross': !isLinkFileSize }"/>
+                    <span class="icon flex" :class="{ 'icon-eye': isExtendedUrlProperties, 'icon-eye-cross': !isExtendedUrlProperties }"/>
                 </button>
                 <button
                     v-if="editable && (isEditingFile || isEditingLink)"
                     class="button-edit flex justify-center items-center md:h-[64px] h-[48px] sm:min-w-[48px] min-w-[32px] pr-3"
-                    v-tooltip.top="'Сохранить'"
+                    v-tooltip.top="'Готово'"
                     @click="save"
                 >
                     <span class="icon-tick icon flex"/>
@@ -277,9 +300,11 @@ FileSizeUnit
     margin-top: 8px;
     height: 2rem;
 }
+
 .tooltip::after {
     top: 8px;
 }
+
 .loaded-file-bar {
     transform: translateY(-100%);
 }
@@ -287,16 +312,6 @@ FileSizeUnit
 .loaded-file-bar.editing-file {
     transform: translateY(0);
 }
-
-/*
-.loaded-link-bar {
-    transform: translateY(0);
-}
-
-.loaded-link-bar.editing-link {
-    transform: translateY(-64px);
-}
-*/
 
 .loaded-file:hover .icon-download {
     animation: icon-trigger-up-animation .3s ease;
@@ -324,14 +339,4 @@ FileSizeUnit
         overflow: hidden;
     }
 }
-
-/* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
-
-/*
-@media screen and (max-width: 767px) {
-    .loaded-link-bar.editing-link {
-        transform: translateY(-48px);
-    }
-}
-*/
 </style>

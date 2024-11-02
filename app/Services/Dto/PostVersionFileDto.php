@@ -10,6 +10,7 @@ class PostVersionFileDto
         public readonly ?string $path,
         public readonly ?string $url,
         public readonly ?int    $size,
+        public readonly ?string $extension,
     )
     {
     }

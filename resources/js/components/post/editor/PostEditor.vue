@@ -57,7 +57,7 @@ const preferenceManager = usePreferenceManager()
 const postCategoryStore = usePostCategoryStore()
 const toastStore = useToastStore()
 const postVersion = defineModel<PostVersion>({default: {}})
-const gameEdition = ref<GameEdition|null>(
+const gameEdition = ref<GameEdition | null>(
     postVersion.value.category
         ? postVersion.value.category.edition!
         : preferenceManager.getEdition()
@@ -155,12 +155,12 @@ function addFileUrl() {
         isCurrentFileUrlError.value = true
         return
     }
-    const checkUrl = new RegExp(/^(ftp|http|https):\/\/[^ "]+$/);
+    const checkUrl = new RegExp(/^(ftp|http|https):\/\/[^ "]+$/)
     if (!checkUrl.test(currentFileUrl.value)) {
         toastStore.error('Указанный текст не является ссылкой!')
         return
     }
-    if (postVersion.value.files?.find((file) => file.url === currentFileUrl.value)) {
+    if (postVersion.value.files!.find((file) => file.url === currentFileUrl.value)) {
         toastStore.error('Такая Ссылка уже прикреплена!')
         return
     }
@@ -183,8 +183,14 @@ function uploadFile(file: File) {
     axios.post('/api/upload-post-file', formData).then((response) => {
         if (response.data.success) {
             toastStore.success('Файл успешно загружен!')
-            let files = postVersion.value.files ?? []
-            files.push({name: file.name, path: response.data.file_path, size: file.size})
+            const files = postVersion.value.files ?? []
+            const filePath = response.data.file_path
+            files.push({
+                name: file.name,
+                path: filePath,
+                size: file.size,
+                extension: filePath.slice(filePath.lastIndexOf('.') + 1)
+            })
             postVersion.value.files = files
         } else {
             if (response.data.errors) {
@@ -230,7 +236,8 @@ function uploadFile(file: File) {
                 </div>
 
                 <div class="origin-info flex justify-between w-full xs:px-4 px-2">
-                    <RouterLink class="author-wrap flex items-center w-fit gap-2 ml-[-2px] pb-2 pt-2" :to="{name: 'home'}">
+                    <RouterLink class="author-wrap flex items-center w-fit gap-2 ml-[-2px] pb-2 pt-2"
+                                :to="{name: 'home'}">
                         <UserAvatar
                             border-class-list="h-10 w-10"
                             icon-class-list="h-7 w-7"
@@ -324,7 +331,7 @@ function uploadFile(file: File) {
                     option-icon-key="icon"
                     option-value-key="id"
                     placeholder="Выберите Категорию"
-                    @change="postVersion.category = postCategoryStore.getById(postVersion.category_id)"
+                    @change="postVersion.category = postCategoryStore.getById(postVersion.category_id!)"
                 >
                     <template #option-icon/>
                 </Select>
@@ -351,7 +358,7 @@ function uploadFile(file: File) {
 
                 <div v-if="!postVersion.category?.is_article" class="flex flex-col w-full gap-3 mb-4 xs:px-4 px-2">
                     <h4 class="ld-secondary-text flex xs:flex-row flex-col justify-center text-center xs:gap-2 mt-0">
-                        <span>Прикреплённые Материалы</span>
+                        <span>Файлы на скачивание</span>
                         <span>{{ ' [ ' + files.length + ' / 3 ]' }}</span>
                     </h4>
                     <UploadedPostVersionFile
@@ -364,21 +371,22 @@ function uploadFile(file: File) {
                     />
                 </div>
 
-                <div v-if="!postVersion.category?.is_article && editable && files.length < 3" class="ld-secondary-text w-full mt-2 xs:px-4 px-2">
+                <div v-if="!postVersion.category?.is_article && editable && files.length < 3"
+                     class="ld-secondary-text w-full mt-2 xs:px-4 px-2">
                     <UploadFile
                         v-model="postVersion.files"
                         class="upload-post-preview flex mb-5 mt-2.5"
                         :editable="editable"
                         icon="icon-download"
                         id="upload-post-file"
-                        title="Загрузить Файл Материала"
+                        title="Загрузить Файл"
                         @upload="uploadFile"
                         :max-size-in-megabytes="20"
                     />
                     <p class="flex justify-center w-full mb-2">или</p>
                     <em class="upload-file-heading flex justify-center gap-2">
                         <span class="icon-link-square icon"/>
-                        <span class="head-font ld-secondary-text text-center md:text-[16px] text-[14px] duration-200">Указать Ссылку Материала</span>
+                        <span class="head-font ld-secondary-text text-center md:text-[16px] text-[14px] duration-200">Указать ссылку</span>
                     </em>
                     <div class="flex flex-col gap-4 mt-4">
                         <Input
@@ -390,7 +398,7 @@ function uploadFile(file: File) {
                             input-classes="ld-tinted-background"
                             :max-length="255"
                             :min-length="1"
-                            placeholder="Название Материала по Ссылке"
+                            placeholder="Название"
                         />
                         <Input
                             v-model="currentFileUrl"
@@ -451,6 +459,7 @@ function uploadFile(file: File) {
 .post-title {
     overflow-wrap: anywhere;
 }
+
 .tooltip::before {
     margin-left: -100px;
 }
@@ -463,33 +472,41 @@ function uploadFile(file: File) {
     aspect-ratio: 16/9;
     object-fit: cover;
 }
+
 .smooth-dark-background.wide {
     background-color: rgba(0, 0, 0, .2);
 }
+
 .section {
     transition: flex 0.5s ease;
 }
+
 .bright-background {
     border: 2px solid transparent;
     transition: .5s;
 }
+
 .wide .bright-background {
     background-image: url('/images/elements/base-background-code.png');
     background-color: var(--secondary-bg-color);
     border: var(--secondary-border);
 }
+
 .xl-left-post-interaction,
 .xl-right-post-interaction {
     transition: .5s;
 }
+
 .post-addition-content {
     transform: translateX(100%);
     opacity: 0;
 }
+
 .wide .post-addition-content {
     transform: translateX(0);
     opacity: 1;
 }
+
 .wide .center-interaction {
     margin-bottom: 1rem;
 }
@@ -502,31 +519,40 @@ function uploadFile(file: File) {
         width: 208px;
         top: 96px;
     }
+
     .wide .xl-right-post-interaction {
         width: 336px;
         top: 80px;
     }
+
     .xl-left-post-interaction {
         margin-top: 0;
     }
+
     .wide .xl-left-post-interaction {
         width: 80px;
     }
+
     .right-post-info-bar {
         padding-left: 3rem;
     }
+
     .wide .right-post-info-bar {
         padding: 0 1rem 1rem 1rem;
     }
+
     #comments {
         transition: .5s;
     }
+
     .wide #comments {
         margin-right: 256px;
     }
+
     .last-bright-block {
         margin-bottom: .5rem;
     }
+
     .wide .last-bright-block {
         margin-bottom: 3rem;
     }
@@ -538,6 +564,7 @@ function uploadFile(file: File) {
     .xl-right-post-interaction {
         width: 100%;
     }
+
     .right-date-info {
         width: 100%;
     }
@@ -549,11 +576,13 @@ function uploadFile(file: File) {
     .smooth-dark-background.wide {
         background-color: transparent;
     }
+
     .wide .bright-background {
         background-color: transparent;
         background-image: none;
         border: none;
     }
+
     .wide .center-interaction {
         margin-bottom: 0;
     }

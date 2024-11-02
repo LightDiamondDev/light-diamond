@@ -25,7 +25,7 @@ export const usePostCategoryStore = defineStore('postCategory', {
             return this.categories.find(category => category.slug === slug)
         },
 
-        getById(id: number) {
+        getById(id: bigint) {
             return this.categories.find(category => category.id === id)
         }
     }
