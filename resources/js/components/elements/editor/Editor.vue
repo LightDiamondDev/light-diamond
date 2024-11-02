@@ -426,10 +426,12 @@ function unsetLink() {
             :editor="editor"
         >
             <ItemButton
-                class="ld-title-font h-[64px] md:text-[1rem] text-[14px] w-full gap-2 pl-6 pr-8 whitespace-nowrap"
+                class="ld-title-font editor-plus-button justify-center md:text-[14px] text-[12px] min-h-[64px] min-w-[64px]"
+                style="background-color: transparent; border: none;"
+                label-classes="hidden"
                 @click="addNodeMenu?.toggle"
                 severity="secondary"
-                icon="icon-plus"
+                icon="icon-plus focus-highlighted-icon"
             />
             <EditorVerticalMenu ref="addNodeMenu" title="Добавить" :items="menuItems"/>
         </FloatingMenu>
@@ -470,10 +472,5 @@ function unsetLink() {
 </template>
 
 <style scoped>
-.tippy-content .item-button {
-    justify-content: center;
-    background: none;
-    min-height: 48px;
-    width: 48px;
-}
+
 </style>
