@@ -35,9 +35,9 @@ function scrollToTop() {
                 <span class="icon icon-faq"></span>
                 <span>О Проекте</span>
             </a>
-            <a class="footer-anchor flex justify-center items-center self-center mr-4" @click="scrollToTop">
-                <span class="icon icon-top-arrow"></span>
-            </a>
+            <button class="footer-anchor flex justify-center items-center self-center mr-4" @click="scrollToTop">
+                <span class="icon icon-top-arrow"/>
+            </button>
         </nav>
         <div class="ld-tinted-background darker ld-primary-border-top flex flex-col items-center w-full">
             <div class="media flex justify-between mt-4 mb-4">

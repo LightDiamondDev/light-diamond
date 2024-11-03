@@ -110,8 +110,6 @@ const materialsNavigationSections = computed(() =>
     ]
 )
 
-console.log(materialsNavigationSections.value)
-
 const navigationSections = computed<NavigationSection[]>(() => [
     {
         label: 'Материалы',

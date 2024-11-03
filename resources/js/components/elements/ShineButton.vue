@@ -36,7 +36,7 @@ const props = defineProps({
 <template>
     <Component
         class="ld-shine-button flex items-center option"
-        :class="{ 'disabled': disabled }"
+        :class="{ 'opacity-50': disabled }"
         :disabled="disabled"
         :type="buttonType"
         :is="as"
@@ -47,8 +47,8 @@ const props = defineProps({
                     <ProcessingMovingItems v-if="loading" class="loading-icon" :item="loadingItem" height="28px" width="28px"/>
                     <span
                         v-if="!loading && icon !== ''"
+                        class="icon min-w-[2rem]"
                         :class="icon"
-                        class="icon"
                     />
                     <span class="label text-center flex items-center duration-200">{{ label }}</span>
                 </span>
@@ -59,10 +59,5 @@ const props = defineProps({
 </template>
 
 <style scoped>
-.disabled {
-    opacity: .5;
-}
-.ld-shine-button .icon {
-    min-width: 32px;
-}
+
 </style>

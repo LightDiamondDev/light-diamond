@@ -2,7 +2,7 @@
 import axios, {type AxiosError} from 'axios'
 
 import {type PropType, reactive, ref, watch} from 'vue'
-import {getErrorMessageByCode, getFullDate, getRelativeDate} from '@/helpers'
+import {getErrorMessageByCode, getFullDate, getFullPresentableDate, getRelativeDate} from '@/helpers'
 import {getRandomColor, getRandomSplash} from '@/stores/splashes'
 import usePreferenceManager from '@/preference-manager'
 import {useRouter, useRoute, RouterLink} from 'vue-router'
@@ -87,6 +87,7 @@ const activeColor = getRandomColor()
 const isLoading = ref(false)
 const isFresh = ref(true)
 const isFilters = ref(false)
+const isHorizontalCards = ref(false)
 
 const loadData = reactive({
     page: 1,
@@ -160,6 +161,10 @@ function switchPopular() {
 
 function getTotalRecordsCount() {
     return totalRecordsCount.value
+}
+
+function scrollToBottom() {
+    window.scrollTo(0, 10000)
 }
 
 switchFresh()
@@ -253,16 +258,33 @@ switchFresh()
                         </template>
                     </div>
 
-                    <div class="menu-separator flex self-center"></div>
+                    <div class="menu-separator flex self-center"/>
 
-                    <button
-                        class="filters-button line flex items-center gap-3 p-3"
-                        @click="isFilters = !isFilters"
-                        type="button"
-                    >
-                        <span :class="{ 'down-arrow-up': isFilters }" class="icon icon-down-arrow"/>
-                        <span>Фильтры</span>
-                    </button>
+                    <div class="flex">
+                        <button
+                            class="filters-button line flex items-center w-full gap-3 p-3"
+                            @click="isFilters = !isFilters"
+                            type="button"
+                        >
+                            <span :class="{ 'down-arrow-up': isFilters }" class="icon icon-down-arrow"/>
+                            <span>Фильтры</span>
+                        </button>
+                        <button
+                            class="catalog-anchor flex justify-center items-center self-center"
+                            @click="scrollToBottom"
+                            type="button"
+                        >
+                            <span class="icon icon-down-arrow"/>
+                        </button>
+                        <ShineButton
+                            :icon="isHorizontalCards ?
+                            'icon-display-detail max-h-[28px] max-w-[28px] min-w-[28px]' :
+                            'icon-display-grid max-h-[28px] max-w-[28px] min-w-[28px]'"
+                            class-preset="p-1"
+                            class="m-2.5"
+                            @click="isHorizontalCards = !isHorizontalCards"
+                        />
+                    </div>
 
                     <div v-if="isFilters" class="filters gap-3 p-3">
                         <p>Фильтры всякие там да</p>
@@ -278,62 +300,98 @@ switchFresh()
             </form>
 
             <div v-if="isLoading" class="w-full">
-                <div class="ld-primary-background ld-primary-border h-[48px] w-full mt-2"/>
                 <div class="posts flex flex-wrap w-full gap-2">
+
                     <div
                         v-for="i in 6"
-                        class="ld-primary-background ld-primary-border flex flex-col
-                            xl:max-w-[421px] lg:max-w-[32.8%] sm:max-w-[49.3%] max-w-full"
+                        class="post-card ld-primary-background flex"
+                        :class="{
+                            'flex-col xl:max-w-[421px] lg:max-w-[32.8%] sm:max-w-[49.3%] max-w-full': !isHorizontalCards,
+                            'horizontal md:flex-row flex-col': isHorizontalCards
+                        }"
                         style="flex: 1 0"
                     >
-                        <div class="skeleton transfusion flex aspect-video"/>
-                        <div class="flex flex-col flex-grow justify-between w-full">
-                            <div class="flex flex-col">
-                                <div class="ld-primary-border-top transfusion h-[40px]"/>
-                                <div class="ld-tinted-background flex flex-col gap-2 p-2">
-                                    <div class="skeleton transfusion h-2 w-full"/>
-                                    <div class="skeleton transfusion h-2 w-[80%]"/>
-                                    <div class="skeleton transfusion h-2 w-[60%]"/>
-                                </div>
-                            </div>
-                            <div class="flex flex-col">
-                                <div class="flex flex-wrap justify-between items-center px-2">
-                                    <div class="skeleton transfusion flex h-2 w-[30%]"/>
-                                    <div class="skeleton transfusion flex h-[24px] w-[64px]"/>
-                                </div>
-                                <div class="flex justify-between px-2 py-4">
-                                    <div class="flex items-center gap-2">
-                                        <div class="skeleton transfusion h-8 min-w-8"/>
-                                        <div class="skeleton transfusion flex h-2 w-[6rem]"/>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <div class="skeleton transfusion flex h-2 w-[6rem]"/>
+                        <div class="flex flex-grow" :class="{ 'flex-col': !isHorizontalCards, 'xs:flex-row flex-col': isHorizontalCards }">
+                            <div
+                                class="skeleton transfusion transfusion flex w-full full-locked duration-200"
+                                :class="{ 'max-h-[234px] max-w-[366px]': isHorizontalCards }"
+                                style="aspect-ratio: 16/9; object-fit: cover"
+                            />
+                            <div class="description-wrap flex flex-col flex-grow justify-between text-[12px] w-full">
+                                <div class="flex flex-col">
+                                    <div class="post-title-wrap transfusion h-[2rem]"/>
+                                    <div
+                                        class="description ld-tinted-background flex flex-col gap-2 p-2"
+                                        :class="{ 'md:flex hidden': isHorizontalCards }"
+                                    >
+                                        <div class="skeleton transfusion flex h-3 w-full"/>
+                                        <div class="skeleton transfusion flex h-3 w-[80%]"/>
+                                        <div class="skeleton transfusion flex h-3 w-[60%]"/>
                                     </div>
                                 </div>
-                                <div class="menu-separator flex self-center w-[95%]"/>
-                                <div
-                                    class="actions ld-primary-background-container flex gap-2 p-2 overflow-x-auto overflow-y-hidden"
-                                    style="scrollbar-width: thin"
-                                >
-                                    <div v-for="i in 5" class="flex items-center gap-2">
-                                        <div class="skeleton transfusion h-8 min-w-8"/>
-                                        <div class="skeleton transfusion flex h-4 w-[2rem]"/>
+                                <div class="flex flex-col">
+                                    <div
+                                        class="flex"
+                                        :class="{
+                                            'flex-wrap flex-row-reverse lg:justify-between justify-end items-center': isHorizontalCards,
+                                            'flex-col': !isHorizontalCards
+                                        }"
+                                    >
+                                        <div
+                                            class="material-info flex flex-wrap justify-between px-2"
+                                            :class="{ 'sm:flex hidden w-full gap-8': isHorizontalCards }"
+                                        >
+                                            <div class="flex gap-3">
+                                                <div class="skeleton transfusion flex h-[24px] w-[10rem]"/>
+                                            </div>
+                                            <div class="skeleton transfusion flex h-[24px] w-[64px]"/>
+                                        </div>
+                                        <div
+                                            class="author-info flex justify-between p-2"
+                                            :class="{ 'sm:flex-row xs:flex-col flex-row w-full sm:gap-8 gap-2': isHorizontalCards }"
+                                        >
+                                            <div class="flex flex-wrap items-center gap-1">
+                                                <div class="skeleton transfusion h-8 min-w-8"/>
+                                                <div class="skeleton transfusion flex h-4 w-[6rem]"/>
+                                            </div>
+                                            <div
+                                                class="flex items-center text-end opacity-80 cursor-pointer ml-1"
+                                            >
+                                                <div class="skeleton transfusion flex h-4 w-[6rem]"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="menu-separator flex self-center w-[95%]" :class="{ 'md:flex hidden w-[98%]': isHorizontalCards }"/>
+                                    <div
+                                        class="actions ld-primary-background-container flex gap-2 p-2 overflow-x-auto overflow-y-hidden"
+                                        :class="{ 'md:flex hidden': isHorizontalCards }"
+                                        style="scrollbar-width: thin"
+                                    >
+                                        <div v-for="i in 5" class="flex items-center gap-2">
+                                            <div class="skeleton transfusion h-8 min-w-8"/>
+                                            <div class="skeleton transfusion flex h-4 w-[2rem]"/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <div
+                            v-if="isHorizontalCards"
+                            class="actions ld-primary-background ld-primary-background-container ld-tinted-background ld-primary-border-bottom
+                                ld-primary-border-right ld-primary-border-left gap-2 p-2 overflow-x-auto overflow-y-hidden md:hidden flex"
+                            style="scrollbar-width: thin"
+                        >
+                            <div v-for="i in 5" class="flex items-center gap-2">
+                                <div class="skeleton transfusion h-8 min-w-8"/>
+                                <div class="skeleton transfusion flex h-4 w-[2rem]"/>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
                 <div class="ld-primary-background ld-primary-border h-[48px] w-full mb-2"/>
             </div>
             <template v-else>
-                <Paginator
-                    class="ld-primary-background ld-primary-border h-[48px] w-full mt-2"
-                    :class="{'hidden': posts.length === 0}"
-                    :records-at-page="loadData.per_page"
-                    :totalRecords="totalRecordsCount"
-                    @page="onPageChange"
-                />
                 <div v-if="posts.length === 0" class="unavailable-post flex justify-center items-center w-full">
                     <div class="unavailable-post-container flex flex-col items-center p-8">
                         <h1 class="ld-title-font text-center sm:text-[2rem] text-[1.2rem]">Материалы не найдены</h1>
@@ -352,6 +410,7 @@ switchFresh()
                     <PostCard
                         v-for="post in posts"
                         class="xl:max-w-[421px] lg:max-w-[32.8%] sm:max-w-[49.3%] max-w-full"
+                        :is-horizontal-direction="isHorizontalCards"
                         :post="post"
                     />
                 </div>
@@ -389,6 +448,9 @@ switchFresh()
     width: 10px;
     bottom: 0;
     right: 5%;
+}
+.horizontal {
+    min-width: 100%;
 }
 .splash {
     animation: splash-animation 1s infinite;
@@ -447,24 +509,20 @@ section.catalog {
     transform: rotate(-180deg);
 }
 
-/* =============== [ Анимации ] =============== */
-
-.smooth-settings-switch-enter-active,
-.smooth-auth-switch-leave-active {
-    transition: .8s ease;
-    position: absolute;
+.catalog-anchor .icon-down-arrow {
+    animation: catalog-anchor-icon-animation 1s infinite;
 }
 
-.smooth-settings-switch-enter-from {
-    transform: translateY(100%);
-    transition: .8s;
-    opacity: 0;
-}
-
-.smooth-settings-switch-leave-to {
-    transform: translateY(-100%);
-    transition: .8s;
-    opacity: 0;
+@keyframes catalog-anchor-icon-animation {
+    0% {
+        margin-top: -10px;
+    }
+    50% {
+        margin-top: 10px;
+    }
+    100% {
+        margin-top: -10px;
+    }
 }
 
 /* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
