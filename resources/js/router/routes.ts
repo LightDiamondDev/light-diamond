@@ -1,25 +1,35 @@
+import usePreferenceManager from '@/preference-manager'
+
 import type {RouteRecordRaw} from 'vue-router'
 import type {Component} from 'vue'
 import {GameEdition} from '@/types'
 
 import Home from '@/components/Home.vue'
 import Catalog from '@/components/catalog/Catalog.vue'
+
 import CreatePost from '@/components/post/editor/CreatePost.vue'
+
 import Dashboard from '@/components/dashboard/Dashboard.vue'
 import DashboardCategoriesSection from '@/components/dashboard/DashboardCategoriesSection.vue'
 import DashboardPostSubmissionsSection from '@/components/dashboard/DashboardPostSubmissionsSection.vue'
 import DashboardUsersSection from '@/components/dashboard/DashboardUsersSection.vue'
+
 import PostCategory from '@/components/post/PostCategory.vue'
 import PostVersion from '@/components/post/editor/PostVersion.vue'
 import Post from '@/components/post/Post.vue'
+
 import ProfileSettings from '@/components/settings/ProfileSettings.vue'
-import ResetForm from '@/components/auth/ResetForm.vue'
 import SecuritySettings from '@/components/settings/SecuritySettings.vue'
 import Settings from '@/components/settings/Settings.vue'
+
 import StudioMaterials from '@/components/studio/StudioMaterials.vue'
 import StudioRequests from '@/components/studio/StudioRequests.vue'
 import Studio from '@/components/studio/Studio.vue'
+
 import NotFound from '@/components/NotFound.vue'
+
+import ResetForm from '@/components/auth/ResetForm.vue'
+
 import VerifyEmail from '@/components/auth/VerifyEmail.vue'
 
 declare module 'vue-router' {
@@ -42,13 +52,23 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
+        path: '/catalog',
+        name: 'catalog',
+        component: Catalog,
+        redirect: {name: usePreferenceManager().getEdition() === GameEdition.BEDROCK ? 'catalog.bedrock' : 'catalog.java'},
+        meta:
+        {
+            title: 'Каталог'
+        }
+    },
+    {
         path: '/bedrock',
         name: 'catalog.bedrock',
         component: Catalog,
         props: { edition: GameEdition.BEDROCK },
         meta: {
             title: 'Каталог Bedrock',
-        },
+        }
     },
     {
         path: '/bedrock/:category',
@@ -56,7 +76,7 @@ const routes: RouteRecordRaw[] = [
         props: ({params}) => ({edition: GameEdition.BEDROCK, categorySlug: params.category as string}),
         meta: {
             title: 'Категория Bedrock',
-        },
+        }
     },
     {
         path: '/java',
@@ -70,7 +90,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/java/:category',
         component: Catalog,
-        props: ({params}) => ({edition: GameEdition.BEDROCK, categorySlug: params.category as string}),
+        props: ({params}) => ({edition: GameEdition.JAVA, categorySlug: params.category as string}),
         meta:
         {
             title: 'Категория Java',

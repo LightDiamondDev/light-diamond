@@ -89,108 +89,61 @@ const userMenuItems = computed<MenuItem[]>(() => [
     },
 ])
 
+const materialsNavigationSections = computed(() =>
+    [
+        { label: 'Каталог', icon: 'icon-book', route: { path: '/catalog' } },
+        ...categoryStore.categories.filter
+        (
+            (category) => category.edition === preferenceManager.getEdition() || category.edition === null
+        ).map
+        (
+            (category) =>
+            (
+                {
+                    label: category.name,
+                    icon: 'icon-diamond',
+                    route: { path: '/' + preferenceManager.getEdition().toLowerCase() + '/' + category.slug }
+                }
+            )
+        ),
+        { label: 'Аддон LD', icon: 'icon-apple', route: { path: '/catalog' } }
+    ]
+)
+
+console.log(materialsNavigationSections.value)
+
 const navigationSections = computed<NavigationSection[]>(() => [
     {
         label: 'Материалы',
-        children: [
-            {
-                label: 'Каталог',
-                icon: 'icon-book',
-                route: {name: `catalog.${preferenceManager.getEdition().toLowerCase()}`},
-            },
-            {
-                label: 'Новости',
-                icon: 'icon-news',
-            },
-            {
-                label: 'Ресурс-Паки',
-                icon: 'icon-axolotl-bucket',
-            },
-            {
-                label: 'Аддоны',
-                icon: 'icon-spawn-egg',
-            },
-            {
-                label: 'Карты',
-                icon: 'icon-map',
-            },
-            {
-                label: 'Скины',
-                icon: 'icon-skin',
-            },
-            {
-                label: 'Статьи',
-                icon: 'icon-script',
-            },
-            {
-                label: 'Аддон LD',
-                icon: 'icon-apple',
-            }
-        ]
+        children: materialsNavigationSections.value
     },
     {
         label: 'Полезное',
-        children: [
-            {
-                label: 'Бестиарий Light Diamond',
-                icon: 'icon-bestiary',
-            },
-            {
-                label: 'Документация Light Diamond',
-                icon: 'icon-documentary',
-            },
-            {
-                label: 'Документация Microsoft',
-                icon: 'icon-microsoft-small',
-                url: 'https://learn.microsoft.com/en-us/minecraft/creator/reference/content/entityreference/examples/componentlist',
-            },
-            {
-                label: 'Документация Bedrock.Dev',
-                icon: 'icon-bedrock-dev-small',
-                url: 'https://bedrock.dev',
-            },
-            {
-                label: 'Материалы Minecraft',
-                icon: 'icon-minecraft-materials',
-                url: 'https://github.com/Mojang/bedrock-samples/releases',
-            }
+        children:
+        [
+            { label: 'Бестиарий Light Diamond', icon: 'icon-bestiary' },
+            { label: 'Документация Light Diamond', icon: 'icon-documentary' },
+            { label: 'Документация Microsoft', icon: 'icon-microsoft-small', url: 'https://learn.microsoft.com/en-us/minecraft/creator/reference/content/entityreference/examples/componentlist' },
+            { label: 'Документация Bedrock.Dev', icon: 'icon-bedrock-dev-small', url: 'https://bedrock.dev' },
+            { label: 'Материалы Minecraft', icon: 'icon-minecraft-materials', url: 'https://github.com/Mojang/bedrock-samples/releases' }
         ]
     },
     {
         label: 'Медиа',
-        children: [
-            {
-                label: 'ВКонтакте',
-                icon: 'icon-vk',
-                url: 'https://vk.com/light.diamond',
-            },
-            {
-                label: 'Телеграм',
-                icon: 'icon-telegram',
-                url: 'https://t.me/light_diamond_channel',
-            },
-            {
-                label: 'YouTube',
-                icon: 'icon-youtube',
-                url: 'https://www.youtube.com/@grostlight3303',
-            }
+        children:
+        [
+            { label: 'ВКонтакте', icon: 'icon-vk', url: 'https://vk.com/light.diamond' },
+            { label: 'Телеграм', icon: 'icon-telegram', url: 'https://t.me/light_diamond_channel' },
+            { label: 'YouTube', icon: 'icon-youtube', url: 'https://www.youtube.com/@grostlight3303' }
         ]
     },
     {
         label: 'Помощь',
-        children: [
-            {
-                label: 'Правила Пользования',
-                icon: 'icon-hand',
-            },
-            {
-                label: 'Политика Конфиденциальности',
-                icon: 'icon-script',
-            },
-            {
-                label: 'О Проекте',
-                icon: 'icon-faq',
-            }
+        children:
+        [
+            { label: 'Правила Пользования', icon: 'icon-hand' },
+            { label: 'Политика Конфиденциальности', icon: 'icon-script' },
+            { label: 'О Проекте', icon: 'icon-faq' }
         ]
     },
 ])
