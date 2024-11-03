@@ -150,10 +150,15 @@
         color: var(--brilliant-color);
     }
 
-    .ld-default-link {
+    .ld-brilliant-link {
         color: var(--brilliant-color);
     }
 
+    .ld-default-link {
+        color: var(--primary-text-color);
+    }
+
+    .ld-brilliant-link:hover,
     .ld-default-link:hover {
         color: var(--hover-text-color);
     }
@@ -655,6 +660,13 @@
         border-left: 2px solid rgba(255, 255, 255, .3);
         border-top: 2px solid rgba(255, 255, 255, .3);
         border-bottom: none;
+    }
+
+    .post-card.horizontal .preview-wrap {
+        border-bottom: 2px solid rgba(255, 255, 255, .3);
+        border-left: 2px solid rgba(255, 255, 255, .3);
+        border-top: 2px solid rgba(255, 255, 255, .3);
+        border-right: none;
     }
 
     .post-card .author-avatar-frame,
@@ -1315,6 +1327,10 @@
         background-image: url('/images/icons/diamond-gear.png');
     }
 
+    .icon-display-grid {
+        background-image: url('/images/icons/diamond-display-grid.png');
+    }
+
     .icon-hand {
         background-image: url('/images/icons/diamond-hand.png');
     }
@@ -1701,6 +1717,17 @@
 
         img {
             max-height: 220px;
+        }
+    }
+
+    /* =============== [ Медиа-Запрос { ?px < 425px } ] =============== */
+
+    @media screen and (max-width: 424px) {
+        .post-card.horizontal .preview-wrap {
+            border-right: 2px solid rgba(255, 255, 255, .3);
+            border-left: 2px solid rgba(255, 255, 255, .3);
+            border-top: 2px solid rgba(255, 255, 255, .3);
+            border-bottom: none;
         }
     }
 }
