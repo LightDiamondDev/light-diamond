@@ -3,6 +3,10 @@
 
     const props = defineProps({
         actionButtonClasses: String,
+        as: {
+            type: String,
+            default: 'button'
+        },
         buttonType: {
             type: String,
             validator: (val) => [ 'button', 'submit', 'reset' ].includes(val),
@@ -31,11 +35,12 @@
 </script>
 
 <template>
-    <button
+    <Component
         class="ld-press-button button-container flex justify-center items-center"
         :class="{ 'disabled': disabled }"
         :disabled="disabled"
         :type="buttonType"
+        :is="as"
     >
         <span class="action-button ld-shadow-text flex flex-col" :class="actionButtonClasses">
             <span class="press flex justify-center items-center" :class="pressClasses">
@@ -49,7 +54,7 @@
             </span>
             <span class="base"></span>
         </span>
-    </button>
+    </Component>
 </template>
 
 <style scoped>
