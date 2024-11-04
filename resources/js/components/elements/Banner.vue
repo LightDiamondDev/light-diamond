@@ -8,7 +8,7 @@ const props = defineProps({
     },
     timeInterval: {
         type: Number,
-        default: 5000
+        default: 15000
     }
 })
 
@@ -21,7 +21,7 @@ const isBannerAnimation = ref(true)
 function launchBannerSwitchSlidesAnimation() {
     if (bannerImagesSrc.value.length > 1) {
         setInterval(function () {
-            if (currentBannerImageSrc.value < bannerImagesSrc.value.length - 1) {
+            if (currentBannerImageSrc.value < bannerImagesSrc.value.length - 2) {
                 currentBannerImageSrc.value++
             } else {
                 currentBannerImageSrc.value = 0
@@ -36,17 +36,17 @@ launchBannerSwitchSlidesAnimation()
 <template>
     <div class="banner flex justify-center max-w-[100vw] w-full overflow-hidden">
         <div
-            class="banner-slide bg-fixed flex h-full w-full duration-500"
+            class="banner-slide bg-fixed flex h-full w-full duration-1000"
             :style="{ 'background-image': `url(${bannerImagesSrc[currentBannerImageSrc]})` }"
         >
             <div class="banner-effects flex justify-center leaves h-full w-full relative" :class="{ 'effects-off': !isBannerAnimation }">
 
-                <div class="banner-content flex justify-center max-w-[1280px] w-full">
+                <div class="banner-content flex justify-center w-full">
                     <slot name="banner-content"/>
                 </div>
 
                 <div class="flex justify-end w-full absolute">
-                    <button class="flex max-h-[52px] opacity-50 duration-500" @click="isBannerAnimation = !isBannerAnimation">
+                    <button class="flex max-h-[52px] opacity-50 duration-100000" @click="isBannerAnimation = !isBannerAnimation">
                         <span
                             class="icon flex m-2"
                             :class="{ 'icon-eye': isBannerAnimation, 'icon-eye-cross': !isBannerAnimation }"
@@ -77,11 +77,12 @@ launchBannerSwitchSlidesAnimation()
 .particle {
     pointer-events: none;
     position: absolute;
+    transition: .5s;
     height: 32px;
     width: 32px;
 }
 .effects-off .particle {
-    display: none;
+    opacity: 0;
 }
 
 .leaves .n1 { animation: falling-leave-animation1 5s infinite linear; }
@@ -171,7 +172,7 @@ launchBannerSwitchSlidesAnimation()
 
 @media screen and (min-width: 1920px) {
     .banner-slide {
-        background-size: contain;
+        background-size: cover;
     }
 }
 
