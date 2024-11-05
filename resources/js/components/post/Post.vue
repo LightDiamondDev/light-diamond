@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
 
-import {computed, nextTick, onMounted, onUnmounted, onUpdated, reactive, ref, watch} from 'vue'
+import {computed, nextTick, onMounted, onUnmounted, onUpdated, reactive, ref} from 'vue'
 
 import {useAuthStore} from '@/stores/auth'
 import {useGlobalModalStore} from '@/stores/global-modal'
@@ -66,10 +66,6 @@ onMounted(() => {
 
 onUnmounted(() => {
     commentsBlockObserver.disconnect()
-})
-
-watch(route, () => {
-    loadPost()
 })
 
 function updateTitle() {

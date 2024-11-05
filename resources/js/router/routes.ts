@@ -39,6 +39,7 @@ declare module 'vue-router' {
         requiresModerator?: boolean
         requiresAdmin?: boolean
         defaultComponent?: Component
+        watchParam?: string
     }
 }
 
@@ -188,7 +189,8 @@ const routes: RouteRecordRaw[] = [
         meta:
         {
             title: 'Заявка на публикацию',
-            requiresAuth: true
+            requiresAuth: true,
+            watchParam: 'id',
         }
     },
     {
@@ -197,7 +199,8 @@ const routes: RouteRecordRaw[] = [
         props: true,
         component: Post,
         meta: {
-            title: 'Каталог Java',
+            title: 'Материал',
+            watchParam: 'slug',
         }
     },
     {

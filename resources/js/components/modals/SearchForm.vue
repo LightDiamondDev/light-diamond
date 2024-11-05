@@ -17,21 +17,10 @@ const posts = ref<Post[]>([])
 const toastStore = useToastStore()
 const route = useRoute()
 
-const searchingTerm = computed(() => route.query.term)
-const searchingModel = defineModel<string>({default: ''})
+const searchTerm = ref('')
 
 const isTryingSearchTimeout = ref()
 const isLoaded = ref(false)
-
-function updateTitle() {
-    changeTitle(`Поиск «${searchingTerm.value as string | undefined ?? ''}»`)
-}
-
-watch(route, () => {
-    updateTitle()
-})
-
-updateTitle()
 
 enum PostSortType {
     LATEST = 'LATEST',
@@ -48,7 +37,7 @@ enum PostLoadPeriod {
 
 const loadData = computed(() => ({
     page: 1,
-    term: searchingModel.value,
+    term: searchTerm.value,
     per_page: 10,
     sort_type: PostSortType.POPULAR,
     period: PostLoadPeriod.ALL_TIME
@@ -67,7 +56,7 @@ function searchPosts() {
     })
 }
 
-function trySearchPosts() {
+function onInput() {
     isLoaded.value = false
     clearTimeout(isTryingSearchTimeout.value)
     isTryingSearchTimeout.value = setTimeout(() => {
@@ -87,12 +76,12 @@ function trySearchPosts() {
                         <span class="icon icon-magnifier"/>
                     </button>
                     <input
-                        v-model="searchingModel"
+                        v-model="searchTerm"
                         class="flex text-[14px] w-full p-0"
                         id="search-input"
                         placeholder="Поиск..."
                         type="text"
-                        @input="trySearchPosts"
+                        @input="onInput"
                     >
                     <button class="flex justify-center items-center min-w-[42px] h-[42px]" type="reset">
                         <span class="icon icon-cross"/>
@@ -110,7 +99,7 @@ function trySearchPosts() {
                     >
                         <p class="text-center md:text-[14px] text-[12px]">
                             <span class="opacity-80">Не удалось найти результатов по запросу «</span>
-                            <i class="ld-term-text">{{ searchingModel }}</i>
+                            <i class="ld-term-text">{{ searchTerm }}</i>
                             <span class="opacity-80">».</span>
                         </p>
                         <div class="mob phantom flex justify-center items-center
@@ -127,14 +116,14 @@ function trySearchPosts() {
                         v-else
                         class="final-results flex flex-col items-center w-full gap-3
                             px-2.5 py-3 md:max-h-[548px] max-h-[60vh] overflow-auto"
-                        :class="{ 'md:pl-[1.5rem]': searchingModel.length > 0 && posts.length > 7 }"
+                        :class="{ 'md:pl-[1.5rem]': searchTerm.length > 0 && posts.length > 7 }"
                     >
                         <SearchingPostCard
                             v-for="(post) in posts"
                             class="max-w-[768px]"
                             :key='post.id'
                             :post="post"
-                            :term="searchingModel"
+                            :term="searchTerm"
                             @click="emit('close')"
                         />
                     </div>

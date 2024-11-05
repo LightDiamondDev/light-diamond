@@ -44,7 +44,7 @@
     <div class="surface-ground ld-secondary-background ld-fixed-background flex flex-col items-center w-full">
         <Header/>
         <main class="flex flex-col items-center w-full">
-            <RouterView></RouterView>
+            <RouterView :key="route.params[route.meta.watchParam]"></RouterView>
         </main>
         <Footer/>
     </div>
