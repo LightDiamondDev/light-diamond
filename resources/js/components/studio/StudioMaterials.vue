@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
 import {useToastStore} from '@/stores/toast'
-import {getErrorMessageByCode, getFullDate, getRelativeDate} from '@/helpers'
+import {getErrorMessageByCode} from '@/helpers'
 import {reactive, ref} from 'vue'
 
 import {type Post} from '@/types'
 import Paginator, {type PageChangeEvent} from '@/components/elements/Paginator.vue'
 import PostStudioCard from '@/components/post/PostStudioCard.vue'
 
-import {RouterLink} from 'vue-router'
 import {useAuthStore} from '@/stores/auth'
-import ItemButton from '@/components/elements/ItemButton.vue'
 import ShineButton from '@/components/elements/ShineButton.vue'
 
 interface PostLoadResponseData {

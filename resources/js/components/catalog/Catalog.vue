@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
-
 import {type PropType, reactive, ref, watch} from 'vue'
+
 import {getErrorMessageByCode, getFullDate, getFullPresentableDate, getRelativeDate} from '@/helpers'
 import {getRandomColor, getRandomSplash} from '@/stores/splashes'
 import usePreferenceManager from '@/preference-manager'

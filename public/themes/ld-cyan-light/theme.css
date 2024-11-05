@@ -561,7 +561,9 @@
     }
 
     .design-settings-form div .settings-button:focus-visible,
-    .design-settings-form div .settings-button:hover {
+    .design-settings-form div .settings-button:hover,
+    .material-search-card:hover .description,
+    .material-search-card:focus-visible .description {
         background: linear-gradient(90deg, rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05));
         animation: transfusion-animation 10s linear infinite;
         background-size: 400% 100%;
@@ -644,9 +646,7 @@
     }
 
     form fieldset label,
-    .ld-input,
-    .search-form form fieldset,
-    .settings form .description p {
+    .ld-input {
         background: linear-gradient(rgba(0, 15, 15, .5), transparent);
     }
 
@@ -655,6 +655,12 @@
         border: 2px solid rgba(0, 255, 255, .3);
     }
 
+    .material-search-card .preview-wrap {
+        border-bottom: 2px solid rgba(255, 255, 255, .3);
+        border-left: 2px solid rgba(255, 255, 255, .3);
+        border-top: 2px solid rgba(255, 255, 255, .3);
+        border-right: none;
+    }
     .post-card .preview-wrap {
         border-right: 2px solid rgba(255, 255, 255, .3);
         border-left: 2px solid rgba(255, 255, 255, .3);
@@ -780,6 +786,10 @@
     .post a {
         animation: content-link-color-animation 5s infinite;
         cursor: pointer;
+    }
+
+    .ld-term-text {
+        animation: term-text-color-animation 5s infinite;
     }
 
     .post a:hover {
@@ -1605,6 +1615,14 @@
         50% { color: rgba(0, 160, 160, 1); }
         75% { color: rgba(0, 160, 130, 1); }
         100% { color: rgba(0, 85, 100, 1); }
+    }
+
+    @keyframes term-text-color-animation {
+        0% { color: rgba(0, 165, 185, 1); }
+        25% { color: rgba(0, 235, 190, 1); }
+        50% { color: rgba(0, 235, 235, 1); }
+        75% { color: rgba(0, 235, 190, 1); }
+        100% { color: rgba(0, 165, 185, 1); }
     }
 
     @keyframes post-comment-highlighted

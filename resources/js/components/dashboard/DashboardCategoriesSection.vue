@@ -9,10 +9,8 @@ import {GameEdition, type PostCategory} from '@/types'
 
 import Button from '@/components/elements/Button.vue'
 import CategoryForm from '@/components/dashboard/CategoryForm.vue'
-import Category from '@/components/catalog/Category.vue'
 import Checkbox from '@/components/elements/Checkbox.vue'
 import Dialog from '@/components/elements/Dialog.vue'
-import Paginator from '@/components/elements/Paginator.vue'
 import ShineButton from '@/components/elements/ShineButton.vue'
 
 interface ResponseData {
