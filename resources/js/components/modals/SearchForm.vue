@@ -21,7 +21,7 @@ const searchingTerm = computed(() => route.query.term)
 const searchingModel = defineModel<string>({default: ''})
 
 const isTryingSearchTimeout = ref()
-const isPrinting = ref(false)
+const isLoaded = ref(false)
 
 function updateTitle() {
     changeTitle(`Поиск «${searchingTerm.value as string | undefined ?? ''}»`)
@@ -62,14 +62,15 @@ function searchPosts() {
         }
     }).catch((error: AxiosError) => {
         toastStore.error(getErrorMessageByCode(error.response!.status))
+    }).finally(() => {
+        isLoaded.value = true
     })
 }
 
 function trySearchPosts() {
-    isPrinting.value = true
+    isLoaded.value = false
     clearTimeout(isTryingSearchTimeout.value)
     isTryingSearchTimeout.value = setTimeout(() => {
-        isPrinting.value = false
         searchPosts()
     }, 1000)
 }
@@ -100,41 +101,44 @@ function trySearchPosts() {
             </fieldset>
             <fieldset
                 class="search-results ld-tinted-background darker flex
-                    justify-center md:max-h-[548px] min-h-[64px] w-full overflow-hidden"
+                    justify-center min-h-[64px] w-full"
             >
-                <div
-                    v-if="!isPrinting && (searchingModel.length > 0 && posts.length === 0)"
-                    class="unavailable-post-container flex flex-col items-center p-8"
-                >
-                    <p class="text-center md:text-[14px] text-[12px]">
-                        <span class="opacity-80">Не удалось найти результатов по запросу «</span>
-                        <i class="ld-term-text">{{ searchingModel }}</i>
-                        <span class="opacity-80">».</span>
-                    </p>
-                    <div class="mob phantom flex justify-center items-center
-                        sm:h-[200px] h-[100px] max-w-[320] w-full full-locked"
+                <template v-if="isLoaded">
+                    <div
+                        v-if="posts.length === 0"
+                        class="unavailable-post-container flex flex-col items-center p-8"
                     >
-                        <div
-                            class="animation-flying-phantom sm:h-[160px]
+                        <p class="text-center md:text-[14px] text-[12px]">
+                            <span class="opacity-80">Не удалось найти результатов по запросу «</span>
+                            <i class="ld-term-text">{{ searchingModel }}</i>
+                            <span class="opacity-80">».</span>
+                        </p>
+                        <div class="mob phantom flex justify-center items-center
+                        sm:h-[200px] h-[100px] max-w-[320] w-full full-locked"
+                        >
+                            <div
+                                class="animation-flying-phantom sm:h-[160px]
                                 h-[80px] sm:w-[320px] w-[160px]"
-                            style="background-size: 100% 100%"
+                                style="background-size: 100% 100%"
+                            />
+                        </div>
+                    </div>
+                    <div
+                        v-else
+                        class="final-results flex flex-col items-center w-full gap-3
+                            px-2.5 py-3 md:max-h-[548px] max-h-[60vh] overflow-auto"
+                        :class="{ 'md:pl-[1.5rem]': searchingModel.length > 0 && posts.length > 7 }"
+                    >
+                        <SearchingPostCard
+                            v-for="(post) in posts"
+                            class="max-w-[768px]"
+                            :key='post.id'
+                            :post="post"
+                            :term="searchingModel"
+                            @click="emit('close')"
                         />
                     </div>
-                </div>
-                <div
-                    v-else-if="searchingModel.length > 0 && posts.length > 0"
-                    class="flex flex-col items-center w-full gap-3 px-2.5 py-3"
-                    :class="{ 'md:pl-[1.5rem]': searchingModel.length > 0 && posts.length > 7 }"
-                >
-                    <SearchingPostCard
-                        v-for="(post) in posts"
-                        class="max-w-[768px]"
-                        :key='post.id'
-                        :post="post"
-                        :term="searchingModel"
-                        @click="emit('close')"
-                    />
-                </div>
+                </template>
             </fieldset>
         </form>
     </div>
@@ -151,14 +155,11 @@ function trySearchPosts() {
 .search-dialog {
     padding-right: 0;
 }
-.search-results {
-    overflow-y: auto;
-}
 
 /* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
 
 @media screen and (max-width: 767px) {
-    .search-results {
+    .final-results {
         scrollbar-width: thin
     }
 }
