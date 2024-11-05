@@ -62,7 +62,7 @@ const searchingCardDescription = computed(() => (
                 </p>
             </div>
             <div class="flex justify-center min-w-[3rem]">
-                <span class="icon icon-right-arrow flex"/>
+                <span class="icon icon-right-arrow flex mr-[8px] duration-100"/>
             </div>
         </div>
     </RouterLink>
@@ -74,5 +74,8 @@ const searchingCardDescription = computed(() => (
 }
 .material-search-card:hover h3 {
     color: var(--hover-text-color);
+}
+.material-search-card:hover .icon-right-arrow  {
+    margin-left: 8px;
 }
 </style>

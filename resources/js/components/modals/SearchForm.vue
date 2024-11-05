@@ -10,6 +10,8 @@ import Button from '@/components/elements/Button.vue'
 import type {Post} from '@/types'
 import SearchingPostCard from '@/components/modals/SearchingPostCard.vue'
 
+const emit = defineEmits(['close'])
+
 const posts = ref<Post[]>([])
 
 const toastStore = useToastStore()
@@ -19,7 +21,7 @@ const searchingTerm = computed(() => route.query.term)
 const searchingModel = defineModel<string>({default: ''})
 
 const isTryingSearchTimeout = ref()
-const isLoading = ref(false)
+const isPrinting = ref(false)
 
 function updateTitle() {
     changeTitle(`Поиск «${searchingTerm.value as string | undefined ?? ''}»`)
@@ -53,7 +55,6 @@ const loadData = computed(() => ({
 }))
 
 function searchPosts() {
-    isLoading.value = true
     axios.get('/api/posts', {params: {...loadData.value}}).then((response) => {
         const responseData: PostLoadResponseData = response.data
         if (responseData.success) {
@@ -61,16 +62,16 @@ function searchPosts() {
         }
     }).catch((error: AxiosError) => {
         toastStore.error(getErrorMessageByCode(error.response!.status))
-    }).finally(() => {
-       isLoading.value = false
     })
 }
 
 function trySearchPosts() {
+    isPrinting.value = true
     clearTimeout(isTryingSearchTimeout.value)
     isTryingSearchTimeout.value = setTimeout(() => {
+        isPrinting.value = false
         searchPosts()
-    }, 1500)
+    }, 1000)
 }
 </script>
 
@@ -101,32 +102,8 @@ function trySearchPosts() {
                 class="search-results ld-tinted-background darker flex
                     justify-center md:max-h-[548px] min-h-[64px] w-full overflow-hidden"
             >
-                <div v-if="isLoading" class="flex flex-col items-center w-full gap-3 px-2.5 py-3">
-                    <div
-                        v-for="i in 3"
-                        class="ld-primary-background
-                            flex items-center min-h-[64px] max-w-[768px] w-full cursor-pointer"
-                    >
-                        <div
-                            class="skeleton transfusion ld-primary-border-bottom ld-primary-border-left
-                                ld-primary-border-top flex h-[64px] min-w-[112px]"
-                            style="aspect-ratio: 16/9; object-fit: cover"
-                        />
-                        <div class="description ld-primary-border flex justify-center items-center h-full min-w-[48px] w-full">
-                            <div
-                                class="flex flex-col justify-center max-h-[72px]
-                                    h-full w-full pl-2 overflow-hidden relative"
-                            >
-                                <h3 class="skeleton transfusion absolute h-2 w-[40%] top-[8px]"/>
-                                <p class="skeleton transfusion absolute h-2 w-[90%] bottom-[26px]"/>
-                                <p class="skeleton transfusion absolute h-2 w-[20%] bottom-[10px]"/>
-                            </div>
-                            <div class="skeleton transfusion min-w-[2rem] h-[2rem] mr-2"/>
-                        </div>
-                    </div>
-                </div>
                 <div
-                    v-else-if="!isLoading && (searchingModel.length > 0 && posts.length === 0)"
+                    v-if="!isPrinting && (searchingModel.length > 0 && posts.length === 0)"
                     class="unavailable-post-container flex flex-col items-center p-8"
                 >
                     <p class="text-center md:text-[14px] text-[12px]">
@@ -155,6 +132,7 @@ function trySearchPosts() {
                         :key='post.id'
                         :post="post"
                         :term="searchingModel"
+                        @click="emit('close')"
                     />
                 </div>
             </fieldset>

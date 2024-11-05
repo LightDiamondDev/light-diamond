@@ -68,6 +68,10 @@ onUnmounted(() => {
     commentsBlockObserver.disconnect()
 })
 
+watch(route, () => {
+    loadPost()
+})
+
 function updateTitle() {
     nextTick(() => {
         changeTitle(post.value!.version!.title!)

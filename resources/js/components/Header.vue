@@ -201,7 +201,7 @@ function logout() {
         position="top-center"
         title="Поиск"
     >
-        <SearchForm/>
+        <SearchForm @close="isSearchDialog = false"/>
     </Dialog>
 
     <Menu
