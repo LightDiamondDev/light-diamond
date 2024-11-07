@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Enums\PostVersionActionType;
 use App\Models\Enums\PostVersionStatus;
-use App\Models\PostCategory;
 use App\Models\PostVersion;
 use App\Models\PostVersionFile;
 use App\Models\User;
@@ -19,11 +18,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class PostVersionService
+readonly class PostVersionService
 {
     public function __construct(
-        private readonly PostVersionActionService $postVersionActionService,
-        private readonly PostService              $postService
+        private PostVersionActionService $postVersionActionService,
+        private PostService              $postService
     )
     {
     }
@@ -49,7 +48,7 @@ class PostVersionService
 
     public function submitNew(NewPostVersionDto $dto): PostVersion
     {
-        $now = Carbon::now();
+        $now         = Carbon::now();
         $postVersion = $this->createPostVersion($dto, PostVersionStatus::Pending, $now);
 
         $this->postVersionActionService->create(
@@ -105,7 +104,7 @@ class PostVersionService
 
     public function accept(PostVersion $postVersion, PostVersionUpdateDto $dto): void
     {
-        $now = Carbon::now();
+        $now       = Carbon::now();
         $isNewPost = $postVersion->post_id === null;
 
         if ($isNewPost) {
@@ -152,12 +151,12 @@ class PostVersionService
     {
         $postVersion = PostVersion::make();
         $postVersion->author()->associate($dto->author);
-        $postVersion->category()->associate($dto->category);
-        $postVersion->title = $dto->title;
-        $postVersion->cover = $this->saveCover($dto->coverFile);
+        $postVersion->category    = $dto->category;
+        $postVersion->title       = $dto->title;
+        $postVersion->cover       = $this->saveCover($dto->coverFile);
         $postVersion->description = $dto->description;
-        $postVersion->content = $dto->content;
-        $postVersion->status = $status;
+        $postVersion->content     = $dto->content;
+        $postVersion->status      = $status;
         if ($dateTime !== null) {
             $postVersion->created_at = $dateTime;
             $postVersion->updated_at = $dateTime;
@@ -173,8 +172,8 @@ class PostVersionService
 
     private function updatePostVersion(PostVersion $postVersion, PostVersionUpdateDto $dto, PostVersionStatus $status, ?Carbon $dateTime = null): void
     {
-        if ($dto->categoryId !== null && $postVersion->category_id !== $dto->categoryId) {
-            $postVersion->category()->associate(PostCategory::find($dto->categoryId));
+        if ($dto->category !== null) {
+            $postVersion->category = $dto->category;
         }
         if ($dto->title !== null) {
             $postVersion->title = $dto->title;
@@ -241,10 +240,10 @@ class PostVersionService
     {
         $file = PostVersionFile::make();
         $file->postVersion()->associate($postVersion);
-        $file->name = $fileDto->name;
-        $file->path = $fileDto->path;
-        $file->url = $fileDto->path === null ? $fileDto->url : null;
-        $file->size = $fileDto->path === null ? $fileDto->size : Storage::disk('private')->size($fileDto->path);
+        $file->name      = $fileDto->name;
+        $file->path      = $fileDto->path;
+        $file->url       = $fileDto->path === null ? $fileDto->url : null;
+        $file->size      = $fileDto->path === null ? $fileDto->size : Storage::disk('private')->size($fileDto->path);
         $file->extension = $fileDto->path === null ? $fileDto->extension : pathinfo($fileDto->path, PATHINFO_EXTENSION);
         if ($file->extension !== null) {
             $file->extension = strtolower($file->extension);

@@ -2,15 +2,15 @@
 
 namespace App\Services\Dto;
 
-class PostVersionFileDto
+readonly class PostVersionFileDto
 {
     public function __construct(
-        public readonly ?int    $id,
-        public readonly ?string $name,
-        public readonly ?string $path,
-        public readonly ?string $url,
-        public readonly ?int    $size,
-        public readonly ?string $extension,
+        public ?int    $id,
+        public ?string $name,
+        public ?string $path,
+        public ?string $url,
+        public ?int    $size,
+        public ?string $extension,
     )
     {
     }

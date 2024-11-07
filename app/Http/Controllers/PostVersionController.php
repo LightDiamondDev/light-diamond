@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Enums\PostVersionActionType;
 use App\Models\Enums\PostVersionStatus;
 use App\Models\Post;
-use App\Models\PostCategory;
 use App\Models\PostVersion;
 use App\Models\PostVersionAction;
 use App\Models\User;
+use App\Registries\CategoryRegistry;
+use App\Registries\CategoryType;
 use App\Rules\ColumnExistsRule;
 use App\Rules\PostVersionFileRule;
 use App\Services\Dto\NewPostVersionDto;
@@ -28,22 +29,25 @@ class PostVersionController extends Controller
 {
     use ApiJsonResponseTrait;
 
-    const MAX_COVER_SIZE_MB = 5;
-    const MIN_COVER_WIDTH = 768;
-    const MIN_COVER_HEIGHT = 432;
+    const int MAX_COVER_SIZE_MB = 5;
+    const int MIN_COVER_WIDTH   = 768;
+    const int MIN_COVER_HEIGHT  = 432;
 
-    const MAX_FILES_COUNT = 3;
+    const int MAX_FILES_COUNT = 3;
 
-    public function __construct(private readonly PostVersionService $postVersionService)
+    public function __construct(
+        private readonly PostVersionService $postVersionService,
+        private readonly CategoryRegistry   $categoryRegistry
+    )
     {
     }
 
     public function get(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'status' => [Rule::enum(PostVersionStatus::class)],
-            'page' => ['integer'],
-            'per_page' => ['integer'],
+            'status'     => [Rule::enum(PostVersionStatus::class)],
+            'page'       => ['integer'],
+            'per_page'   => ['integer'],
             'sort_field' => ['string', new ColumnExistsRule(PostVersion::getModel()->getTable())],
             'sort_order' => ['integer', 'min:-1', 'max:1'],
         ]);
@@ -57,7 +61,7 @@ class PostVersionController extends Controller
         $defaultSortOrder = $status == PostVersionStatus::Pending ? 1 : -1;
         $defaultSortField = 'updated_at';
 
-        $perPage = $request->integer('per_page', 10);
+        $perPage   = $request->integer('per_page', 10);
         $sortOrder = $request->integer('sort_order', $defaultSortOrder);
         if ($sortOrder === 0) {
             $sortField = $defaultSortField;
@@ -77,11 +81,11 @@ class PostVersionController extends Controller
         )->all();
 
         return $this->successJsonResponse([
-            'records' => $postVersions,
+            'records'    => $postVersions,
             'pagination' => [
                 'total_records' => $postVersionsPaginator->total(),
-                'current_page' => $postVersionsPaginator->currentPage(),
-                'total_pages' => $postVersionsPaginator->lastPage(),
+                'current_page'  => $postVersionsPaginator->currentPage(),
+                'total_pages'   => $postVersionsPaginator->lastPage(),
             ],
         ]);
     }
@@ -112,9 +116,9 @@ class PostVersionController extends Controller
             $postVersion->makeVisible('assigned_moderator_id');
             $postVersion->actions->each(function (PostVersionAction $action) {
                 if ($action->type === PostVersionActionType::AssignModerator) {
-                    $details = $action->details;
+                    $details              = $action->details;
                     $details['moderator'] = User::find($details['moderator_id']);
-                    $action->details = $details;
+                    $action->details      = $details;
                 }
             });
         } else {
@@ -132,9 +136,9 @@ class PostVersionController extends Controller
     public function getByUser(Request $request, int $userId): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'status' => [Rule::enum(PostVersionStatus::class)],
-            'page' => ['integer'],
-            'per_page' => ['integer'],
+            'status'     => [Rule::enum(PostVersionStatus::class)],
+            'page'       => ['integer'],
+            'per_page'   => ['integer'],
             'sort_field' => ['string', new ColumnExistsRule(PostVersion::getModel()->getTable())],
             'sort_order' => ['integer', 'min:-1', 'max:1'],
         ]);
@@ -159,9 +163,8 @@ class PostVersionController extends Controller
         $defaultSortOrder = -1;
         $defaultSortField = 'updated_at';
 
-
-        $status = $request->enum('status', PostVersionStatus::class) ?? PostVersionStatus::Pending;
-        $perPage = $request->integer('per_page', 10);
+        $status    = $request->enum('status', PostVersionStatus::class) ?? PostVersionStatus::Pending;
+        $perPage   = $request->integer('per_page', 10);
         $sortOrder = $request->integer('sort_order', $defaultSortOrder);
         if ($sortOrder === 0) {
             $sortField = $defaultSortField;
@@ -189,7 +192,7 @@ class PostVersionController extends Controller
         }
 
         $postVersionsPaginator = $query->paginate($perPage);
-        $postVersions = $postVersionsPaginator
+        $postVersions          = $postVersionsPaginator
             ->getCollection()
             ->each(function (PostVersion $postVersion) use ($user) {
                 if ($user->is_moderator) {
@@ -206,11 +209,11 @@ class PostVersionController extends Controller
             ->all();
 
         return $this->successJsonResponse([
-            'records' => $postVersions,
+            'records'    => $postVersions,
             'pagination' => [
                 'total_records' => $postVersionsPaginator->total(),
-                'current_page' => $postVersionsPaginator->currentPage(),
-                'total_pages' => $postVersionsPaginator->lastPage(),
+                'current_page'  => $postVersionsPaginator->currentPage(),
+                'total_pages'   => $postVersionsPaginator->lastPage(),
             ],
         ]);
     }
@@ -319,7 +322,7 @@ class PostVersionController extends Controller
         }
 
         $validator = $this->makePostVersionUpdateValidator($request->all(), $postVersion, [
-            'details' => ['required', 'array'],
+            'details'         => ['required', 'array'],
             'details.message' => ['required', 'string'],
         ]);
         if ($validator->fails()) {
@@ -365,7 +368,7 @@ class PostVersionController extends Controller
         }
 
         $validator = $this->makePostVersionUpdateValidator($request->all(), $postVersion, [
-            'details' => ['required', 'array'],
+            'details'        => ['required', 'array'],
             'details.reason' => ['required', 'string'],
         ]);
         if ($validator->fails()) {
@@ -393,7 +396,7 @@ class PostVersionController extends Controller
 
         return new NewPostVersionDto(
             Auth::user(),
-            PostCategory::find($request->integer('category_id')),
+            $request->enum('category', CategoryType::class),
             $request->string('title'),
             $request->file('cover_file'),
             $request->string('description'),
@@ -417,7 +420,7 @@ class PostVersionController extends Controller
         );
 
         return new PostVersionUpdateDto(
-            $request->integer('category_id', null),
+            $request->enum('category', CategoryType::class),
             $request->string('title'),
             $request->file('cover_file'),
             $request->string('description'),
@@ -430,14 +433,15 @@ class PostVersionController extends Controller
 
     private function makeNewPostVersionValidator(array $data, ?Post $post = null, array $additionalRules = []): ValidatorInstance
     {
-        $postCategory = PostCategory::find($data['category_id'] ?? null);
-        $maxFilesCount = $postCategory === null || $postCategory->is_article ? 0 : self::MAX_FILES_COUNT;
-        $minFilesCount = $postCategory === null || $postCategory->is_article ? 0 : 1;
+        $categoryType  = $data['category'] ? CategoryType::tryFrom($data['category']) : null;
+        $category      = $categoryType ? $this->categoryRegistry->get($categoryType) : null;
+        $maxFilesCount = $category && $category->isDownloadable() ? self::MAX_FILES_COUNT : 0;
+        $minFilesCount = $category && $category->isDownloadable() ? 1 : 0;
 
         return Validator::make($data, array_merge(
             [
-                'category_id' => ['required', 'integer', Rule::exists(PostCategory::class, 'id')],
-                'cover_file' => [
+                'category'     => ['required', 'string', Rule::enum(CategoryType::class)],
+                'cover_file'   => [
                     'required',
                     File::types(['jpeg', 'jpg', 'png']),
                     File::image()
@@ -448,15 +452,15 @@ class PostVersionController extends Controller
                                 ->minHeight(self::MIN_COVER_HEIGHT)
                         ),
                 ],
-                'title' => ['required', 'string', 'max:150'],
-                'description' => ['required', 'string', 'max:255'],
-                'content' => ['required', 'string', 'max:65535'],
-                'files' => ['required', 'array', 'max:' . $maxFilesCount, 'min:' . $minFilesCount],
+                'title'        => ['required', 'string', 'max:150'],
+                'description'  => ['required', 'string', 'max:255'],
+                'content'      => ['required', 'string', 'max:65535'],
+                'files'        => ['required', 'array', 'max:' . $maxFilesCount, 'min:' . $minFilesCount],
                 'files.*.name' => ['required', 'string', 'max:100'],
                 'files.*.path' => ['required_without:files.*.url', 'string', 'max:255'],
-                'files.*.url' => ['required_without:files.*.path', 'string', 'max:255'],
+                'files.*.url'  => ['required_without:files.*.path', 'string', 'max:255'],
                 'files.*.size' => ['integer'],
-                'files.*' => ['array', new PostVersionFileRule($post)],
+                'files.*'      => ['array', new PostVersionFileRule($post)],
             ],
             $additionalRules
         ));
@@ -464,13 +468,15 @@ class PostVersionController extends Controller
 
     private function makePostVersionUpdateValidator(array $data, PostVersion $version, array $additionalRules = []): ValidatorInstance
     {
-        $maxFilesCount = $version->category->is_article ? 0 : self::MAX_FILES_COUNT;
-        $minFilesCount = $version->category->is_article ? 0 : 1;
+        $categoryType  = $data['category'] ? CategoryType::tryFrom($data['category']) : $version->category;
+        $category      = $categoryType ? $this->categoryRegistry->get($categoryType) : null;
+        $maxFilesCount = $category && $category->isDownloadable() ? self::MAX_FILES_COUNT : 0;
+        $minFilesCount = $category && $category->isDownloadable() ? 1 : 0;
 
         return Validator::make($data, array_merge(
             [
-                'category_id' => ['integer', Rule::exists(PostCategory::class, 'id')],
-                'cover_file' => [
+                'category'     => ['required', 'string', Rule::enum(CategoryType::class)],
+                'cover_file'   => [
                     File::types(['jpeg', 'jpg', 'png']),
                     File::image()
                         ->max(self::MAX_COVER_SIZE_MB * 1024)
@@ -480,16 +486,16 @@ class PostVersionController extends Controller
                                 ->minHeight(self::MIN_COVER_HEIGHT)
                         ),
                 ],
-                'title' => ['string', 'max:150'],
-                'description' => ['string', 'max:255'],
-                'content' => ['string', 'max:65535'],
-                'files' => ['array', 'max:' . $maxFilesCount, 'min:' . $minFilesCount],
-                'files.*.id' => ['required_without_all:files.*.path,files.*.url', 'integer'],
+                'title'        => ['string', 'max:150'],
+                'description'  => ['string', 'max:255'],
+                'content'      => ['string', 'max:65535'],
+                'files'        => ['array', 'max:' . $maxFilesCount, 'min:' . $minFilesCount],
+                'files.*.id'   => ['required_without_all:files.*.path,files.*.url', 'integer'],
                 'files.*.name' => ['required_without:files.*.id', 'string', 'max:100'],
                 'files.*.path' => ['required_without_all:files.*.id,files.*.url', 'string', 'max:255'],
-                'files.*.url' => [ 'required_without_all:files.*.id,files.*.path', 'string', 'max:255'],
+                'files.*.url'  => ['required_without_all:files.*.id,files.*.path', 'string', 'max:255'],
                 'files.*.size' => ['integer'],
-                'files.*' => ['array', new PostVersionFileRule($version->post, $version)],
+                'files.*'      => ['array', new PostVersionFileRule($version->post, $version)],
             ],
             $additionalRules
         ));

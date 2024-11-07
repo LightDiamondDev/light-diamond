@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App\Models\Enums\PostVersionStatus;
+use App\Registries\CategoryType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Storage;
-
 
 /**
  * App\Models\PostVersion
@@ -17,7 +17,7 @@ use Storage;
  * @property int|null $author_id
  * @property int|null $assigned_moderator_id
  * @property int|null $post_id
- * @property int $category_id
+ * @property CategoryType $category
  * @property string $cover
  * @property string $title
  * @property string $description
@@ -29,7 +29,6 @@ use Storage;
  * @property-read int|null $actions_count
  * @property-read \App\Models\User|null $assignedModerator
  * @property-read \App\Models\User|null $author
- * @property-read \App\Models\PostCategory $category
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PostVersionFile> $files
  * @property-read int|null $files_count
  * @property-read string $cover_url
@@ -39,7 +38,7 @@ use Storage;
  * @method static \Illuminate\Database\Eloquent\Builder|PostVersion query()
  * @method static \Illuminate\Database\Eloquent\Builder|PostVersion whereAssignedModeratorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PostVersion whereAuthorId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PostVersion whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PostVersion whereCategory($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PostVersion whereContent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PostVersion whereCover($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PostVersion whereCreatedAt($value)
@@ -56,6 +55,7 @@ class PostVersion extends Model
     use HasFactory;
 
     protected $fillable = [
+        'category',
         'cover',
         'title',
         'description',
@@ -68,7 +68,8 @@ class PostVersion extends Model
     ];
 
     protected $casts = [
-        'status' => PostVersionStatus::class,
+        'category' => CategoryType::class,
+        'status'   => PostVersionStatus::class,
     ];
 
     protected $attributes = [
@@ -77,7 +78,6 @@ class PostVersion extends Model
 
     protected $with = [
         'author',
-        'category',
     ];
 
     protected $appends = [
@@ -102,11 +102,6 @@ class PostVersion extends Model
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class, 'post_id');
-    }
-
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(PostCategory::class, 'category_id');
     }
 
     public function actions(): HasMany

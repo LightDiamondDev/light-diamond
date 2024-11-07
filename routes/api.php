@@ -2,15 +2,14 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FavouritePostController;
-use App\Http\Controllers\PostCategoryController;
 use App\Http\Controllers\PostCommentController;
 use App\Http\Controllers\PostCommentLikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostLikeController;
 use App\Http\Controllers\PostVersionController;
+use App\Http\Controllers\PostVersionFileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UploadImageController;
-use App\Http\Controllers\PostVersionFileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,8 +30,6 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/logout', [AuthController::class, 'logout']);
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
-
-Route::get('/post-categories', [PostCategoryController::class, 'get']);
 
 Route::get('/posts', [PostController::class, 'get']);
 Route::get('/posts/{slug}', [PostController::class, 'getBySlug']);
@@ -88,10 +85,5 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/users/{id}', [UserController::class, 'update'])->where('id', '[0-9]+');;
         Route::delete('/users/{id}', [UserController::class, 'delete'])->where('id', '[0-9]+');;
         Route::delete('/users', [UserController::class, 'deleteMultiple']);
-
-        Route::post('/post-categories', [PostCategoryController::class, 'add']);
-        Route::put('/post-categories/{id}', [PostCategoryController::class, 'update'])->where('id', '[0-9]+');;
-        Route::delete('/post-categories/{id}', [PostCategoryController::class, 'delete'])->where('id', '[0-9]+');;
-        Route::delete('/post-categories', [PostCategoryController::class, 'deleteMultiple']);
     });
 });
