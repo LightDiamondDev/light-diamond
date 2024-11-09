@@ -3,9 +3,9 @@ import axios, {type AxiosError} from 'axios'
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
 import {getErrorMessageByCode} from '@/helpers'
-import {reactive, ref} from 'vue'
+import {ref} from 'vue'
 
-import {type PostCategory, PostVersionStatus, type User, UserRole} from '@/types'
+import {type User, UserRole} from '@/types'
 
 import Button from '@/components/elements/Button.vue'
 import Checkbox from '@/components/elements/Checkbox.vue'
@@ -79,18 +79,6 @@ function getUserRoleLabel(role: UserRole) {
     return userRoles.value.find((item) => item.value === role)?.label || ''
 }
 
-// function onChangePage(event: DataTablePageEvent) {
-//     loadRecordsData.value.page = event.page + 1
-//     loadRecords()
-// }
-//
-// function onSort(event: DataTableSortEvent) {
-//     loadRecordsData.value.sort_field = <string>event.sortField!
-//     loadRecordsData.value.sort_order = event.sortOrder!
-//     loadRecordsData.value.page = 1
-//     loadRecords()
-// }
-
 function deleteRecord(record: User) {
     axios.delete(`${apiUrl}/${record.id}`).then((response) => {
         const data: ResponseData = response.data
@@ -154,6 +142,13 @@ function onPageChange(event: PageChangeEvent) {
     }
 }
 
+// function onSort(event: DataTableSortEvent) {
+//     loadRecordsData.value.sort_field = <string>event.sortField!
+//     loadRecordsData.value.sort_order = event.sortOrder!
+//     loadRecordsData.value.page = 1
+//     loadRecords()
+// }
+
 </script>
 
 <template>
@@ -167,7 +162,9 @@ function onPageChange(event: PageChangeEvent) {
         </div>
 
         <div class="data-table flex flex-col min-h-[100vh] overflow-x-auto">
-            <div class="table-header flex text-[var(--primary-color)] lg:text-[14px] text-[12px] min-w-[720px] w-full px-2">
+            <div
+                class="table-header flex text-[var(--primary-color)] lg:text-[14px] text-[12px] min-w-[720px] w-full px-2"
+            >
                 <div class="row flex w-full">
                     <label class="row-item flex items-center h-[48px] min-w-[48px] w-[8%] pl-1" for="">
                         <Checkbox
@@ -200,13 +197,21 @@ function onPageChange(event: PageChangeEvent) {
                         class="row-item flex items-center h-[48px] w-[20%]"
                         :class="{'ld-admin-color': record.role === 'ADMIN', 'ld-moder-color': record.role === 'MODERATOR'}"
                     >
-                        {{ record.role === 'USER' ? 'Пользователь' : record.role === 'MODERATOR' ? 'Модератор' : 'Администратор' }}
+                        {{
+                            record.role === 'USER' ? 'Пользователь' : record.role === 'MODERATOR' ? 'Модератор' : 'Администратор'
+                        }}
                     </span>
                     <div v-if="authStore.isAdmin" class="row-item-item flex justify-end w-[12%]">
-                        <button class="flex justify-center items-center h-full lg:min-w-[48px] min-w-[36px] border-0" @click="onEditClick(record)">
+                        <button
+                            class="flex justify-center items-center h-full lg:min-w-[48px] min-w-[36px] border-0"
+                            @click="onEditClick(record)"
+                        >
                             <span class="icon-small-pencil icon flex" v-tooltip.top="'Редактировать'"/>
                         </button>
-                        <button class="flex justify-center items-center h-full lg:min-w-[48px] min-w-[36px] border-0" @click="onDeleteClick(record)">
+                        <button
+                            class="flex justify-center items-center h-full lg:min-w-[48px] min-w-[36px] border-0"
+                            @click="onDeleteClick(record)"
+                        >
                             <span class="icon-trash icon flex" v-tooltip.top="'Удалить'"/>
                         </button>
                     </div>
@@ -219,7 +224,6 @@ function onPageChange(event: PageChangeEvent) {
                 class="ld-primary-background ld-fixed-background ld-primary-border-top h-[48px] w-full"
                 :records-at-page="loadRecordsData.per_page"
                 :totalRecords="totalRecords"
-                v-model="loadRecordsData.page"
                 @page-change="onPageChange"
             />
         </div>

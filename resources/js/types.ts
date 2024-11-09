@@ -21,12 +21,16 @@ export enum GameEdition {
     JAVA = 'JAVA'
 }
 
-export interface PostCategory {
-    id?: bigint
-    slug?: string
-    name?: string
-    edition?: GameEdition | null
-    is_article?: boolean
+export enum CategoryType {
+    ARTICLES = 'ARTICLES',
+    SKINS = 'SKINS',
+    BEDROCK_RESOURCE_PACKS = 'BEDROCK_RESOURCE_PACKS',
+    BEDROCK_ADDONS = 'BEDROCK_ADDONS',
+    BEDROCK_MAPS = 'BEDROCK_MAPS',
+    JAVA_RESOURCE_PACKS = 'JAVA_RESOURCE_PACKS',
+    JAVA_DATA_PACKS = 'JAVA_DATA_PACKS',
+    JAVA_MODS = 'JAVA_MODS',
+    JAVA_MAPS = 'JAVA_MAPS'
 }
 
 export interface Post {
@@ -83,8 +87,7 @@ export interface PostVersion {
     author?: User | null
     assigned_moderator_id?: bigint | null
     assigned_moderator?: User | null
-    category_id?: bigint
-    category?: PostCategory
+    category?: CategoryType
     cover?: string
     cover_url?: string
     cover_file?: File

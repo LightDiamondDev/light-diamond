@@ -128,7 +128,6 @@ loadPosts()
                 class="ld-primary-background ld-fixed-background ld-primary-border-top h-[48px] w-full"
                 :records-at-page="loadRequestData.per_page"
                 :totalRecords="totalRecords"
-                v-model="loadRequestData.page"
                 @page-change="onPageChange"
             />
         </div>

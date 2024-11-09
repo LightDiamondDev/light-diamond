@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, type PropType, ref} from 'vue'
 import {GameEdition, type PostVersion, type User} from '@/types'
-import {usePostCategoryStore} from '@/stores/postCategory'
+import useCategoryRegistry from '@/categoryRegistry'
 import usePreferenceManager from '@/preference-manager'
 
 import {Blockquote} from '@tiptap/extension-blockquote'
@@ -54,18 +54,17 @@ defineProps({
 })
 
 const preferenceManager = usePreferenceManager()
-const postCategoryStore = usePostCategoryStore()
+const categoryRegistry = useCategoryRegistry()
 const toastStore = useToastStore()
 const postVersion = defineModel<PostVersion>({default: {}})
 const gameEdition = ref<GameEdition | null>(
     postVersion.value.category
-        ? postVersion.value.category.edition!
+        ? categoryRegistry.get(postVersion.value.category).edition
         : preferenceManager.getEdition()
 )
-const categories = computed(() => postCategoryStore.categories.filter(
-    (category) => category.edition === gameEdition.value || category.edition === null)
-)
+const categories = computed(() => categoryRegistry.getByEdition(gameEdition.value))
 const files = computed(() => postVersion.value.files ?? [])
+const category = computed(() => postVersion.value.category ? categoryRegistry.get(postVersion.value.category) : undefined)
 
 const gameEditions = [
     {
@@ -160,7 +159,7 @@ function addFileUrl() {
         toastStore.error('Указанный текст не является ссылкой!')
         return
     }
-    if (postVersion.value.files!.find((file) => file.url === currentFileUrl.value)) {
+    if (files.value.find((file) => file.url === currentFileUrl.value)) {
         toastStore.error('Такая Ссылка уже прикреплена!')
         return
     }
@@ -173,7 +172,7 @@ function addFileUrl() {
 }
 
 function onEditionChange() {
-    postVersion.value.category_id = undefined
+    postVersion.value.category = undefined
 }
 
 function uploadFile(file: File) {
@@ -323,15 +322,14 @@ function uploadFile(file: File) {
                     option-classes="md:min-h-[64px] min-h-[48px] gap-4 pl-6"
                     class="post-category flex items-center w-full my-4 xs:px-4 px-2"
                     :class="{'red-border': errors['category_id']}"
-                    v-model="postVersion.category_id"
+                    v-model="postVersion.category"
                     :editable="editable"
                     input-id="category"
                     :options="categories"
                     option-label-key="name"
                     option-icon-key="icon"
-                    option-value-key="id"
+                    option-value-key="type"
                     placeholder="Выберите Категорию"
-                    @change="postVersion.category = postCategoryStore.getById(postVersion.category_id!)"
                 >
                     <template #option-icon/>
                 </Select>
@@ -355,8 +353,7 @@ function uploadFile(file: File) {
 
                 <p class="error my-2">{{ errors['description']?.[0] || ' ' }}</p>
 
-
-                <div v-if="!postVersion.category?.is_article" class="flex flex-col w-full gap-3 mb-4 xs:px-4 px-2">
+                <div v-if="category?.isDownloadable" class="flex flex-col w-full gap-3 mb-4 xs:px-4 px-2">
                     <h4 class="ld-secondary-text flex xs:flex-row flex-col justify-center text-center xs:gap-2 mt-0">
                         <span>Файлы на скачивание</span>
                         <span>{{ ' [ ' + files.length + ' / 3 ]' }}</span>
@@ -371,7 +368,7 @@ function uploadFile(file: File) {
                     />
                 </div>
 
-                <div v-if="!postVersion.category?.is_article && editable && files.length < 3"
+                <div v-if="category?.isDownloadable && editable && files.length < 3"
                      class="ld-secondary-text w-full mt-2 xs:px-4 px-2">
                     <UploadFile
                         v-model="postVersion.files"

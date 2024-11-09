@@ -10,11 +10,9 @@ import Catalog from '@/components/catalog/Catalog.vue'
 import CreatePost from '@/components/post/editor/CreatePost.vue'
 
 import Dashboard from '@/components/dashboard/Dashboard.vue'
-import DashboardCategoriesSection from '@/components/dashboard/DashboardCategoriesSection.vue'
 import DashboardPostSubmissionsSection from '@/components/dashboard/DashboardPostSubmissionsSection.vue'
 import DashboardUsersSection from '@/components/dashboard/DashboardUsersSection.vue'
 
-import PostCategory from '@/components/post/PostCategory.vue'
 import PostVersion from '@/components/post/editor/PostVersion.vue'
 import Post from '@/components/post/Post.vue'
 
@@ -31,6 +29,7 @@ import NotFound from '@/components/NotFound.vue'
 import ResetForm from '@/components/auth/ResetForm.vue'
 
 import VerifyEmail from '@/components/auth/VerifyEmail.vue'
+import useCategoryRegistry from '@/categoryRegistry'
 
 declare module 'vue-router' {
     interface RouteMeta {
@@ -39,7 +38,6 @@ declare module 'vue-router' {
         requiresModerator?: boolean
         requiresAdmin?: boolean
         defaultComponent?: Component
-        watchParam?: string
     }
 }
 
@@ -55,46 +53,21 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/catalog',
         name: 'catalog',
+        redirect: () => ({name: 'catalog-of', params: {edition: usePreferenceManager().getEdition().toLowerCase()}})
+    },
+    {
+        path: '/:edition(bedrock|java)/:category?',
+        name: 'catalog-of',
         component: Catalog,
-        redirect: {name: usePreferenceManager().getEdition() === GameEdition.BEDROCK ? 'catalog.bedrock' : 'catalog.java'},
-        meta:
-        {
+        props: ({params}) => {
+            const edition = GameEdition[(params.edition as string).toUpperCase() as keyof typeof GameEdition]
+            return {
+                edition: edition,
+                category: params.category ? useCategoryRegistry().getBySlugAndEdition(params.category as string, edition) : undefined
+            }
+        },
+        meta: {
             title: 'Каталог'
-        }
-    },
-    {
-        path: '/bedrock',
-        name: 'catalog.bedrock',
-        component: Catalog,
-        props: { edition: GameEdition.BEDROCK },
-        meta: {
-            title: 'Каталог Bedrock',
-        }
-    },
-    {
-        path: '/bedrock/:category',
-        component: Catalog,
-        props: ({params}) => ({edition: GameEdition.BEDROCK, categorySlug: params.category as string}),
-        meta: {
-            title: 'Категория Bedrock',
-        }
-    },
-    {
-        path: '/java',
-        name: 'catalog.java',
-        component: Catalog,
-        props: {edition: GameEdition.JAVA},
-        meta: {
-            title: 'Каталог Java',
-        }
-    },
-    {
-        path: '/java/:category',
-        component: Catalog,
-        props: ({params}) => ({edition: GameEdition.JAVA, categorySlug: params.category as string}),
-        meta:
-        {
-            title: 'Категория Java',
         }
     },
     {
@@ -102,30 +75,17 @@ const routes: RouteRecordRaw[] = [
         name: 'dashboard',
         component: Dashboard,
         redirect: {name: 'dashboard.post-submissions'},
-        meta:
-        {
+        meta: {
             title: 'Панель Управления',
             requiresAuth: true,
             requiresModerator: true
         },
-        children:
-        [
-            {
-                path: 'categories',
-                name: 'dashboard.categories',
-                component: DashboardCategoriesSection,
-                meta:
-                {
-                    title: 'Категории — Панель Управления',
-                    requiresAdmin: true,
-                },
-            },
+        children: [
             {
                 path: 'post-submissions',
                 name: 'dashboard.post-submissions',
                 component: DashboardPostSubmissionsSection,
-                meta:
-                {
+                meta: {
                     title: 'Заявки на публикацию — Панель Управления',
                 },
             },
@@ -133,8 +93,7 @@ const routes: RouteRecordRaw[] = [
                 path: 'users',
                 name: 'dashboard.users',
                 component: DashboardUsersSection,
-                meta:
-                {
+                meta: {
                     title: 'Пользователи — Панель Управления',
                 }
             }
@@ -144,19 +103,17 @@ const routes: RouteRecordRaw[] = [
         path: '/studio',
         name: 'studio',
         component: Studio,
-        redirect: { name: 'studio.materials' },
+        redirect: {name: 'studio.materials'},
         meta: {
             title: 'Контент-Студия',
             requiresAuth: true,
         },
-        children:
-        [
+        children: [
             {
                 path: 'materials',
                 name: 'studio.materials',
                 component: StudioMaterials,
-                meta:
-                {
+                meta: {
                     title: 'Контент-Студия — Материалы',
                 }
             },
@@ -164,8 +121,7 @@ const routes: RouteRecordRaw[] = [
                 path: 'requests',
                 name: 'studio.requests',
                 component: StudioRequests,
-                meta:
-                {
+                meta: {
                     title: 'Контент-Студия — Заявки на публикацию',
                 }
             }
@@ -175,8 +131,7 @@ const routes: RouteRecordRaw[] = [
         path: '/create-post',
         name: 'create-post',
         component: CreatePost,
-        meta:
-        {
+        meta: {
             title: 'Создание Материала',
             requiresAuth: true
         }
@@ -186,11 +141,9 @@ const routes: RouteRecordRaw[] = [
         name: 'post-version',
         props: ({params}) => ({id: Number.parseInt(params.id as string, 10) || 0}),
         component: PostVersion,
-        meta:
-        {
+        meta: {
             title: 'Заявка на публикацию',
             requiresAuth: true,
-            watchParam: 'id',
         }
     },
     {
@@ -200,21 +153,13 @@ const routes: RouteRecordRaw[] = [
         component: Post,
         meta: {
             title: 'Материал',
-            watchParam: 'slug',
         }
-    },
-    {
-        path: '/category/:slug',
-        name: 'post-category',
-        props: true,
-        component: PostCategory,
     },
     {
         path: '/email/verify/:id/:hash',
         name: 'verify-email',
         component: VerifyEmail,
-        meta:
-        {
+        meta: {
             title: 'Подтверждение E-mail',
         },
     },
@@ -222,8 +167,7 @@ const routes: RouteRecordRaw[] = [
         path: '/password/reset',
         name: 'password-reset',
         component: ResetForm,
-        meta:
-        {
+        meta: {
             title: 'Сброс пароля',
         },
     },
@@ -231,20 +175,17 @@ const routes: RouteRecordRaw[] = [
         path: '/settings',
         name: 'settings',
         component: Settings,
-        redirect: { name: 'settings.profile' },
-        meta:
-        {
+        redirect: {name: 'settings.profile'},
+        meta: {
             title: 'Настройки',
             requiresAuth: true,
         },
-        children:
-        [
+        children: [
             {
                 path: 'profile',
                 name: 'settings.profile',
                 component: ProfileSettings,
-                meta:
-                {
+                meta: {
                     title: 'Настройки профиля',
                 }
             },
@@ -252,8 +193,7 @@ const routes: RouteRecordRaw[] = [
                 path: 'security',
                 name: 'settings.security',
                 component: SecuritySettings,
-                meta:
-                {
+                meta: {
                     title: 'Настройки безопасности',
                 }
             }
@@ -263,8 +203,7 @@ const routes: RouteRecordRaw[] = [
         path: '/:pathMatch(.*)*',
         name: 'not-found',
         component: NotFound,
-        meta:
-        {
+        meta: {
             title: 'Не найдено'
         }
     }

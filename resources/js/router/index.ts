@@ -7,7 +7,7 @@ import AuthRequired from '@/components/auth/AuthRequired.vue'
 import NoPermission from '@/components/NoPermission.vue'
 
 let hashObserver: ResizeObserver | undefined = undefined
-let hashObserverDisconnectTimeout: NodeJS.Timeout | undefined = undefined
+let hashObserverDisconnectTimeout: number | undefined = undefined
 
 function disconnectHashObserver() {
     if (hashObserver) {
@@ -31,26 +31,26 @@ const router = createRouter({
                 disconnectHashObserver()
 
                 if (to.path === from.path) {
-                    resolve({el: to.hash, behavior: 'smooth'})
+                    resolve({el: to.hash, top: getHashScrollTopOffset(), behavior: 'smooth'})
                 } else {
-                    let resolveTimeout: NodeJS.Timeout | undefined = undefined
+                    let resolveTimeout: number | undefined = undefined
 
                     hashObserver = new ResizeObserver(entries => {
                         if (resolveTimeout) {
-                            resolveTimeout.refresh()
-                        } else {
-                            const element = entries[0].target.querySelector(to.hash)
-                            if (element) {
-                                resolveTimeout = setTimeout(() => {
-                                    disconnectHashObserver()
-                                    resolve({el: element, top: getHashScrollTopOffset(), behavior: 'smooth'})
-                                }, 500)
-                            }
+                            clearTimeout(resolveTimeout)
+                        }
+
+                        const element = entries[0].target.querySelector(to.hash)
+                        if (element) {
+                            resolveTimeout = window.setTimeout(() => {
+                                disconnectHashObserver()
+                                resolve({el: element, top: getHashScrollTopOffset(), behavior: 'smooth'})
+                            }, 500)
                         }
                     })
                     hashObserver.observe(document.body)
 
-                    hashObserverDisconnectTimeout = setTimeout(disconnectHashObserver, 10000)
+                    hashObserverDisconnectTimeout = window.setTimeout(disconnectHashObserver, 10000)
                 }
             } else if (savedPosition) {
                 savedPosition.behavior = 'smooth'

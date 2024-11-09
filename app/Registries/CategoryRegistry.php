@@ -48,7 +48,10 @@ class CategoryRegistry
      */
     public function getByEdition(GameEdition $edition): array
     {
-        return array_filter($this->categories, fn($category) => $category->getEdition() === $edition);
+        return array_filter(
+            $this->categories,
+            fn($category) => $category->getEdition() === $edition || $category->getEdition() === null
+        );
     }
 
     public function get(CategoryType $type): Category

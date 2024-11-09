@@ -1,30 +1,28 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
-import {type PropType, reactive, ref, watch} from 'vue'
+import {computed, type PropType, ref, watch} from 'vue'
 
-import {getErrorMessageByCode, getFullDate, getFullPresentableDate, getRelativeDate} from '@/helpers'
+import {getErrorMessageByCode} from '@/helpers'
 import {getRandomColor, getRandomSplash} from '@/stores/splashes'
 import usePreferenceManager from '@/preference-manager'
-import {useRouter, useRoute, RouterLink} from 'vue-router'
+import {RouterLink, useRoute, useRouter} from 'vue-router'
 import {useAuthStore} from '@/stores/auth'
-import {usePostCategoryStore} from '@/stores/postCategory'
 import {useToastStore} from '@/stores/toast'
 
 import {GameEdition, type Post} from '@/types'
 
 import Banner from '@/components/elements/Banner.vue'
 import PostCard from '@/components/post/PostCard.vue'
-import Paginator from '@/components/elements/Paginator.vue'
+import Paginator, {type PageChangeEvent} from '@/components/elements/Paginator.vue'
 import ShineButton from '@/components/elements/ShineButton.vue'
-import UserAvatar from '@/components/user/UserAvatar.vue'
-import PostActionBar from '@/components/post/PostActionBar.vue'
 import Button from '@/components/elements/Button.vue'
+import useCategoryRegistry, {type Category} from '@/categoryRegistry'
 
 const props = defineProps({
-    additionalLoadData: Object,
-    categorySlug: String,
+    category: Object as PropType<Category>,
     edition: {
-        type: String as PropType<GameEdition>
+        type: String as PropType<GameEdition>,
+        required: true
     }
 })
 
@@ -54,54 +52,56 @@ enum PostLoadPeriod {
 }
 
 const postLoadPeriodItems = [
-    { label: 'Всё время', value: PostLoadPeriod.ALL_TIME },
-    { label: 'Сутки', value: PostLoadPeriod.DAY },
-    { label: 'Неделя', value: PostLoadPeriod.WEEK },
-    { label: 'Месяц', value: PostLoadPeriod.MONTH },
-    { label: 'Год', value: PostLoadPeriod.YEAR }
+    {label: 'Всё время', value: PostLoadPeriod.ALL_TIME},
+    {label: 'Сутки', value: PostLoadPeriod.DAY},
+    {label: 'Неделя', value: PostLoadPeriod.WEEK},
+    {label: 'Месяц', value: PostLoadPeriod.MONTH},
+    {label: 'Год', value: PostLoadPeriod.YEAR}
 ]
 
-defineExpose({
-    getTotalRecordsCount
-})
-
 const authStore = useAuthStore()
-const categoryStore = usePostCategoryStore()
 const toastStore = useToastStore()
+const categoryRegistry = useCategoryRegistry()
 
-const bannerImagesSrc = [ '/images/elements/general-banner-ancient-city.png' ]
-
-const edition = ref(props.edition === GameEdition.BEDROCK ? GameEdition.JAVA : GameEdition.BEDROCK)
+const bannerImagesSrc = ['/images/elements/general-banner-ancient-city.png']
 
 const posts = ref<Post[]>([])
 const router = useRouter()
 const route = useRoute()
 
 const totalRecordsCount = ref(0)
-const timePeriodCounter = ref(0);
-const currentTimePeriod = ref(PostLoadPeriod.ALL_TIME)
+const timePeriodCounter = ref(0)
 
 const activeSplash = getRandomSplash()
 const activeColor = getRandomColor()
 
 const isLoading = ref(false)
-const isFresh = ref(true)
 const isFilters = ref(false)
 const isHorizontalCards = ref(false)
+const currentPage = ref(1)
+const sortType = ref(PostSortType.LATEST)
+const loadPeriod = ref(PostLoadPeriod.ALL_TIME)
 
-const loadData = reactive({
-    page: 1,
+const loadData = computed(() => ({
+    edition: props.edition!,
+    category: props.category?.type,
+    page: currentPage.value,
     per_page: 15,
-    sort_type: PostSortType.LATEST,
-    period: PostLoadPeriod.ALL_TIME,
-})
+    sort_type: sortType.value,
+    period: loadPeriod.value,
+}))
 
-watch(route, () => { loadPosts() })
+loadPosts()
+usePreferenceManager().setEdition(props.edition!)
+
+watch(() => [props.edition, props.category], () => {
+    loadPosts()
+})
 
 function loadPosts() {
     isLoading.value = true
 
-    axios.get('/api/posts', {params: {...loadData, ...props.additionalLoadData}}).then((response) => {
+    axios.get('/api/posts', {params: {...loadData.value}}).then((response) => {
         const responseData: PostLoadResponseData = response.data
         if (responseData.success) {
             totalRecordsCount.value = responseData.pagination!.total_records
@@ -114,23 +114,24 @@ function loadPosts() {
     })
 }
 
-function onPageChange(event: PageState) {
-    const selectedPage = event.page + 1
-    if (selectedPage !== loadData.page) {
-        loadData.page = selectedPage
+function onPageChange(event: PageChangeEvent) {
+    const selectedPage = event.pageNumber
+    if (selectedPage !== currentPage.value) {
+        currentPage.value = selectedPage
         loadPosts()
     }
 }
 
-function onSortTypeSelect(type: PostSortType) {
-    loadData.sort_type = type
-    loadData.page = 1
+function changeSortType(type: PostSortType) {
+    sortType.value = type
+    currentPage.value = 1
     switch (type) {
         case PostSortType.LATEST:
-            loadData.period = PostLoadPeriod.ALL_TIME
+            loadPeriod.value = PostLoadPeriod.ALL_TIME
             break
         case PostSortType.POPULAR:
-            loadData.period = currentTimePeriod.value
+            loadPeriod.value = PostLoadPeriod.ALL_TIME
+            timePeriodCounter.value = 0
             break
     }
     loadPosts()
@@ -138,36 +139,20 @@ function onSortTypeSelect(type: PostSortType) {
 
 function switchTimePeriod() {
     timePeriodCounter.value++
-    if (timePeriodCounter.value === 5) timePeriodCounter.value = 0;
-    currentTimePeriod.value = postLoadPeriodItems[timePeriodCounter.value].value
-    onSortTypeSelect(PostSortType.POPULAR)
+    if (timePeriodCounter.value === 5) timePeriodCounter.value = 0
+    loadPeriod.value = postLoadPeriodItems[timePeriodCounter.value].value
+    loadPosts()
 }
 
 function switchEdition() {
     const edition = props.edition === GameEdition.BEDROCK ? GameEdition.JAVA : GameEdition.BEDROCK
     usePreferenceManager().setEdition(edition)
-    router.push({name: `catalog.${edition.toLowerCase()}`})
-}
-
-function switchFresh() {
-    onSortTypeSelect(PostSortType.LATEST)
-    isFresh.value = true
-}
-
-function switchPopular() {
-    onSortTypeSelect(PostSortType.POPULAR)
-    isFresh.value = false
-}
-
-function getTotalRecordsCount() {
-    return totalRecordsCount.value
+    router.push({name: 'catalog'})
 }
 
 function scrollToBottom() {
-    window.scrollTo(0, 10000)
+    window.scrollTo(0, document.body.scrollHeight)
 }
-
-switchFresh()
 </script>
 
 <template>
@@ -176,10 +161,11 @@ switchFresh()
             <div class="title flex flex-col justify-center items-center w-full">
                 <RouterLink
                     class="logo-wrap flex items-center full-locked relative orange"
-                    :to="{ name: `catalog.${edition?.toLowerCase()}` }"
+                    :to="{ name: 'catalog' }"
                 >
                     <h1 class="flex justify-center w-full absolute invisible">Каталог Light Diamond</h1>
-                    <img alt="Logo" class="materials-logo h-[48px] md:h-[100px]" src="/images/elements/light-diamond-materials-logo.png"/>
+                    <img alt="Logo" class="materials-logo h-[48px] md:h-[100px]"
+                         src="/images/elements/light-diamond-materials-logo.png"/>
                     <span class="base flex justify-center items-center">
                     <span
                         class="splash flex justify-center"
@@ -200,7 +186,8 @@ switchFresh()
     <div class="catalog-container ld-secondary-background flex justify-center w-full">
 
         <section class="catalog flex flex-col items-center w-full">
-            <form class="catalog-panel ld-primary-background ld-primary-border flex flex-col w-full self-center" name="catalog">
+            <form class="catalog-panel ld-primary-background ld-primary-border flex flex-col w-full self-center"
+                  name="catalog">
 
                 <nav class="flex flex-col">
 
@@ -209,21 +196,21 @@ switchFresh()
                             <ShineButton
                                 class="flex items-center"
                                 class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
-                                :class="{ 'active': isFresh }"
+                                :class="{ 'active': sortType === PostSortType.LATEST }"
                                 label="Свежие"
                                 icon="icon-clock"
-                                @click="switchFresh"
+                                @click="changeSortType(PostSortType.LATEST)"
                             />
                             <ShineButton
                                 class="flex items-center"
                                 class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
-                                :class="{ 'active': !isFresh }"
+                                :class="{ 'active': sortType === PostSortType.POPULAR }"
                                 label="Популярные"
                                 icon="icon-crown"
-                                @click="switchPopular"
+                                @click="changeSortType(PostSortType.POPULAR)"
                             />
                             <ShineButton
-                                v-if="!isFresh"
+                                v-if="sortType === PostSortType.POPULAR"
                                 class="active flex items-center option w-[200px]"
                                 class-preset="ld-title-font justify-center sm:text-[16px]
                                     xs:text-[14px] text-[12px] gap-1 px-6 py-0.5 whitespace-nowrap"
@@ -236,8 +223,8 @@ switchFresh()
                             <ShineButton
                                 class="flex items-center option edition xl:min-w-[158px]"
                                 class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
-                                :label="usePreferenceManager().getEdition() === GameEdition.BEDROCK ? 'Bedrock' : 'Java'"
-                                :icon="usePreferenceManager().getEdition() === GameEdition.BEDROCK ? 'icon-bedrock-dev-small' : 'icon-minecraft-materials'"
+                                :label="edition === GameEdition.BEDROCK ? 'Bedrock' : 'Java'"
+                                :icon="edition === GameEdition.BEDROCK ? 'icon-bedrock-dev-small' : 'icon-minecraft-materials'"
                                 @click="switchEdition"
                             />
                         </div>
@@ -246,14 +233,23 @@ switchFresh()
                     <div class="menu-separator flex self-center"></div>
 
                     <div class="line flex flex-wrap sm:justify-start justify-center gap-3 p-3">
-                        <template v-for="category in categoryStore.categories">
+                        <ShineButton
+                            as="RouterLink"
+                            class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
+                            :class="{'active': props.category === undefined}"
+                            label="Все"
+                            icon="icon-brilliant"
+                            :to="{ name: 'catalog-of', params: {edition: edition.toLowerCase()} }"
+                        />
+
+                        <template v-for="category in categoryRegistry.getByEdition(edition)">
                             <ShineButton
-                                v-if="category.edition === usePreferenceManager().getEdition() || category.edition === null"
                                 as="RouterLink"
                                 class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
+                                :class="{'active': props.category?.type === category.type}"
                                 :label="category.name"
-                                icon="icon-brilliant"
-                                :to="{ path: `/${edition?.toLowerCase()}/${category.slug}` }"
+                                :icon="category.icon"
+                                :to="{ name: 'catalog-of', params: {edition: edition.toLowerCase(), category: category.slug} }"
                             />
                         </template>
                     </div>
@@ -311,7 +307,10 @@ switchFresh()
                         }"
                         style="flex: 1 0"
                     >
-                        <div class="flex flex-grow" :class="{ 'flex-col': !isHorizontalCards, 'xs:flex-row flex-col': isHorizontalCards }">
+                        <div
+                            class="flex flex-grow"
+                            :class="{ 'flex-col': !isHorizontalCards, 'xs:flex-row flex-col': isHorizontalCards }"
+                        >
                             <div
                                 class="skeleton transfusion transfusion flex w-full full-locked duration-200"
                                 :class="{ 'max-h-[234px] max-w-[366px]': isHorizontalCards }"
@@ -361,7 +360,10 @@ switchFresh()
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="menu-separator flex self-center w-[95%]" :class="{ 'md:flex hidden w-[98%]': isHorizontalCards }"/>
+                                    <div
+                                        class="menu-separator flex self-center w-[95%]"
+                                        :class="{ 'md:flex hidden w-[98%]': isHorizontalCards }"
+                                    />
                                     <div
                                         class="actions ld-primary-background-container flex gap-2 p-2 overflow-x-auto overflow-y-hidden"
                                         :class="{ 'md:flex hidden': isHorizontalCards }"
@@ -418,8 +420,8 @@ switchFresh()
                     class="ld-primary-background ld-primary-border h-[48px] w-full mb-2"
                     :class="{'hidden': posts.length === 0}"
                     :records-at-page="loadData.per_page"
-                    :totalRecords="totalRecordsCount"
-                    @page="onPageChange"
+                    :total-records="totalRecordsCount"
+                    @page-change="onPageChange"
                 />
             </template>
         </section>
@@ -431,15 +433,18 @@ switchFresh()
 .catalog-container {
     background-attachment: fixed;
 }
+
 .title {
     position: relative;
     line-height: 1.1;
     height: 208px
 }
+
 .title {
     overflow: hidden;
     height: 208px
 }
+
 .base {
     transform: rotate(-15deg);
     transform-origin: center;
@@ -449,9 +454,11 @@ switchFresh()
     bottom: 0;
     right: 5%;
 }
+
 .horizontal {
     min-width: 100%;
 }
+
 .splash {
     animation: splash-animation 1s infinite;
     text-shadow: 2px 2px black;
@@ -459,32 +466,40 @@ switchFresh()
     text-align: center;
     width: 240px;
 }
+
 .splash.bottom-splash {
     bottom: -1.5rem;
     width: 230px;
 }
+
 .large-splash {
     font-size: .8rem;
 }
+
 .small-splash {
     font-size: .9rem;
 }
+
 section.catalog {
     max-width: 1280px;
 }
+
 .catalog-panel .line a,
 .catalog-panel .line button {
     max-width: 268px;
     flex-grow: 1;
     border: none;
 }
+
 .catalog-panel .line .option {
     flex-grow: 0;
 }
+
 .catalog-panel .line a .press,
 .catalog-panel .line button .press {
     width: 100%;
 }
+
 .catalog-panel .line a .preset,
 .catalog-panel .line button .preset {
     justify-content: center;
@@ -492,19 +507,24 @@ section.catalog {
     height: 40px;
     width: 100%;
 }
+
 .catalog-panel .line a:hover .press .icon,
 .catalog-panel .line button:hover .press .icon {
     animation: icon-trigger-up-animation .3s ease;
 }
+
 .menu-separator {
     width: 98%;
 }
+
 .catalog-panel .filters {
     height: 240px;
 }
+
 .icon-down-arrow {
     transition: .5s;
 }
+
 .down-arrow-up {
     transform: rotate(-180deg);
 }
@@ -531,20 +551,25 @@ section.catalog {
     .logo-wrap .materials-logo {
         height: 72px;
     }
+
     .catalog-container .base {
         bottom: -12%;
         right: 5%;
     }
+
     .catalog-container .splash {
         width: 230px;
     }
+
     .catalog-container .splash.bottom-splash {
         bottom: -2rem;
     }
+
     .catalog-panel .line .option,
     .catalog-panel .sub-line {
         flex-grow: 1;
     }
+
     .menu-separator {
         width: 95%;
     }
@@ -553,6 +578,7 @@ section.catalog {
 .posts {
     padding: .5rem 0;
 }
+
 /* =============== [ Медиа-Запрос { ?px < 1280px } ] =============== */
 
 @media screen and (max-width: 1279px) {
@@ -567,31 +593,39 @@ section.catalog {
     .catalog-container .title {
         height: 104px;
     }
+
     .catalog-container .splash {
         max-width: 150px;
     }
+
     .catalog-container .splash.bottom-splash {
         bottom: -1rem;
         right: -80px;
     }
+
     .logo-wrap .materials-logo {
         height: 48px;
     }
+
     .large-splash {
         font-size: .5rem;
     }
+
     .small-splash {
         font-size: .6rem;
     }
+
     .catalog-panel .line a,
     .catalog-panel .line button {
         max-width: 180px;
     }
+
     .catalog-panel .line a .preset,
     .catalog-panel .line button .preset {
         padding: 0 .2rem;
         height: 36px;
     }
+
     .menu-separator {
         width: 95%;
     }

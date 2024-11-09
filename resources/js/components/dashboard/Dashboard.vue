@@ -27,12 +27,6 @@ const menuItems = ref<DashboardMenuItem[]>([
         icon: 'icon-skin',
         route: 'dashboard.users',
     },
-    {
-        label: 'Категории',
-        icon: 'icon-star',
-        route: 'dashboard.categories',
-        visible: authStore.isAdmin
-    }
 ])
 
 const activeMenuItem = ref<DashboardMenuItem>(getActualActiveMenuItem())
@@ -74,7 +68,9 @@ function setMobileMenu() {
                     <span class="flex icon icon-left-arrow"/>
                 </button>
                 <div class="ld-title-font ld-shadow-text flex items-center text-[1.2rem] md:text-[2rem] gap-2">
-                    <p :class="{ 'sm-hidden': !isMobileMenu }" class="ld-brilliant-text text-center">Панель Управления</p>
+                    <p :class="{ 'sm-hidden': !isMobileMenu }" class="ld-brilliant-text text-center">
+                        Панель Управления
+                    </p>
                     <p class="opacity-80 sm:flex hidden">></p>
                     <p class="text-center" :class="{ 'sm-hidden': isMobileMenu }">{{ activeMenuItem.label }}</p>
                 </div>
@@ -129,22 +125,28 @@ function setMobileMenu() {
     background-color: var(--primary-bg-color);
     background-image: var(--bg-image);
 }
+
 .manager {
     padding: .5rem;
     gap: .5rem;
 }
+
 .title {
     border: var(--primary-border);
 }
+
 .arrow-tap {
     visibility: hidden;
 }
+
 .interface {
     gap: .5rem;
 }
+
 .manager-aside {
     border: var(--primary-border);
 }
+
 /* =============== [ Медиа-Запрос { ?px < 769px } ] =============== */
 
 @media screen and (max-width: 768px) {
@@ -154,40 +156,48 @@ function setMobileMenu() {
         background-color: transparent;
         background-image: none;
     }
+
     .manager {
         background-color: var(--primary-bg-color);
         background-image: var(--bg-image);
         padding: 0;
         gap: 0;
     }
+
     .title {
         background: var(--tinted-bg-color);
         border: none;
     }
+
     .arrow-tap {
         visibility: visible;
     }
+
     .interface {
         gap: 0;
     }
+
     .manager-aside {
         border-bottom: var(--primary-border);
         border-top: var(--primary-border);
         border-right: none;
         border-left: none;
     }
+
     .interface .manager-aside {
         transition: .5s;
         min-width: 0;
         opacity: 0;
         width: 0;
     }
+
     .interface .manager-aside.on {
         transform: translateX(0);
         max-width: 100%;
         width: 100%;
         opacity: 1;
     }
+
     .interface .manager-container {
         transform: translateX(100%);
         transition: .5s;
@@ -195,11 +205,13 @@ function setMobileMenu() {
         border: 0;
         width: 0;
     }
+
     .interface .manager-container.on {
         transform: translateX(0);
         width: 100%;
         opacity: 1;
     }
+
     .invisible {
         visibility: hidden;
     }

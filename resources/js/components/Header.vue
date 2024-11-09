@@ -3,7 +3,6 @@ import {useAuthStore} from '@/stores/auth'
 import usePreferenceManager from '@/preference-manager'
 import {type RouteLocationRaw, useRouter} from 'vue-router'
 import {useGlobalModalStore} from '@/stores/global-modal'
-import {usePostCategoryStore} from '@/stores/postCategory'
 import {getHeaderHeight, lockGlobalScroll, unlockGlobalScroll} from '@/helpers'
 import {computed, onMounted, onUnmounted, ref} from 'vue'
 import ItemButton from '@/components/elements/ItemButton.vue'
@@ -14,6 +13,7 @@ import SearchForm from '@/components/modals/SearchForm.vue'
 import Menu, {type MenuItem} from '@/components/elements/Menu.vue'
 import axios from 'axios'
 import UserAvatar from '@/components/user/UserAvatar.vue'
+import useCategoryRegistry from '@/categoryRegistry'
 
 interface NavigationSection {
     label: string
@@ -25,9 +25,9 @@ interface NavigationSection {
 
 const router = useRouter()
 const authStore = useAuthStore()
-const categoryStore = usePostCategoryStore()
 const globalModalStore = useGlobalModalStore()
 const preferenceManager = usePreferenceManager()
+const categoryRegistry = useCategoryRegistry()
 
 const headerHeight = getHeaderHeight()
 
@@ -91,22 +91,25 @@ const userMenuItems = computed<MenuItem[]>(() => [
 
 const materialsNavigationSections = computed(() =>
     [
-        { label: 'Каталог', icon: 'icon-book', route: { path: '/catalog' } },
-        ...categoryStore.categories.filter
+        {label: 'Каталог', icon: 'icon-book', route: {path: '/catalog'}},
+        ...categoryRegistry.getAll().filter
         (
             (category) => category.edition === preferenceManager.getEdition() || category.edition === null
         ).map
         (
             (category) =>
-            (
-                {
-                    label: category.name,
-                    icon: 'icon-diamond',
-                    route: { path: '/' + preferenceManager.getEdition().toLowerCase() + '/' + category.slug }
-                }
-            )
+                (
+                    {
+                        label: category.name,
+                        icon: category.icon,
+                        route: {
+                            name: 'catalog-of',
+                            params: {edition: preferenceManager.getEdition().toLowerCase(), category: category.slug}
+                        }
+                    }
+                )
         ),
-        { label: 'Аддон LD', icon: 'icon-apple', route: { path: '/catalog' } }
+        {label: 'Аддон LD', icon: 'icon-apple', route: {path: '/catalog'}}
     ]
 )
 
@@ -118,31 +121,39 @@ const navigationSections = computed<NavigationSection[]>(() => [
     {
         label: 'Полезное',
         children:
-        [
-            { label: 'Бестиарий Light Diamond', icon: 'icon-bestiary' },
-            { label: 'Документация Light Diamond', icon: 'icon-documentary' },
-            { label: 'Документация Microsoft', icon: 'icon-microsoft-small', url: 'https://learn.microsoft.com/en-us/minecraft/creator/reference/content/entityreference/examples/componentlist' },
-            { label: 'Документация Bedrock.Dev', icon: 'icon-bedrock-dev-small', url: 'https://bedrock.dev' },
-            { label: 'Материалы Minecraft', icon: 'icon-minecraft-materials', url: 'https://github.com/Mojang/bedrock-samples/releases' }
-        ]
+            [
+                {label: 'Бестиарий Light Diamond', icon: 'icon-bestiary'},
+                {label: 'Документация Light Diamond', icon: 'icon-documentary'},
+                {
+                    label: 'Документация Microsoft',
+                    icon: 'icon-microsoft-small',
+                    url: 'https://learn.microsoft.com/en-us/minecraft/creator/reference/content/entityreference/examples/componentlist'
+                },
+                {label: 'Документация Bedrock.Dev', icon: 'icon-bedrock-dev-small', url: 'https://bedrock.dev'},
+                {
+                    label: 'Материалы Minecraft',
+                    icon: 'icon-minecraft-materials',
+                    url: 'https://github.com/Mojang/bedrock-samples/releases'
+                }
+            ]
     },
     {
         label: 'Медиа',
         children:
-        [
-            { label: 'ВКонтакте', icon: 'icon-vk', url: 'https://vk.com/light.diamond' },
-            { label: 'Телеграм', icon: 'icon-telegram', url: 'https://t.me/light_diamond_channel' },
-            { label: 'YouTube', icon: 'icon-youtube', url: 'https://www.youtube.com/@grostlight3303' }
-        ]
+            [
+                {label: 'ВКонтакте', icon: 'icon-vk', url: 'https://vk.com/light.diamond'},
+                {label: 'Телеграм', icon: 'icon-telegram', url: 'https://t.me/light_diamond_channel'},
+                {label: 'YouTube', icon: 'icon-youtube', url: 'https://www.youtube.com/@grostlight3303'}
+            ]
     },
     {
         label: 'Помощь',
         children:
-        [
-            { label: 'Правила Пользования', icon: 'icon-hand' },
-            { label: 'Политика Конфиденциальности', icon: 'icon-script' },
-            { label: 'О Проекте', icon: 'icon-faq' }
-        ]
+            [
+                {label: 'Правила Пользования', icon: 'icon-hand'},
+                {label: 'Политика Конфиденциальности', icon: 'icon-script'},
+                {label: 'О Проекте', icon: 'icon-faq'}
+            ]
     },
 ])
 
@@ -272,7 +283,10 @@ function logout() {
             </div>
 
             <template v-for="section of navigationSections">
-                <div class="unit-title flex justify-center transfusion md:text-[1rem] text-[14px]">{{ section.label }}</div>
+                <div class="unit-title flex justify-center transfusion md:text-[1rem] text-[14px]">{{
+                        section.label
+                    }}
+                </div>
 
                 <template v-for="childSection of section.children">
                     <ItemButton
@@ -431,6 +445,7 @@ header .list-label:focus-visible .list-label-text, header .list-label:hover .lis
 button.list-label .icon {
     transition: .2s;
 }
+
 .icon-magnifier,
 .icon-units {
     min-width: 2rem;

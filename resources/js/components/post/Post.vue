@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
 
-import {computed, nextTick, onMounted, onUnmounted, onUpdated, reactive, ref} from 'vue'
+import {computed, nextTick, onMounted, onUnmounted, onUpdated, reactive, ref, watch} from 'vue'
 
 import {useAuthStore} from '@/stores/auth'
 import {useGlobalModalStore} from '@/stores/global-modal'
@@ -50,14 +50,12 @@ const isLoading = ref(true)
 const isLoadingComments = ref(true)
 const isSubmittingNewComment = ref(false)
 const isDownloadWindow = ref(false)
-const isWide = ref(true)
+const isWideSidebar = ref(true)
 
 const rootComments = computed(() => comments.value!.filter((comment) => !comment.parent_comment_id))
 
 onUpdated(() => {
-    if (commentsBlock.value && !comments.value) {
-        commentsBlockObserver.observe(commentsBlock.value!)
-    }
+    tryConnectCommentsBlockObserver()
 })
 
 onMounted(() => {
@@ -68,10 +66,20 @@ onUnmounted(() => {
     commentsBlockObserver.disconnect()
 })
 
+watch(() => route.params.slug, () => {
+    loadPost()
+})
+
 function updateTitle() {
     nextTick(() => {
         changeTitle(post.value!.version!.title!)
     })
+}
+
+function tryConnectCommentsBlockObserver() {
+    if (commentsBlock.value && !comments.value) {
+        commentsBlockObserver.observe(commentsBlock.value!)
+    }
 }
 
 function observeCommentsBlock([entry]: IntersectionObserverEntry[]) {
@@ -81,6 +89,11 @@ function observeCommentsBlock([entry]: IntersectionObserverEntry[]) {
 }
 
 function loadPost() {
+    isLoading.value = true
+    isLoadingComments.value = true
+    isSubmittingNewComment.value = false
+    comments.value = undefined
+
     axios.get(`/api/posts/${props.slug}`).then((response) => {
         const postData: Post = response.data
 
@@ -90,6 +103,8 @@ function loadPost() {
 
             if (route.hash === '#comments' || route.hash.match(/^#comment-\d+$/)) {
                 loadComments()
+            } else {
+                tryConnectCommentsBlockObserver()
             }
         }
     }).catch((error: AxiosError) => {
@@ -201,7 +216,7 @@ function openDownloadWindow() {
         <ProcessingDiggingBlocks processing-classes="md:h-[192px] md:w-[192px] h-[128px] w-[128px]"/>
     </div>
     <div v-else-if="post" class="smooth-dark-background flex flex-col items-center w-full duration-500"
-         :class="{'wide': isWide}"
+         :class="{'wide': isWideSidebar}"
     >
         <Dialog
             v-if="!post.version?.category?.is_article"
@@ -234,12 +249,16 @@ function openDownloadWindow() {
                 <PostActionBar class="ld-secondary-background-container flex-col gap-4" :post="post"/>
             </aside>
 
-            <div class="post center-interaction bright-background ld-fixed-background flex flex-col items-center max-w-[832px] w-full" ref="postContent">
+            <div
+                class="post center-interaction bright-background ld-fixed-background flex flex-col items-center max-w-[832px] w-full"
+                ref="postContent">
 
                 <div class="post-info-dates xl:hidden flex lg:justify-between justify-center w-full xs:px-4 px-2">
-                    <PostInfoBar class="xl:flex-col flex-wrap justify-center gap-4 lg:mt-0 mt-4 duration-500" :post="post"/>
-                    <button class="lg:flex hidden items-start" @click="isWide = !isWide">
-                        <span class="icon flex my-4" :class="{'icon-right-arrow': isWide, 'icon-left-arrow': !isWide}"/>
+                    <PostInfoBar class="xl:flex-col flex-wrap justify-center gap-4 lg:mt-0 mt-4 duration-500"
+                                 :post="post"/>
+                    <button class="lg:flex hidden items-start" @click="isWideSidebar = !isWideSidebar">
+                        <span class="icon flex my-4"
+                              :class="{'icon-right-arrow': isWideSidebar, 'icon-left-arrow': !isWideSidebar}"/>
                     </button>
                 </div>
 
@@ -255,7 +274,8 @@ function openDownloadWindow() {
 
                 <div class="ld-secondary-text max-w-full xs:px-4 px-2 py-2" v-html="post!.version!.content"/>
 
-                <div v-if="!post!.version?.category?.is_article" class="page-container flex justify-center max-w-[800px] xl:my-8 my-4">
+                <div v-if="!post!.version?.category?.is_article"
+                     class="page-container flex justify-center max-w-[800px] xl:my-8 my-4">
                     <Button
                         label-classes="text-base"
                         @click="openDownloadWindow"
@@ -278,13 +298,14 @@ function openDownloadWindow() {
                 text-[12px] xl:max-w-[336px] gap-4"
             >
                 <div class="first-bright-block bright-background flex flex-col">
-                    <button class="flex justify-end p-[4px]" @click="isWide = !isWide">
+                    <button class="flex justify-end p-[4px]" @click="isWideSidebar = !isWideSidebar">
                         <span
                             class="icon flex"
-                            :class="{'icon-right-direction-arrow': isWide, 'icon-left-direction-arrow': !isWide}"
+                            :class="{'icon-right-direction-arrow': isWideSidebar, 'icon-left-direction-arrow': !isWideSidebar}"
                         />
                     </button>
-                    <PostInfoBar class="right-post-info-bar xl:flex-col justify-center gap-4 duration-500" :post="post"/>
+                    <PostInfoBar class="right-post-info-bar xl:flex-col justify-center gap-4 duration-500"
+                                 :post="post"/>
                 </div>
                 <!-- xl:flex -->
                 <div class="next-bright-block bright-background hidden flex-col overflow-hidden">
@@ -383,33 +404,41 @@ function openDownloadWindow() {
     aspect-ratio: 16/9;
     object-fit: cover;
 }
+
 .smooth-dark-background.wide {
     background-color: rgba(0, 0, 0, .2);
 }
+
 .section {
     transition: flex 0.5s ease;
 }
+
 .bright-background {
     border: 2px solid transparent;
     transition: .5s;
 }
+
 .wide .bright-background {
     background-image: url('/images/elements/base-background-code.png');
     background-color: var(--secondary-bg-color);
     border: var(--secondary-border);
 }
+
 .xl-left-post-interaction,
 .xl-right-post-interaction {
     transition: .5s;
 }
+
 .post-addition-content {
     transform: translateX(100%);
     opacity: 0;
 }
+
 .wide .post-addition-content {
     transform: translateX(0);
     opacity: 1;
 }
+
 .wide .center-interaction {
     margin-bottom: 1rem;
 }
@@ -422,37 +451,48 @@ function openDownloadWindow() {
         width: 208px;
         top: 96px;
     }
+
     .wide .xl-right-post-interaction {
         width: 336px;
         top: 80px;
     }
+
     .xl-left-post-interaction {
         margin-top: 0;
     }
+
     .wide .xl-left-post-interaction {
         width: 80px;
     }
+
     .right-post-info-bar {
         padding-left: 3rem;
     }
+
     .wide .right-post-info-bar {
         padding: 0 1rem 1rem 1rem;
     }
+
     #comments {
         transition: .5s;
     }
+
     .wide #comments {
         margin-right: 256px;
     }
+
     .first-bright-block {
         margin-bottom: 3rem;
     }
+
     .wide .first-bright-block {
         margin-bottom: 1rem;
     }
+
     .next-bright-block {
         margin-bottom: 1rem;
     }
+
     .wide .next-bright-block {
         margin-bottom: 3rem;
     }
@@ -464,6 +504,7 @@ function openDownloadWindow() {
     .xl-right-post-interaction {
         width: 100%;
     }
+
     .right-date-info {
         width: 100%;
     }
@@ -475,11 +516,13 @@ function openDownloadWindow() {
     .smooth-dark-background.wide {
         background-color: transparent;
     }
+
     .wide .bright-background {
         background-color: transparent;
         background-image: none;
         border: none;
     }
+
     .wide .center-interaction {
         margin-bottom: 0;
     }
