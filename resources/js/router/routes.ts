@@ -7,7 +7,7 @@ import {GameEdition} from '@/types'
 import Home from '@/components/Home.vue'
 import Catalog from '@/components/catalog/Catalog.vue'
 
-import CreatePost from '@/components/post/editor/CreatePost.vue'
+import NewPostVersion from '@/components/post/editor/NewPostVersion.vue'
 
 import Dashboard from '@/components/dashboard/Dashboard.vue'
 import DashboardPostSubmissionsSection from '@/components/dashboard/DashboardPostSubmissionsSection.vue'
@@ -130,9 +130,19 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/create-post',
         name: 'create-post',
-        component: CreatePost,
+        component: NewPostVersion,
         meta: {
             title: 'Создание Материала',
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/update-post/:slug',
+        name: 'update-post',
+        props: ({params}) => ({slug: params.slug}),
+        component: NewPostVersion,
+        meta: {
+            title: 'Обновление Материала',
             requiresAuth: true
         }
     },

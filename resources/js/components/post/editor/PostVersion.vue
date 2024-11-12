@@ -55,7 +55,7 @@ const authStore = useAuthStore()
 const toastStore = useToastStore()
 const router = useRouter()
 
-const bannerImagesSrc = [ '/images/elements/general-banner-ancient-city.png' ]
+const bannerImagesSrc = ['/images/elements/general-banner-ancient-city.png']
 
 const acceptOverlayPanel = ref<InstanceType<typeof OverlayPanel>>()
 const reconsiderOverlayPanel = ref<InstanceType<typeof OverlayPanel>>()
@@ -201,7 +201,7 @@ function submit() {
 
     axios.patch(`/api/post-versions/${props.id}/submit`, formData).then((response) => {
         if (response.data.success) {
-            toastStore.success('Материал отправлен на рассмотрение.')
+            toastStore.success('Заявка отправлена на рассмотрение.')
             submitOverlayPanel.value?.hide()
             loadPostVersion()
         } else {
@@ -220,7 +220,8 @@ function submit() {
     })
 }
 
-function reconsider() {}
+function reconsider() {
+}
 
 function reject() {
     isRejecting.value = true
@@ -229,7 +230,7 @@ function reject() {
 
     axios.patch(`/api/post-versions/${props.id}/reject`, formData).then((response) => {
         if (response.data.success) {
-            toastStore.warning('Материал был отклонён.', 'Отклонено')
+            toastStore.warning('Заявка была отклонена.', 'Отклонено')
             rejectOverlayPanel.value?.hide()
             loadPostVersion()
         } else {
@@ -255,7 +256,7 @@ function requestChanges() {
 
     axios.patch(`/api/post-versions/${props.id}/request-changes`, formData).then((response) => {
         if (response.data.success) {
-            toastStore.success('Материал возвращён на доработку.')
+            toastStore.success('Заявка возвращена на доработку.')
             revisionOverlayPanel.value?.hide()
             loadPostVersion()
         } else {
@@ -306,7 +307,7 @@ function openHistoryDialog() {
 }
 
 function scrollToBottomPostVersionHistory() {
-    postVersionHistory.value.scrollTo({ top: postVersionHistory.value.scrollHeight, behavior: 'smooth' })
+    postVersionHistory.value.scrollTo({top: postVersionHistory.value.scrollHeight, behavior: 'smooth'})
 }
 
 loadPostVersion()
@@ -343,12 +344,15 @@ loadPostVersion()
             <template v-slot:banner>
                 <Banner class="md:h-[208px] h-[178px] w-full" :images-src="bannerImagesSrc">
                     <template v-slot:banner-content>
-                        <div class="banner-title page-container flex flex-col justify-center items-center md:items-end max-w-[800px]">
+                        <div
+                            class="banner-title page-container flex flex-col justify-center items-center md:items-end max-w-[800px]">
 
-                            <h1 class="ld-title-font flex self-center text-center md:text-[3rem] text-[1.5rem] locked">Заявка на публикацию</h1>
+                            <h1 class="ld-title-font flex self-center text-center md:text-[3rem] text-[1.5rem] locked">
+                                Заявка на публикацию</h1>
 
                             <div class="mark-block flex absolute bottom-2 gap-2">
-                                <div :class="{ 'new': isFirstVersion, 'update': !isFirstVersion }" class="material-type new flex items-center h-fit gap-2 locked">
+                                <div :class="{ 'new': isFirstVersion, 'update': !isFirstVersion }"
+                                     class="material-type new flex items-center h-fit gap-2 locked">
                                     <span class="icon-apple icon flex"/>
                                     <p v-if="isFirstVersion" class="text-[9px] xs:text-[.7rem]">Новый Материал</p>
                                     <p v-else class="text-[9px] xs:text-[.7rem]">Обновление</p>
@@ -358,7 +362,9 @@ loadPostVersion()
                                     v-tooltip.top="getFullPresentableDate(postVersion!.updated_at!)"
                                 >
                                     <span class="icon-clock icon flex"/>
-                                    <p class="text-[9px] xs:text-[.7rem]">{{ getRelativeDate(postVersion!.updated_at!) }}</p>
+                                    <p class="text-[9px] xs:text-[.7rem]">{{
+                                            getRelativeDate(postVersion!.updated_at!)
+                                        }}</p>
                                 </div>
                             </div>
 
@@ -406,7 +412,8 @@ loadPostVersion()
                                 </template>
 
                                 <template #option-item="{option}: { option: User}">
-                                    <button class="flex gap-1 items-center cursor-pointer py-1 px-2 w-full" type="button">
+                                    <button class="flex gap-1 items-center cursor-pointer py-1 px-2 w-full"
+                                            type="button">
                                         <UserAvatar
                                             border-class-list="h-10 min-w-10"
                                             icon-class-list="h-7 min-w-7"
@@ -461,8 +468,10 @@ loadPostVersion()
                         </div>
                     </div>
 
-                    <div v-if="postVersion.actions!.length !== 0" class="flex flex-col xl:gap-1 gap-2 mt-1 xl:pb-1 xl:px-2 px-4">
-                        <div class="separator flex opacity-40 xl:mb-1" style="background-color: var(--secondary-text-color);"/>
+                    <div v-if="postVersion.actions!.length !== 0"
+                         class="flex flex-col xl:gap-1 gap-2 mt-1 xl:pb-1 xl:px-2 px-4">
+                        <div class="separator flex opacity-40 xl:mb-1"
+                             style="background-color: var(--secondary-text-color);"/>
                         <div
                             v-if="[PostVersionActionType.REJECT, PostVersionActionType.REQUEST_CHANGES].includes(lastAction?.type!)"
                             class="flex items-center"
@@ -487,19 +496,19 @@ loadPostVersion()
                         />
                     </div>
 
-                    <div
-                        v-if="postVersion.status === PostVersionStatus.ACCEPTED || postVersion.status === PostVersionStatus.REJECTED"
-                        class="flex flex-col xl:gap-2 gap-4 xl:px-2 px-4 xl:pb-2 pb-4"
-                    >
-                        <ShineButton
-                            class="ld-shine-button upper-unavailable w-full reconsider"
-                            class-wrap="ld-primary-background"
-                            class-preset="gap-2 px-2 py-0.5"
-                            @click="reconsiderOverlayPanel?.toggle"
-                            label="Вернуть на рассмотрение"
-                            icon="icon-eye"
-                        />
-                    </div>
+                    <!--                    <div-->
+                    <!--                        v-if="postVersion.status === PostVersionStatus.ACCEPTED || postVersion.status === PostVersionStatus.REJECTED"-->
+                    <!--                        class="flex flex-col xl:gap-2 gap-4 xl:px-2 px-4 xl:pb-2 pb-4"-->
+                    <!--                    >-->
+                    <!--                        <ShineButton-->
+                    <!--                            class="ld-shine-button upper-unavailable w-full reconsider"-->
+                    <!--                            class-wrap="ld-primary-background"-->
+                    <!--                            class-preset="gap-2 px-2 py-0.5"-->
+                    <!--                            @click="reconsiderOverlayPanel?.toggle"-->
+                    <!--                            label="Вернуть на рассмотрение"-->
+                    <!--                            icon="icon-eye"-->
+                    <!--                        />-->
+                    <!--                    </div>-->
 
                     <div v-if="isReviewing" class="upper-unavailable flex flex-col gap-2 xl:px-2 px-4 xl:pb-2 pb-4">
                         <div class="separator flex opacity-40" style="background-color: var(--secondary-text-color);"/>
@@ -529,7 +538,8 @@ loadPostVersion()
                         />
                     </div>
                 </div>
-                <div v-if="isOwnDraft" class="upper-unavailable flex flex-col w-full xl:gap-2 gap-4 xl:px-2 px-4 xl:pb-2 pb-4">
+                <div v-if="isOwnDraft"
+                     class="upper-unavailable flex flex-col w-full xl:gap-2 gap-4 xl:px-2 px-4 xl:pb-2 pb-4">
                     <div class="separator flex opacity-40" style="background-color: var(--secondary-text-color);"/>
                     <ShineButton
                         class="ld-shine-button w-full confirm"
@@ -555,7 +565,8 @@ loadPostVersion()
         <div v-else class="unavailable-post flex justify-center items-center">
             <div class="unavailable-post-container flex flex-col items-center">
                 <h1 class="text-4xl font-bold text-center mt-8">Заявка на публикацию недоступна</h1>
-                <p class="text-muted text-center mt-4">Текущая заявка на публикацию не существует, либо у Вас нет к ней доступа.</p>
+                <p class="text-muted text-center mt-4">Текущая заявка на публикацию не существует, либо у Вас нет к ней
+                    доступа.</p>
                 <div class="mob phantom flex justify-center items-center full-locked">
                     <div class="animation-flying-phantom"></div>
                 </div>
@@ -579,18 +590,23 @@ loadPostVersion()
     >
         <div class="flex flex-col gap-2">
 
-            <p class="flex">URL-идентификатор</p>
+            <template v-if="isFirstVersion">
+                <p class="flex">URL-идентификатор</p>
 
-            <Input
-                v-model="slug"
-                class="material-url-id ld-tinted-background ld-secondary-border h-[40px]"
-                placeholder="Ярлык Материала"
-                id="material-url-id"
-            />
+                <Input
+                    v-model="slug"
+                    class="material-url-id ld-tinted-background ld-secondary-border h-[40px]"
+                    placeholder="Ярлык Материала"
+                    id="material-url-id"
+                />
 
-            <p class="error">{{ errors['slug']?.[0] || ' ' }}</p>
+                <p class="error">{{ errors['slug']?.[0] || ' ' }}</p>
 
-            <p class="flex text-[10px]">{{ postUrl }}</p>
+                <p class="flex text-[10px]">{{ postUrl }}</p>
+            </template>
+            <template v-else>
+                Вы точно хотите опубликовать (обновить) материал?
+            </template>
 
             <div class="flex gap-2">
                 <ShineButton
@@ -732,7 +748,7 @@ loadPostVersion()
     <OverlayPanel class="overlay-panel ld-primary-background max-w-[100vw] p-4 mt-24rem" ref="submitOverlayPanel">
         <div class="flex flex-col gap-2">
 
-            <p class="flex">Вы точно хотите отправить Материал на рассмотрение?</p>
+            <p class="flex">Вы точно хотите отправить заявку на рассмотрение?</p>
 
             <div class="flex gap-2">
                 <ShineButton
@@ -760,20 +776,25 @@ loadPostVersion()
     text-align: center;
     line-height: 1.2;
 }
+
 .material-reject-reason textarea,
 .material-revision-reason textarea {
     min-height: 136px;
     padding: 4px 8px;
 }
+
 .upper-interaction .upper-unavailable {
     display: none;
 }
+
 .ld-shine-button .text {
     height: 2rem;
 }
+
 .loading-icon {
     min-width: 28px;
 }
+
 .time-ago.tooltip::before {
     align-items: center;
     bottom: 2.6rem;
@@ -781,7 +802,8 @@ loadPostVersion()
     height: 2rem;
     left: 2.3rem;
 }
-.upper-interaction  .non-mb-0 {
+
+.upper-interaction .non-mb-0 {
     margin-bottom: 0;
 }
 </style>
@@ -790,43 +812,53 @@ loadPostVersion()
 .content h1 {
     font-size: 3rem;
 }
+
 .material-type, .time-ago {
     padding: .125rem .25rem;
     cursor: pointer;
 }
+
 .unavailable-post {
     height: 720px;
     width: 100%;
 }
+
 .unavailable-post-container {
     max-width: 520px;
     width: 95%;
 }
+
 .mob.phantom {
     overflow: hidden;
     max-width: 320px;
     height: 200px;
     width: 100%;
 }
+
 .mob.phantom div {
     background-size: 100% 100%;
     height: 160px;
     width: 320px;
 }
+
 .global-error-window h1,
 .global-error-window p {
     color: var(--primary-text-color);
 }
+
 .global-error-container a {
     width: 95%;
 }
+
 .global-error-container p {
     max-width: 300px;
 }
+
 .post-version-actions {
     max-height: 500px;
     overflow-y: auto;
 }
+
 .sidebar-last-action {
     font-size: 12px;
 }
@@ -845,9 +877,11 @@ loadPostVersion()
     .unavailable-post {
         height: 380px;
     }
+
     .mob.phantom {
         height: 100px;
     }
+
     .mob.phantom div {
         height: 80px;
         width: 160px;
@@ -861,6 +895,7 @@ loadPostVersion()
         padding: 0 .25rem;
         cursor: pointer;
     }
+
     .time-ago.tooltip::before {
         bottom: 2.4rem;
         left: -.5rem;

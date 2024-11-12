@@ -12,13 +12,15 @@ readonly class NewPostVersionDto
      * @param PostVersionFileDto[] $files
      */
     public function __construct(
-        public User         $author,
-        public CategoryType $category,
-        public string       $title,
-        public UploadedFile $coverFile,
-        public string       $description,
-        public string       $content,
-        public array        $files,
+        public int           $postId,
+        public User          $author,
+        public CategoryType  $category,
+        public string        $title,
+        public ?UploadedFile $coverFile,
+        public ?string       $cover,
+        public string        $description,
+        public string        $content,
+        public array         $files,
     )
     {
     }

@@ -125,7 +125,7 @@ loadPostVersions()
                         class="flex flex-col justify-center items-center min-h-[480px] gap-6"
                     >
                         <p class="text-muted text-center text-[14px] max-w-[480px]">
-                            У Вас пока ещё нет собственных Материалов, начните творить! ;D
+                            Хм... Заявки не найдены.
                         </p>
                         <div class="mob wandering-trader flex justify-center items-center mb-4">
                             <div class="animation-wandering-trader h-[244px] w-[130px]"></div>

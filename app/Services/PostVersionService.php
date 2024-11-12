@@ -116,7 +116,9 @@ readonly class PostVersionService
 
         $this->updatePostVersion($postVersion, $dto, PostVersionStatus::Accepted, $now);
         if (!$isNewPost) {
-            $postVersion->post->update(['updated_at' => $now]);
+            $post             = $postVersion->post;
+            $post->updated_at = $now;
+            $post->save();
         }
 
         $this->postVersionActionService->create(
@@ -149,11 +151,12 @@ readonly class PostVersionService
 
     private function createPostVersion(NewPostVersionDto $dto, PostVersionStatus $status, ?Carbon $dateTime = null): PostVersion
     {
-        $postVersion = PostVersion::make();
+        $postVersion          = PostVersion::make();
+        $postVersion->post_id = $dto->postId;
         $postVersion->author()->associate($dto->author);
         $postVersion->category    = $dto->category;
         $postVersion->title       = $dto->title;
-        $postVersion->cover       = $this->saveCover($dto->coverFile);
+        $postVersion->cover       = $dto->coverFile ? $this->saveCover($dto->coverFile) : $dto->cover;
         $postVersion->description = $dto->description;
         $postVersion->content     = $dto->content;
         $postVersion->status      = $status;

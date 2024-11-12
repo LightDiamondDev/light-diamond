@@ -11,6 +11,8 @@ use App\Models\User;
 use App\Registries\CategoryRegistry;
 use App\Registries\CategoryType;
 use App\Rules\ColumnExistsRule;
+use App\Rules\ImageFileExistsRule;
+use App\Rules\OwnPostRule;
 use App\Rules\PostVersionFileRule;
 use App\Services\Dto\NewPostVersionDto;
 use App\Services\Dto\PostVersionFileDto;
@@ -395,10 +397,12 @@ class PostVersionController extends Controller
         );
 
         return new NewPostVersionDto(
+            $request->integer('post_id'),
             Auth::user(),
             $request->enum('category', CategoryType::class),
             $request->string('title'),
             $request->file('cover_file'),
+            $request->string('cover'),
             $request->string('description'),
             $request->string('content'),
             $files,
@@ -431,8 +435,9 @@ class PostVersionController extends Controller
         );
     }
 
-    private function makeNewPostVersionValidator(array $data, ?Post $post = null, array $additionalRules = []): ValidatorInstance
+    private function makeNewPostVersionValidator(array $data, array $additionalRules = []): ValidatorInstance
     {
+        $post          = $data['post_id'] ? Post::find($data['post_id']) : null;
         $categoryType  = $data['category'] ? CategoryType::tryFrom($data['category']) : null;
         $category      = $categoryType ? $this->categoryRegistry->get($categoryType) : null;
         $maxFilesCount = $category && $category->isDownloadable() ? self::MAX_FILES_COUNT : 0;
@@ -440,9 +445,11 @@ class PostVersionController extends Controller
 
         return Validator::make($data, array_merge(
             [
-                'category'     => ['required', 'string', Rule::enum(CategoryType::class)],
+                'post_id'      => ['bail', 'integer', new OwnPostRule()],
+                'category'     => ['bail', 'required', 'string', Rule::enum(CategoryType::class)],
                 'cover_file'   => [
-                    'required',
+                    'bail',
+                    'required_without:cover',
                     File::types(['jpeg', 'jpg', 'png']),
                     File::image()
                         ->max(self::MAX_COVER_SIZE_MB * 1024)
@@ -452,15 +459,16 @@ class PostVersionController extends Controller
                                 ->minHeight(self::MIN_COVER_HEIGHT)
                         ),
                 ],
-                'title'        => ['required', 'string', 'max:150'],
-                'description'  => ['required', 'string', 'max:255'],
-                'content'      => ['required', 'string', 'max:65535'],
-                'files'        => ['required', 'array', 'max:' . $maxFilesCount, 'min:' . $minFilesCount],
-                'files.*.name' => ['required', 'string', 'max:100'],
-                'files.*.path' => ['required_without:files.*.url', 'string', 'max:255'],
-                'files.*.url'  => ['required_without:files.*.path', 'string', 'max:255'],
-                'files.*.size' => ['integer'],
-                'files.*'      => ['array', new PostVersionFileRule($post)],
+                'cover_path'   => ['bail', 'string', new ImageFileExistsRule()],
+                'title'        => ['bail', 'required', 'string', 'max:150'],
+                'description'  => ['bail', 'required', 'string', 'max:255'],
+                'content'      => ['bail', 'required', 'string', 'max:65535'],
+                'files'        => ['bail', 'required', 'array', 'max:' . $maxFilesCount, 'min:' . $minFilesCount],
+                'files.*.name' => ['bail', 'required', 'string', 'max:100'],
+                'files.*.path' => ['bail', 'required_without:files.*.url', 'string', 'max:255'],
+                'files.*.url'  => ['bail', 'required_without:files.*.path', 'string', 'max:255'],
+                'files.*.size' => ['bail', 'integer'],
+                'files.*'      => ['bail', 'array', new PostVersionFileRule($post)],
             ],
             $additionalRules
         ));
@@ -475,8 +483,9 @@ class PostVersionController extends Controller
 
         return Validator::make($data, array_merge(
             [
-                'category'     => ['required', 'string', Rule::enum(CategoryType::class)],
+                'category'     => ['bail', 'required', 'string', Rule::enum(CategoryType::class)],
                 'cover_file'   => [
+                    'bail',
                     File::types(['jpeg', 'jpg', 'png']),
                     File::image()
                         ->max(self::MAX_COVER_SIZE_MB * 1024)
@@ -486,16 +495,16 @@ class PostVersionController extends Controller
                                 ->minHeight(self::MIN_COVER_HEIGHT)
                         ),
                 ],
-                'title'        => ['string', 'max:150'],
-                'description'  => ['string', 'max:255'],
-                'content'      => ['string', 'max:65535'],
-                'files'        => ['array', 'max:' . $maxFilesCount, 'min:' . $minFilesCount],
-                'files.*.id'   => ['required_without_all:files.*.path,files.*.url', 'integer'],
-                'files.*.name' => ['required_without:files.*.id', 'string', 'max:100'],
-                'files.*.path' => ['required_without_all:files.*.id,files.*.url', 'string', 'max:255'],
-                'files.*.url'  => ['required_without_all:files.*.id,files.*.path', 'string', 'max:255'],
-                'files.*.size' => ['integer'],
-                'files.*'      => ['array', new PostVersionFileRule($version->post, $version)],
+                'title'        => ['bail', 'string', 'max:150'],
+                'description'  => ['bail', 'string', 'max:255'],
+                'content'      => ['bail', 'string', 'max:65535'],
+                'files'        => ['bail', 'array', 'max:' . $maxFilesCount, 'min:' . $minFilesCount],
+                'files.*.id'   => ['bail', 'required_without_all:files.*.path,files.*.url', 'integer'],
+                'files.*.name' => ['bail', 'required_without:files.*.id', 'string', 'max:100'],
+                'files.*.path' => ['bail', 'required_without_all:files.*.id,files.*.url', 'string', 'max:255'],
+                'files.*.url'  => ['bail', 'required_without_all:files.*.id,files.*.path', 'string', 'max:255'],
+                'files.*.size' => ['bail', 'integer'],
+                'files.*'      => ['bail', 'array', new PostVersionFileRule($version->post, $version)],
             ],
             $additionalRules
         ));
