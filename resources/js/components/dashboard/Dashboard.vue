@@ -67,7 +67,7 @@ function setMobileMenu() {
                 >
                     <span class="flex icon icon-left-arrow"/>
                 </button>
-                <div class="ld-title-font ld-shadow-text flex items-center text-[1.2rem] md:text-[2rem] gap-2">
+                <div class="ld-title-font ld-shadow-text flex items-center text-[1.2rem] lg:text-[2rem] gap-2">
                     <p :class="{ 'sm-hidden': !isMobileMenu }" class="ld-brilliant-text text-center">
                         Панель Управления
                     </p>
@@ -147,9 +147,9 @@ function setMobileMenu() {
     border: var(--primary-border);
 }
 
-/* =============== [ Медиа-Запрос { ?px < 769px } ] =============== */
+/* =============== [ Медиа-Запрос { ?px < 1081px } ] =============== */
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1080px) {
     .manager-container,
     .manager-aside,
     .title-header {

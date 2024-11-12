@@ -117,15 +117,6 @@ function setMobileMenu() {
 </template>
 
 <style scoped>
-/* =============== [ Медиа-Запрос { 769px < 1025px } ] =============== */
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .manage-surface2 {
-        overflow-x: auto;
-        overflow-y: hidden;
-    }
-}
-
 
 .manager-container,
 .manager-aside,
@@ -149,9 +140,9 @@ function setMobileMenu() {
 .manager-aside {
     border: var(--primary-border);
 }
-/* =============== [ Медиа-Запрос { ?px < 769px } ] =============== */
+/* =============== [ Медиа-Запрос { ?px < 1081px } ] =============== */
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1080px) {
     .manager-container,
     .manager-aside,
     .title-header {

@@ -7,6 +7,7 @@ import {type Post} from '@/types'
 
 import UserAvatar from '@/components/user/UserAvatar.vue'
 import PostActionBar from '@/components/post/PostActionBar.vue'
+import ShineButton from '@/components/elements/ShineButton.vue'
 
 const props = defineProps({
     post: {
@@ -24,8 +25,8 @@ const isFirstVersion = computed(() => props.post!.updated_at === props.post!.cre
 </script>
 
 <template>
-    <div class="post-version-card ld-primary-border-top flex sm:flex-row flex-col">
-        <div class="flex w-full gap-2 p-2">
+    <div class="post-version-card ld-primary-border-top flex md:flex-row flex-col">
+        <div class="flex w-full gap-2 md:p-2 p-2">
             <RouterLink
                 class="preview-wrap ld-primary-border flex
                     sm:h-[112px] sm:max-w-[196px] sm:min-w-[196px]
@@ -63,6 +64,26 @@ const isFirstVersion = computed(() => props.post!.updated_at === props.post!.cre
                 </div>
                 <PostActionBar class="ld-primary-background-container sm:flex hidden gap-4 mt-2" :post="post"/>
             </div>
+            <div class="md:flex hidden">
+                <ShineButton
+                    as="RouterLink"
+                    class-preset="ld-title-font gap-1 px-2 py-0.5"
+                    class="confirm"
+                    label="Обновить"
+                    icon="icon-medium-top-arrow"
+                    :to="{ name: 'update-post', params: {slug: post.slug} }"
+                />
+            </div>
+        </div>
+        <div class="md:hidden flex xs:justify-end justify-center md:mx-0 mb-1.5 mx-[6px]">
+            <ShineButton
+                as="RouterLink"
+                class-preset="ld-title-font gap-1 px-2 py-0.5"
+                class="confirm"
+                label="Обновить"
+                icon="icon-medium-top-arrow"
+                :to="{ name: 'update-post', params: {slug: post.slug} }"
+            />
         </div>
         <div class="sm-wrap ld-tinted-background sm:hidden flex xs:flex-row flex-col p-1">
             <div class="flex justify-between items-center sm:w-fit w-full">

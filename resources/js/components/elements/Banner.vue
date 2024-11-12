@@ -85,21 +85,21 @@ launchBannerSwitchSlidesAnimation()
     opacity: 0;
 }
 
-.leaves .n1 { animation: falling-leave-animation1 5s infinite linear; }
-.leaves .n2 { animation: falling-leave-animation2 8s infinite linear; animation-delay: 1s; }
-.leaves .n3 { animation: falling-leave-animation3 10s infinite linear; animation-delay: 3s; }
-.leaves .n4 { animation: falling-leave-animation4 5s infinite linear; animation-delay: 5s; }
-.leaves .n5 { animation: falling-leave-animation5 8s infinite linear; }
-.leaves .n6 { animation: falling-leave-animation6 10s infinite linear; animation-delay: 1s; }
-.leaves .n7 { animation: falling-leave-animation7 5s infinite linear; animation-delay: 3s; }
-.leaves .n8 { animation: falling-leave-animation8 8s infinite linear; animation-delay: 5s; }
-.leaves .n9 { animation: falling-leave-animation9 8s infinite linear; }
-.leaves .n10 { animation: falling-leave-animation10 10s infinite linear; animation-delay: 1s; }
-.leaves .n11 { animation: falling-leave-animation11 10s infinite linear; animation-delay: 3s; }
-.leaves .n12 { animation: falling-leave-animation12 8s infinite linear; animation-delay: 5s; }
-.leaves .n13 { animation: falling-leave-animation13 5s infinite linear; }
-.leaves .n14 { animation: falling-leave-animation14 5s infinite linear; animation-delay: 1s; }
-.leaves .n15 { animation: falling-leave-animation15 5s infinite linear; animation-delay: 3s; }
+.leaves .n1 { animation: falling-leave-animation1 5s infinite linear; top: -20%; }
+.leaves .n2 { animation: falling-leave-animation2 8s infinite linear; animation-delay: 1s; top: -20%; }
+.leaves .n3 { animation: falling-leave-animation3 10s infinite linear; animation-delay: 3s; top: -20%; }
+.leaves .n4 { animation: falling-leave-animation4 5s infinite linear; animation-delay: 5s; top: -20%; }
+.leaves .n5 { animation: falling-leave-animation5 8s infinite linear; top: -20%; }
+.leaves .n6 { animation: falling-leave-animation6 10s infinite linear; animation-delay: 1s; top: -20%; }
+.leaves .n7 { animation: falling-leave-animation7 5s infinite linear; animation-delay: 3s; top: -20%; }
+.leaves .n8 { animation: falling-leave-animation8 8s infinite linear; animation-delay: 5s; top: -20%; }
+.leaves .n9 { animation: falling-leave-animation9 8s infinite linear; top: -20%; }
+.leaves .n10 { animation: falling-leave-animation10 10s infinite linear; animation-delay: 1s; top: -20%; }
+.leaves .n11 { animation: falling-leave-animation11 10s infinite linear; animation-delay: 3s; top: -20%; }
+.leaves .n12 { animation: falling-leave-animation12 8s infinite linear; animation-delay: 5s; top: -20%; }
+.leaves .n13 { animation: falling-leave-animation13 5s infinite linear; top: -20%; }
+.leaves .n14 { animation: falling-leave-animation14 5s infinite linear; animation-delay: 1s; top: -20%; }
+.leaves .n15 { animation: falling-leave-animation15 5s infinite linear; animation-delay: 3s; top: -20%; }
 
 @keyframes falling-leave-animation1 {
     from { transform: rotate(0); left: 100%; top: -5%; }

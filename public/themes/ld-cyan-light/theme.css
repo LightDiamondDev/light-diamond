@@ -1189,6 +1189,10 @@
         background-image: url('/images/icons/diamond-apple.png');
     }
 
+    .icon-arrow-up {
+        background-image: url('/images/icons/diamond-arrow-up.png');
+    }
+
     .icon-axolotl-bucket {
         background-image: url('/images/icons/diamond-axolotl-bucket.png');
     }
@@ -1397,8 +1401,8 @@
         background-image: url('/images/icons/diamond-map.png');
     }
 
-    .icon-moon {
-        background-image: url('/images/icons/diamond-moon.png');
+    .icon-medium-top-arrow {
+        background-image: url('/images/icons/diamond-medium-top-arrow.png');
     }
 
     .icon-microsoft-small {
@@ -1411,6 +1415,10 @@
 
     .icon-minus {
         background-image: url('/images/icons/diamond-minus.png');
+    }
+
+    .icon-moon {
+        background-image: url('/images/icons/diamond-moon.png');
     }
 
     .icon-multiply {
