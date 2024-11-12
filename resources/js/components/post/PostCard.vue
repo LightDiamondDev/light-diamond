@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import {type PropType} from 'vue'
-import UserAvatar from '@/components/user/UserAvatar.vue'
 import {type Post} from '@/types'
+
 import {getFullPresentableDate, getRelativeDate} from '@/helpers'
+import useCategoryRegistry from '../../categoryRegistry'
+
+import UserAvatar from '@/components/user/UserAvatar.vue'
 import PostActionBar from '@/components/post/PostActionBar.vue'
 
 const props = defineProps({
@@ -71,7 +74,10 @@ function wasPostUpdated(post: Post) {
                             :class="{ 'sm:flex hidden w-full gap-8': isHorizontalDirection }"
                         >
                             <div class="types flex flex-wrap gap-3 opacity-80">
-                                <p class="type flex items-center">{{ post.version.category.name }}</p>
+                                <p class="type flex items-center">
+                                    <span class="icon flex" :class="useCategoryRegistry().get(post.version?.category).icon"/>
+                                    <span>{{ useCategoryRegistry().get(post.version.category).singularName }}</span>
+                                </p>
                                 <p class="type flex items-center">16x16</p>
                                 <p class="type flex items-center">1.19+</p>
                             </div>
@@ -97,9 +103,10 @@ function wasPostUpdated(post: Post) {
                             </RouterLink>
                             <p
                                 v-tooltip="`${wasPostUpdated(post) ? 'Обновлено' : 'Опубликовано'} ${getFullPresentableDate(post.updated_at)}`"
-                                class="type ago flex items-center text-end opacity-80 cursor-pointer ml-1"
+                                class="type ago flex items-center text-end opacity-80 cursor-pointer gap-1 ml-1"
                             >
-                                {{ getRelativeDate(post.updated_at) }}
+                                <span class="icon-clock icon flex"/>
+                                <span>{{ getRelativeDate(post.updated_at) }}</span>
                             </p>
                         </div>
                     </div>

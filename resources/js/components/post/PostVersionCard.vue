@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import {computed, type PropType, ref} from 'vue'
+import {computed, type PropType} from 'vue'
 import {RouterLink} from 'vue-router'
 import {getFullPresentableDate, getRelativeDate} from '@/helpers'
+import useCategoryRegistry from '@/categoryRegistry'
 
-import {PostVersionActionType as ActionType, type PostVersion, PostVersionStatus, UserRole} from '@/types'
+import {PostVersionActionType as ActionType, type PostVersion, UserRole} from '@/types'
 
 import PostVersionAction from '@/components/post/PostVersionAction.vue'
 import UserAvatar from '@/components/user/UserAvatar.vue'
@@ -41,8 +42,8 @@ const lastAction = computed(() => props.postVersion!.actions!.at(props.postVersi
                 <RouterLink class="post-title-wrap border-0" :to="{ name: 'post-version', params: {id: postVersion.id} }">
                     <h1 class="post-title md:text-[14px] text-[12px]">{{ postVersion.title }}</h1>
                 </RouterLink>
-                <p class="description xs:flex hidden md:text-[10px] text-[8px] opacity-80 mb-0.5">{{ postVersion.description }}</p>
-                <div class="flex flex-wrap items-center md:text-[12px] text-[10px] gap-2 mt-0.5">
+                <p class="description md:flex hidden text-[10px] opacity-80 mb-0.5">{{ postVersion.description }}</p>
+                <div class="flex flex-wrap items-center md:text-[12px] text-[10px] sm:gap-4 gap-2 mt-0.5">
                     <RouterLink v-if="postVersion.author" class="author-wrap flex flex-wrap border-0 gap-1" :to="{ name: 'home' }">
                         <UserAvatar
                             border-class-list="h-7 w-7"
@@ -55,10 +56,15 @@ const lastAction = computed(() => props.postVersion!.actions!.at(props.postVersi
                         <span class="icon-border-profile icon flex"/>
                         <p class="author-username flex items-center">Некто</p>
                     </div>
+                    <div class="flex border-0 gap-1">
+                        <span class="icon flex" :class="useCategoryRegistry().get(postVersion.category).icon"/>
+                        <p class="author-username flex items-center">{{ useCategoryRegistry().get(postVersion.category).singularName }}</p>
+                    </div>
                     <p
-                        class="time-ago time flex items-center md:text-[10px] text-[8px] h-fit gap-2 locked tooltip whitespace-nowrap"
+                        class="time-ago time flex items-center md:text-[10px] text-[8px] h-fit gap-1 locked tooltip whitespace-nowrap"
                         v-tooltip.top="(wasUpdated ? 'Обновлено ' : 'Создано ') + getFullPresentableDate(postVersion!.updated_at!)"
                     >
+                        <span class="icon-clock icon flex"/>
                         <span class="opacity-80">{{ getRelativeDate(postVersion!.updated_at!) }}</span>
                     </p>
                 </div>

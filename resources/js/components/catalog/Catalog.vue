@@ -274,8 +274,8 @@ function scrollToBottom() {
                         </button>
                         <ShineButton
                             :icon="isHorizontalCards ?
-                            'icon-display-detail max-h-[28px] max-w-[28px] min-w-[28px]' :
-                            'icon-display-grid max-h-[28px] max-w-[28px] min-w-[28px]'"
+                            'icon-display-detail max-h-[28px] max-w-[1.75rem] min-w-[1.75rem]' :
+                            'icon-display-grid max-h-[28px] max-w-[1.75rem] min-w-[1.75rem]'"
                             class-preset="p-1"
                             class="m-2.5"
                             @click="isHorizontalCards = !isHorizontalCards"

@@ -42,7 +42,7 @@ const isFirstVersion = computed(() => props.post!.updated_at === props.post!.cre
                 <RouterLink class="post-title-wrap border-0" :to="{ name: 'post', params: {slug: post.slug} }">
                     <h1 class="post-title md:text-[14px] text-[12px]">{{ post.version?.title }}</h1>
                 </RouterLink>
-                <p class="description xs:flex hidden md:text-[10px] text-[8px] opacity-80 mb-0.5">{{ post.version?.description }}</p>
+                <p class="description md:flex hidden text-[10px] opacity-80 mb-0.5">{{ post.version?.description }}</p>
                 <div class="flex flex-wrap items-center md:text-[12px] text-[10px] sm:gap-4 gap-2 mt-0.5">
                     <RouterLink v-if="post.version?.author" class="author-wrap flex flex-wrap border-0 gap-1" :to="{ name: 'home' }">
                         <UserAvatar
