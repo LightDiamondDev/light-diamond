@@ -282,10 +282,9 @@ function putObjectInFormData(obj: Object, formData: FormData, rootKey: string = 
             case Array:
                 for (let i = 0; i < value.length; i++) {
                     const arrayItem = value[i]
+
                     if (arrayItem.constructor === Object) {
-                        for (let arrayItemKey of Object.keys(arrayItem)) {
-                            formData.append(`${key}[${i}][${arrayItemKey}]`, arrayItem[arrayItemKey])
-                        }
+                        putObjectInFormData(arrayItem, formData, `${key}[${i}]`)
                     } else {
                         formData.append(`${key}[${i}]`, arrayItem)
                     }

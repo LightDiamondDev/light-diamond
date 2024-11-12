@@ -34,7 +34,12 @@ class PostVersionFileRule implements ValidationRule
                 $fail("Файл с id $id не относится к данной версии материала.");
             }
         } else {
-            $isPathLocation = array_key_exists('path', $value);
+            $isPathLocation = isset($value['path']);
+            $isUrlLocation = isset($value['url']);
+            if (!$isPathLocation && !$isUrlLocation) {
+                $fail("Не указан ни путь, ни URL файла.");
+                return;
+            }
 
             if ($isPathLocation) {
                 $path = $value['path'];
