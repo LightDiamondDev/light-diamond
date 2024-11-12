@@ -4,6 +4,7 @@ import {CategoryType, GameEdition} from '@/types'
 export interface Category {
     type: CategoryType
     slug: string
+    singularName: string
     name: string
     icon: string
     edition: GameEdition | null
@@ -15,6 +16,7 @@ class CategoryRegistry {
         [CategoryType.BEDROCK_RESOURCE_PACKS]: {
             type: CategoryType.BEDROCK_RESOURCE_PACKS,
             slug: 'resource-packs',
+            singularName: 'Ресурс-Пак',
             name: 'Ресурс-Паки',
             icon: 'icon-axolotl-bucket',
             edition: GameEdition.BEDROCK,
@@ -23,6 +25,7 @@ class CategoryRegistry {
         [CategoryType.BEDROCK_ADDONS]: {
             type: CategoryType.BEDROCK_ADDONS,
             slug: 'addons',
+            singularName: 'Аддон',
             name: 'Аддоны',
             icon: 'icon-spawn-egg',
             edition: GameEdition.BEDROCK,
@@ -31,6 +34,7 @@ class CategoryRegistry {
         [CategoryType.BEDROCK_MAPS]: {
             type: CategoryType.BEDROCK_MAPS,
             slug: 'maps',
+            singularName: 'Карта',
             name: 'Карты',
             icon: 'icon-map',
             edition: GameEdition.BEDROCK,
@@ -39,6 +43,7 @@ class CategoryRegistry {
         [CategoryType.JAVA_RESOURCE_PACKS]: {
             type: CategoryType.JAVA_RESOURCE_PACKS,
             slug: 'resource-packs',
+            singularName: 'Ресурс-Пак',
             name: 'Ресурс-Паки',
             icon: 'icon-axolotl-bucket',
             edition: GameEdition.JAVA,
@@ -47,6 +52,7 @@ class CategoryRegistry {
         [CategoryType.JAVA_DATA_PACKS]: {
             type: CategoryType.JAVA_DATA_PACKS,
             slug: 'data-packs',
+            singularName: 'Дата-Пак',
             name: 'Дата-Паки',
             icon: 'icon-spawn-egg',
             edition: GameEdition.JAVA,
@@ -55,6 +61,7 @@ class CategoryRegistry {
         [CategoryType.JAVA_MODS]: {
             type: CategoryType.JAVA_MODS,
             slug: 'mods',
+            singularName: 'Мод',
             name: 'Моды',
             icon: 'icon-diamond',
             edition: GameEdition.JAVA,
@@ -63,6 +70,7 @@ class CategoryRegistry {
         [CategoryType.JAVA_MAPS]: {
             type: CategoryType.JAVA_MAPS,
             slug: 'maps',
+            singularName: 'Карта',
             name: 'Карты',
             icon: 'icon-map',
             edition: GameEdition.JAVA,
@@ -71,6 +79,7 @@ class CategoryRegistry {
         [CategoryType.SKINS]: {
             type: CategoryType.SKINS,
             slug: 'skins',
+            singularName: 'Скин',
             name: 'Скины',
             icon: 'icon-skin',
             edition: null,
@@ -79,6 +88,7 @@ class CategoryRegistry {
         [CategoryType.ARTICLES]: {
             type: CategoryType.ARTICLES,
             slug: 'articles',
+            singularName: 'Статья',
             name: 'Статьи',
             icon: 'icon-news',
             edition: null,

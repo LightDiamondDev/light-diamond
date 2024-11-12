@@ -70,7 +70,7 @@ loadPosts()
     <section class="section">
         <div class="ld-shadow-text flex flex-col min-h-[100vh]">
             <div class="flex flex-col">
-                <div class="flex md:justify-start justify-center gap-2 p-2">
+                <div class="flex md:justify-start justify-end gap-2 p-2">
 
                     <ShineButton
                         as="RouterLink"

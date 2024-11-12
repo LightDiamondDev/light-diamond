@@ -2,6 +2,7 @@
 import {computed, type PropType} from 'vue'
 import {RouterLink} from 'vue-router'
 import {getFullPresentableDate, getRelativeDate} from '@/helpers'
+import useCategoryRegistry from '../../categoryRegistry'
 
 import {type Post} from '@/types'
 
@@ -42,7 +43,7 @@ const isFirstVersion = computed(() => props.post!.updated_at === props.post!.cre
                     <h1 class="post-title md:text-[14px] text-[12px]">{{ post.version?.title }}</h1>
                 </RouterLink>
                 <p class="description xs:flex hidden md:text-[10px] text-[8px] opacity-80 mb-0.5">{{ post.version?.description }}</p>
-                <div class="flex flex-wrap items-center md:text-[12px] text-[10px] gap-2 mt-0.5">
+                <div class="flex flex-wrap items-center md:text-[12px] text-[10px] sm:gap-4 gap-2 mt-0.5">
                     <RouterLink v-if="post.version?.author" class="author-wrap flex flex-wrap border-0 gap-1" :to="{ name: 'home' }">
                         <UserAvatar
                             border-class-list="h-7 w-7"
@@ -55,10 +56,15 @@ const isFirstVersion = computed(() => props.post!.updated_at === props.post!.cre
                         <span class="icon-border-profile icon flex"/>
                         <p class="author-username flex items-center">Некто</p>
                     </div>
+                    <div class="md:flex hidden border-0 gap-1">
+                        <span class="icon flex" :class="useCategoryRegistry().get(post.version?.category).icon"/>
+                        <p class="author-username flex items-center">{{ useCategoryRegistry().get(post.version.category).singularName }}</p>
+                    </div>
                     <p
-                        class="time-ago time flex items-center md:text-[10px] text-[8px] h-fit gap-2 locked tooltip whitespace-nowrap"
+                        class="time-ago time flex items-center md:text-[10px] text-[8px] h-fit gap-1 locked tooltip whitespace-nowrap"
                         v-tooltip.top="(wasUpdated ? 'Обновлено ' : 'Создано ') + getFullPresentableDate(post!.updated_at!)"
                     >
+                        <span class="icon-clock icon flex"/>
                         <span class="opacity-80">{{ getRelativeDate(post!.updated_at!) }}</span>
                     </p>
                 </div>
@@ -75,17 +81,24 @@ const isFirstVersion = computed(() => props.post!.updated_at === props.post!.cre
                 />
             </div>
         </div>
-        <div class="md:hidden flex xs:justify-end justify-center md:mx-0 mb-1.5 mx-[6px]">
+        <div class="md:hidden flex justify-between md:mx-0 mb-1.5 mx-[6px]">
+            <div class="md:hidden flex items-center text-[12px] border-0 gap-1">
+                <span class="icon flex" :class="useCategoryRegistry().get(post.version?.category).icon"/>
+                <p class="author-username flex items-center">{{ useCategoryRegistry().get(post.version.category).singularName }}</p>
+            </div>
             <ShineButton
                 as="RouterLink"
-                class-preset="ld-title-font gap-1 px-2 py-0.5"
+                class-preset="ld-title-font text-[12px] gap-1 px-2 md:py-0.5"
                 class="confirm"
                 label="Обновить"
                 icon="icon-medium-top-arrow"
                 :to="{ name: 'update-post', params: {slug: post.slug} }"
             />
         </div>
-        <div class="sm-wrap ld-tinted-background sm:hidden flex xs:flex-row flex-col p-1">
+        <div
+            class="sm-wrap ld-tinted-background sm:hidden flex xs:flex-row flex-col p-1 overflow-x-auto overflow-y-hidden"
+            style="scrollbar-width: thin"
+        >
             <div class="flex justify-between items-center sm:w-fit w-full">
                 <PostActionBar class="ld-primary-background-container gap-4" :post="post"/>
             </div>
