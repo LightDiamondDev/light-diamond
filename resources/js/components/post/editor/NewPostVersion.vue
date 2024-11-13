@@ -2,7 +2,7 @@
 import PostEditor from '@/components/post/editor/PostEditor.vue'
 import {ref} from 'vue'
 import axios, {type AxiosError} from 'axios'
-import {convertObjectToFormData, getErrorMessageByCode} from '@/helpers'
+import {getErrorMessageByCode} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
 import OverlayPanel from '@/components/elements/OverlayPanel.vue'
 import {RouterLink, useRouter} from 'vue-router'
@@ -56,9 +56,7 @@ function submit() {
     isSubmitting.value = true
     errors.value = {}
 
-    const formData = convertObjectToFormData(postVersion.value)
-
-    axios.post('/api/post-versions/submit', formData).then((response) => {
+    axios.post('/api/post-versions/submit', postVersion.value).then((response) => {
         if (response.data.success) {
             toastStore.success('Заявка отправлена на рассмотрение.')
             submitOverlayPanel.value?.hide()
@@ -83,9 +81,7 @@ function saveAsDraft() {
     isSavingAsDraft.value = true
     errors.value = {}
 
-    const formData = convertObjectToFormData(postVersion.value)
-
-    axios.post('/api/post-versions', formData).then((response) => {
+    axios.post('/api/post-versions', postVersion.value).then((response) => {
         if (response.data.success) {
             toastStore.success('Заявка сохранена как черновик.')
             const postVersionId = response.data.id

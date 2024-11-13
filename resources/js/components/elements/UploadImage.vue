@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {useToastStore} from '@/stores/toast'
 import {ref} from 'vue'
+import {getErrorMessageByCode} from '@/helpers'
+import axios, {type AxiosError} from 'axios'
 
 const props = defineProps({
     allowedGif: {
@@ -30,7 +32,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-    (e: 'upload', file: File): void
+    (e: 'upload', imagePath: string): void
 }>()
 
 const model = defineModel<string>({default: ''})
@@ -99,28 +101,42 @@ function uploadImage(file: File) {
             return
         }
 
-        emit('upload', file)
-        imageSrc.value = URL.createObjectURL(file)
+        const formData = new FormData()
+        formData.append('image', file)
+        axios.post('/api/upload-image', formData).then((response) => {
+            if (response.data.success) {
+                const imagePath = response.data.image_path
+                const imageUrl = response.data.image_url
+                emit('upload', imagePath)
+                imageSrc.value = imageUrl
+            } else {
+                if (response.data.errors) {
+                    toastStore.error(response.data.errors['image'][0])
+                }
+            }
+        }).catch((error: AxiosError) => {
+            toastStore.error(getErrorMessageByCode(error.response!.status))
+        })
     }
     tempImg.src = URL.createObjectURL(file)
 }
 </script>
 
 <template>
-<label
-    :class="{ 'disabled': !editable, 'cursor-pointer': editable, 'dragover': isDraggingOver, 'loaded': imageSrc }"
-    class="upload-image-container flex justify-center items-center locked"
-    :style="'background-image: url(' + imageSrc + ');'"
-    @dragenter.prevent="onDragEnter"
-    @dragleave="onDragLeave"
-    @dragover.prevent
-    @drop.prevent="onDrop"
-    :for="id"
->
-    <em
-        class="upload-image-info-wrap flex justify-center items-center h-full w-full"
-        :class="{ 'loaded': imageSrc }"
+    <label
+        :class="{ 'disabled': !editable, 'cursor-pointer': editable, 'dragover': isDraggingOver, 'loaded': imageSrc }"
+        class="upload-image-container flex justify-center items-center locked"
+        :style="'background-image: url(' + imageSrc + ');'"
+        @dragenter.prevent="onDragEnter"
+        @dragleave="onDragLeave"
+        @dragover.prevent
+        @drop.prevent="onDrop"
+        :for="id"
     >
+        <em
+            class="upload-image-info-wrap flex justify-center items-center h-full w-full"
+            :class="{ 'loaded': imageSrc }"
+        >
         <span
             class="upload-image-info flex flex-col items-center gap-2 p-4"
         >
@@ -130,7 +146,7 @@ function uploadImage(file: File) {
             </span>
             <span class="text-center">Минимальное разрешение — {{ minWidth }} × {{ minHeight }}</span>
             <span class="text-center">Максимальный размер — {{ maxSizeInMegabytes }} Мб</span>
-            <span class="text-center">{{ allowedImageFormats.join(" / ") }}</span>
+            <span class="text-center">{{ allowedImageFormats.join(' / ') }}</span>
             <input
                 :disabled="!editable"
                 @change="onChange"
@@ -139,8 +155,8 @@ function uploadImage(file: File) {
                 :id="id"
             />
         </span>
-    </em>
-</label>
+        </em>
+    </label>
 </template>
 
 <style scoped>
@@ -152,11 +168,13 @@ function uploadImage(file: File) {
     object-fit: cover;
     width: 100%;
 }
+
 .upload-image-container:active .icon,
 .upload-image-container:hover .icon,
 .upload-image-container.dragover .icon {
     animation: levitation-icon-animation infinite 1s ease;
 }
+
 .upload-image-info-wrap.loaded {
     background: radial-gradient(
         rgba(0, 0, 0, .7),
@@ -169,21 +187,27 @@ function uploadImage(file: File) {
     background-size: 100% 100%;
     pointer-events: none;
 }
+
 em {
     transition: .5s;
 }
+
 em span {
     text-shadow: none;
 }
+
 em:not(.loaded) {
     color: var(--secondary-text-color);
 }
+
 em.loaded span {
     text-shadow: 0 0 8px black;
 }
+
 em.loaded {
     opacity: 0;
 }
+
 em.loaded .upload-image-heading {
     color: var(--hover-text-color);
 }
@@ -191,15 +215,19 @@ em.loaded .upload-image-heading {
 .upload-image-container:hover em.loaded:not(:hover) {
     opacity: 1;
 }
+
 .upload-image-container.loaded:not(.dragover) {
     outline: 0;
 }
+
 .upload-image-container.dragover .upload-image-info-wrap {
     opacity: 1;
 }
+
 .upload-image-container.disabled em {
     display: none;
 }
+
 input {
     height: 0;
     width: 0;

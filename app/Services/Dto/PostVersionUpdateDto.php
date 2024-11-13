@@ -3,7 +3,6 @@
 namespace App\Services\Dto;
 
 use App\Registries\CategoryType;
-use Illuminate\Http\UploadedFile;
 
 readonly class PostVersionUpdateDto
 {
@@ -13,7 +12,7 @@ readonly class PostVersionUpdateDto
     public function __construct(
         public ?CategoryType $category = null,
         public ?string       $title = null,
-        public ?UploadedFile $coverFile = null,
+        public ?string       $cover = null,
         public ?string       $description = null,
         public ?string       $content = null,
         public ?array        $actionDetails = null,

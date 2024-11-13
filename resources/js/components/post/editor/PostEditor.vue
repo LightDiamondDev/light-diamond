@@ -270,7 +270,7 @@ function uploadFile(file: File) {
                         id="upload-post-preview"
                         :image-src="postVersion.cover_url"
                         title="Загрузить обложку"
-                        @upload="(file) => postVersion.cover_file = file"
+                        @upload="(imagePath) => postVersion.cover = imagePath"
                         :max-size-in-megabytes="5"
                         :min-height="432"
                         :min-width="768"

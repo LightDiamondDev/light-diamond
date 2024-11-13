@@ -35,11 +35,12 @@ class UploadImageController extends Controller
             return $this->errorJsonResponse('', $validator->errors());
         }
 
-        $image = $request->file('image');
+        $image     = $request->file('image');
         $imagePath = $image->store('images', ['disk' => 'public']);
 
         return $this->successJsonResponse([
-            'image_url' => url(Storage::url($imagePath))
+            'image_path' => $imagePath,
+            'image_url'  => url(Storage::url($imagePath)),
         ]);
     }
 }

@@ -16,7 +16,7 @@ export function changeTitle(title: string) {
 }
 
 export function countHTMLTag(html: string, tag: string) {
-    return (html.match(new RegExp(tag, 'g')) || []).length;
+    return (html.match(new RegExp(tag, 'g')) || []).length
 }
 
 export function getHeaderHeight() {
@@ -56,11 +56,13 @@ export function getFullPresentableDate(date: Date | string) {
             getMonthName(date.getMonth()) +
             getCheckedYear(date.getFullYear()) + ', ' +
             hours + ':' + minutes
-    } else { return '' }
+    } else {
+        return ''
+    }
 }
 
 export function getRelativeDate(date: Date | string): string {
-    const now= new Date()
+    const now = new Date()
     if (typeof date === 'string') {
         date = new Date(date)
     }
@@ -129,7 +131,7 @@ export function getMonthName(number: number) {
 }
 
 export function getCheckedYear(number: number) {
-    const now= new Date()
+    const now = new Date()
     if (number !== now.getFullYear()) {
         return ','
     } else {
@@ -165,6 +167,7 @@ export function getPostVersionStatusInfo(status: PostVersionStatus) {
 export function getCssVariableValue(variable: string) {
     return getComputedStyle(document.documentElement).getPropertyValue(variable).trim()
 }
+
 export function convertToPixels(value: string) {
     const tempElement = document.createElement('div')
 
@@ -244,59 +247,17 @@ export function isElementInOverflowedContainer(element: HTMLElement) {
     let currentElement = element.parentElement
 
     while (currentElement && currentElement !== document.body) {
-        const overflowX = window.getComputedStyle(currentElement).overflowX;
-        const overflowY = window.getComputedStyle(currentElement).overflowY;
+        const overflowX = window.getComputedStyle(currentElement).overflowX
+        const overflowY = window.getComputedStyle(currentElement).overflowY
 
         if ((overflowX !== 'visible' && currentElement.scrollWidth > currentElement.clientWidth) ||
             (overflowY !== 'visible' && currentElement.scrollHeight > currentElement.clientHeight)
         ) {
-            return true;
+            return true
         }
 
-        currentElement = currentElement.parentElement;
+        currentElement = currentElement.parentElement
     }
 
     return false
-}
-
-export function convertObjectToFormData(obj: Object) {
-    const formData = new FormData()
-    putObjectInFormData(obj, formData)
-
-    return formData
-}
-
-function putObjectInFormData(obj: Object, formData: FormData, rootKey: string = '') {
-    Object.keys(obj).forEach(key => {
-        const value = obj[key]
-        key = rootKey === ''
-            ? key
-            : rootKey + '[' + key + ']'
-
-        if (value === null) {
-            formData.append(key, '')
-            return
-        }
-
-        switch (value.constructor) {
-            case Array:
-                for (let i = 0; i < value.length; i++) {
-                    const arrayItem = value[i]
-
-                    if (arrayItem.constructor === Object) {
-                        putObjectInFormData(arrayItem, formData, `${key}[${i}]`)
-                    } else {
-                        formData.append(`${key}[${i}]`, arrayItem)
-                    }
-                }
-                break
-
-            case Object:
-                putObjectInFormData(value, formData, key)
-                break
-
-            default:
-                formData.append(key, value)
-        }
-    })
 }

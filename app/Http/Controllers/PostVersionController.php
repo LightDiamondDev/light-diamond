@@ -24,7 +24,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\File;
 use Illuminate\Validation\Validator as ValidatorInstance;
 
 class PostVersionController extends Controller
@@ -393,15 +392,14 @@ class PostVersionController extends Controller
                 $file['size'] ?? null,
                 $file['extension'] ?? null,
             ),
-            $request->input('files')
+            $request->input('files', [])
         );
 
         return new NewPostVersionDto(
-            $request->integer('post_id'),
+            $request->input('post_id'),
             Auth::user(),
             $request->enum('category', CategoryType::class),
             $request->string('title'),
-            $request->file('cover_file'),
             $request->string('cover'),
             $request->string('description'),
             $request->string('content'),
@@ -426,7 +424,7 @@ class PostVersionController extends Controller
         return new PostVersionUpdateDto(
             $request->enum('category', CategoryType::class),
             $request->string('title'),
-            $request->file('cover_file'),
+            $request->string('cover'),
             $request->string('description'),
             $request->string('content'),
             $request->input('details'),
@@ -437,8 +435,8 @@ class PostVersionController extends Controller
 
     private function makeNewPostVersionValidator(array $data, array $additionalRules = []): ValidatorInstance
     {
-        $post          = $data['post_id'] ? Post::find($data['post_id']) : null;
-        $categoryType  = $data['category'] ? CategoryType::tryFrom($data['category']) : null;
+        $post          = isset($data['post_id']) ? Post::find($data['post_id']) : null;
+        $categoryType  = isset($data['category']) ? CategoryType::tryFrom($data['category']) : null;
         $category      = $categoryType ? $this->categoryRegistry->get($categoryType) : null;
         $maxFilesCount = $category && $category->isDownloadable() ? self::MAX_FILES_COUNT : 0;
         $minFilesCount = $category && $category->isDownloadable() ? 1 : 0;
@@ -447,23 +445,11 @@ class PostVersionController extends Controller
             [
                 'post_id'      => ['bail', 'integer', new OwnPostRule()],
                 'category'     => ['bail', 'required', 'string', Rule::enum(CategoryType::class)],
-                'cover_file'   => [
-                    'bail',
-                    'required_without:cover',
-                    File::types(['jpeg', 'jpg', 'png']),
-                    File::image()
-                        ->max(self::MAX_COVER_SIZE_MB * 1024)
-                        ->dimensions(
-                            Rule::dimensions()
-                                ->minWidth(self::MIN_COVER_WIDTH)
-                                ->minHeight(self::MIN_COVER_HEIGHT)
-                        ),
-                ],
-                'cover_path'   => ['bail', 'string', new ImageFileExistsRule()],
                 'title'        => ['bail', 'required', 'string', 'max:150'],
+                'cover'        => ['bail', 'required', 'string', new ImageFileExistsRule()],
                 'description'  => ['bail', 'required', 'string', 'max:255'],
                 'content'      => ['bail', 'required', 'string', 'max:65535'],
-                'files'        => ['bail', 'required', 'array', 'max:' . $maxFilesCount, 'min:' . $minFilesCount],
+                'files'        => ['bail', Rule::requiredIf(fn() => $minFilesCount > 0), 'array', 'max:' . $maxFilesCount, 'min:' . $minFilesCount],
                 'files.*.name' => ['bail', 'required', 'string', 'max:100'],
                 'files.*.path' => ['bail', 'nullable', 'required_without:files.*.url', 'string', 'max:255'],
                 'files.*.url'  => ['bail', 'nullable', 'required_without:files.*.path', 'string', 'max:255'],
@@ -476,26 +462,16 @@ class PostVersionController extends Controller
 
     private function makePostVersionUpdateValidator(array $data, PostVersion $version, array $additionalRules = []): ValidatorInstance
     {
-        $categoryType  = $data['category'] ? CategoryType::tryFrom($data['category']) : $version->category;
+        $categoryType  = isset($data['category']) ? CategoryType::tryFrom($data['category']) : $version->category;
         $category      = $categoryType ? $this->categoryRegistry->get($categoryType) : null;
         $maxFilesCount = $category && $category->isDownloadable() ? self::MAX_FILES_COUNT : 0;
         $minFilesCount = $category && $category->isDownloadable() ? 1 : 0;
 
         return Validator::make($data, array_merge(
             [
-                'category'     => ['bail', 'required', 'string', Rule::enum(CategoryType::class)],
-                'cover_file'   => [
-                    'bail',
-                    File::types(['jpeg', 'jpg', 'png']),
-                    File::image()
-                        ->max(self::MAX_COVER_SIZE_MB * 1024)
-                        ->dimensions(
-                            Rule::dimensions()
-                                ->minWidth(self::MIN_COVER_WIDTH)
-                                ->minHeight(self::MIN_COVER_HEIGHT)
-                        ),
-                ],
+                'category'     => ['bail', 'string', Rule::enum(CategoryType::class)],
                 'title'        => ['bail', 'string', 'max:150'],
+                'cover'        => ['bail', 'string', new ImageFileExistsRule()],
                 'description'  => ['bail', 'string', 'max:255'],
                 'content'      => ['bail', 'string', 'max:65535'],
                 'files'        => ['bail', 'array', 'max:' . $maxFilesCount, 'min:' . $minFilesCount],

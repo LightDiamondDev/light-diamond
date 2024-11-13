@@ -8,7 +8,6 @@ import {useToastStore} from '@/stores/toast'
 import {RouterLink, useRouter} from 'vue-router'
 
 import {
-    convertObjectToFormData,
     getAppUrl,
     getErrorMessageByCode,
     getFullPresentableDate,
@@ -171,9 +170,9 @@ function assignModerator(moderator: User) {
 function accept() {
     isAccepting.value = true
 
-    const formData = convertObjectToFormData({...postVersion.value, ...{slug: slug.value}})
+    const data = {...postVersion.value, slug: slug.value}
 
-    axios.patch(`/api/post-versions/${props.id}/accept`, formData).then((response) => {
+    axios.patch(`/api/post-versions/${props.id}/accept`, data).then((response) => {
         if (response.data.success) {
             toastStore.success('Материал успешно опубликован!')
             acceptOverlayPanel.value?.hide()
@@ -197,9 +196,7 @@ function accept() {
 function submit() {
     isSubmitting.value = true
 
-    const formData = convertObjectToFormData(postVersion.value)
-
-    axios.patch(`/api/post-versions/${props.id}/submit`, formData).then((response) => {
+    axios.patch(`/api/post-versions/${props.id}/submit`, postVersion.value).then((response) => {
         if (response.data.success) {
             toastStore.success('Заявка отправлена на рассмотрение.')
             submitOverlayPanel.value?.hide()
@@ -226,9 +223,9 @@ function reconsider() {
 function reject() {
     isRejecting.value = true
 
-    const formData = convertObjectToFormData({...postVersion.value, details: rejectDetails})
+    const data = {...postVersion.value, details: rejectDetails}
 
-    axios.patch(`/api/post-versions/${props.id}/reject`, formData).then((response) => {
+    axios.patch(`/api/post-versions/${props.id}/reject`, data).then((response) => {
         if (response.data.success) {
             toastStore.warning('Заявка была отклонена.', 'Отклонено')
             rejectOverlayPanel.value?.hide()
@@ -252,9 +249,9 @@ function reject() {
 function requestChanges() {
     isRequestingChanges.value = true
 
-    const formData = convertObjectToFormData({...postVersion.value, details: requestChangesDetails})
+    const data = {...postVersion.value, details: requestChangesDetails}
 
-    axios.patch(`/api/post-versions/${props.id}/request-changes`, formData).then((response) => {
+    axios.patch(`/api/post-versions/${props.id}/request-changes`, data).then((response) => {
         if (response.data.success) {
             toastStore.success('Заявка возвращена на доработку.')
             revisionOverlayPanel.value?.hide()
@@ -278,9 +275,7 @@ function requestChanges() {
 function updateDraft() {
     isUpdatingDraft.value = true
 
-    const formData = convertObjectToFormData(postVersion.value)
-
-    axios.patch(`/api/post-versions/${props.id}`, formData).then((response) => {
+    axios.patch(`/api/post-versions/${props.id}`, postVersion.value).then((response) => {
         if (response.data.success) {
             toastStore.success('Изменения успешно сохранены.')
         } else {

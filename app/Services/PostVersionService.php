@@ -13,7 +13,6 @@ use App\Services\Dto\PostVersionFileDto;
 use App\Services\Dto\PostVersionUpdateDto;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -156,7 +155,7 @@ readonly class PostVersionService
         $postVersion->author()->associate($dto->author);
         $postVersion->category    = $dto->category;
         $postVersion->title       = $dto->title;
-        $postVersion->cover       = $dto->coverFile ? $this->saveCover($dto->coverFile) : $dto->cover;
+        $postVersion->cover       = $dto->cover;
         $postVersion->description = $dto->description;
         $postVersion->content     = $dto->content;
         $postVersion->status      = $status;
@@ -181,8 +180,8 @@ readonly class PostVersionService
         if ($dto->title !== null) {
             $postVersion->title = $dto->title;
         }
-        if ($dto->coverFile !== null) {
-            $postVersion->cover = $this->saveCover($dto->coverFile);
+        if ($dto->cover !== null) {
+            $postVersion->cover = $dto->cover;
         }
         if ($dto->description !== null) {
             $postVersion->description = $dto->description;
@@ -231,12 +230,6 @@ readonly class PostVersionService
 
         $postVersion->status = $status;
         $postVersion->save();
-    }
-
-    private function saveCover(UploadedFile $coverFile): string
-    {
-        $coverPath = $coverFile->store('images', ['disk' => 'public']);
-        return str_replace('public/', '', $coverPath);
     }
 
     private function saveNewPostVersionFile(PostVersion $postVersion, PostVersionFileDto $fileDto): void
