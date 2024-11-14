@@ -71,7 +71,7 @@ function wasPostUpdated(post: Post) {
                     >
                         <div
                             class="material-info info flex flex-wrap justify-between px-2"
-                            :class="{ 'sm:flex hidden w-full gap-8': isHorizontalDirection }"
+                            :class="{'sm:flex hidden w-full gap-8': isHorizontalDirection, 'gap-2': !isHorizontalDirection }"
                         >
                             <div class="types flex flex-wrap gap-3 opacity-80">
                                 <p class="type flex items-center">
@@ -106,7 +106,7 @@ function wasPostUpdated(post: Post) {
                                 class="type ago flex items-center text-end opacity-80 cursor-pointer gap-1 ml-1"
                             >
                                 <span class="icon-clock icon flex"/>
-                                <span>{{ getRelativeDate(post.updated_at) }}</span>
+                                <span class="xs:w-auto w-[60px]">{{ getRelativeDate(post.updated_at) }}</span>
                             </p>
                         </div>
                     </div>

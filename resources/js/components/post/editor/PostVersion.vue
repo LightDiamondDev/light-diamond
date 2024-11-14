@@ -600,7 +600,7 @@ loadPostVersion()
                 <p class="flex text-[10px]">{{ postUrl }}</p>
             </template>
             <template v-else>
-                Вы точно хотите опубликовать (обновить) материал?
+                Вы точно хотите опубликовать [обновить] Материал?
             </template>
 
             <div class="flex gap-2">

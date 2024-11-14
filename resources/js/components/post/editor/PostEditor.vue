@@ -358,14 +358,20 @@ function uploadFile(file: File) {
                         <span>Файлы на скачивание</span>
                         <span>{{ ' [ ' + files.length + ' / 3 ]' }}</span>
                     </h4>
-                    <UploadedPostVersionFile
-                        v-for="file in files"
-                        :key="file.path || file.url"
-                        :file="file"
-                        :disabled="!editable"
-                        :editable="editable"
-                        @remove="files.splice(files.indexOf(file), 1)"
-                    />
+                    <template v-for="file in files" :key="file.path || file.url">
+                        <UploadedPostVersionFile
+                            :file="file"
+                            :disabled="!editable"
+                            :editable="editable"
+                            @remove="files.splice(files.indexOf(file), 1)"
+                        />
+                        <span
+                            :class="{ 'error': errors['username'], 'success': !errors['username']}"
+                            class="status text-[0.8rem] m-2"
+                        >
+                            {{ errors['files']?.[0] || '&nbsp;' }}
+                        </span>
+                    </template>
                 </div>
 
                 <div v-if="category?.isDownloadable && editable && files.length < 3"
@@ -385,7 +391,7 @@ function uploadFile(file: File) {
                         <span class="icon-link-square icon"/>
                         <span class="head-font ld-secondary-text text-center md:text-[16px] text-[14px] duration-200">Указать ссылку</span>
                     </em>
-                    <div class="flex flex-col gap-4 mt-4">
+                    <form class="flex flex-col gap-4 mt-4" @submit.prevent="addFileUrl">
                         <Input
                             v-model="currentFileUrlName"
                             class="ld-primary-background ld-primary-border ld-primary-text
@@ -409,14 +415,14 @@ function uploadFile(file: File) {
                             placeholder="Ссылка на Файл"
                         />
                         <ShineButton
+                            button-type="submit"
                             class="flex items-center"
                             class-wrap="ld-primary-background"
                             class-preset="ld-primary-text ld-title-font justify-center xs:text-[14px] text-[12px] gap-1 py-0.5"
                             label="Добавить Ссылку"
                             icon="icon-tick"
-                            @click="addFileUrl"
                         />
-                    </div>
+                    </form>
                     <p class="error flex justify-center w-full my-2">{{ errors['files']?.[0] || ' ' }}</p>
                 </div>
 

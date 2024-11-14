@@ -130,9 +130,7 @@ function download() {
                             :min-length="3"
                             placeholder="Название Файла"
                         />
-                        <span class="xs:flex hidden md:text-[14px] text-[12px] opacity-80 pl-2">{{
-                                file.extension
-                            }}</span>
+                        <span class="xs:flex hidden md:text-[14px] text-[12px] opacity-80 pl-2">{{ file.extension }}</span>
                     </span>
                     <span
                         class="uploaded-file-info flex flex-col justify-center
@@ -202,8 +200,8 @@ function download() {
                     <span class="uploaded-file-url-input flex items-center md:h-[64px] h-[48px]">
                         <Input
                             v-model="urlSize"
-                            class="ld-tinted-background ld-primary-border sm:text-[14px] text-[12px]
-                                md:h-[48px] h-[40px] w-full"
+                            class="ld-tinted-background ld-primary-border-bottom ld-primary-border-top
+                                ld-primary-border-left sm:text-[14px] text-[12px] md:h-[48px] h-[40px] w-full"
                             id="post-version-file-name"
                             :max-length="8"
                             :min-length="3"
@@ -212,8 +210,8 @@ function download() {
                         />
                         <Select
                             button-classes="ld-primary-background ld-primary-border ld-title-font w-full
-                                whitespace-nowrap text-[14px]"
-                            options-classes="ld-primary-background ld-primary-border top-[50px]"
+                                whitespace-nowrap text-[14px] md:h-[48px] h-[40px]"
+                            options-classes="ld-primary-background ld-primary-border md:top-[46px] top-[38px]"
                             option-classes="text-[14px] md:min-h-[48px] min-h-[40px] gap-4 sm:pl-6 pl-2"
                             class="post-edition flex items-center w-[200px]"
                             v-model="fileSizeUnit"
@@ -225,12 +223,11 @@ function download() {
                             <template #option-icon/>
                         </Select>
                     </span>
-                    <div class="flex sm:flex-row flex-col gap-2 mb-2" style="z-index: 1">
-
+                    <div class="flex sm:flex-row flex-col gap-2 my-2" style="z-index: 1">
                         <Select
                             button-classes="ld-primary-background ld-primary-border ld-title-font w-full
-                                whitespace-nowrap text-[14px]"
-                            options-classes="ld-primary-background ld-primary-border top-[50px]"
+                                whitespace-nowrap text-[14px] md:h-[48px] h-[40px]"
+                            options-classes="ld-primary-background ld-primary-border md:top-[46px] top-[38px]"
                             option-classes="text-[14px] md:min-h-[48px] min-h-[40px] gap-4 sm:pl-6 pl-2"
                             class="post-edition flex items-center w-full"
                             placeholder="Расширение Файла"
