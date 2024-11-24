@@ -23,6 +23,7 @@ const props = defineProps({
 const emit = defineEmits(['remove'])
 
 const urlSize = ref<number|undefined>(props.file!.size ? props.file!.size / 1024 : undefined)
+
 enum FileSizeUnit {
     KB = 'КБ',
     MB = 'МБ'
@@ -34,7 +35,7 @@ const fileSizeUnits = [
 ]
 
 function updateUrlFileSize() {
-    props.file!.size = urlSize.value * 1024
+    props.file!.size = Math.round(urlSize.value * 1024)
     if (fileSizeUnit.value === FileSizeUnit.MB) {
         props.file!.size *= 1024
     }
@@ -173,7 +174,7 @@ function download() {
                             {{ `${file.extension ? file.extension.toUpperCase() + ' — ' : ''}` + `${file.size ? fileSizeLabel + ' — ' : ''}` + file.url }}
                         </span>
                     </span>
-                    <span class="uploaded-file-name-input flex items-center md:min-h-[64px] min-h-[48px]">
+                    <span v-else class="uploaded-file-name-input flex items-center md:min-h-[64px] min-h-[48px]">
                         <Input
                             v-model="file.name"
                             class="ld-tinted-background ld-primary-border sm:text-[14px] text-[12px]
@@ -184,7 +185,7 @@ function download() {
                             placeholder="Название Файла"
                         />
                     </span>
-                    <span class="uploaded-file-url-input flex items-center md:h-[64px] h-[48px]">
+                    <span v-if="isEditingLink" class="uploaded-file-url-input flex items-center md:h-[64px] h-[48px]">
                         <Input
                             v-model="file.url"
                             class="ld-tinted-background ld-primary-border sm:text-[14px] text-[12px]
@@ -205,8 +206,9 @@ function download() {
                             id="post-version-file-name"
                             :max-length="8"
                             :min-length="3"
+                            numeric
                             placeholder="Вес Файла"
-                            @change="updateUrlFileSize"
+                            @change.prevent="updateUrlFileSize"
                         />
                         <Select
                             button-classes="ld-primary-background ld-primary-border ld-title-font w-full

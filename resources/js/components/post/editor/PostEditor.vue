@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import axios, {type AxiosError} from 'axios'
 import {computed, type PropType, ref} from 'vue'
 import {GameEdition, type PostVersion, type User} from '@/types'
+import {getErrorMessageByCode} from '@/helpers'
 import useCategoryRegistry from '@/categoryRegistry'
 import usePreferenceManager from '@/preference-manager'
+import {useToastStore} from '@/stores/toast'
 
 import {Blockquote} from '@tiptap/extension-blockquote'
 import {Document} from '@tiptap/extension-document'
@@ -17,20 +20,17 @@ import {Underline} from '@tiptap/extension-underline'
 
 import CharacterCount from '@tiptap/extension-character-count'
 
+import Button from '@/components/elements/Button.vue'
 import Editor from '@/components/elements/editor/Editor.vue'
+import InputError from '@/components/elements/InputError.vue'
 import Input from '@/components/elements/Input.vue'
 import Select from '@/components/elements/Select.vue'
+import ShineButton from '@/components/elements/ShineButton.vue'
 import Textarea from '@/components/elements/Textarea.vue'
-import Button from '@/components/elements/Button.vue'
 import UploadImage from '@/components/elements/UploadImage.vue'
 import UploadFile from '@/components/elements/UploadFile.vue'
 import UploadedPostVersionFile from '@/components/post/editor/UploadedPostVersionFile.vue'
 import UserAvatar from '@/components/user/UserAvatar.vue'
-
-import axios, {type AxiosError} from 'axios'
-import {getErrorMessageByCode} from '@/helpers'
-import {useToastStore} from '@/stores/toast'
-import ShineButton from '@/components/elements/ShineButton.vue'
 
 defineProps({
     author: {
@@ -358,19 +358,19 @@ function uploadFile(file: File) {
                         <span>Файлы на скачивание</span>
                         <span>{{ ' [ ' + files.length + ' / 3 ]' }}</span>
                     </h4>
-                    <template v-for="file in files" :key="file.path || file.url">
+                    <template v-for="(file, i) in files">
                         <UploadedPostVersionFile
                             :file="file"
                             :disabled="!editable"
                             :editable="editable"
                             @remove="files.splice(files.indexOf(file), 1)"
                         />
-                        <span
-                            :class="{ 'error': errors['username'], 'success': !errors['username']}"
-                            class="status text-[0.8rem] m-2"
-                        >
-                            {{ errors['files']?.[0] || '&nbsp;' }}
-                        </span>
+                        <InputError class="text-[0.8rem] m-2" :error="errors[`files.${i}`]?.[0]"/>
+                        <InputError class="text-[0.8rem] m-2" :error="errors[`files.${i}.name`]?.[0]" fieldName="Название"/>
+                        <InputError class="text-[0.8rem] m-2" :error="errors[`files.${i}.path`]?.[0]" fieldName="Путь"/>
+                        <InputError class="text-[0.8rem] m-2" :error="errors[`files.${i}.url`]?.[0]" fieldName="URL"/>
+                        <InputError class="text-[0.8rem] m-2" :error="errors[`files.${i}.extension`]?.[0]" fieldName="Расширение"/>
+                        <InputError class="text-[0.8rem] m-2" :error="errors[`files.${i}.size`]?.[0]" fieldName="Размер"/>
                     </template>
                 </div>
 

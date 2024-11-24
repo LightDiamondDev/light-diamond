@@ -560,8 +560,9 @@ loadPostVersion()
         <div v-else class="unavailable-post flex justify-center items-center">
             <div class="unavailable-post-container flex flex-col items-center">
                 <h1 class="text-4xl font-bold text-center mt-8">Заявка на публикацию недоступна</h1>
-                <p class="text-muted text-center mt-4">Текущая заявка на публикацию не существует, либо у Вас нет к ней
-                    доступа.</p>
+                <p class="text-muted text-center mt-4">
+                    Текущая заявка на публикацию не существует, либо у Вас нет к ней доступа.
+                </p>
                 <div class="mob phantom flex justify-center items-center full-locked">
                     <div class="animation-flying-phantom"></div>
                 </div>

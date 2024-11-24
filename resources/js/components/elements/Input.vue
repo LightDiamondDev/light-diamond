@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import {computed, ref} from 'vue'
 
-const isPasswordHidden = ref(true)
-const model = defineModel<string>({default: ''})
-const currentType = computed(
-    () => props.type !== 'password' ? props.type : (isPasswordHidden.value ? 'password' : 'text')
-)
-
 const props = defineProps({
+    allowFloat: {
+        type: Boolean,
+        default: false
+    },
     autocomplete: {
         type: String
     },
@@ -15,6 +13,10 @@ const props = defineProps({
     inputClasses: String,
     maxLength: Number,
     minLength: Number,
+    numeric: {
+        type: Boolean,
+        default: false
+    },
     type: {
         type: String,
         validator: (val) => ['email', 'file', 'password', 'text'].includes(val),
@@ -22,12 +24,42 @@ const props = defineProps({
     },
     placeholder: String
 })
+
+const isPasswordHidden = ref(true)
+const model = defineModel<number|string|undefined>({default: undefined})
+const inputValue = ref<string>()
+const prevInputValue = ref<string>()
+const currentType = computed(
+    () => props.type !== 'password' ? props.type : (isPasswordHidden.value ? 'password' : 'text')
+)
+
+function onInput() {
+    if (props.numeric) {
+        if (inputValue.value === '') {
+            prevInputValue.value = ''
+            model.value = undefined
+            return
+        }
+        let dottedInputValue = inputValue.value!.replace(',', '.')
+        if (/^[0-9]+\.?[0-9]*$/.test(dottedInputValue)) {
+            prevInputValue.value = inputValue.value
+            model.value = parseFloat(dottedInputValue)
+            console.log(model.value)
+        } else {
+            inputValue.value = prevInputValue.value
+        }
+    }
+    else {
+        model.value = inputValue.value
+    }
+}
+inputValue.value = String(model.value ?? '')
 </script>
 
 <template>
     <label class="flex items-center" :for="id">
         <input
-            v-model="model"
+            v-model="inputValue"
             :autocomplete="autocomplete"
             :class="inputClasses"
             :id="id"
@@ -35,6 +67,7 @@ const props = defineProps({
             :minlength="minLength"
             :placeholder="placeholder"
             :type="currentType"
+            @input="onInput"
         >
         <button
             v-if="type === 'password'"
