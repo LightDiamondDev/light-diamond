@@ -27,8 +27,8 @@ const props = defineProps({
 
 const isPasswordHidden = ref(true)
 const model = defineModel<number|string|undefined>({default: undefined})
-const inputValue = ref<string>()
-const prevInputValue = ref<string>()
+const inputValue = ref(typeof model.value === 'number' ? parseFloat(model.value.toFixed(2)).toLocaleString() : String(model.value ?? ''))
+const prevInputValue = ref(inputValue.value)
 const currentType = computed(
     () => props.type !== 'password' ? props.type : (isPasswordHidden.value ? 'password' : 'text')
 )
@@ -44,7 +44,6 @@ function onInput() {
         if (/^[0-9]+\.?[0-9]*$/.test(dottedInputValue)) {
             prevInputValue.value = inputValue.value
             model.value = parseFloat(dottedInputValue)
-            console.log(model.value)
         } else {
             inputValue.value = prevInputValue.value
         }
@@ -53,7 +52,6 @@ function onInput() {
         model.value = inputValue.value
     }
 }
-inputValue.value = String(model.value ?? '')
 </script>
 
 <template>

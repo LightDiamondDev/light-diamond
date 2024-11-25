@@ -33,7 +33,7 @@ const fileSizeLabel = computed(() => {
         return Math.ceil(kilobytes) + ' КБ'
     } else {
         const megabytes = kilobytes / 1024
-        return megabytes.toFixed(2).toLocaleString() + ' МБ'
+        return parseFloat(megabytes.toFixed(2)).toLocaleString() + ' МБ'
     }
 })
 

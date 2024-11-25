@@ -22,13 +22,20 @@ const props = defineProps({
 
 const emit = defineEmits(['remove'])
 
-const urlSize = ref<number|undefined>(props.file!.size ? props.file!.size / 1024 : undefined)
+const fileSizeInKB = computed(() => props.file!.size / 1024)
+const fileSizeInMB = computed(() => fileSizeInKB.value / 1024)
+
+const urlSize = ref<number|undefined>(
+    props.file!.size
+        ? fileSizeInKB.value < 1000 ? fileSizeInKB.value : fileSizeInMB.value
+        : undefined
+)
 
 enum FileSizeUnit {
     KB = 'КБ',
     MB = 'МБ'
 }
-const fileSizeUnit = ref<FileSizeUnit>(FileSizeUnit.KB)
+const fileSizeUnit = ref<FileSizeUnit>(fileSizeInKB.value < 1000 ? FileSizeUnit.KB : FileSizeUnit.MB)
 const fileSizeUnits = [
     FileSizeUnit.KB,
     FileSizeUnit.MB
@@ -58,13 +65,10 @@ const fileSizeLabel = computed(() => {
         return ''
     }
 
-    const kilobytes = props.file!.size / 1024
-
-    if (kilobytes < 1000) {
-        return Math.ceil(kilobytes) + ' КБ'
+    if (fileSizeInKB.value < 1000) {
+        return Math.ceil(fileSizeInKB.value) + ' КБ'
     } else {
-        const megabytes = kilobytes / 1024
-        return megabytes.toFixed(2).toLocaleString() + ' МБ'
+        return parseFloat(fileSizeInMB.value.toFixed(2)).toLocaleString() + ' МБ'
     }
 })
 
