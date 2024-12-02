@@ -17,13 +17,18 @@ const props = defineProps({
 })
 
 const model = defineModel<number>({default: 1})
+
+// КОСТЫЛЬ: computed-переменная `pageRange` не может быть обновлена напрямую, когда изменяется модель,
+// поэтому мы вынуждены добавлять другую переменную текущего номера страницы.
+
 // HACK: computed `pageRange` cannot be updated immediately when the model changes,
 // so we had to add another variable of the current page number.
+
 const currentPageNumber = ref(model.value)
 const maxPageNumber = computed(() => Math.ceil(props.totalRecords / props.recordsAtPage))
 
 const pageRange = computed(() => {
-    const rangeSize = Math.min(maxPageNumber.value, 3)
+    const rangeSize = Math.min(maxPageNumber.value, 5)
     let start = Math.max(currentPageNumber.value - Math.floor(rangeSize / 2), 1)
     let end = start + rangeSize - 1
     if (end > maxPageNumber.value) {

@@ -86,9 +86,9 @@ const loadData = computed(() => ({
     edition: props.edition!,
     category: props.category?.type,
     page: currentPageNumber.value,
-    per_page: 1,
-    sort_type: sortType.value,
     period: loadPeriod.value,
+    per_page: 15,
+    sort_type: sortType.value,
 }))
 
 usePreferenceManager().setEdition(props.edition!)
@@ -267,8 +267,8 @@ loadPosts()
                         </button>
                         <ShineButton
                             :icon="isHorizontalCards ?
-                            'icon-display-detail max-h-[28px] max-w-[28px] min-w-[28px]' :
-                            'icon-display-grid max-h-[28px] max-w-[28px] min-w-[28px]'"
+                            'icon-display-detail max-h-[28px] max-w-[28px] min-w-[1rem]' :
+                            'icon-display-grid max-h-[28px] max-w-[28px] min-w-[1rem]'"
                             class-preset="p-1"
                             class="m-2.5"
                             @click="isHorizontalCards = !isHorizontalCards"

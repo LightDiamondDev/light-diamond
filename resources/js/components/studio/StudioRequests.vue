@@ -30,6 +30,7 @@ const isLoading = ref(false)
 
 const postVersions = ref<PostVersion[]>([])
 const totalRecords = ref(0)
+const currentPageNumber = ref(1)
 
 const loadRequestData = reactive({
     status: PostVersionStatus.DRAFT,
@@ -61,14 +62,6 @@ function loadPostVersions() {
     }).finally(() => {
         isLoading.value = false
     })
-}
-
-function onPageChange(event: PageChangeEvent) {
-    const selectedPage = event.pageNumber
-    if (selectedPage !== loadRequestData.page) {
-        loadRequestData.page = selectedPage
-        loadPostVersions()
-    }
 }
 
 function onTabChange(event: TabMenuChangeEvent) {
@@ -140,10 +133,11 @@ loadPostVersions()
         </div>
         <div class="flex sticky bottom-[0]" style="z-index: 1">
             <Paginator
+                v-model="currentPageNumber"
                 class="ld-primary-background ld-fixed-background ld-primary-border-top h-[48px] w-full"
                 :records-at-page="loadRequestData.per_page"
-                :totalRecords="totalRecords"
-                @page-change="onPageChange"
+                :total-records="totalRecords"
+                @update:model-value="loadPostVersions"
             />
         </div>
     </section>
