@@ -23,7 +23,7 @@ const currentPageNumber = ref(model.value)
 const maxPageNumber = computed(() => Math.ceil(props.totalRecords / props.recordsAtPage))
 
 const pageRange = computed(() => {
-    const rangeSize = Math.min(maxPageNumber.value, 5)
+    const rangeSize = Math.min(maxPageNumber.value, 3)
     let start = Math.max(currentPageNumber.value - Math.floor(rangeSize / 2), 1)
     let end = start + rangeSize - 1
     if (end > maxPageNumber.value) {
@@ -222,11 +222,11 @@ function changePage(pageNumber: number) {
 }
 
 .slide-left-enter-from {
-    transform: translateX(-48px); /* Начальная позиция для входа */
+    transform: translateX(-48px);
 }
 
 .slide-left-leave-to {
-    transform: translateX(48px); /* Позиция для ухода */
+    transform: translateX(48px);
     opacity: 0;
 }
 
