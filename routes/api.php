@@ -33,6 +33,7 @@ Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 
 Route::get('/posts', [PostController::class, 'get']);
 Route::get('/posts/{slug}', [PostController::class, 'getBySlug']);
+Route::get('/users/{userId}/posts', [PostController::class, 'getByUser'])->where('userId', '[0-9]+');
 
 Route::get('/posts/{postId}/comments', [PostCommentController::class, 'getByPostId'])->where('postId', '[0-9]+');
 
@@ -55,7 +56,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/post-versions/{id}/submit', [PostVersionController::class, 'submit'])->where('id', '[0-9]+');
 
     Route::get('/users/{userId}/post-versions', [PostVersionController::class, 'getByUser'])->where('userId', '[0-9]+');
-    Route::get('/users/{userId}/posts', [PostController::class, 'getByUser'])->where('userId', '[0-9]+');
 
     Route::post('/posts/{postId}/likes', [PostLikeController::class, 'like'])->where('postId', '[0-9]+');
     Route::delete('/posts/{postId}/likes', [PostLikeController::class, 'unlike'])->where('postId', '[0-9]+');
