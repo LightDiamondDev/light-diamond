@@ -7,7 +7,7 @@ import {computed, reactive, ref} from 'vue'
 import {type Post, type PostVersion, PostVersionStatus} from '@/types'
 import PostVersionCard from '@/components/post/PostVersionCard.vue'
 
-import Paginator, {type PageChangeEvent} from '@/components/elements/Paginator.vue'
+import Paginator from '@/components/elements/Paginator.vue'
 import TabMenu, {type TabMenuChangeEvent} from '@/components/elements/TabMenu.vue'
 import {useAuthStore} from '@/stores/auth'
 
@@ -30,7 +30,6 @@ const isLoading = ref(false)
 
 const postVersions = ref<PostVersion[]>([])
 const totalRecords = ref(0)
-const currentPageNumber = ref(1)
 
 const loadRequestData = reactive({
     status: PostVersionStatus.DRAFT,
@@ -133,7 +132,7 @@ loadPostVersions()
         </div>
         <div class="flex sticky bottom-[0]" style="z-index: 1">
             <Paginator
-                v-model="currentPageNumber"
+                v-model="loadRequestData.page"
                 class="ld-primary-background ld-fixed-background ld-primary-border-top h-[48px] w-full"
                 :records-at-page="loadRequestData.per_page"
                 :total-records="totalRecords"

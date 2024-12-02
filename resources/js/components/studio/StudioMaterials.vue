@@ -28,7 +28,6 @@ const toastStore = useToastStore()
 
 const posts = ref<Post[]>([])
 const totalRecords = ref(0)
-const currentPageNumber = ref(1)
 
 const loadRequestData = reactive({
     page: 1,
@@ -122,11 +121,10 @@ loadPosts()
                     </div>
                 </div>
             </div>
-
         </div>
         <div class="flex sticky bottom-[0]" style="z-index: 1">
             <Paginator
-                v-model="currentPageNumber"
+                v-model="loadRequestData.page"
                 class="ld-primary-background ld-fixed-background ld-primary-border-top h-[48px] w-full"
                 :records-at-page="loadRequestData.per_page"
                 :total-records="totalRecords"
