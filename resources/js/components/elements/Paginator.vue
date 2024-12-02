@@ -16,20 +16,42 @@ const props = defineProps({
     }
 })
 
-const currentPageNumber = defineModel<number>({ default: 1 })
+const model = defineModel<number>({default: 1})
+// HACK: computed `pageRange` cannot be updated immediately when the model changes,
+// so we had to add another variable of the current page number.
+const currentPageNumber = ref(model.value)
 const maxPageNumber = computed(() => Math.ceil(props.totalRecords / props.recordsAtPage))
 
 const pageRange = computed(() => {
-    const rangeSize = Math.min(maxPageNumber.value, 5);
+    const rangeSize = Math.min(maxPageNumber.value, 5)
     let start = Math.max(currentPageNumber.value - Math.floor(rangeSize / 2), 1)
     let end = start + rangeSize - 1
     if (end > maxPageNumber.value) {
-        end = maxPageNumber.value;
-        start = Math.max(end - rangeSize + 1, 1);
+        end = maxPageNumber.value
+        start = Math.max(end - rangeSize + 1, 1)
     }
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i)
+    return Array.from({length: end - start + 1}, (_, i) => start + i)
 })
 
+enum PaginatorTransition {
+    SLIDE_RIGHT = 'slide-right',
+    SLIDE_LEFT = 'slide-left',
+}
+
+const transition = ref<PaginatorTransition>(PaginatorTransition.SLIDE_RIGHT)
+const isTransitionEnabled = ref(true)
+
+function changePage(pageNumber: number) {
+    const oldFirstPageRangeNumber = pageRange.value[0]
+
+    transition.value = pageNumber > currentPageNumber.value
+        ? PaginatorTransition.SLIDE_RIGHT
+        : PaginatorTransition.SLIDE_LEFT
+
+    currentPageNumber.value = pageNumber
+    model.value = pageNumber
+    isTransitionEnabled.value = pageRange.value[0] !== oldFirstPageRangeNumber
+}
 </script>
 
 <template>
@@ -37,7 +59,7 @@ const pageRange = computed(() => {
         <button
             class="flex relative"
             :class="{ 'disabled': currentPageNumber < 2 }"
-            @click="currentPageNumber = 1"
+            @click="changePage(1)"
             :disabled="currentPageNumber < 2"
             type="button"
         >
@@ -47,7 +69,7 @@ const pageRange = computed(() => {
         <button
             class="flex"
             :class="{ 'disabled': currentPageNumber < 2 }"
-            @click="currentPageNumber--"
+            @click="changePage(currentPageNumber - 1)"
             :disabled="currentPageNumber < 2"
             type="button"
         >
@@ -55,22 +77,27 @@ const pageRange = computed(() => {
         </button>
 
         <div class="flex justify-center overflow-hidden">
-            <div class="paginator-switching flex justify-center items-center">
-                <button
-                    v-for="i in pageRange"
-                    class="page-number flex"
-                    :class="{ 'selector-color-animation': i === currentPageNumber }"
-                    @click="currentPageNumber = i"
-                >
-                    {{ i }}
-                </button>
-            </div>
+            <TransitionGroup :name="transition" :css="isTransitionEnabled">
+                <template v-for="item in [pageRange]" :key="item">
+                    <div class="paginator-switching flex justify-center items-center">
+                        <button
+                            v-for="i in pageRange"
+                            :key="i + Math.random()"
+                            class="page-number flex"
+                            :class="{ 'selector-color-animation': i === currentPageNumber }"
+                            @click="changePage(i)"
+                        >
+                            {{ i }}
+                        </button>
+                    </div>
+                </template>
+            </TransitionGroup>
         </div>
 
         <button
             class="flex"
             :class="{ 'disabled': currentPageNumber >= maxPageNumber }"
-            @click="currentPageNumber++"
+            @click="changePage(currentPageNumber + 1)"
             :disabled="currentPageNumber >= maxPageNumber"
             type="button"
         >
@@ -79,7 +106,7 @@ const pageRange = computed(() => {
         <button
             class="flex relative"
             :class="{ 'disabled': currentPageNumber >= maxPageNumber }"
-            @click="currentPageNumber = maxPageNumber"
+            @click="changePage(maxPageNumber)"
             :disabled="currentPageNumber >= maxPageNumber"
             type="button"
         >
@@ -94,44 +121,55 @@ const pageRange = computed(() => {
     justify-content: center;
     min-width: 48px;
 }
+
 .icon {
     min-width: 24px;
     height: 24px;
 }
+
 .disabled {
     opacity: .5;
 }
+
 .paginator-switching {
     transform: translateX(0);
 }
+
 .paginator-one-left-switching {
     transform: translateX(48px);
     transition: .2s;
 }
+
 .paginator-one-right-switching {
     transform: translateX(-48px);
     transition: .2s;
 }
+
 .paginator-two-left-switching {
     transform: translateX(96px);
     transition: .2s;
 }
+
 .paginator-two-right-switching {
     transform: translateX(-96px);
     transition: .2s;
 }
+
 .paginator-switching.one-left-end {
     transform: translateX(-48px);
     transition: 0s;
 }
+
 .paginator-switching.one-right-end {
     transform: translateX(48px);
     transition: 0s;
 }
+
 .paginator-switching.two-left-end {
     transform: translateX(-96px);
     transition: 0s;
 }
+
 .paginator-switching.two-right-end {
     transform: translateX(96px);
     transition: 0s;
@@ -143,21 +181,53 @@ const pageRange = computed(() => {
     .page-number {
         min-width: 40px;
     }
+
     .paginator-one-left-switching,
     .paginator-switching.one-right-end {
         transform: translateX(40px);
     }
+
     .paginator-one-right-switching,
     .paginator-switching.one-left-end {
         transform: translateX(-40px);
     }
+
     .paginator-two-left-switching,
     .paginator-switching.two-right-end {
         transform: translateX(80px);
     }
+
     .paginator-two-right-switching,
     .paginator-switching.two-left-end {
         transform: translateX(-80px);
     }
 }
+
+.slide-right-enter-active, .slide-right-leave-active,
+.slide-left-enter-active, .slide-left-leave-active {
+    transition: transform 0.5s ease;
+}
+
+.slide-right-leave-active, .slide-left-leave-active {
+    position: absolute;
+}
+
+.slide-right-enter-from {
+    transform: translateX(48px);
+}
+
+.slide-right-leave-to {
+    opacity: 0;
+    transform: translateX(-48px);
+}
+
+.slide-left-enter-from {
+    transform: translateX(-48px); /* Начальная позиция для входа */
+}
+
+.slide-left-leave-to {
+    transform: translateX(48px); /* Позиция для ухода */
+    opacity: 0;
+}
+
 </style>
