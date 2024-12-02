@@ -16,66 +16,19 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits<{
-    (e: 'page-change', event: PageChangeEvent): void
-}>()
+const currentPageNumber = defineModel<number>({ default: 1 })
+const maxPageNumber = computed(() => Math.ceil(props.totalRecords / props.recordsAtPage))
 
-const maxPageNumber = computed(() => props.totalRecords / props.recordsAtPage)
-const currentPageNumber = ref(1)
-
-const isOneLeftSwitching = ref(false)
-const isOneRightSwitching = ref(false)
-const isTwoLeftSwitching = ref(false)
-const isTwoRightSwitching = ref(false)
-const isPageChanging = ref(false)
-
-function setOnePageStep(number: number) {
-    if (isPageChanging.value) return
-    isPageChanging.value = true
-    if (currentPageNumber.value < number && currentPageNumber.value < maxPageNumber.value - 1) {
-        isOneRightSwitching.value = true
+const pageRange = computed(() => {
+    const rangeSize = Math.min(maxPageNumber.value, 5);
+    let start = Math.max(currentPageNumber.value - Math.floor(rangeSize / 2), 1)
+    let end = start + rangeSize - 1
+    if (end > maxPageNumber.value) {
+        end = maxPageNumber.value;
+        start = Math.max(end - rangeSize + 1, 1);
     }
-    else if (currentPageNumber.value > number && currentPageNumber.value > 2) {
-        isOneLeftSwitching.value = true
-    }
-    pageChange(number)
-}
-
-function setPageNumberOneStep(number: number) {
-    if (isPageChanging.value) return
-    isPageChanging.value = true
-    if (currentPageNumber.value < number && currentPageNumber.value < maxPageNumber.value - 2) {
-        isOneRightSwitching.value = true
-    }
-    else if (currentPageNumber.value > number && currentPageNumber.value > 3) {
-        isOneLeftSwitching.value = true
-    }
-    pageChange(number)
-}
-
-function setPageNumberTwoSteps(number: number) {
-    if (isPageChanging.value) return
-    isPageChanging.value = true
-    if (currentPageNumber.value < number && currentPageNumber.value < maxPageNumber.value - 2) {
-        isTwoRightSwitching.value = true
-    }
-    else if (currentPageNumber.value > number && currentPageNumber.value > 3) {
-        isTwoLeftSwitching.value = true
-    }
-    pageChange(number)
-}
-
-function pageChange(number: number) {
-    setTimeout(() => {
-        currentPageNumber.value = number
-        emit('page-change', { pageNumber: currentPageNumber.value })
-        isOneLeftSwitching.value = false
-        isOneRightSwitching.value = false
-        isTwoLeftSwitching.value = false
-        isTwoRightSwitching.value = false
-        isPageChanging.value = false
-    }, 200)
-}
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i)
+})
 
 </script>
 
@@ -94,136 +47,30 @@ function pageChange(number: number) {
         <button
             class="flex"
             :class="{ 'disabled': currentPageNumber < 2 }"
-            @click="maxPageNumber > 9 ? setPageNumberOneStep(currentPageNumber - 1) : setOnePageStep(currentPageNumber - 1)"
+            @click="currentPageNumber--"
             :disabled="currentPageNumber < 2"
             type="button"
         >
             <span class="icon icon-left-arrow flex"/>
         </button>
 
-        <div v-if="maxPageNumber > 9" class="flex justify-center xs:max-w-[240px] max-w-[200px] overflow-hidden">
-            <div class="paginator-switching flex justify-center items-center"
-                 :class="{
-                    'paginator-one-left-switching': isOneLeftSwitching,
-                    'paginator-one-right-switching': isOneRightSwitching,
-                    'paginator-two-left-switching': isTwoLeftSwitching,
-                    'paginator-two-right-switching': isTwoRightSwitching,
-                    'one-left-end': currentPageNumber == 2,
-                    'two-left-end': currentPageNumber == 1,
-                    'one-right-end': maxPageNumber - currentPageNumber == 1,
-                    'two-right-end': currentPageNumber == maxPageNumber
-                }"
-            >
-                <button class="page-number flex" @click="setPageNumberTwoSteps(currentPageNumber - 4)">{{ currentPageNumber - 4 }}</button>
-                <button class="page-number flex" @click="setPageNumberTwoSteps(currentPageNumber - 3)">{{ currentPageNumber - 3 }}</button>
+        <div class="flex justify-center overflow-hidden">
+            <div class="paginator-switching flex justify-center items-center">
                 <button
+                    v-for="i in pageRange"
                     class="page-number flex"
-                    @click="setPageNumberTwoSteps(currentPageNumber - 2)"
-                    :disabled="currentPageNumber < 2"
-                    type="button"
+                    :class="{ 'selector-color-animation': i === currentPageNumber }"
+                    @click="currentPageNumber = i"
                 >
-                    {{ currentPageNumber - 2 }}
+                    {{ i }}
                 </button>
-                <button
-                    class="page-number flex"
-                    :class="{ 'text-[var(--hover-text-color)]': isOneRightSwitching }"
-                    @click="setPageNumberOneStep(currentPageNumber - 1)"
-                    :disabled="currentPageNumber < 2"
-                    type="button"
-                >
-                    {{ currentPageNumber - 1 }}
-                </button>
-                <button
-                    class="page-number flex"
-                    :class="{
-                        'text-[var(--hover-text-color)]': !isOneLeftSwitching && !isOneRightSwitching &&
-                        !isTwoLeftSwitching && !isTwoRightSwitching
-                    }"
-                    @click="pageChange(currentPageNumber)"
-                >
-                    {{ currentPageNumber }}
-                </button>
-                <button
-                    class="page-number flex"
-                    :class="{ 'text-[var(--hover-text-color)]': isOneLeftSwitching }"
-                    @click="setPageNumberOneStep(currentPageNumber + 1)"
-                    :disabled="currentPageNumber >= maxPageNumber"
-                >
-                    {{ currentPageNumber + 1 }}
-                </button>
-                <button
-                    class="page-number flex"
-                    :class="{ 'text-[var(--hover-text-color)]': isTwoLeftSwitching }"
-                    @click="setPageNumberTwoSteps(currentPageNumber + 2)"
-                    :disabled="currentPageNumber >= maxPageNumber"
-                >
-                    {{ currentPageNumber + 2 }}
-                </button>
-                <button class="page-number flex" @click="setPageNumberTwoSteps(currentPageNumber + 3)">{{ currentPageNumber + 3 }}</button>
-                <button class="page-number flex" @click="setPageNumberTwoSteps(currentPageNumber + 4)">{{ currentPageNumber + 4 }}</button>
-            </div>
-        </div>
-
-        <div v-else-if="maxPageNumber > 2 && maxPageNumber < 10" class="flex justify-center xs:max-w-[144px] max-w-[120px] overflow-hidden">
-            <div class="paginator-switching flex justify-center items-center"
-                 :class="{
-                    'paginator-one-left-switching': isOneLeftSwitching,
-                    'paginator-one-right-switching': isOneRightSwitching,
-                    'one-left-end': currentPageNumber < 2,
-                    'one-right-end': currentPageNumber >= maxPageNumber
-                }"
-            >
-                <div class="page-number flex">{{ currentPageNumber - 2 }}</div>
-                <button
-                    class="page-number flex"
-                    :class="{ 'text-[var(--hover-text-color)]': isOneRightSwitching }"
-                    @click="setOnePageStep(currentPageNumber - 1)"
-                    :disabled="currentPageNumber < 2"
-                    type="button"
-                >
-                    {{ currentPageNumber - 1 }}
-                </button>
-                <button
-                    class="page-number flex"
-                    :class="{ 'text-[var(--hover-text-color)]': !isOneLeftSwitching && !isOneRightSwitching }"
-                    @click="setOnePageStep(currentPageNumber)"
-                >
-                    {{ currentPageNumber }}
-                </button>
-                <button
-                    class="page-number flex"
-                    :class="{ 'text-[var(--hover-text-color)]': isOneLeftSwitching }"
-                    @click="setOnePageStep(currentPageNumber + 1)"
-                    :disabled="currentPageNumber >= maxPageNumber"
-                >
-                    {{ currentPageNumber + 1 }}
-                </button>
-                <div class="page-number flex">{{ currentPageNumber + 2 }}</div>
-            </div>
-        </div>
-
-        <div v-else-if="maxPageNumber < 3" class="flex justify-center xs:max-w-[48px] max-w-[40px] overflow-hidden">
-            <div class="paginator-switching flex justify-center items-center"
-                 :class="{
-                    'paginator-one-left-switching': isOneLeftSwitching,
-                    'paginator-one-right-switching': isOneRightSwitching
-                }"
-            >
-                <div class="page-number flex">1</div>
-                <button
-                    class="page-number flex text-[var(--hover-text-color)]"
-                    @click="setPageNumberOneStep(currentPageNumber)"
-                >
-                    {{ currentPageNumber }}
-                </button>
-                <div class="page-number flex">2</div>
             </div>
         </div>
 
         <button
             class="flex"
             :class="{ 'disabled': currentPageNumber >= maxPageNumber }"
-            @click="maxPageNumber > 9 ? setPageNumberOneStep(currentPageNumber + 1) : setOnePageStep(currentPageNumber + 1)"
+            @click="currentPageNumber++"
             :disabled="currentPageNumber >= maxPageNumber"
             type="button"
         >

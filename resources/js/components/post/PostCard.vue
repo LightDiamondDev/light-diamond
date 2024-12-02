@@ -28,8 +28,9 @@ function wasPostUpdated(post: Post) {
     <div
         class="post-card ld-primary-background flex"
         :class="{ 'flex-col': !isHorizontalDirection, 'horizontal md:flex-row flex-col': isHorizontalDirection }"
+        style="background-attachment: fixed"
     >
-        <div class="flex flex-grow"
+        <div class="inner flex flex-grow"
              :class="{ 'flex-col': !isHorizontalDirection, 'xs:flex-row flex-col': isHorizontalDirection }">
             <RouterLink
                 class="preview-wrap flex overflow-hidden"
@@ -124,7 +125,7 @@ function wasPostUpdated(post: Post) {
         </div>
         <div
             v-if="isHorizontalDirection"
-            class="actions ld-primary-background ld-primary-background-container ld-tinted-background ld-primary-border-bottom
+            class="actions inner ld-primary-background ld-primary-background-container ld-tinted-background ld-primary-border-bottom
             ld-primary-border-right ld-primary-border-left gap-2 p-2 overflow-x-auto overflow-y-hidden md:hidden flex"
             style="scrollbar-width: thin"
         >
@@ -151,5 +152,12 @@ function wasPostUpdated(post: Post) {
 .preview-wrap:focus-visible .preview,
 .post-card:hover .preview {
     transform: scale(1.1);
+}
+
+.post-card .inner {
+    transition: .2s;
+}
+.paginator-refresh .post-card .inner {
+    opacity: .5;
 }
 </style>

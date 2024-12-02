@@ -134,14 +134,6 @@ function onRecordSave() {
     isEditRecordModal.value = false
 }
 
-function onPageChange(event: PageChangeEvent) {
-    const selectedPage = event.pageNumber
-    if (selectedPage !== loadRecordsData.value.page) {
-        loadRecordsData.value.page = selectedPage
-        loadRecords()
-    }
-}
-
 // function onSort(event: DataTableSortEvent) {
 //     loadRecordsData.value.sort_field = <string>event.sortField!
 //     loadRecordsData.value.sort_order = event.sortOrder!
@@ -221,10 +213,11 @@ function onPageChange(event: PageChangeEvent) {
 
         <div class="flex sticky bottom-[0]" style="z-index: 1">
             <Paginator
+                v-model="loadRecordsData.page"
                 class="ld-primary-background ld-fixed-background ld-primary-border-top h-[48px] w-full"
                 :records-at-page="loadRecordsData.per_page"
                 :totalRecords="totalRecords"
-                @page-change="onPageChange"
+                @update:model-value="loadRecords"
             />
         </div>
 

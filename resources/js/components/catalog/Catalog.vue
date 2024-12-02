@@ -13,7 +13,7 @@ import {GameEdition, type Post} from '@/types'
 
 import Banner from '@/components/elements/Banner.vue'
 import PostCard from '@/components/post/PostCard.vue'
-import Paginator, {type PageChangeEvent} from '@/components/elements/Paginator.vue'
+import Paginator from '@/components/elements/Paginator.vue'
 import ShineButton from '@/components/elements/ShineButton.vue'
 import Button from '@/components/elements/Button.vue'
 import useCategoryRegistry, {type Category} from '@/categoryRegistry'
@@ -78,20 +78,19 @@ const activeColor = getRandomColor()
 const isLoading = ref(false)
 const isFilters = ref(false)
 const isHorizontalCards = ref(false)
-const currentPage = ref(1)
+const currentPageNumber = ref(1)
 const sortType = ref(PostSortType.LATEST)
 const loadPeriod = ref(PostLoadPeriod.ALL_TIME)
 
 const loadData = computed(() => ({
     edition: props.edition!,
     category: props.category?.type,
-    page: currentPage.value,
-    per_page: 15,
+    page: currentPageNumber.value,
+    per_page: 1,
     sort_type: sortType.value,
     period: loadPeriod.value,
 }))
 
-loadPosts()
 usePreferenceManager().setEdition(props.edition!)
 
 watch(() => [props.edition, props.category], () => {
@@ -114,17 +113,9 @@ function loadPosts() {
     })
 }
 
-function onPageChange(event: PageChangeEvent) {
-    const selectedPage = event.pageNumber
-    if (selectedPage !== currentPage.value) {
-        currentPage.value = selectedPage
-        loadPosts()
-    }
-}
-
 function changeSortType(type: PostSortType) {
     sortType.value = type
-    currentPage.value = 1
+    currentPageNumber.value = 1
     switch (type) {
         case PostSortType.LATEST:
             loadPeriod.value = PostLoadPeriod.ALL_TIME
@@ -153,6 +144,8 @@ function switchEdition() {
 function scrollToBottom() {
     window.scrollTo(0, document.body.scrollHeight)
 }
+
+loadPosts()
 </script>
 
 <template>
@@ -295,7 +288,7 @@ function scrollToBottom() {
                 </nav>
             </form>
 
-            <div v-if="isLoading" class="w-full">
+            <div v-if="isLoading && posts.length === 0" class="w-full">
                 <div class="posts flex flex-wrap w-full gap-2">
 
                     <div
@@ -408,22 +401,23 @@ function scrollToBottom() {
                         </div>
                     </div>
                 </div>
-                <div v-else class="posts flex flex-wrap max-w-full w-full gap-2">
+                <div v-else class="posts flex flex-wrap max-w-full w-full gap-2" :class="{'paginator-refresh': isLoading}">
                     <PostCard
                         v-for="post in posts"
-                        class="xl:max-w-[421px] lg:max-w-[32.8%] sm:max-w-[49.3%] max-w-full"
+                        class="xl:max-w-[421px] lg:max-w-[32.8%] sm:max-w-[49.3%] max-w-full duration-200"
                         :is-horizontal-direction="isHorizontalCards"
                         :post="post"
                     />
                 </div>
-                <Paginator
-                    class="ld-primary-background ld-primary-border h-[48px] w-full mb-2"
-                    :class="{'hidden': posts.length === 0}"
-                    :records-at-page="loadData.per_page"
-                    :total-records="totalRecordsCount"
-                    @page-change="onPageChange"
-                />
             </template>
+            <Paginator
+                v-model="currentPageNumber"
+                class="ld-primary-background ld-primary-border h-[48px] w-full mb-2"
+                :class="{'hidden': posts.length === 0}"
+                :records-at-page="loadData.per_page"
+                :total-records="totalRecordsCount"
+                @update:model-value="loadPosts"
+            />
         </section>
 
     </div>

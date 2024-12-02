@@ -61,14 +61,6 @@ function loadPostVersions() {
     })
 }
 
-function onPageChange(event: PageChangeEvent) {
-    const selectedPage = event.pageNumber
-    if (selectedPage !== loadRequestData.page) {
-        loadRequestData.page = selectedPage
-        loadPostVersions()
-    }
-}
-
 function onTabChange(event: TabMenuChangeEvent) {
     const selectedStatus = tabMenuItems.value[event.tabIndex].status
     if (loadRequestData.status !== selectedStatus) {
@@ -138,10 +130,11 @@ loadPostVersions()
         </div>
         <div class="flex sticky bottom-[0]" style="z-index: 1">
             <Paginator
+                v-model="loadRequestData.page"
                 class="ld-primary-background ld-fixed-background ld-primary-border-top h-[48px] w-full"
                 :records-at-page="loadRequestData.per_page"
-                :totalRecords="totalRecords"
-                @page-change="onPageChange"
+                :total-records="totalRecords"
+                @update:model-value="loadPostVersions"
             />
         </div>
     </section>

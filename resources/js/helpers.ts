@@ -89,16 +89,16 @@ export function getRelativeDate(date: Date | string): string {
 
     const diffInWeeks = Math.floor(diffInDays / 7)
     if (diffInWeeks < 4) {
-        return `${diffInWeeks} нед. назад`
+        return `${Math.max(1, diffInWeeks)} нед. назад`
     }
 
     const diffInMonths = Math.floor(diffInDays / 30)
     if (diffInMonths < 12) {
-        return `${diffInMonths} мес. назад`
+        return `${Math.max(1, diffInMonths)} мес. назад`
     }
 
     const diffInYears = Math.floor(diffInDays / 365)
-    return `${diffInYears} г. назад`
+    return `${Math.max(1, diffInYears)} г. назад`
 }
 
 export function getMonthName(number: number) {

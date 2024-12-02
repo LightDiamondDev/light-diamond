@@ -1,15 +1,15 @@
 <p style="text-align: center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="/public/images/logo-dark.svg?raw=true">
-    <img src="/public/images/logo.png?raw=true" width="400" alt="Light Diamond Logo">
+    <img alt="Light Diamond Logo" src="public/images/elements/light-diamond-logo.png" style="width: 400px; margin-top: 50px">
   </picture>
 </p>
 
-## Light Diamond Bedrock
+## Light Diamond Website
 
 
-Давайте творить для Бедрока!
-Наша цель — создать сплочённое творческое комьюнити вокруг нашей любимой игры!
+Давайте творить для Minecraft!
+Наша цель — создать сплочённое творческое Сообщество вокруг нашей любимой Игры!
 
 ## Установка
 
@@ -19,7 +19,7 @@
 2. Скачайте репозиторий, распакуйте, перейдите в корень проекта;
 3. Запустите скрипт `setup.sh` и дождитесь окончания его выполнения;
 4. Сконфигурируйте MySQL пароли в файле `.env`, установив значения для переменных `DB_ROOT_PASSWORD` и `DB_PASSWORD`;
-5. Запустите скрипт `setup-db.sh` и дождитесь окончания его выполнения;
+5. Запустите скрипт `setup-db.sh` и дождитесь окончания его выполнения.
 
 Запуск приложения осуществляется с помощью команды `docker compose up -d`.
 

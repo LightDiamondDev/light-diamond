@@ -412,10 +412,7 @@ function unsetLink() {
             :editor="editor"
             :update-delay="0"
         >
-            <EditorHorizontalMenu
-                class="border drop-shadow-[0_0px_2px_rgba(0,0,0,0.3)]"
-                :items="menuItems"
-            />
+            <EditorHorizontalMenu class="ld-primary-border" :items="menuItems"/>
         </BubbleMenu>
 
         <FloatingMenu

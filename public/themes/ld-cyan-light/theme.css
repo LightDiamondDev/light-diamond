@@ -879,6 +879,10 @@
         color: var(--secondary-text-color);
     }
 
+    .selector-color-animation {
+        animation: selector-color-animation 5s infinite;
+    }
+
     .set-mark:hover .counter,
     .set-mark:hover .icon {
         filter: grayscale(60%);
@@ -1607,12 +1611,19 @@
         }
     }
 
+    @keyframes selector-color-animation
+    {
+        0% { color: rgba(0, 255, 255, 1); }
+        50% { color: rgba(0, 255, 190, 1); }
+        100% { color: rgba(0, 255, 255, 1); }
+    }
+
     @keyframes comment-link-color-animation
     {
         0% { color: rgba(0, 165, 185, 1); }
-        25% { color: rgba(0, 235, 190, 1); }
+        25% { color: rgba(0, 255, 190, 1); }
         50% { color: rgba(0, 235, 235, 1); }
-        75% { color: rgba(0, 235, 190, 1); }
+        75% { color: rgba(0, 255, 190, 1); }
         100% { color: rgba(0, 165, 185, 1); }
     }
 
