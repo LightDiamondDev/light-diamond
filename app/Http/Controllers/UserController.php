@@ -20,9 +20,9 @@ class UserController extends Controller
     public function get(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'roles.*' => [Rule::enum(UserRole::class)],
-            'page' => ['integer'],
-            'per_page' => ['integer'],
+            'roles.*'    => [Rule::enum(UserRole::class)],
+            'page'       => ['integer'],
+            'per_page'   => ['integer'],
             'sort_field' => ['string', new ColumnExistsRule(User::getModel()->getTable())],
             'sort_order' => ['integer', 'min:-1', 'max:1'],
         ]);
@@ -34,10 +34,10 @@ class UserController extends Controller
         $sortOrder = $request->integer('sort_order', -1);
 
         if ($sortOrder === 0) {
-            $sortField = 'created_at';
+            $sortField     = 'created_at';
             $sortDirection = 'desc';
         } else {
-            $sortField = $request->string('sort_field', 'created_at');
+            $sortField     = $request->string('sort_field', 'created_at');
             $sortDirection = $sortOrder === -1 ? 'desc' : 'asc';
         }
 
@@ -48,14 +48,14 @@ class UserController extends Controller
 
         if ($request->has('per_page') || $request->has('page')) {
             $perPage = $request->integer('per_page', 10);
-            $users = $query->paginate($perPage);
+            $users   = $query->paginate($perPage);
 
             return $this->successJsonResponse([
-                'records' => $users->items(),
+                'records'    => $users->items(),
                 'pagination' => [
                     'total_records' => $users->total(),
-                    'current_page' => $users->currentPage(),
-                    'total_pages' => $users->lastPage(),
+                    'current_page'  => $users->currentPage(),
+                    'total_pages'   => $users->lastPage(),
                 ],
             ]);
         }
@@ -65,15 +65,21 @@ class UserController extends Controller
         ]);
     }
 
+    public function getByUsername(Request $request, string $username): JsonResponse
+    {
+        $user = User::whereUsername($username)->first();
+        return response()->json($user);
+    }
+
     public function add(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'username' => $this->getUsernameRules(),
-            'email' => ['required', 'email', (new NotVerifiedEmailRule())],
-            'password' => $this->getPasswordRules(false),
-            'role' => ['required', Rule::enum(UserRole::class)],
+            'username'   => $this->getUsernameRules(),
+            'email'      => ['required', 'email', (new NotVerifiedEmailRule())],
+            'password'   => $this->getPasswordRules(false),
+            'role'       => ['required', Rule::enum(UserRole::class)],
             'first_name' => ['string', 'nullable'],
-            'last_name' => ['string', 'nullable'],
+            'last_name'  => ['string', 'nullable'],
         ]);
 
         if ($validator->fails()) {
@@ -96,11 +102,11 @@ class UserController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'username' => $this->getUsernameRules(false, $user),
-            'email' => ['email', (new NotVerifiedEmailRule())->ignore($user->id)],
-            'role' => [Rule::enum(UserRole::class)],
+            'username'   => $this->getUsernameRules(false, $user),
+            'email'      => ['email', (new NotVerifiedEmailRule())->ignore($user->id)],
+            'role'       => [Rule::enum(UserRole::class)],
             'first_name' => ['string', 'nullable'],
-            'last_name' => ['string', 'nullable'],
+            'last_name'  => ['string', 'nullable'],
         ]);
 
         if ($validator->fails()) {
@@ -133,7 +139,7 @@ class UserController extends Controller
     public function deleteMultiple(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'ids' => ['required', 'array'],
+            'ids'   => ['required', 'array'],
             'ids.*' => ['integer'],
         ]);
 

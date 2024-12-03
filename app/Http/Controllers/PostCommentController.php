@@ -17,7 +17,7 @@ class PostCommentController extends Controller
 {
     use ApiJsonResponseTrait;
 
-    public function getByPostId(Request $request, int $postId): JsonResponse
+    public function getPostComments(Request $request, int $postId): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'sort_field' => ['string', new ColumnExistsRule(Post::getModel()->getTable())],
@@ -47,10 +47,52 @@ class PostCommentController extends Controller
         ]);
     }
 
+
+    public function getUserComments(Request $request, int $userId): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'page'       => ['integer'],
+            'per_page'   => ['integer'],
+            'sort_field' => ['string', new ColumnExistsRule('post_comments')], // Проверка на существование столбца в таблице
+            'sort_order' => ['integer', 'min:-1', 'max:1'],
+        ]);
+
+        if ($validator->fails()) {
+            return $this->errorJsonResponse('', $validator->errors());
+        }
+
+        $defaultSortOrder = -1;
+        $defaultSortField = 'created_at';
+
+        $perPage   = $request->integer('per_page', 10);
+        $sortOrder = $request->integer('sort_order', $defaultSortOrder);
+        if ($sortOrder === 0) {
+            $sortField = $defaultSortField;
+            $sortOrder = $defaultSortOrder;
+        } else {
+            $sortField = $request->string('sort_field', $defaultSortField);
+        }
+        $sortDirection = $sortOrder === -1 ? 'desc' : 'asc';
+
+        $comments = PostComment::whereUserId($userId)
+            ->with(['user', 'parentComment.user'])
+            ->orderBy($sortField, $sortDirection)
+            ->paginate($perPage);
+
+        return $this->successJsonResponse([
+            'records'    => $comments->items(),
+            'pagination' => [
+                'total_records' => $comments->total(),
+                'current_page'  => $comments->currentPage(),
+                'total_pages'   => $comments->lastPage(),
+            ],
+        ]);
+    }
+
     public function submit(Request $request, int $postId): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'content' => ['required', 'string', 'max:65535', new HtmlMinSymbolCountRule(3)],
+            'content'           => ['required', 'string', 'max:65535', new HtmlMinSymbolCountRule(3)],
             'parent_comment_id' => ['integer', Rule::exists(PostComment::class, 'id')],
         ]);
 
@@ -69,7 +111,7 @@ class PostCommentController extends Controller
 
         $user = Auth::user();
 
-        $comment = PostComment::make();
+        $comment          = PostComment::make();
         $comment->content = $request->get('content');
         $comment->post()->associate($post);
         $comment->user()->associate($user);

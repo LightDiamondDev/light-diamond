@@ -31,11 +31,15 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/logout', [AuthController::class, 'logout']);
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 
+Route::get('/users/{username}', [UserController::class, 'getByUsername']);
+
 Route::get('/posts', [PostController::class, 'get']);
 Route::get('/posts/{slug}', [PostController::class, 'getBySlug']);
-Route::get('/users/{userId}/posts', [PostController::class, 'getByUser'])->where('userId', '[0-9]+');
+Route::get('/users/{userId}/posts', [PostController::class, 'getUserPosts'])->where('userId', '[0-9]+');
+Route::get('/users/{userId}/favourite-posts', [PostController::class, 'getUserFavouritePosts'])->where('userId', '[0-9]+');
 
-Route::get('/posts/{postId}/comments', [PostCommentController::class, 'getByPostId'])->where('postId', '[0-9]+');
+Route::get('/posts/{postId}/comments', [PostCommentController::class, 'getPostComments'])->where('postId', '[0-9]+');
+Route::get('/users/{userId}/comments', [PostCommentController::class, 'getUserComments'])->where('userId', '[0-9]+');
 
 Route::get('/post-versions/{versionId}/download/{fileId}', [PostVersionFileController::class, 'download'])->where('versionId', '[0-9]+')->where('fileId', '[0-9]+');
 
