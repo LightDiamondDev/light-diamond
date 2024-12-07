@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Models\Enums\UserRole;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -89,6 +91,50 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $attributes = [
         'role' => UserRole::User,
     ];
+
+    public function posts(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Post::class,
+            PostVersion::class,
+            'author_id',
+            'id',
+            'id',
+            'post_id'
+        );
+    }
+
+    public function favourite_posts(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Post::class,
+            FavouritePost::class,
+            'user_id',
+            'id',
+            'id',
+            'post_id'
+        );
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(PostComment::class, 'user_id');
+    }
+
+    public function getPostCountAttribute(): bool
+    {
+        return $this->posts()->count();
+    }
+
+    public function getFavouritePostCountAttribute(): bool
+    {
+        return $this->favourite_posts()->count();
+    }
+
+    public function getCommentCountAttribute(): bool
+    {
+        return $this->comments()->count();
+    }
 
     public function getIsAdminAttribute(): bool
     {
