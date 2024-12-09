@@ -18,9 +18,9 @@ const isMobileMenu = ref(true)
 
 const menuItems = ref<StudioMenuItem[]>([
     {
-        label: 'Материалы',
+        label: 'Посты',
         icon: 'icon-news',
-        route: 'studio.materials',
+        route: 'studio.posts',
     },
     {
         label: 'Заявки на публикацию',

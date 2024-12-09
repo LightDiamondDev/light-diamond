@@ -157,8 +157,8 @@ loadPosts()
                     :to="{ name: 'catalog' }"
                 >
                     <h1 class="flex justify-center w-full absolute invisible">Каталог Light Diamond</h1>
-                    <img alt="Logo" class="materials-logo h-[48px] md:h-[100px]"
-                         src="/images/elements/light-diamond-materials-logo.png"/>
+                    <img alt="Logo" class="posts-logo h-[48px] md:h-[100px]"
+                         src="/images/elements/light-diamond-catalog-logo.png"/>
                     <span class="base flex justify-center items-center">
                     <span
                         class="splash flex justify-center"
@@ -217,7 +217,7 @@ loadPosts()
                                 class="flex items-center option edition xl:min-w-[158px]"
                                 class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
                                 :label="edition === GameEdition.BEDROCK ? 'Bedrock' : 'Java'"
-                                :icon="edition === GameEdition.BEDROCK ? 'icon-bedrock-dev-small' : 'icon-minecraft-materials'"
+                                :icon="edition === GameEdition.BEDROCK ? 'icon-bedrock-flat' : 'icon-grass-flat'"
                                 @click="switchEdition"
                             />
                         </div>
@@ -330,7 +330,7 @@ loadPosts()
                                         }"
                                     >
                                         <div
-                                            class="material-info flex flex-wrap justify-between px-2"
+                                            class="post-info flex flex-wrap justify-between px-2"
                                             :class="{ 'sm:flex hidden w-full gap-8': isHorizontalCards }"
                                         >
                                             <div class="flex gap-3">
@@ -389,7 +389,7 @@ loadPosts()
             <template v-else>
                 <div v-if="posts.length === 0" class="unavailable-post flex justify-center items-center w-full">
                     <div class="unavailable-post-container flex flex-col items-center p-8">
-                        <h1 class="ld-title-font text-center sm:text-[2rem] text-[1.2rem]">Материалы не найдены</h1>
+                        <h1 class="ld-title-font text-center sm:text-[2rem] text-[1.2rem]">Посты не найдены</h1>
                         <div class="mob phantom flex justify-center items-center
                             sm:h-[200px] h-[100px] max-w-[320] w-full full-locked"
                         >
@@ -542,7 +542,7 @@ section.catalog {
 /* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
 
 @media screen and (max-width: 767px) {
-    .logo-wrap .materials-logo {
+    .logo-wrap .posts-logo {
         height: 72px;
     }
 
@@ -597,7 +597,7 @@ section.catalog {
         right: -80px;
     }
 
-    .logo-wrap .materials-logo {
+    .logo-wrap .posts-logo {
         height: 48px;
     }
 

@@ -37,7 +37,7 @@ function wasPostUpdated(post: Post) {
                 :to="{name: 'post', params: {slug: post.slug}}"
             >
                 <img
-                    alt="Превью Материала"
+                    alt="Превью Поста"
                     class="preview flex w-full full-locked duration-200"
                     :class="{ 'max-h-[288px]': isHorizontalDirection }"
                     :src="post.version?.cover_url"
@@ -71,7 +71,7 @@ function wasPostUpdated(post: Post) {
                     }"
                     >
                         <div
-                            class="material-info info flex flex-wrap justify-between px-2"
+                            class="post-info info flex flex-wrap justify-between px-2"
                             :class="{'sm:flex hidden w-full gap-8': isHorizontalDirection, 'gap-2': !isHorizontalDirection }"
                         >
                             <div class="types flex flex-wrap gap-3 opacity-80">

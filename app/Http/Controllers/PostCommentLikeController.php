@@ -35,7 +35,7 @@ class PostCommentLikeController extends Controller
     {
         $comment = PostComment::find($commentId);
         if ($comment === null) {
-            return $this->errorJsonResponse("Не найден Материал с id $commentId.");
+            return $this->errorJsonResponse("Пост с id $commentId не найден.");
         }
 
         $user = Auth::user();

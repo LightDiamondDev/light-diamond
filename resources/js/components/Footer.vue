@@ -16,11 +16,10 @@ function scrollToTop() {
                 <img alt="Logo" class="hidden xs:flex h-full min-w-152" src="/images/elements/light-diamond-logo.png"/>
                 <img alt="Logo" class="flex xs:hidden h-[52px]" src="/images/elements/light-diamond-logo-mobile.png"/>
             </RouterLink>
-
-            <a class="xl:flex hidden items-center" href="#">
+            <RouterLink :to="{name: 'post', params: {slug: 'light-diamond'}}" class="xl:flex hidden items-center">
                 <span class="icon icon-apple static"/>
                 <span>Аддон LD</span>
-            </a>
+            </RouterLink>
             <a class="sm:flex hidden items-center" href="#">
                 <span class="icon icon-diamond static"/>
                 <span>Обновления</span>

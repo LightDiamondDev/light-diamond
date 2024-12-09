@@ -20,7 +20,7 @@ import ProfileSettings from '@/components/settings/ProfileSettings.vue'
 import SecuritySettings from '@/components/settings/SecuritySettings.vue'
 import Settings from '@/components/settings/Settings.vue'
 
-import StudioMaterials from '@/components/studio/StudioMaterials.vue'
+import StudioPosts from '@/components/studio/StudioPosts.vue'
 import StudioRequests from '@/components/studio/StudioRequests.vue'
 import Studio from '@/components/studio/Studio.vue'
 
@@ -103,18 +103,18 @@ const routes: RouteRecordRaw[] = [
         path: '/studio',
         name: 'studio',
         component: Studio,
-        redirect: {name: 'studio.materials'},
+        redirect: {name: 'studio.posts'},
         meta: {
             title: 'Контент-Студия',
             requiresAuth: true,
         },
         children: [
             {
-                path: 'materials',
-                name: 'studio.materials',
-                component: StudioMaterials,
+                path: 'posts',
+                name: 'studio.posts',
+                component: StudioPosts,
                 meta: {
-                    title: 'Контент-Студия — Материалы',
+                    title: 'Контент-Студия — Посты',
                 }
             },
             {
@@ -132,7 +132,7 @@ const routes: RouteRecordRaw[] = [
         name: 'create-post',
         component: NewPostVersion,
         meta: {
-            title: 'Создание Материала',
+            title: 'Создание Поста',
             requiresAuth: true
         }
     },
@@ -142,7 +142,7 @@ const routes: RouteRecordRaw[] = [
         props: ({params}) => ({slug: params.slug}),
         component: NewPostVersion,
         meta: {
-            title: 'Обновление Материала',
+            title: 'Обновление Поста',
             requiresAuth: true
         }
     },
@@ -162,7 +162,7 @@ const routes: RouteRecordRaw[] = [
         props: true,
         component: Post,
         meta: {
-            title: 'Материал',
+            title: 'Пост',
         }
     },
     {

@@ -152,7 +152,7 @@ class PostVersionController extends Controller
 
         if ($user->id !== $userId) {
             if (!$user->is_moderator) {
-                return $this->errorJsonResponse("Вам недоступны версии материалов пользователя с id $userId.");
+                return $this->errorJsonResponse("Вам недоступны заявки на публикацию пользователя с id $userId.");
             }
 
             $user = User::find($userId);
@@ -223,7 +223,7 @@ class PostVersionController extends Controller
     {
         $postVersion = PostVersion::find($versionId);
         if ($postVersion === null) {
-            return $this->errorJsonResponse("Не найдена версия материала с id $versionId.");
+            return $this->errorJsonResponse("Не найдена заявка на публикацию с id $versionId.");
         }
 
         $validator = Validator::make($request->all(), [
@@ -316,10 +316,10 @@ class PostVersionController extends Controller
     {
         $postVersion = PostVersion::find($id);
         if ($postVersion === null) {
-            return $this->errorJsonResponse("Не найдена версия материала с id $id.");
+            return $this->errorJsonResponse("Не найдена заявка на публикацию с id $id.");
         }
         if ($postVersion->status !== PostVersionStatus::Pending) {
-            return $this->errorJsonResponse("Эту версию материала нельзя вернуть на доработку из-за её статуса.");
+            return $this->errorJsonResponse("Эту заявку на публикацию нельзя вернуть на доработку из-за её статуса.");
         }
 
         $validator = $this->makePostVersionUpdateValidator($request->all(), $postVersion, [
@@ -339,10 +339,10 @@ class PostVersionController extends Controller
     {
         $postVersion = PostVersion::find($id);
         if ($postVersion === null) {
-            return $this->errorJsonResponse("Не найдена версия материала с id $id.");
+            return $this->errorJsonResponse("Не найдена заявка на публикацию с id $id.");
         }
         if ($postVersion->status !== PostVersionStatus::Pending) {
-            return $this->errorJsonResponse("Эту версию материала нельзя принять из-за её статуса.");
+            return $this->errorJsonResponse("Эту заявку на публикацию нельзя принять из-за её статуса.");
         }
 
         $validator = $this->makePostVersionUpdateValidator($request->all(), $postVersion, [
@@ -361,11 +361,11 @@ class PostVersionController extends Controller
     {
         $postVersion = PostVersion::find($id);
         if ($postVersion === null) {
-            return $this->errorJsonResponse("Не найдена версия материала с id $id.");
+            return $this->errorJsonResponse("Не найдена заявка на публикацию с id $id.");
         }
 
         if ($postVersion->status !== PostVersionStatus::Pending) {
-            return $this->errorJsonResponse("Эту версию материала нельзя отклонить из-за её статуса.");
+            return $this->errorJsonResponse("Эту заявку на публикацию нельзя отклонить из-за её статуса.");
         }
 
         $validator = $this->makePostVersionUpdateValidator($request->all(), $postVersion, [

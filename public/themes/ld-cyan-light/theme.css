@@ -403,7 +403,7 @@
         color: var(--brilliant-color);
     }
 
-    .content-studio .material-line .cover-wrap {
+    .content-studio .post-line .cover-wrap {
         border: 2px solid rgba(255, 255, 255, .8);
     }
 
@@ -562,8 +562,8 @@
 
     .design-settings-form div .settings-button:focus-visible,
     .design-settings-form div .settings-button:hover,
-    .material-search-card:hover .description,
-    .material-search-card:focus-visible .description {
+    .post-search-card:hover .description,
+    .post-search-card:focus-visible .description {
         background: linear-gradient(90deg, rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05));
         animation: transfusion-animation 10s linear infinite;
         background-size: 400% 100%;
@@ -655,7 +655,7 @@
         border: 2px solid rgba(0, 255, 255, .3);
     }
 
-    .material-search-card .preview-wrap {
+    .post-search-card .preview-wrap {
         border-bottom: 2px solid rgba(255, 255, 255, .3);
         border-left: 2px solid rgba(255, 255, 255, .3);
         border-top: 2px solid rgba(255, 255, 255, .3);
@@ -810,9 +810,9 @@
         white-space: nowrap;
     }
 
-    .post-interaction .material-reject-reason,
-    .post-interaction .material-revision-reason,
-    .post-interaction .material-url-id  {
+    .post-interaction .post-reject-reason,
+    .post-interaction .post-revision-reason,
+    .post-interaction .post-url-id  {
         background: linear-gradient(rgba(0, 15, 15, .5), transparent);
         border: 2px solid var(--border-color);
     }
@@ -1201,8 +1201,8 @@
         background-image: url('/images/icons/diamond-axolotl-bucket.png');
     }
 
-    .icon-bedrock-dev-small {
-        background-image: url('/images/icons/bedrock-dev-small.png');
+    .icon-bedrock-flat {
+        background-image: url('/images/icons/bedrock-flat.png');
     }
 
     .icon-bedrock-wiki {
@@ -1345,6 +1345,10 @@
         background-image: url('/images/icons/diamond-gear.png');
     }
 
+    .icon-grass-flat {
+        background-image: url('/images/icons/grass-flat.png');
+    }
+
     .icon-display-grid {
         background-image: url('/images/icons/diamond-display-grid.png');
     }
@@ -1411,10 +1415,6 @@
 
     .icon-microsoft-small {
         background-image: url('/images/icons/microsoft-small.png');
-    }
-
-    .icon-minecraft-materials {
-        background-image: url('/images/icons/minecraft-materials.png');
     }
 
     .icon-minus {

@@ -52,7 +52,7 @@ const userMenuItems = computed<MenuItem[]>(() => [
         route: {name: 'studio'}
     },
     {
-        label: 'Создать Материал',
+        label: 'Создать Пост',
         icon: 'icon-plus',
         visible: authStore.isAuthenticated,
         route: {name: 'create-post'}
@@ -89,7 +89,7 @@ const userMenuItems = computed<MenuItem[]>(() => [
     },
 ])
 
-const materialsNavigationSections = computed(() =>
+const postsNavigationSections = computed(() =>
     [
         {label: 'Каталог', icon: 'icon-book', route: {path: '/catalog'}},
         ...categoryRegistry.getAll().filter
@@ -109,14 +109,14 @@ const materialsNavigationSections = computed(() =>
                     }
                 )
         ),
-        {label: 'Аддон LD', icon: 'icon-apple', route: {path: '/catalog'}}
+        {label: 'Аддон LD', icon: 'icon-apple', route: {name: 'post', params: {slug: 'light-diamond'}}}
     ]
 )
 
 const navigationSections = computed<NavigationSection[]>(() => [
     {
-        label: 'Материалы',
-        children: materialsNavigationSections.value
+        label: 'Контент',
+        children: postsNavigationSections.value
     },
     {
         label: 'Полезное',
@@ -129,10 +129,10 @@ const navigationSections = computed<NavigationSection[]>(() => [
                     icon: 'icon-microsoft-small',
                     url: 'https://learn.microsoft.com/en-us/minecraft/creator/reference/content/entityreference/examples/componentlist'
                 },
-                {label: 'Документация Bedrock.Dev', icon: 'icon-bedrock-dev-small', url: 'https://bedrock.dev'},
+                {label: 'Документация Bedrock.Dev', icon: 'icon-bedrock-flat', url: 'https://bedrock.dev'},
                 {
-                    label: 'Материалы Minecraft',
-                    icon: 'icon-minecraft-materials',
+                    label: 'Образцы для Аддонов',
+                    icon: 'icon-grass-flat',
                     url: 'https://github.com/Mojang/bedrock-samples/releases'
                 }
             ]

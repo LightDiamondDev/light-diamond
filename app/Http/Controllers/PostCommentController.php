@@ -60,7 +60,7 @@ class PostCommentController extends Controller
 
         $post = Post::find($postId);
         if ($post === null) {
-            return $this->errorJsonResponse("Материал с id $postId не найден.");
+            return $this->errorJsonResponse("Пост с id $postId не найден.");
         }
 
         $parentComment = $request->has('parent_comment_id')
