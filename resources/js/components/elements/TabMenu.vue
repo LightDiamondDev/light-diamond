@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import {computed, type PropType, ref} from 'vue'
-import type {RouteLocationRaw} from 'vue-router'
+import {computed, type PropType, ref, watch} from 'vue'
+import {type RouteLocationRaw, useRoute} from 'vue-router'
+
 import ItemButton from '@/components/elements/ItemButton.vue'
 
 export interface TabMenuItem {
@@ -27,13 +28,18 @@ const props = defineProps({
     menuClasses: String
 })
 
-const emit = defineEmits<{
-    (e: 'tab-change', event: TabMenuChangeEvent): void
-}>()
+const emit = defineEmits<{ (e: 'tab-change', event: TabMenuChangeEvent): void }>()
 
 const visibleItems = computed(() => props.items!.filter((item) => item.visible || item.visible === undefined))
+const route = useRoute()
 
-const currentTabIndex = ref(0)
+const currentTabIndex = ref(getActiveTabIndex())
+
+watch(route, () => { currentTabIndex.value = getActiveTabIndex() })
+
+function getActiveTabIndex() {
+    return props.items?.findIndex(item => !item.routes || item.routes.includes(route.name))
+}
 
 function onTabClick(index) {
     currentTabIndex.value = index

@@ -12,6 +12,9 @@ export interface User {
     first_name?: string
     last_name?: string
     role?: UserRole
+    post_count: number
+    favourite_post_count: number
+    comment_count: number
     created_at?: string
     updated_at?: string
 }

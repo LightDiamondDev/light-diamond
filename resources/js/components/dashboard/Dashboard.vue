@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {useRoute} from 'vue-router'
 import {computed, ref, watch} from 'vue'
 import {useAuthStore} from '@/stores/auth'
+import {useRoute} from 'vue-router'
 
 import ItemButton from '@/components/elements/ItemButton.vue'
 
@@ -21,12 +21,18 @@ const menuItems = ref<DashboardMenuItem[]>([
         label: 'Заявки на публикацию',
         icon: 'icon-news',
         route: 'dashboard.post-submissions',
+        routes: [
+            'dashboard.post-submissions',
+            'dashboard.post-submissions.accepted',
+            'dashboard.post-submissions.rejected'
+        ]
     },
     {
         label: 'Пользователи',
         icon: 'icon-skin',
         route: 'dashboard.users',
-    },
+        routes: [ 'dashboard.users' ]
+    }
 ])
 
 const activeMenuItem = ref<DashboardMenuItem>(getActualActiveMenuItem())
@@ -35,20 +41,20 @@ watch(route, () => {
     activeMenuItem.value = getActualActiveMenuItem()
 })
 
+const visibleMenuItems = computed<DashboardMenuItem[]>(() => {
+    return menuItems.value.filter(
+        (item) => typeof item.visible === 'function' ? item.visible() : item.visible !== false
+    )
+})
+
 function getActualActiveMenuItem() {
-    return menuItems.value.find(item => item.route === route.name)!
+    return menuItems.value.find(item => item.routes.includes(route.name))
 }
 
 function onSectionSelect(item: DashboardMenuItem) {
     isMobileMenu.value = false
     activeMenuItem.value = item
 }
-
-const visibleMenuItems = computed<DashboardMenuItem[]>(() => {
-    return menuItems.value.filter(
-        (item) => typeof item.visible === 'function' ? item.visible() : item.visible !== false
-    )
-})
 
 function setMobileMenu() {
     isMobileMenu.value = true
@@ -123,7 +129,7 @@ function setMobileMenu() {
 .manager-aside,
 .title-header {
     background-color: var(--primary-bg-color);
-    background-image: var(--bg-image);
+    background-image: var(--base-bg-image);
 }
 
 .manager {
@@ -159,7 +165,7 @@ function setMobileMenu() {
 
     .manager {
         background-color: var(--primary-bg-color);
-        background-image: var(--bg-image);
+        background-image: var(--base-bg-image);
         padding: 0;
         gap: 0;
     }

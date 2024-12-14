@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
-import {useToastStore} from '@/stores/toast'
+import {computed, type PropType, ref} from 'vue'
+
 import {getErrorMessageByCode} from '@/helpers'
-import {computed, reactive, ref} from 'vue'
+import {useToastStore} from '@/stores/toast'
 
 import {type Post, type PostVersion, PostVersionStatus} from '@/types'
 import PostVersionCard from '@/components/post/PostVersionCard.vue'
 
 import Paginator from '@/components/elements/Paginator.vue'
 import TabMenu, {type TabMenuChangeEvent} from '@/components/elements/TabMenu.vue'
-import {useAuthStore} from '@/stores/auth'
 
 interface PostVersionLoadResponseData {
     success: boolean
     message?: string
+    status?: string
     errors?: object
     records?: Post[]
     pagination?: {
@@ -23,32 +24,58 @@ interface PostVersionLoadResponseData {
     }
 }
 
-const authStore = useAuthStore()
-const toastStore = useToastStore()
+const props = defineProps({
+    status: {
+        type: String as PropType<PostVersionStatus>,
+        default: PostVersionStatus.PENDING
+    }
+})
 
-const isLoading = ref(false)
+const toastStore = useToastStore()
 
 const postVersions = ref<PostVersion[]>([])
 const totalRecords = ref(0)
 
-const loadRequestData = reactive({
-    status: PostVersionStatus.DRAFT,
-    page: 1,
-    per_page: 8
-})
+const page = ref(1)
+const perPage = ref(8)
+
+const loadRequestData = computed(() => ({
+    status: props.status,
+    page: page.value,
+    per_page: perPage.value
+}))
+
+const isLoading = ref(false)
 
 const tabMenuItems = computed(() => [
-    {label: 'Черновики', icon: 'icon-script', status: PostVersionStatus.DRAFT},
-    {label: 'Ожидающие', icon: 'icon-clock', status: PostVersionStatus.PENDING},
-    {label: 'Принятые', icon: 'icon-tick', status: PostVersionStatus.ACCEPTED},
-    {label: 'Отклонённые', icon: 'icon-small-cross', status: PostVersionStatus.REJECTED},
+    {
+        label: 'Ожидающие',
+        icon: 'icon-clock',
+        route: { name: 'dashboard.post-submissions' },
+        routes: [ 'dashboard.post-submissions' ],
+        status: PostVersionStatus.PENDING
+    },
+    {
+        label: 'Принятые',
+        icon: 'icon-tick',
+        route: { name: 'dashboard.post-submissions.accepted' },
+        routes: [ 'dashboard.post-submissions.accepted' ],
+        status: PostVersionStatus.ACCEPTED
+    },
+    {
+        label: 'Отклонённые',
+        icon: 'icon-small-cross',
+        route: { name: 'dashboard.post-submissions.rejected' },
+        routes: [ 'dashboard.post-submissions.rejected' ],
+        status: PostVersionStatus.REJECTED
+    }
 ])
 
 function loadPostVersions() {
     isLoading.value = true
     postVersions.value = []
 
-    axios.get(`/api/users/${authStore.id}/post-versions`, {params: loadRequestData}).then((response) => {
+    axios.get('/api/post-versions', {params: loadRequestData.value}).then((response) => {
         const responseData: PostVersionLoadResponseData = response.data
         if (responseData.success) {
             postVersions.value = responseData.records!
@@ -65,9 +92,9 @@ function loadPostVersions() {
 
 function onTabChange(event: TabMenuChangeEvent) {
     const selectedStatus = tabMenuItems.value[event.tabIndex].status
-    if (loadRequestData.status !== selectedStatus) {
-        loadRequestData.status = selectedStatus
-        loadRequestData.page = 1
+    if (loadRequestData.value.status !== selectedStatus) {
+        loadRequestData.value.status = selectedStatus
+        loadRequestData.value.page = 1
         totalRecords.value = 0
         loadPostVersions()
     }
@@ -83,14 +110,15 @@ loadPostVersions()
                 <div class="flex md:justify-start justify-center">
                     <TabMenu
                         item-classes="ld-title-font justify-center h-[48px] min-w-[64px] md:text-[1rem] text-[14px] gap-1 lg:px-4 px-1"
-                        item-label-classes="sm:flex hidden"
+                        item-label-classes="xs:flex hidden"
                         :items="tabMenuItems"
                         @tab-change="onTabChange"
                     />
                 </div>
 
                 <div v-if="isLoading" class="flex flex-col">
-                    <div v-for="i in 5" class="flex w-full gap-2 p-2">
+                    <div v-for="i in 5" :key="i" class="flex w-full gap-2 p-2">
+
                         <div class="skeleton transfusion flex
                             sm:h-[112px] sm:max-w-[196px] sm:min-w-[196px]
                             xs:h-[76px] xs:max-w-[132px] xs:min-w-[132px]

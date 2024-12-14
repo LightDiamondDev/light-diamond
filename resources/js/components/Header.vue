@@ -268,9 +268,9 @@ function logout() {
             >
                 <div class="w-[32px]"/>
                 <RouterLink
-                    :to="{name: 'home'}"
                     class="logo-wrap flex items-center transition-opacity duration-200 h-[70%]"
                     :class="{'opacity-0': !isHeaderSidebar}"
+                    :to="{name: 'home'}"
                 >
                     <img src="/images/elements/light-diamond-logo.png" alt="Logo" class="h-full"/>
                 </RouterLink>

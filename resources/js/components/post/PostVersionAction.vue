@@ -131,14 +131,14 @@ const props = defineProps({
 
                     <p
                         v-if="action.type === PostVersionActionType.REJECT"
-                        class="post-version-action-message px-3 py-2 w-full"
+                        class="post-version-action-message px-3 py-2 max-w-[480px] w-full"
                     >
                         {{ (action.details as PostVersionActionReject).reason }}
                     </p>
 
                     <p
                         v-if="action.type === PostVersionActionType.REQUEST_CHANGES"
-                        class="post-version-action-message px-3 py-2 w-full"
+                        class="post-version-action-message px-3 py-2 max-w-[480px] w-full"
                     >
                         {{ (action.details as PostVersionActionRequestChanges).message }}
                     </p>

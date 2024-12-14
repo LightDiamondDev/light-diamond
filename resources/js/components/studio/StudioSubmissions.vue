@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
-import {useToastStore} from '@/stores/toast'
+import {computed, type PropType, ref} from 'vue'
+
 import {getErrorMessageByCode} from '@/helpers'
-import {computed, reactive, ref} from 'vue'
+import {useAuthStore} from '@/stores/auth'
+import {useToastStore} from '@/stores/toast'
 
 import {type Post, type PostVersion, PostVersionStatus} from '@/types'
 import PostVersionCard from '@/components/post/PostVersionCard.vue'
 
-import Paginator, {type PageChangeEvent} from '@/components/elements/Paginator.vue'
+import Paginator from '@/components/elements/Paginator.vue'
 import TabMenu, {type TabMenuChangeEvent} from '@/components/elements/TabMenu.vue'
 
 interface PostVersionLoadResponseData {
     success: boolean
     message?: string
-    status?: string
     errors?: object
     records?: Post[]
     pagination?: {
@@ -23,30 +24,66 @@ interface PostVersionLoadResponseData {
     }
 }
 
-const toastStore = useToastStore()
+const props = defineProps({
+    status: {
+        type: String as PropType<PostVersionStatus>,
+        default: PostVersionStatus.PENDING
+    }
+})
 
-const isLoading = ref(false)
+const authStore = useAuthStore()
+const toastStore = useToastStore()
 
 const postVersions = ref<PostVersion[]>([])
 const totalRecords = ref(0)
 
-const loadRequestData = reactive({
-    status: PostVersionStatus.PENDING,
-    page: 1,
-    per_page: 8
-})
+const page = ref(1)
+const perPage = ref(8)
+
+const loadRequestData = computed(() => ({
+    status: props.status,
+    page: page.value,
+    per_page: perPage.value
+}))
+
+const isLoading = ref(false)
 
 const tabMenuItems = computed(() => [
-    {label: 'Ожидающие', icon: 'icon-clock', status: PostVersionStatus.PENDING},
-    {label: 'Принятые', icon: 'icon-tick', status: PostVersionStatus.ACCEPTED},
-    {label: 'Отклонённые', icon: 'icon-small-cross', status: PostVersionStatus.REJECTED},
+    {
+        label: 'Черновики',
+        icon: 'icon-script',
+        route: { name: 'studio.submissions.drafts' },
+        routes: [ 'studio.submissions.drafts' ],
+        status: PostVersionStatus.DRAFT
+    },
+    {
+        label: 'Ожидающие',
+        icon: 'icon-clock',
+        route: { name: 'studio.submissions.pending' },
+        routes: [ 'studio.submissions.pending' ],
+        status: PostVersionStatus.PENDING
+    },
+    {
+        label: 'Принятые',
+        icon: 'icon-tick',
+        route: { name: 'studio.submissions.accepted' },
+        routes: [ 'studio.submissions.accepted' ],
+        status: PostVersionStatus.ACCEPTED
+    },
+    {
+        label: 'Отклонённые',
+        icon: 'icon-small-cross',
+        route: { name: 'studio.submissions.rejected' },
+        routes: [ 'studio.submissions.rejected' ],
+        status: PostVersionStatus.REJECTED
+    }
 ])
 
 function loadPostVersions() {
     isLoading.value = true
     postVersions.value = []
 
-    axios.get('/api/post-versions', {params: loadRequestData}).then((response) => {
+    axios.get(`/api/users/${authStore.id}/post-versions`, {params: loadRequestData.value}).then((response) => {
         const responseData: PostVersionLoadResponseData = response.data
         if (responseData.success) {
             postVersions.value = responseData.records!
@@ -63,9 +100,9 @@ function loadPostVersions() {
 
 function onTabChange(event: TabMenuChangeEvent) {
     const selectedStatus = tabMenuItems.value[event.tabIndex].status
-    if (loadRequestData.status !== selectedStatus) {
-        loadRequestData.status = selectedStatus
-        loadRequestData.page = 1
+    if (loadRequestData.value.status !== selectedStatus) {
+        loadRequestData.value.status = selectedStatus
+        loadRequestData.value.page = 1
         totalRecords.value = 0
         loadPostVersions()
     }
@@ -81,7 +118,7 @@ loadPostVersions()
                 <div class="flex md:justify-start justify-center">
                     <TabMenu
                         item-classes="ld-title-font justify-center h-[48px] min-w-[64px] md:text-[1rem] text-[14px] gap-1 lg:px-4 px-1"
-                        item-label-classes="xs:flex hidden"
+                        item-label-classes="sm:flex hidden"
                         :items="tabMenuItems"
                         @tab-change="onTabChange"
                     />

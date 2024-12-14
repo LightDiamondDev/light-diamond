@@ -2,10 +2,14 @@
     :root {
         --primary-bg-color: #005565;
         --secondary-bg-color: #eaeaea;
-        --bg-image: url('/images/elements/base-background.png');
+        --secondary-transparent-bg-color: rgba(235, 235, 235, .7);
+        --base-bg-image: url('/images/elements/base-background.png');
+        --code-bg-image: url('/images/elements/base-background-code.png');
         --tinted-bg-color: linear-gradient(rgba(0, 15, 15, .5), transparent);
         --primary-border: 2px solid rgba(0, 255, 255, .3);
         --secondary-border: 2px solid rgba(255, 255, 255, 1);
+        --hover-border: 2px solid #00ffff;
+        --secondary-transparent-border: 2px solid rgba(255, 255, 255, .5);
         --trinity-border: 2px solid rgba(0, 15, 15, .2);
         --primary-text-color: #eaeaea;
         --secondary-text-color: #3a3a3a;
@@ -56,6 +60,12 @@
         background-color: var(--secondary-bg-color);
     }
 
+    .ld-secondary-blur-background {
+        background-color: var(--secondary-transparent-bg-color);
+        background-image: var(--code-bg-image);
+        backdrop-filter: blur(5px)
+    }
+
     .ld-fixed-background {
         background-attachment: fixed;
     }
@@ -100,6 +110,14 @@
 
     .ld-secondary-border-top {
         border-top: var(--secondary-border);
+    }
+
+    .ld-secondary-transparent-border {
+        border: var(--secondary-transparent-border);
+    }
+
+    .ld-secondary-transparent-border-bottom {
+        border-bottom: var(--secondary-transparent-border);
     }
 
     .ld-trinity-border-top {
@@ -399,7 +417,11 @@
         background-color: var(--secondary-bg-color);
     }
 
-    .comment-read-more-button:hover {
+    .ld-secondary-background .comment-read-more-button:hover {
+        color: var(--trinity-text-color);
+    }
+
+    .ld-primary-background .comment-read-more-button:hover {
         color: var(--brilliant-color);
     }
 
@@ -569,6 +591,14 @@
         background-size: 400% 100%;
     }
 
+    .ld-achievement-background {
+        animation: achievement-background-animation 3s infinite;
+    }
+
+    .ld-achievement-text {
+        animation: achievement-text-animation 3s infinite;
+    }
+
     .design-settings-form div .settings-button:focus-visible {
         border: 2px solid #00ffff;
     }
@@ -715,8 +745,13 @@
         padding: 0 0 0 16px;
     }
 
-    .post-comment blockquote,
-    .post-comment .mention {
+    .ld-secondary-background .post-comment blockquote,
+    .ld-secondary-background .post-comment .mention {
+        border-left: 4px solid var(--trinity-text-color);
+    }
+
+    .ld-primary-background .post-comment blockquote,
+    .ld-primary-background .post-comment .mention {
         border-left: 4px solid rgba(0, 255, 255, .8);
     }
 
@@ -726,16 +761,31 @@
         border-top: none;
     }
 
-    .post-comment-editor code,
-    .post-comment-editor pre,
-    .post-comment code,
-    .post-comment pre {
+    .ld-secondary-background .post-comment code,
+    .ld-secondary-background .post-comment pre {
+        background-color: rgba(0, 15, 15, .05);
+    }
+
+    .ld-secondary-background .post-comment pre {
+        border: 2px solid rgba(0, 15, 15, .2);
+    }
+
+    .ld-primary-background .post-comment pre {
+        border: 2px solid rgba(0, 255, 255, .2);
+    }
+
+    .ld-primary-background .post-comment-editor code,
+    .ld-primary-background .post-comment-editor pre,
+    .ld-primary-background .post-comment code,
+    .ld-primary-background .post-comment pre {
         background-color: rgba(0, 15, 15, .2);
         color: rgba(255, 255, 255, .9);
     }
 
-    .post-comment-editor pre code,
-    .post-comment pre code {
+    .ld-primary-background .post-comment-editor pre code,
+    .ld-primary-background .post-comment pre code,
+    .ld-secondary-background .post-comment-editor pre code,
+    .ld-secondary-background .post-comment pre code {
         background-color: transparent;
     }
 
@@ -765,12 +815,12 @@
         border: none;
     }
 
-    .post-comment-reply-button {
-        color: var(--brilliant-color);
+    .ld-secondary-background .post-comment-reply-button {
+        color: var(--trinity-text-color);
     }
 
-    .post-comment-reply-button:hover {
-        color: var(--hover-text-color);
+    .ld-primary-background .post-comment-reply-button {
+        color: var(--brilliant-color);
     }
 
     .post-comment-editor ol {
@@ -782,9 +832,9 @@
         list-style-type: square;
     }
 
-    .ld-special-link,
+    .ld-special-text,
     .post a {
-        animation: content-link-color-animation 5s infinite;
+        animation: special-text-animation 5s infinite;
         cursor: pointer;
     }
 
@@ -1173,6 +1223,10 @@
         font-family: "Pixel Code Pro", sans-serif;
     }
 
+    .profile-unit:focus-visible .icon, .profile-unit:hover .icon {
+        animation: icon-trigger-up-animation .3s ease;
+    }
+
     .icon {
         background-repeat: no-repeat;
     }
@@ -1186,7 +1240,7 @@
     }
 
     .icon-achievement {
-        background-image: url('/public/images/icons/diamond-achievement.png');
+        background-image: url('/images/icons/diamond-achievement.png');
     }
 
     .icon-apple {
@@ -1599,6 +1653,24 @@
 
     /* =============== [ Анимации ] =============== */
 
+    @keyframes achievement-background-animation
+    {
+        0% { background-color: rgba(0, 255, 255, 1); }
+        25% { background-color: rgba(0, 180, 230, 1); }
+        50% { background-color: rgba(0, 200, 200, 1); }
+        75% { background-color: rgba(0, 230, 180, 1); }
+        100% { background-color: rgba(0, 255, 255, 1); }
+    }
+
+    @keyframes achievement-text-animation
+    {
+        0% { color: rgba(0, 255, 255, 1); }
+        25% { color: rgba(0, 180, 230, 1); }
+        50% { color: rgba(0, 200, 200, 1); }
+        75% { color: rgba(0, 230, 180, 1); }
+        100% { color: rgba(0, 255, 255, 1); }
+    }
+
     @keyframes banner-scale-animation {
         0% {
             transform: scale(1);
@@ -1611,11 +1683,13 @@
         }
     }
 
-    @keyframes selector-color-animation
+    @keyframes special-text-animation
     {
-        0% { color: rgba(0, 255, 255, 1); }
-        50% { color: rgba(0, 255, 190, 1); }
-        100% { color: rgba(0, 255, 255, 1); }
+        0% { color: rgba(0, 85, 100, 1); }
+        25% { color: rgba(0, 130, 180, 1); }
+        50% { color: rgba(0, 160, 160, 1); }
+        75% { color: rgba(0, 160, 130, 1); }
+        100% { color: rgba(0, 85, 100, 1); }
     }
 
     @keyframes comment-link-color-animation
@@ -1627,7 +1701,14 @@
         100% { color: rgba(0, 165, 185, 1); }
     }
 
-    @keyframes content-link-color-animation
+    @keyframes selector-color-animation
+    {
+        0% { color: rgba(0, 255, 255, 1); }
+        50% { color: rgba(0, 255, 190, 1); }
+        100% { color: rgba(0, 255, 255, 1); }
+    }
+
+    @keyframes special-text-animation
     {
         0% { color: rgba(0, 85, 100, 1); }
         25% { color: rgba(0, 130, 180, 1); }

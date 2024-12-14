@@ -157,7 +157,7 @@ function saveAsDraft() {
                             <div class="flex items-center xl:px-2.5 px-4 py-1">
                                 <RouterLink
                                     :to="{name: 'post', params: {slug: postVersion!.post.slug}}"
-                                    class="ld-special-link line-clamp-2 text-[12px]
+                                    class="ld-special-text line-clamp-2 text-[12px]
                                     border-0 hover:underline duration-200"
                                 >
                                     {{ postVersion!.post.version!.title }}

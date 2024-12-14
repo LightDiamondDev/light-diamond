@@ -1,16 +1,17 @@
 <script setup lang='ts'>
 import axios, {type AxiosError} from 'axios'
+import {ref} from 'vue'
+
+import {getErrorMessageByCode} from '@/helpers'
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
-import {getErrorMessageByCode} from '@/helpers'
-import {ref} from 'vue'
 
 import {type User, UserRole} from '@/types'
 
 import Button from '@/components/elements/Button.vue'
 import Checkbox from '@/components/elements/Checkbox.vue'
 import Dialog from '@/components/elements/Dialog.vue'
-import Paginator, {type PageChangeEvent} from '@/components/elements/Paginator.vue'
+import Paginator from '@/components/elements/Paginator.vue'
 import ShineButton from '@/components/elements/ShineButton.vue'
 import UserForm from '@/components/dashboard/UserForm.vue'
 
@@ -41,8 +42,6 @@ const isDeleteRecordModal = ref(false)
 const loadRecordsData = ref({
     page: 1,
     per_page: 20
-    // sort_field: 'created_at',
-    // sort_order: -1
 })
 
 const currentRecord = ref<User | null>(null)

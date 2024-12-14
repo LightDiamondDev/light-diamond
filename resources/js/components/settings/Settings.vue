@@ -119,7 +119,7 @@ function setMobileMenu() {
 .manager-aside,
 .title-header {
     background-color: var(--primary-bg-color);
-    background-image: var(--bg-image);
+    background-image: var(--base-bg-image);
 }
 .manager {
     padding: .5rem;
@@ -156,7 +156,7 @@ function setMobileMenu() {
     }
     .manager {
         background-color: var(--primary-bg-color);
-        background-image: var(--bg-image);
+        background-image: var(--base-bg-image);
         padding: 0;
         gap: 0;
     }

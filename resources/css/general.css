@@ -157,11 +157,18 @@
     .item-diamond { background-image: url('/public/images/items/diamond.png'); }
     .item-ender-pearl { background-image: url('/public/images/items/ender-pearl.png'); }
     .item-gold-ingot { background-image: url('/public/images/items/gold-ingot.png'); }
-    .item-leave-gold { background-image: url('/public/images/items/leave-gold.png'); }
-    .item-leave-lime { background-image: url('/public/images/items/leave-lime.png'); }
-    .item-leave-orange { background-image: url('/public/images/items/leave-orange.png'); }
-    .item-leave-red { background-image: url('/public/images/items/leave-red.png'); }
-    .item-leave-yellow { background-image: url('/public/images/items/leave-yellow.png'); }
+
+    .particle-leave-gold { background-image: url('/public/images/particles/leave-gold.png'); }
+    .particle-leave-lime { background-image: url('/public/images/particles/leave-lime.png'); }
+    .particle-leave-orange { background-image: url('/public/images/particles/leave-orange.png'); }
+    .particle-leave-red { background-image: url('/public/images/particles/leave-red.png'); }
+    .particle-leave-yellow { background-image: url('/public/images/particles/leave-yellow.png'); }
+
+    .particle-snowflake-flower { background-image: url('/public/images/particles/snowflake-flower.png'); }
+    .particle-snowflake-round { background-image: url('/public/images/particles/snowflake-round.png'); }
+    .particle-snowflake-square { background-image: url('/public/images/particles/snowflake-square.png'); }
+    .particle-snowflake-star { background-image: url('/public/images/particles/snowflake-star.png'); }
+    .particle-snowflake-wheel { background-image: url('/public/images/particles/snowflake-wheel.png'); }
 
     /* =============== [ Анимации ] =============== */
 

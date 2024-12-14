@@ -47,7 +47,7 @@ const props = defineProps({
                     <ProcessingMovingItems v-if="loading" class="loading-icon" :item="loadingItem" height="28px" width="28px"/>
                     <span
                         v-if="!loading && icon !== ''"
-                        class="icon min-w-[2rem]"
+                        class="icon min-w-[1rem]"
                         :class="icon"
                     />
                     <span class="label text-center flex items-center duration-200">{{ label }}</span>

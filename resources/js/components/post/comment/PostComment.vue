@@ -31,6 +31,10 @@ const props = defineProps({
     comment: {
         type: Object as PropType<PostComment>,
         required: true
+    },
+    isProfileComment: {
+        type: Boolean,
+        default: false
     }
 })
 
@@ -308,14 +312,14 @@ const currentCommentHTMLHeight = computed(() =>
                                         </span>
                                         <span
                                             v-if="comment.user && comment.user?.username === comment.post?.version?.author?.username"
-                                            class="ld-lightgray-text flex items-center text-[12px] pl-1"
+                                            class="flex items-center text-[12px] opacity-70 pl-1"
                                         >
                                             Автор
                                         </span>
                                     </span>
                                     <span
                                         v-tooltip.top="`${getFullPresentableDate(comment.created_at)}`"
-                                        class="flex items-center ld-lightgray-text text-[12px]"
+                                        class="flex items-center text-[12px] opacity-70"
                                     >
                                         {{ getRelativeDate(comment.created_at) }}
                                     </span>
@@ -372,9 +376,17 @@ const currentCommentHTMLHeight = computed(() =>
                                 <EffectIcon icon="icon-heart"/>
                                 <span class="counter flex p-1">{{ comment.like_count }}</span>
                             </button>
-                            <button class="post-comment-reply-button" @click="onReplyClick">
+                            <button v-if="!isProfileComment" class="post-comment-reply-button" @click="onReplyClick">
                                 <span class="text text-sm p-2">Ответить</span>
                             </button>
+                            <RouterLink
+                                v-else
+                                class="post-comment-reply-button"
+                                style="animation: none"
+                                :to="{name: 'post', params: {slug: comment.post!.slug}, replace: true}"
+                            >
+                                <span class="text text-sm p-2">Перейти к Посту</span>
+                            </RouterLink>
                         </div>
                         <div v-if="replyData" class="flex flex-col gap-2" @keydown.esc="() => replyData = null">
                             <div class="text-sm flex gap-1 mt-2">

@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
-import {useToastStore} from '@/stores/toast'
-import {getErrorMessageByCode} from '@/helpers'
 import {reactive, ref} from 'vue'
 
+import {getErrorMessageByCode} from '@/helpers'
+import {useAuthStore} from '@/stores/auth'
+import {useToastStore} from '@/stores/toast'
+
 import {type Post} from '@/types'
-import Paginator, {type PageChangeEvent} from '@/components/elements/Paginator.vue'
+import Paginator from '@/components/elements/Paginator.vue'
 import PostStudioCard from '@/components/post/PostStudioCard.vue'
 
-import {useAuthStore} from '@/stores/auth'
 import ShineButton from '@/components/elements/ShineButton.vue'
 
 interface PostLoadResponseData {
@@ -53,14 +54,6 @@ function loadPosts() {
     }).finally(() => {
         isLoading.value = false
     })
-}
-
-function onPageChange(event: PageChangeEvent) {
-    const selectedPage = event.pageNumber
-    if (selectedPage !== loadRequestData.page) {
-        loadRequestData.page = selectedPage
-        loadPosts()
-    }
 }
 
 loadPosts()

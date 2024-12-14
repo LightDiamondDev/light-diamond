@@ -12,11 +12,19 @@ const props = defineProps({
     }
 })
 
+enum BannerParticles {
+    LEAVES = 'LEAVES',
+    SNOWFLAKES = 'SNOWFLAKES'
+}
+
 const bannerImagesSrc = ref(props.imagesSrc)
 const timeInterval = ref(props.timeInterval)
 const currentBannerImageSrc = ref(0)
 
 const isBannerAnimation = ref(true)
+
+const isBannerLeavesParticles = ref(false)
+const isBannerSnowflakesParticles = ref(false)
 
 function launchBannerSwitchSlidesAnimation() {
     if (bannerImagesSrc.value.length > 1) {
@@ -30,7 +38,17 @@ function launchBannerSwitchSlidesAnimation() {
     }
 }
 
+function launchBannerParticles(type: string) {
+    if (type === BannerParticles.LEAVES) {
+        isBannerLeavesParticles.value = true
+    }
+    else if (type === BannerParticles.SNOWFLAKES) {
+        isBannerSnowflakesParticles.value = true
+    }
+}
+
 launchBannerSwitchSlidesAnimation()
+launchBannerParticles(BannerParticles.SNOWFLAKES)
 </script>
 
 <template>
@@ -39,7 +57,7 @@ launchBannerSwitchSlidesAnimation()
             class="banner-slide bg-fixed flex h-full w-full duration-1000"
             :style="{ 'background-image': `url(${bannerImagesSrc[currentBannerImageSrc]})` }"
         >
-            <div class="banner-effects flex justify-center leaves h-full w-full relative" :class="{ 'effects-off': !isBannerAnimation }">
+            <div class="banner-effects flex justify-center snowflakes h-full w-full relative" :class="{ 'effects-off': !isBannerAnimation }">
 
                 <div class="banner-content flex justify-center w-full">
                     <slot name="banner-content"/>
@@ -53,21 +71,43 @@ launchBannerSwitchSlidesAnimation()
                         />
                     </button>
                 </div>
-                <span class="particle icon item-leave-gold n1"/>
-                <span class="particle icon item-leave-lime n2"/>
-                <span class="sm:block hidden particle icon item-leave-orange n3"/>
-                <span class="particle icon item-leave-red n4"/>
-                <span class="particle icon item-leave-yellow n5"/>
-                <span class="sm:block hidden particle icon item-leave-gold n6"/>
-                <span class="particle icon item-leave-lime n7"/>
-                <span class="particle icon item-leave-orange n8"/>
-                <span class="sm:block hidden particle icon item-leave-red n9"/>
-                <span class="particle icon item-leave-yellow n10"/>
-                <span class="particle icon item-leave-gold n11"/>
-                <span class="sm:block hidden particle icon item-leave-lime n12"/>
-                <span class="particle icon item-leave-orange n13"/>
-                <span class="particle icon item-leave-red n14"/>
-                <span class="sm:block hidden particle icon item-leave-yellow n15"/>
+
+                <template v-if="isBannerLeavesParticles">
+                    <span class="particle icon particle-leave-gold n1"/>
+                    <span class="particle icon particle-leave-lime n2"/>
+                    <span class="sm:block hidden particle icon particle-leave-orange n3"/>
+                    <span class="particle icon particle-leave-red n4"/>
+                    <span class="particle icon particle-leave-yellow n5"/>
+                    <span class="sm:block hidden particle icon particle-leave-gold n6"/>
+                    <span class="particle icon particle-leave-lime n7"/>
+                    <span class="particle icon particle-leave-orange n8"/>
+                    <span class="sm:block hidden particle icon particle-leave-red n9"/>
+                    <span class="particle icon particle-leave-yellow n10"/>
+                    <span class="particle icon particle-leave-gold n11"/>
+                    <span class="sm:block hidden particle icon particle-leave-lime n12"/>
+                    <span class="particle icon particle-leave-orange n13"/>
+                    <span class="particle icon particle-leave-red n14"/>
+                    <span class="sm:block hidden particle icon particle-leave-yellow n15"/>
+                </template>
+
+                <template v-if="isBannerSnowflakesParticles">
+                    <span class="particle icon particle-snowflake-flower n1"/>
+                    <span class="particle icon particle-snowflake-star n2"/>
+                    <span class="sm:block hidden particle icon article-snowflake-square n3"/>
+                    <span class="particle icon particle-snowflake-star n4"/>
+                    <span class="particle icon particle-snowflake-wheel n5"/>
+                    <span class="sm:block hidden particle icon particle-snowflake-flower n6"/>
+                    <span class="particle icon particle-snowflake-round n7"/>
+                    <span class="particle icon article-snowflake-square n8"/>
+                    <span class="sm:block hidden particle icon particle-snowflake-star n9"/>
+                    <span class="particle icon particle-snowflake-wheel n10"/>
+                    <span class="particle icon particle-snowflake-flower n11"/>
+                    <span class="sm:block hidden particle icon particle-snowflake-star n12"/>
+                    <span class="particle icon article-snowflake-square n13"/>
+                    <span class="particle icon particle-snowflake-star n14"/>
+                    <span class="sm:block hidden particle icon particle-snowflake-wheel n15"/>
+                </template>
+
             </div>
         </div>
     </div>
@@ -160,6 +200,83 @@ launchBannerSwitchSlidesAnimation()
 @keyframes falling-leave-animation15 {
     from { transform: rotate(0); left: 80%; top: -5%; }
     to { transform: rotate(720deg); left: 40%; top: 100%; }
+}
+
+.snowflakes .n1 { animation: falling-snowflake-animation1 5s infinite linear; top: -20%; }
+.snowflakes .n2 { animation: falling-snowflake-animation2 7s infinite linear; animation-delay: 1s; top: -20%; }
+.snowflakes .n3 { animation: falling-snowflake-animation3 9s infinite linear; animation-delay: 3s; top: -20%; }
+.snowflakes .n4 { animation: falling-snowflake-animation4 4s infinite linear; animation-delay: 5s; top: -20%; }
+.snowflakes .n5 { animation: falling-snowflake-animation5 7s infinite linear; top: -20%; }
+.snowflakes .n6 { animation: falling-snowflake-animation6 9s infinite linear; animation-delay: 1s; top: -20%; }
+.snowflakes .n7 { animation: falling-snowflake-animation7 4s infinite linear; animation-delay: 3s; top: -20%; }
+.snowflakes .n8 { animation: falling-snowflake-animation8 7s infinite linear; animation-delay: 5s; top: -20%; }
+.snowflakes .n9 { animation: falling-snowflake-animation9 7s infinite linear; top: -20%; }
+.snowflakes .n10 { animation: falling-snowflake-animation10 9s infinite linear; animation-delay: 1s; top: -20%; }
+.snowflakes .n11 { animation: falling-snowflake-animation11 9s infinite linear; animation-delay: 3s; top: -20%; }
+.snowflakes .n12 { animation: falling-snowflake-animation12 7s infinite linear; animation-delay: 5s; top: -20%; }
+.snowflakes .n13 { animation: falling-snowflake-animation13 4s infinite linear; top: -20%; }
+.snowflakes .n14 { animation: falling-snowflake-animation14 4s infinite linear; animation-delay: 1s; top: -20%; }
+.snowflakes .n15 { animation: falling-snowflake-animation15 4s infinite linear; animation-delay: 3s; top: -20%; }
+
+@keyframes falling-snowflake-animation1 {
+    from { transform: rotate(0); left: 100%; top: -5%; }
+    to { transform: rotate(720deg); left: 70%; top: 100%; }
+}
+@keyframes falling-snowflake-animation2 {
+    from { transform: rotate(0); left: 80%; top: -5%; }
+    to { transform: rotate(720deg); left: 40%; top: 100%; }
+}
+@keyframes falling-snowflake-animation3 {
+    from { transform: rotate(0); left: 60%; top: -5%; }
+    to { transform: rotate(720deg); left: 20%; top: 100%; }
+}
+@keyframes falling-snowflake-animation4 {
+    from { transform: rotate(0); left: 120%; top: -20%; }
+    to { transform: rotate(720deg); left: 60%; top: 100%; }
+}
+@keyframes falling-snowflake-animation5 {
+    from { transform: rotate(0); left: 70%; top: -5%; }
+    to { transform: rotate(720deg); left: 40%; top: 100%; }
+}
+@keyframes falling-snowflake-animation6 {
+    from { transform: rotate(0); left: 50%; top: -20%; }
+    to { transform: rotate(720deg); left: 20%; top: 100%; }
+}
+@keyframes falling-snowflake-animation7 {
+    from { transform: rotate(0); left: 30%; top: -5%; }
+    to { transform: rotate(720deg); left: 10%; top: 100%; }
+}
+@keyframes falling-snowflake-animation8 {
+    from { transform: rotate(0); left: 130%; top: -20%; }
+    to { transform: rotate(720deg); left: 40%; top: 100%; }
+}
+@keyframes falling-snowflake-animation9 {
+    from { transform: rotate(0); left: 40%; top: -5%; }
+    to { transform: rotate(720deg); left: 20%; top: 100%; }
+}
+@keyframes falling-snowflake-animation10 {
+    from { transform: rotate(0); left: 110%; top: -20%; }
+    to { transform: rotate(720deg); left: 70%; top: 100%; }
+}
+@keyframes falling-snowflake-animation11 {
+    from { transform: rotate(0); left: 120%; top: -5%; }
+    to { transform: rotate(720deg); left: 80%; top: 100%; }
+}
+@keyframes falling-snowflake-animation12 {
+    from { transform: rotate(0); left: 90%; top: -20%; }
+    to { transform: rotate(720deg); left: 40%; top: 100%; }
+}
+@keyframes falling-snowflake-animation13 {
+    from { transform: rotate(0); left: 80%; top: -5%; }
+    to { transform: rotate(720deg); left: 40%; top: 100%; }
+}
+@keyframes falling-snowflake-animation14 {
+    from { transform: rotate(0); left: 45%; top: -20%; }
+    to { transform: rotate(720deg); left: -10%; top: 100%; }
+}
+@keyframes falling-snowflake-animation15 {
+    from { transform: rotate(0); left: 80%; top: -5%; }
+    to { transform: rotate(720deg); left: 50%; top: 100%; }
 }
 </style>
 

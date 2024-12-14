@@ -1,8 +1,9 @@
+import useCategoryRegistry from '@/categoryRegistry'
 import usePreferenceManager from '@/preference-manager'
 
 import type {RouteRecordRaw} from 'vue-router'
 import type {Component} from 'vue'
-import {GameEdition} from '@/types'
+import {GameEdition, PostVersionStatus} from '@/types'
 
 import Home from '@/components/Home.vue'
 import Catalog from '@/components/catalog/Catalog.vue'
@@ -10,18 +11,23 @@ import Catalog from '@/components/catalog/Catalog.vue'
 import NewPostVersion from '@/components/post/editor/NewPostVersion.vue'
 
 import Dashboard from '@/components/dashboard/Dashboard.vue'
-import DashboardPostSubmissionsSection from '@/components/dashboard/DashboardPostSubmissionsSection.vue'
-import DashboardUsersSection from '@/components/dashboard/DashboardUsersSection.vue'
+import DashboardPostSubmissions from '@/components/dashboard/DashboardPostSubmissions.vue'
+import DashboardUsers from '@/components/dashboard/DashboardUsers.vue'
 
 import PostVersion from '@/components/post/editor/PostVersion.vue'
 import Post from '@/components/post/Post.vue'
+
+import Profile from '@/components/user/profile/Profile.vue'
+import ProfileComments from '@/components/user/profile/ProfileComments.vue'
+import ProfileFavouritePosts from '@/components/user/profile/ProfileFavouritePosts.vue'
+import ProfilePosts from '@/components/user/profile/ProfilePosts.vue'
 
 import ProfileSettings from '@/components/settings/ProfileSettings.vue'
 import SecuritySettings from '@/components/settings/SecuritySettings.vue'
 import Settings from '@/components/settings/Settings.vue'
 
-import StudioMaterials from '@/components/studio/StudioMaterials.vue'
-import StudioRequests from '@/components/studio/StudioRequests.vue'
+import StudioPosts from '@/components/studio/StudioPosts.vue'
+import StudioSubmissions from '@/components/studio/StudioSubmissions.vue'
 import Studio from '@/components/studio/Studio.vue'
 
 import NotFound from '@/components/NotFound.vue'
@@ -29,7 +35,6 @@ import NotFound from '@/components/NotFound.vue'
 import ResetForm from '@/components/auth/ResetForm.vue'
 
 import VerifyEmail from '@/components/auth/VerifyEmail.vue'
-import useCategoryRegistry from '@/categoryRegistry'
 
 declare module 'vue-router' {
     interface RouteMeta {
@@ -84,15 +89,34 @@ const routes: RouteRecordRaw[] = [
             {
                 path: 'post-submissions',
                 name: 'dashboard.post-submissions',
-                component: DashboardPostSubmissionsSection,
+                component: DashboardPostSubmissions,
                 meta: {
-                    title: 'Заявки на публикацию — Панель Управления',
+                    title: 'Ожидающие заявки на публикацию — Панель Управления',
                 },
+                props: () => ({ status: PostVersionStatus.PENDING })
+            },
+            {
+                path: 'post-submissions/accepted',
+                name: 'dashboard.post-submissions.accepted',
+                component: DashboardPostSubmissions,
+                meta: {
+                    title: 'Принятые заявки на публикацию — Панель Управления',
+                },
+                props: () => ({ status: PostVersionStatus.ACCEPTED })
+            },
+            {
+                path: 'post-submissions/rejected',
+                name: 'dashboard.post-submissions.rejected',
+                component: DashboardPostSubmissions,
+                meta: {
+                    title: 'Отклонённые заявки на публикацию — Панель Управления',
+                },
+                props: () => ({ status: PostVersionStatus.REJECTED })
             },
             {
                 path: 'users',
                 name: 'dashboard.users',
-                component: DashboardUsersSection,
+                component: DashboardUsers,
                 meta: {
                     title: 'Пользователи — Панель Управления',
                 }
@@ -103,27 +127,63 @@ const routes: RouteRecordRaw[] = [
         path: '/studio',
         name: 'studio',
         component: Studio,
-        redirect: {name: 'studio.materials'},
+        redirect: {name: 'studio.posts'},
         meta: {
             title: 'Контент-Студия',
-            requiresAuth: true,
+            requiresAuth: true
         },
         children: [
             {
-                path: 'materials',
-                name: 'studio.materials',
-                component: StudioMaterials,
+                path: 'posts',
+                name: 'studio.posts',
+                component: StudioPosts,
                 meta: {
-                    title: 'Контент-Студия — Материалы',
+                    title: 'Посты — Контент-Студия',
                 }
             },
             {
-                path: 'requests',
-                name: 'studio.requests',
-                component: StudioRequests,
+                path: 'submissions',
+                name: 'studio.submissions',
+                redirect: {name: 'studio.submissions'},
                 meta: {
-                    title: 'Контент-Студия — Заявки на публикацию',
+                    title: 'Черновики заявок — Контент-Студия',
                 }
+            },
+            {
+                path: 'submissions/drafts',
+                name: 'studio.submissions.drafts',
+                component: StudioSubmissions,
+                meta: {
+                    title: 'Черновики заявок — Контент-Студия',
+                },
+                props: () => ({ status: PostVersionStatus.DRAFT})
+            },
+            {
+                path: 'submissions/pending',
+                name: 'studio.submissions.pending',
+                component: StudioSubmissions,
+                meta: {
+                    title: 'Ожидающие заявки — Контент-Студия',
+                },
+                props: () => ({ status: PostVersionStatus.PENDING})
+            },
+            {
+                path: 'submissions/accepted',
+                name: 'studio.submissions.accepted',
+                component: StudioSubmissions,
+                meta: {
+                    title: 'Принятые заявки — Контент-Студия',
+                },
+                props: () => ({ status: PostVersionStatus.ACCEPTED})
+            },
+            {
+                path: 'submissions/rejected',
+                name: 'studio.submissions.rejected',
+                component: StudioSubmissions,
+                meta: {
+                    title: 'Отклонённые заявки — Контент-Студия',
+                },
+                props: () => ({ status: PostVersionStatus.REJECTED})
             }
         ]
     },
@@ -132,7 +192,7 @@ const routes: RouteRecordRaw[] = [
         name: 'create-post',
         component: NewPostVersion,
         meta: {
-            title: 'Создание Материала',
+            title: 'Создание Поста',
             requiresAuth: true
         }
     },
@@ -142,7 +202,7 @@ const routes: RouteRecordRaw[] = [
         props: ({params}) => ({slug: params.slug}),
         component: NewPostVersion,
         meta: {
-            title: 'Обновление Материала',
+            title: 'Обновление Поста',
             requiresAuth: true
         }
     },
@@ -162,7 +222,7 @@ const routes: RouteRecordRaw[] = [
         props: true,
         component: Post,
         meta: {
-            title: 'Материал',
+            title: 'Пост',
         }
     },
     {
@@ -179,7 +239,43 @@ const routes: RouteRecordRaw[] = [
         component: ResetForm,
         meta: {
             title: 'Сброс пароля',
+        }
+    },
+    {
+        path: '/profile/:username',
+        name: 'profile',
+        component: Profile,
+        props: ({params}) => ({username: params.username}),
+        redirect: {name: 'profile.posts'},
+        meta: {
+            title: 'Профиль'
         },
+        children: [
+            {
+                path: '',
+                name: 'profile.posts',
+                component: ProfilePosts,
+                meta: {
+                    title: 'Профиль — Посты',
+                }
+            },
+            {
+                path: 'favourite-posts',
+                name: 'profile.favourite-posts',
+                component: ProfileFavouritePosts,
+                meta: {
+                    title: 'Профиль — Избранное',
+                }
+            },
+            {
+                path: 'comments',
+                name: 'profile.comments',
+                component: ProfileComments,
+                meta: {
+                    title: 'Профиль — Комментарии',
+                }
+            }
+        ]
     },
     {
         path: '/settings',

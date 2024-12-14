@@ -28,7 +28,6 @@ function wasPostUpdated(post: Post) {
     <div
         class="post-card ld-primary-background flex"
         :class="{ 'flex-col': !isHorizontalDirection, 'horizontal md:flex-row flex-col': isHorizontalDirection }"
-        style="background-attachment: fixed"
     >
         <div class="inner flex flex-grow"
              :class="{ 'flex-col': !isHorizontalDirection, 'xs:flex-row flex-col': isHorizontalDirection }">

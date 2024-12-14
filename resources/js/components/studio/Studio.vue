@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import {useRoute} from 'vue-router'
 import {computed, ref, watch} from 'vue'
+
 import {useAuthStore} from '@/stores/auth'
+import {useRoute} from 'vue-router'
 
 import ItemButton from '@/components/elements/ItemButton.vue'
 
@@ -18,14 +19,21 @@ const isMobileMenu = ref(true)
 
 const menuItems = ref<StudioMenuItem[]>([
     {
-        label: 'Материалы',
+        label: 'Посты',
         icon: 'icon-news',
-        route: 'studio.materials',
+        route: 'studio',
+        routes: [ 'studio.posts' ]
     },
     {
         label: 'Заявки на публикацию',
         icon: 'icon-letter',
-        route: 'studio.requests',
+        route: 'studio.submissions.drafts',
+        routes: [
+            'studio.submissions.drafts',
+            'studio.submissions.pending',
+            'studio.submissions.accepted',
+            'studio.submissions.rejected'
+        ]
     }
 ])
 
@@ -35,20 +43,20 @@ watch(route, () => {
     activeMenuItem.value = getActualActiveMenuItem()
 })
 
+const visibleMenuItems = computed<StudioMenuItem[]>(() => {
+    return menuItems.value.filter(
+        (item) => typeof item.visible === 'function' ? item.visible() : item.visible !== false
+    )
+})
+
 function getActualActiveMenuItem() {
-    return menuItems.value.find(item => item.route === route.name)!
+    return menuItems.value.find(item => item.routes.includes(route.name))
 }
 
 function onSectionSelect(item: StudioMenuItem) {
     isMobileMenu.value = false
     activeMenuItem.value = item
 }
-
-const visibleMenuItems = computed<StudioMenuItem[]>(() => {
-    return menuItems.value.filter(
-        (item) => typeof item.visible === 'function' ? item.visible() : item.visible !== false
-    )
-})
 
 function setMobileMenu() {
     isMobileMenu.value = true
@@ -122,7 +130,7 @@ function setMobileMenu() {
 .manager-aside,
 .title-header {
     background-color: var(--primary-bg-color);
-    background-image: var(--bg-image);
+    background-image: var(--base-bg-image);
 }
 .manager {
     padding: .5rem;
@@ -151,7 +159,7 @@ function setMobileMenu() {
     }
     .manager {
         background-color: var(--primary-bg-color);
-        background-image: var(--bg-image);
+        background-image: var(--base-bg-image);
         padding: 0;
         gap: 0;
     }

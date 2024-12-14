@@ -158,7 +158,7 @@ loadPosts()
                 >
                     <h1 class="flex justify-center w-full absolute invisible">Каталог Light Diamond</h1>
                     <img alt="Logo" class="materials-logo h-[48px] md:h-[100px]"
-                         src="/images/elements/light-diamond-materials-logo.png"/>
+                         src="/images/elements/light-diamond-catalog-logo-rus.png"/>
                     <span class="base flex justify-center items-center">
                     <span
                         class="splash flex justify-center"
@@ -249,7 +249,8 @@ loadPosts()
 
                     <div class="menu-separator flex self-center"/>
 
-                    <div class="flex">
+                    <div class="flex justify-end">
+                        <!--
                         <button
                             class="filters-button line flex items-center w-full gap-3 p-3"
                             @click="isFilters = !isFilters"
@@ -258,6 +259,7 @@ loadPosts()
                             <span :class="{ 'down-arrow-up': isFilters }" class="icon icon-down-arrow"/>
                             <span>Фильтры</span>
                         </button>
+                        -->
                         <button
                             class="catalog-anchor flex justify-center items-center self-center"
                             @click="scrollToBottom"
@@ -267,13 +269,15 @@ loadPosts()
                         </button>
                         <ShineButton
                             :icon="isHorizontalCards ?
-                            'icon-display-detail max-h-[28px] max-w-[28px] min-w-[1rem]' :
-                            'icon-display-grid max-h-[28px] max-w-[28px] min-w-[1rem]'"
+                            'icon-display-detail max-h-[28px] max-w-[28px] min-w-[28px]' :
+                            'icon-display-grid max-h-[28px] max-w-[28px] min-w-[28px]'"
                             class-preset="p-1"
                             class="m-2.5"
                             @click="isHorizontalCards = !isHorizontalCards"
                         />
                     </div>
+
+                    <!--
 
                     <div v-if="isFilters" class="filters gap-3 p-3">
                         <p>Фильтры всякие там да</p>
@@ -284,6 +288,8 @@ loadPosts()
                         <p>АбоБс, Это тебе не Сервер</p>
                         <p>А да Фильтры всякие там да</p>
                     </div>
+
+                    -->
 
                 </nav>
             </form>
@@ -404,7 +410,7 @@ loadPosts()
                 <div v-else class="posts flex flex-wrap max-w-full w-full gap-2" :class="{'paginator-refresh': isLoading}">
                     <PostCard
                         v-for="post in posts"
-                        class="xl:max-w-[421px] lg:max-w-[32.8%] sm:max-w-[49.3%] max-w-full duration-200"
+                        class="xl:max-w-[421px] lg:max-w-[32.8%] sm:max-w-[49.3%] max-w-full w-full duration-200"
                         :is-horizontal-direction="isHorizontalCards"
                         :post="post"
                     />
@@ -412,7 +418,7 @@ loadPosts()
             </template>
             <Paginator
                 v-model="currentPageNumber"
-                class="ld-primary-background ld-primary-border h-[48px] w-full mb-2"
+                class="ld-primary-background ld-primary-border h-[48px] w-full mb-2 sm:sticky sm:bottom-[0]"
                 :class="{'hidden': posts.length === 0}"
                 :records-at-page="loadData.per_page"
                 :total-records="totalRecordsCount"
