@@ -121,17 +121,17 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(PostComment::class, 'user_id');
     }
 
-    public function getPostCountAttribute(): bool
+    public function getPostCountAttribute(): int
     {
         return $this->posts()->count();
     }
 
-    public function getFavouritePostCountAttribute(): bool
+    public function getFavouritePostCountAttribute(): int
     {
         return $this->favourite_posts()->count();
     }
 
-    public function getCommentCountAttribute(): bool
+    public function getCommentCountAttribute(): int
     {
         return $this->comments()->count();
     }

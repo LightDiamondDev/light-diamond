@@ -68,8 +68,9 @@ class UserController extends Controller
     public function getByUsername(Request $request, string $username): JsonResponse
     {
         $user = User::whereUsername($username)
-            ->append(['post_count', 'favourite_post_count', 'comment_count'])
-            ->first();
+            ->first()
+            ?->append(['post_count', 'favourite_post_count', 'comment_count']);
+
         return response()->json($user);
     }
 
