@@ -75,7 +75,7 @@ class PostCommentController extends Controller
         $sortDirection = $sortOrder === -1 ? 'desc' : 'asc';
 
         $comments = PostComment::whereUserId($userId)
-            ->with(['user', 'parentComment.user'])
+            ->with(['user', 'parentComment.user', 'post', 'parentComment.post'])
             ->orderBy($sortField, $sortDirection)
             ->paginate($perPage);
 
