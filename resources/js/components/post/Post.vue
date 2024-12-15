@@ -6,7 +6,7 @@ import {computed, nextTick, onMounted, onUnmounted, onUpdated, reactive, ref, wa
 import {useAuthStore} from '@/stores/auth'
 import {useGlobalModalStore} from '@/stores/global-modal'
 import {useToastStore} from '@/stores/toast'
-import {useRoute} from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 
 import {changeTitle, convertDateToString, countHTMLTag, getErrorMessageByCode} from '@/helpers'
 
@@ -68,6 +68,14 @@ onUnmounted(() => {
 
 watch(() => route.params.slug, () => {
     loadPost()
+})
+
+const destroyAfterEachCallback = useRouter().afterEach((to, from) => {
+    if (to.name === from.name) {
+        changeTitle(post.value?.version?.title!)
+    } else {
+        destroyAfterEachCallback()
+    }
 })
 
 function updateTitle() {

@@ -208,7 +208,12 @@ function copyUrl() {
 }
 
 function getCommentRoute(commentId: number) {
-    return {name: 'post', params: {slug: comment.post!.slug}, hash: getCommentUrlHash(commentId)}
+    return {
+        name: 'post',
+        params: {slug: comment.post!.slug},
+        hash: getCommentUrlHash(commentId),
+        replace: !props.isProfileComment
+    }
 }
 
 function toggleLike() {
@@ -434,7 +439,7 @@ const currentCommentHTMLHeight = computed(() =>
             item-classes="case-font text-[0.8rem] min-h-[32px] gap-3 p-1"
             :items="actionsMenuItems"
             :align-right="true"
-            style="z-index: 1"
+            style="z-index: 1; color: var(--primary-text-color)"
             ref="actionsMenu"
         />
     </div>
