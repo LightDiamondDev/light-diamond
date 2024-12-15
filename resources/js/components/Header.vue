@@ -14,6 +14,7 @@ import Menu, {type MenuItem} from '@/components/elements/Menu.vue'
 import axios from 'axios'
 import UserAvatar from '@/components/user/UserAvatar.vue'
 import useCategoryRegistry from '@/categoryRegistry'
+import ProfileLink from '@/components/elements/ProfileLink.vue'
 
 interface NavigationSection {
     label: string
@@ -227,12 +228,14 @@ function logout() {
         ref="userMenu"
     >
         <template v-slot:header>
-            <a
+            <RouterLink
                 v-if="authStore.isAuthenticated"
                 class="profile-link laminated-link transfusion bordered flex items-center min-h-[64px] m-1"
-                href="#"
+                :to="{ name: 'profile', params: {username: authStore.username} }"
             >
+                <!--
                 <span class="notifications-counter flex justify-center items-center absolute">15</span>
+                -->
                 <UserAvatar
                     v-if="authStore.isAuthenticated"
                     border-class-list="h-10 w-10"
@@ -240,10 +243,10 @@ function logout() {
                     :user="authStore.user!"
                 />
                 <div class="flex flex-col">
-                    <span class="text-sm">{{ authStore.username }}</span>
+                    <span class="username text-sm">{{ authStore.username }}</span>
                     <span class="subtitle text-[12px] opacity-70">Профиль</span>
                 </div>
-            </a>
+            </RouterLink>
         </template>
     </Menu>
 
@@ -270,7 +273,7 @@ function logout() {
                 <RouterLink
                     class="logo-wrap flex items-center transition-opacity duration-200 h-[70%]"
                     :class="{'opacity-0': !isHeaderSidebar}"
-                    :to="{name: 'home'}"
+                    :to="{ name: 'home' }"
                 >
                     <img src="/images/elements/light-diamond-logo.png" alt="Logo" class="h-full"/>
                 </RouterLink>
@@ -283,9 +286,8 @@ function logout() {
             </div>
 
             <template v-for="section of navigationSections">
-                <div class="unit-title flex justify-center transfusion md:text-[1rem] text-[14px]">{{
-                        section.label
-                    }}
+                <div class="unit-title flex justify-center transfusion md:text-[1rem] text-[14px]">
+                    {{ section.label }}
                 </div>
 
                 <template v-for="childSection of section.children">
@@ -395,12 +397,14 @@ function logout() {
                     type="button"
                     @click="userMenu?.toggle"
                 >
+                    <!--
                     <span
                         v-if="authStore.isAuthenticated"
                         class="notifications-counter flex justify-center items-center absolute"
                     >
                         15
                     </span>
+                    -->
 
                     <UserAvatar
                         v-if="authStore.isAuthenticated"

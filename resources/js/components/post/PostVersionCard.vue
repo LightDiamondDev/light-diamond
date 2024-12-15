@@ -8,6 +8,7 @@ import {PostVersionActionType as ActionType, type PostVersion, UserRole} from '@
 
 import PostVersionAction from '@/components/post/PostVersionAction.vue'
 import UserAvatar from '@/components/user/UserAvatar.vue'
+import ProfileLink from '@/components/elements/ProfileLink.vue'
 
 const props = defineProps({
     postVersion: {
@@ -44,14 +45,18 @@ const lastAction = computed(() => props.postVersion!.actions!.at(props.postVersi
                 </RouterLink>
                 <p class="description md:flex hidden text-[10px] opacity-80 mb-0.5">{{ postVersion.description }}</p>
                 <div class="flex flex-wrap items-center md:text-[12px] text-[10px] sm:gap-4 gap-2 mt-0.5">
-                    <RouterLink v-if="postVersion.author" class="author-wrap flex flex-wrap border-0 gap-1" :to="{ name: 'home' }">
+                    <ProfileLink
+                        v-if="postVersion.author"
+                        class="author-wrap flex flex-wrap border-0 gap-1"
+                        :user="postVersion.author"
+                    >
                         <UserAvatar
                             border-class-list="h-7 w-7"
                             icon-class-list="h-5 w-5"
                             :user="postVersion.author"
                         />
-                        <p class="author-username flex items-center">{{ postVersion.author!.username }}</p>
-                    </RouterLink>
+                        <p class="author-username flex items-center">{{ postVersion.author?.username }}</p>
+                    </ProfileLink>
                     <div v-else class="author-wrap flex flex-wrap border-0 gap-1">
                         <span class="icon-border-profile icon flex"/>
                         <p class="author-username flex items-center">Некто</p>

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
-import {computed, ref} from 'vue'
+import {computed, ref, watch} from 'vue'
+import {RouterLink, useRoute} from 'vue-router'
 
-import {getErrorMessageByCode} from '@/helpers'
+import {changeTitle, getErrorMessageByCode, getTitle} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
 
 import {type Post, type User} from '@/types'
 
 import TabMenu, {type TabMenuChangeEvent} from '@/components/elements/TabMenu.vue'
-import {RouterLink} from 'vue-router'
 import Button from '@/components/elements/Button.vue'
 
 interface PostVersionLoadResponseData {
@@ -28,6 +28,12 @@ const props = defineProps({
         type: String,
         required: true
     }
+})
+
+const route = useRoute()
+
+watch(route, () => {
+    changeTitle(getTitle().replace(/Профиль/g, `Профиль ${user.value?.username}`))
 })
 
 const toastStore = useToastStore()
@@ -101,6 +107,7 @@ profileAvatarSrc.value = '/images/users/avatars/dancing-parrot-animation.gif'
 // const activeColor = ref('#00ffff')
 
 loadUser()
+changeTitle(getTitle().replace(/Профиль/g, `Профиль ${props.username}`))
 </script>
 
 <template>
@@ -126,9 +133,9 @@ loadUser()
         <span class="sm:block hidden particle icon particle-snowflake-wheel n15"/>
         <div v-if="user" class="profile-wrap ld-secondary-blur-background flex max-w-[1024px] w-full gap-4 p-4">
             <section class="materials ld-secondary-text  flex-col text-[12px] w-full">
-                <div class="flex">
+                <div class="flex sm:flex-row flex-col items-center">
                     <RouterLink
-                        class="profile-avatar min-w-fit h-fit overflow-hidden cursor-pointer"
+                        class="profile-avatar max-w-fit min-w-fit h-fit overflow-hidden cursor-pointer"
                         style="border: 2px solid rgba(255, 255, 255, .5)"
                         :to="{name: 'home'}"
                     >
@@ -136,7 +143,7 @@ loadUser()
                         <img alt="Аватар" class="max-h-[128px] max-w-[128px] min-w-[128px] duration-200" :src="profileAvatarSrc">
                     </RouterLink>
                     <div class="flex flex-col gap-2 px-4">
-                        <div class="flex gap-4">
+                        <div class="flex sm:flex-row flex-col items-center sm:gap-4 sm:mt-0 mt-4">
                             <RouterLink
                                 class="flex text-[24px] border-0 w-fit"
                                 :to="{name: 'home'}"
@@ -146,7 +153,7 @@ loadUser()
                             <p v-if="user.post_count > 0" class="ld-trinity-text ld-title-font text-[24px]">Автор</p>
                         </div>
                         <!-- <p>Россия, 21 год</p> -->
-                        <div class="flex text-[14px] gap-8 mt-2">
+                        <div v-if="user.post_count > 0" class="flex flex-wrap justify-center text-[14px] gap-8 mt-2">
 
                             <div class="flex flex-col items-center">
                                 <div class="ld-trinity-text flex gap-1">
@@ -222,16 +229,6 @@ loadUser()
         </div>
     </div>
 </template>
-
-<style>
-.tab-menu-button:hover {
-    background-color: transparent;
-}
-.tab-menu-button.active,
-.tab-menu-button:hover .label {
-    color: var(--trinity-text-color);
-}
-</style>
 
 <style scoped>
 .profile-background {

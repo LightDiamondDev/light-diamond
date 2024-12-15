@@ -9,6 +9,7 @@ import {type Post} from '@/types'
 import UserAvatar from '@/components/user/UserAvatar.vue'
 import PostActionBar from '@/components/post/PostActionBar.vue'
 import ShineButton from '@/components/elements/ShineButton.vue'
+import ProfileLink from '@/components/elements/ProfileLink.vue'
 
 const props = defineProps({
     post: {
@@ -44,14 +45,18 @@ const isFirstVersion = computed(() => props.post!.updated_at === props.post!.cre
                 </RouterLink>
                 <p class="description md:flex hidden text-[10px] opacity-80 mb-0.5">{{ post.version?.description }}</p>
                 <div class="flex flex-wrap items-center md:text-[12px] text-[10px] sm:gap-4 gap-2 mt-0.5">
-                    <RouterLink v-if="post.version?.author" class="author-wrap flex flex-wrap border-0 gap-1" :to="{ name: 'home' }">
+                    <ProfileLink
+                        v-if="post.version?.author"
+                        class="author-wrap flex flex-wrap border-0 gap-1"
+                        :user="post.version.author"
+                    >
                         <UserAvatar
                             border-class-list="h-7 w-7"
                             icon-class-list="h-5 w-5"
                             :user="post.version?.author"
                         />
                         <p class="author-username flex items-center">{{ post.version?.author.username }}</p>
-                    </RouterLink>
+                    </ProfileLink>
                     <div v-else class="author-wrap flex flex-wrap border-0 gap-1">
                         <span class="icon-border-profile icon flex"/>
                         <p class="author-username flex items-center">Некто</p>

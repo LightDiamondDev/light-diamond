@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import axios, {type AxiosError, type AxiosResponse} from 'axios'
-import {computed, nextTick, onMounted, onUnmounted, type PropType, reactive, ref} from 'vue'
+import {computed, onMounted, onUnmounted, type PropType, reactive, ref} from 'vue'
 
 import {
     getAppUrl,
@@ -9,6 +9,9 @@ import {
     getRelativeDate
 } from '@/helpers'
 import {useAuthStore} from '@/stores/auth'
+import {useGlobalModalStore} from '@/stores/global-modal'
+import {useRoute, useRouter} from 'vue-router'
+import {useToastStore} from '@/stores/toast'
 
 import PostCommentEditor from '@/components/post/comment/PostCommentEditor.vue'
 import {type PostComment, UserRole} from '@/types'
@@ -16,11 +19,8 @@ import {type PostComment, UserRole} from '@/types'
 import Button from '@/components/elements/Button.vue'
 import EffectIcon from '@/components/elements/EffectIcon.vue'
 import Menu, {type MenuItem} from '@/components/elements/Menu.vue'
+import ProfileLink from '@/components/elements/ProfileLink.vue'
 import UserAvatar from '@/components/user/UserAvatar.vue'
-
-import {useGlobalModalStore} from '@/stores/global-modal'
-import {useRoute, useRouter} from 'vue-router'
-import {useToastStore} from '@/stores/toast'
 
 interface EditedComment {
     errors?: { [key: string]: string[] }
@@ -194,10 +194,12 @@ onUnmounted(() => {
     document.removeEventListener('mousedown', removeHighlighting)
 })
 
+const linkToComment = {name: 'post', params: {slug: comment.post!.slug}, hash: getCommentUrlHash(comment.id)}
+
 function copyUrl() {
     const url = new URL(
         router.resolve(
-            {name: 'post', params: {slug: comment.post!.slug}, hash: getCommentUrlHash(comment.id)}
+            linkToComment
         ).fullPath,
         getAppUrl()
     ).href
@@ -253,8 +255,10 @@ function verifyCommentAnswer(content: string) {
 }
 
 const currentCommentHTMLHeight = computed(() =>
-    commentHTMLRef.value && commentHTMLRef.value.scrollHeight > 300 ? (isExpanded.value && commentHTMLRef.value ? commentHTMLRef.value.scrollHeight + 'px' : '260px') : 'fit-content'
-
+    commentHTMLRef.value && commentHTMLRef.value.scrollHeight > 300 ?
+        (isExpanded.value && commentHTMLRef.value ?
+            commentHTMLRef.value.scrollHeight + 'px' : '260px') :
+        'fit-content'
 )
 
 </script>
@@ -301,15 +305,16 @@ const currentCommentHTMLHeight = computed(() =>
                         />
                     </div>
                     <div class="flex flex-col gap-1 flex-1 min-w-0">
-                        <div
-                            class="comment-header flex justify-between items-center transition-all duration-300 gap-2"
-                        >
+                        <div class="comment-header flex justify-between items-center transition-all duration-300 gap-2">
                             <div class="flex md:items-center items-end gap-2">
                                 <p class="comment-username flex flex-wrap flex-row overflow-visible gap-3">
                                     <span class="flex gap-2">
-                                        <span class="nickname text-[var(--primary-color)] lg:text-[14px] ml-1">
-                                            {{ comment.user ? comment.user!.username : 'Некто' }}
-                                        </span>
+                                        <ProfileLink
+                                            class="nickname lg:text-[14px] ml-1"
+                                            :user="comment.user"
+                                        >
+                                            {{ comment.user ? comment.user.username : 'Некто' }}
+                                        </ProfileLink>
                                         <span
                                             v-if="comment.user && comment.user?.username === comment.post?.version?.author?.username"
                                             class="flex items-center text-[12px] opacity-70 pl-1"
@@ -337,11 +342,9 @@ const currentCommentHTMLHeight = computed(() =>
                         <div class="flex flex-col">
                             <span v-if="comment.parent_comment?.parent_comment_id">
                                 <RouterLink
-                                    :to="{name: 'post', params: {slug: comment.post!.slug},
-                                        hash: getCommentUrlHash(comment.parent_comment_id!),
-                                        replace: true}"
                                     class="mention ld-tinted-background darker left ld-secondary-text
                                         flex flex-col sm:text-[14px] text-[12px] mb-2 pl-3 py-2"
+                                    :to="linkToComment"
                                 >
                                     <span class="text-[var(--primary-color)]">
                                         {{ comment.parent_comment!.user ? comment.parent_comment!.user!.username : 'Некто' }}

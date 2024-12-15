@@ -4,6 +4,7 @@ import {getFullPresentableDate, getRelativeDate} from '@/helpers'
 import {type Post} from '@/types'
 import UserAvatar from '@/components/user/UserAvatar.vue'
 import {type PropType} from 'vue'
+import ProfileLink from '@/components/elements/ProfileLink.vue'
 
 const props = defineProps({
     post: {
@@ -18,7 +19,10 @@ const authStore = useAuthStore()
 <template>
     <div class="post-info-bar flex">
 
-        <RouterLink class="author-wrap flex items-center w-fit border-0 sm:gap-0 gap-2" :to="{name: 'home'}">
+        <ProfileLink
+            class="author-wrap flex items-center w-fit border-0 sm:gap-0 gap-2"
+            :user="post.version.author"
+        >
             <span class="flex justify-center items-center mr-2">
                 <UserAvatar
                     border-class-list="md:h-10 md:w-10 h-8 w-8"
@@ -30,7 +34,7 @@ const authStore = useAuthStore()
                 <span class="date-action-subtitle sm:flex hidden">Автор</span>
                 <span>{{ post.version!.author?.username ?? 'Некто' }}</span>
             </div>
-        </RouterLink>
+        </ProfileLink>
 
         <div v-if="post.updated_at !== post.created_at" class="date-update flex items-center sm:gap-0 gap-2">
             <span class="icon-refresh icon flex mr-1"/>

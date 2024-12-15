@@ -55,13 +55,12 @@ loadPosts()
 
 <template>
     <div>
-        <div v-if="isLoading" class="flex flex-col">
+        <div v-if="isLoading && posts.length < 1" class="flex flex-col">
             <div v-for="i in 5" class="flex w-full gap-2 p-2">
                 <div class="skeleton transfusion flex
-                            sm:h-[112px] sm:max-w-[196px] sm:min-w-[196px]
-                            xs:h-[76px] xs:max-w-[132px] xs:min-w-[132px]
-                            h-[58px] max-w-[100px] min-w-[100px]
-                            "
+                    sm:h-[112px] sm:max-w-[196px] sm:min-w-[196px]
+                    xs:h-[76px] xs:max-w-[132px] xs:min-w-[132px]
+                    h-[58px] max-w-[100px] min-w-[100px]"
                 />
                 <div class="flex flex-col w-full gap-2">
                     <div class="skeleton transfusion flex h-4 max-w-[360px] w-full"/>
@@ -116,6 +115,9 @@ loadPosts()
 }
 .moder.tooltip::before {
     height: 2.5rem;
+}
+.paginator-refresh .post-version-card {
+    opacity: 0;
 }
 </style>
 

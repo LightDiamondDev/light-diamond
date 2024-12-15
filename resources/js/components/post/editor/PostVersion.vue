@@ -357,9 +357,9 @@ loadPostVersion()
                                     v-tooltip.top="getFullPresentableDate(postVersion!.updated_at!)"
                                 >
                                     <span class="icon-clock icon flex"/>
-                                    <p class="text-[9px] xs:text-[.7rem]">{{
-                                            getRelativeDate(postVersion!.updated_at!)
-                                        }}</p>
+                                    <p class="text-[9px] xs:text-[.7rem]">
+                                        {{ getRelativeDate(postVersion!.updated_at!) }}
+                                    </p>
                                 </div>
                             </div>
 

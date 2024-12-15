@@ -305,7 +305,7 @@ function openDownloadWindow() {
                         />
                     </button>
                     <PostInfoBar class="right-post-info-bar xl:flex-col justify-center gap-4 duration-500"
-                                 :post="post"/>
+                        :post="post"/>
                 </div>
                 <!-- xl:flex -->
                 <div class="next-bright-block bright-background hidden flex-col overflow-hidden">

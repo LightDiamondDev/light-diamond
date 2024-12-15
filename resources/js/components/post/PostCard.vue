@@ -7,6 +7,7 @@ import useCategoryRegistry from '../../categoryRegistry'
 
 import UserAvatar from '@/components/user/UserAvatar.vue'
 import PostActionBar from '@/components/post/PostActionBar.vue'
+import ProfileLink from '@/components/elements/ProfileLink.vue'
 
 const props = defineProps({
     isHorizontalDirection: {
@@ -81,17 +82,22 @@ function wasPostUpdated(post: Post) {
                                 <p class="type flex items-center">16x16</p>
                                 <p class="type flex items-center">1.19+</p>
                             </div>
+                            <!--
                             <div class="progress-bar flex h-[24px] w-[64px] relative">
                                 <div class="progress flex items-center transfusion" style="width: 35%">
                                     <p class="text-[11px] absolute pl-1">35%</p>
                                 </div>
                             </div>
+                            -->
                         </div>
                         <div
                             class="author-info info flex justify-between p-2"
                             :class="{ 'sm:flex-row xs:flex-col flex-row w-full sm:gap-8 gap-2': isHorizontalDirection }"
                         >
-                            <RouterLink class="author-wrap flex flex-wrap gap-1" :to="{ name: 'home' }">
+                            <ProfileLink
+                                class="author-wrap flex flex-wrap gap-1"
+                                :user="post.version.author"
+                            >
                                 <UserAvatar
                                     border-class-list="h-10 w-10"
                                     icon-class-list="h-7 w-7"
@@ -100,7 +106,7 @@ function wasPostUpdated(post: Post) {
                                 <p class="author-username ld-default-link flex items-center duration-200">
                                     {{ post.version.author?.username ?? 'Некто' }}
                                 </p>
-                            </RouterLink>
+                            </ProfileLink>
                             <p
                                 v-tooltip="`${wasPostUpdated(post) ? 'Обновлено' : 'Опубликовано'} ${getFullPresentableDate(post.updated_at)}`"
                                 class="type ago flex items-center text-end opacity-80 cursor-pointer gap-1 ml-1"

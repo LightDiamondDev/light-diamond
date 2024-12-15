@@ -236,7 +236,7 @@ function uploadFile(file: File) {
 
                 <div class="origin-info flex justify-between w-full xs:px-4 px-2">
                     <RouterLink class="author-wrap flex items-center w-fit gap-2 ml-[-2px] pb-2 pt-2"
-                                :to="{name: 'home'}">
+                        :to="{ name: 'profile', params: {username: author.username} }">
                         <UserAvatar
                             border-class-list="h-10 w-10"
                             icon-class-list="h-7 w-7"

@@ -56,22 +56,23 @@ loadComments()
 <template>
     <div>
         <div v-if="isLoading" class="flex flex-col">
-            <div v-for="i in 5" class="flex w-full gap-2 p-2">
-                <div class="skeleton transfusion flex
-                            sm:h-[112px] sm:max-w-[196px] sm:min-w-[196px]
-                            xs:h-[76px] xs:max-w-[132px] xs:min-w-[132px]
-                            h-[58px] max-w-[100px] min-w-[100px]
-                            "
-                />
-                <div class="flex flex-col w-full gap-2">
-                    <div class="skeleton transfusion flex h-4 max-w-[360px] w-full"/>
-                    <div class="skeleton transfusion flex h-3 max-w-[80%] w-full"/>
-                    <div class="skeleton transfusion flex h-3 max-w-[55%] w-full"/>
-                    <div class="flex flex-wrap items-center md:text-[12px] text-[10px] gap-2 mt-0.5">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <div class="skeleton transfusion flex h-7 w-7"/>
-                            <p class="skeleton transfusion flex h-4 w-[96px]"/>
-                            <p class="skeleton transfusion flex h-4 w-[72px]"/>
+            <div v-for="i in 5" class="flex gap-2">
+                <div class="skeleton transfusion h-[2.5rem] min-w-[2.5rem]"/>
+                <div class="flex flex-col w-full gap-4">
+                    <div class="flex gap-2 items-center">
+                        <div class="skeleton transfusion h-[1.2rem] w-[10rem]"/>
+                        <div class="skeleton transfusion h-[1.2rem] w-[5rem]"/>
+                        <div class="skeleton transfusion h-[1rem] w-[5rem]"/>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <div class="skeleton transfusion h-[1rem] w-[85%]"/>
+                        <div class="skeleton transfusion h-[1rem] w-[80%]"/>
+                        <div class="skeleton transfusion h-[1rem] w-[75%]"/>
+                    </div>
+                    <div class="flex gap-2 items-center">
+                        <div class="flex gap-4 items-center">
+                            <div class="skeleton transfusion h-[2rem] w-[2rem]"/>
+                            <div class="skeleton transfusion h-[1.5rem] w-[6rem]"/>
                         </div>
                     </div>
                 </div>

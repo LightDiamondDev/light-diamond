@@ -11,8 +11,12 @@ export function getAppUrl(): string {
     return import.meta.env.VITE_APP_URL
 }
 
+export function getTitle() {
+    return document.title = document.title.slice(0, -16)
+}
+
 export function changeTitle(title: string) {
-    document.title = title + ' - ' + import.meta.env.VITE_APP_NAME
+    document.title = title + ' — ' + import.meta.env.VITE_APP_NAME
 }
 
 export function countHTMLTag(html: string, tag: string) {

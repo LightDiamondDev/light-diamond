@@ -1049,6 +1049,23 @@
         color: var(--hover-text-color);
     }
 
+    .profile-link:hover .username {
+        color: var(--hover-text-color);
+    }
+
+    .profile-wrap .tab-menu-button.active {
+        border-bottom: 2px solid var(--trinity-text-color);
+        color: var(--trinity-text-color);
+    }
+
+    .profile-wrap .tab-menu-button:hover {
+        background-color: transparent;
+    }
+
+    .profile-wrap .tab-menu-button:hover .label {
+        color: var(--trinity-text-color);
+    }
+
     .text-error {
         color: rgba(255, 30, 50, 1);
     }
@@ -1083,6 +1100,18 @@
 
     .transfusion.bordered {
         border: 2px solid rgba(0, 255, 255, .3);
+    }
+
+    .ld-secondary-background .skeleton.transfusion {
+        background: linear-gradient(90deg, rgba(0, 150, 160, .3), rgba(0, 150, 160, .7), rgba(0, 150, 160, .3), rgba(0, 150, 160, .7), rgba(0, 150, 160, .3));
+        animation: transfusion-animation 10s linear infinite;
+        background-size: 400% 100%;
+    }
+
+    .ld-primary-background .skeleton.transfusion {
+        background: linear-gradient(90deg, rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1));
+        animation: transfusion-animation 10s linear infinite;
+        background-size: 400% 100%;
     }
 
     .transfusion.cancel {
@@ -1225,6 +1254,11 @@
 
     .profile-unit:focus-visible .icon, .profile-unit:hover .icon {
         animation: icon-trigger-up-animation .3s ease;
+    }
+
+    .profile-wrap .post-comment a {
+        color: var(--trinity-text-color);
+        animation: none;
     }
 
     .icon {

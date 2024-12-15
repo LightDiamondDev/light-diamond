@@ -242,7 +242,7 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
-        path: '/profile/:username',
+        path: '/user/:username',
         name: 'profile',
         component: Profile,
         props: ({params}) => ({username: params.username}),

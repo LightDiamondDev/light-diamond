@@ -14,6 +14,8 @@ import Dialog from '@/components/elements/Dialog.vue'
 import Paginator from '@/components/elements/Paginator.vue'
 import ShineButton from '@/components/elements/ShineButton.vue'
 import UserForm from '@/components/dashboard/UserForm.vue'
+import UserAvatar from '@/components/user/UserAvatar.vue'
+import ProfileLink from '@/components/elements/ProfileLink.vue'
 
 interface ResponseData {
     success: boolean
@@ -182,7 +184,9 @@ function onRecordSave() {
                             @uncheck="selectedRecords.splice(selectedRecords.indexOf(record), 1)"
                         />
                     </label>
-                    <span class="row-item flex items-center h-[48px] w-[23%]">{{ record.username }}</span>
+                    <ProfileLink class="row-item flex items-center h-[48px] w-[23%]" :user="record">
+                        {{ record.username }}
+                    </ProfileLink>
                     <span class="row-item flex items-center h-[48px] w-[35%]">{{ record.email }}</span>
                     <span
                         class="row-item flex items-center h-[48px] w-[20%]"

@@ -294,7 +294,7 @@ loadPosts()
                 </nav>
             </form>
 
-            <div v-if="isLoading && posts.length === 0" class="w-full">
+            <div v-if="isLoading && posts.length < 1" class="w-full">
                 <div class="posts flex flex-wrap w-full gap-2">
 
                     <div
@@ -393,7 +393,7 @@ loadPosts()
                 <div class="ld-primary-background ld-primary-border h-[48px] w-full mb-2"/>
             </div>
             <template v-else>
-                <div v-if="posts.length === 0" class="unavailable-post flex justify-center items-center w-full">
+                <div v-if="posts.length < 1" class="unavailable-post flex justify-center items-center w-full">
                     <div class="unavailable-post-container flex flex-col items-center p-8">
                         <h1 class="ld-title-font text-center sm:text-[2rem] text-[1.2rem]">Материалы не найдены</h1>
                         <div class="mob phantom flex justify-center items-center
