@@ -12,6 +12,7 @@ import {useAuthStore} from '@/stores/auth'
 import {useGlobalModalStore} from '@/stores/global-modal'
 import {useRoute, useRouter} from 'vue-router'
 import {useToastStore} from '@/stores/toast'
+import useCategoryRegistry from '@/categoryRegistry'
 
 import PostCommentEditor from '@/components/post/comment/PostCommentEditor.vue'
 import {type PostComment, UserRole} from '@/types'
@@ -194,18 +195,20 @@ onUnmounted(() => {
     document.removeEventListener('mousedown', removeHighlighting)
 })
 
-const linkToComment = {name: 'post', params: {slug: comment.post!.slug}, hash: getCommentUrlHash(comment.id)}
-
 function copyUrl() {
     const url = new URL(
         router.resolve(
-            linkToComment
+            getCommentRoute(comment.id)
         ).fullPath,
         getAppUrl()
     ).href
 
     navigator.clipboard.writeText(url)
     toastStore.info('Ссылка на комментарий скопирована.', 'Комментарии')
+}
+
+function getCommentRoute(commentId: number) {
+    return {name: 'post', params: {slug: comment.post!.slug}, hash: getCommentUrlHash(commentId)}
 }
 
 function toggleLike() {
@@ -285,7 +288,14 @@ const currentCommentHTMLHeight = computed(() =>
             </div>
         </div>
         <template v-else>
-            <div :class="{'post-comment-highlighted': isHighlighted}" class="post-comment-body post-comment flex w-full">
+            <div :class="{'post-comment-highlighted': isHighlighted}" class="post-comment-body post-comment flex flex-col w-full">
+                <RouterLink
+                    v-if="isProfileComment"
+                    class="ld-special-text mb-[-4px] ml-4 mt-4 hover:underline truncate"
+                    :to="{name: 'post', params: {slug: comment.post!.slug}}"
+                >
+                    {{ useCategoryRegistry().get(comment.post.version.category).singularName + ' «' + comment.post.version.title + '»' }}
+                </RouterLink>
                 <div class="post-comment-inner flex w-full gap-2 xs:p-4 p-2">
                     <div class="flex relative">
                         <UserAvatar
@@ -310,7 +320,7 @@ const currentCommentHTMLHeight = computed(() =>
                                 <p class="comment-username flex flex-wrap flex-row overflow-visible gap-3">
                                     <span class="flex gap-2">
                                         <ProfileLink
-                                            class="nickname lg:text-[14px] ml-1"
+                                            class="username lg:text-[14px] ml-1"
                                             :user="comment.user"
                                         >
                                             {{ comment.user ? comment.user.username : 'Некто' }}
@@ -344,9 +354,9 @@ const currentCommentHTMLHeight = computed(() =>
                                 <RouterLink
                                     class="mention ld-tinted-background darker left ld-secondary-text
                                         flex flex-col sm:text-[14px] text-[12px] mb-2 pl-3 py-2"
-                                    :to="linkToComment"
+                                    :to="getCommentRoute(comment.parent_comment_id)"
                                 >
-                                    <span class="text-[var(--primary-color)]">
+                                    <span class="username text-[var(--primary-color)]">
                                         {{ comment.parent_comment!.user ? comment.parent_comment!.user!.username : 'Некто' }}
                                     </span>
                                     <span class="ld-primary-text comment-answer truncate whitespace-nowrap inline-block"
@@ -384,11 +394,11 @@ const currentCommentHTMLHeight = computed(() =>
                             </button>
                             <RouterLink
                                 v-else
-                                class="post-comment-reply-button"
+                                class="post-comment-reply-button truncate"
                                 style="animation: none"
-                                :to="{name: 'post', params: {slug: comment.post!.slug}, replace: true}"
+                                :to="getCommentRoute(comment.id)"
                             >
-                                <span class="text text-sm p-2">Перейти к Посту</span>
+                                <span class="text text-sm p-2">Перейти к Комментарию</span>
                             </RouterLink>
                         </div>
                         <div v-if="replyData" class="flex flex-col gap-2" @keydown.esc="() => replyData = null">

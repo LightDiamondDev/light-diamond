@@ -55,7 +55,7 @@ loadComments()
 
 <template>
     <div>
-        <div v-if="isLoading" class="flex flex-col">
+        <div v-if="isLoading" class="flex flex-col gap-8 pt-2">
             <div v-for="i in 5" class="flex gap-2">
                 <div class="skeleton transfusion h-[2.5rem] min-w-[2.5rem]"/>
                 <div class="flex flex-col w-full gap-4">

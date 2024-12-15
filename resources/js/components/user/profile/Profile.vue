@@ -10,6 +10,7 @@ import {type Post, type User} from '@/types'
 
 import TabMenu, {type TabMenuChangeEvent} from '@/components/elements/TabMenu.vue'
 import Button from '@/components/elements/Button.vue'
+import ProcessingDiggingBlocks from '@/components/elements/ProcessingDiggingBlocks.vue'
 
 interface PostVersionLoadResponseData {
     success: boolean
@@ -131,7 +132,10 @@ changeTitle(getTitle().replace(/Профиль/g, `Профиль ${props.userna
         <span class="particle icon article-snowflake-square n13"/>
         <span class="particle icon particle-snowflake-star n14"/>
         <span class="sm:block hidden particle icon particle-snowflake-wheel n15"/>
-        <div v-if="user" class="profile-wrap ld-secondary-blur-background flex max-w-[1024px] w-full gap-4 p-4">
+        <div v-if="isLoading && !user" class="flex justify-center items-center overflow-hidden h-[85vh] w-full">
+            <ProcessingDiggingBlocks processing-classes="md:h-[192px] md:w-[192px] h-[128px] w-[128px]"/>
+        </div>
+        <div v-else-if="!isLoading && user" class="profile-wrap ld-secondary-blur-background flex max-w-[1024px] w-full gap-4 p-4">
             <section class="materials ld-secondary-text  flex-col text-[12px] w-full">
                 <div class="flex sm:flex-row flex-col items-center">
                     <RouterLink

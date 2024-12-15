@@ -832,6 +832,7 @@
         list-style-type: square;
     }
 
+    .post-comment .ld-special-text,
     .ld-special-text,
     .post a {
         animation: special-text-animation 5s infinite;
@@ -1256,7 +1257,7 @@
         animation: icon-trigger-up-animation .3s ease;
     }
 
-    .profile-wrap .post-comment a {
+    .profile-wrap .post-comment .username {
         color: var(--trinity-text-color);
         animation: none;
     }
