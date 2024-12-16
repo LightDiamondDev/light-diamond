@@ -27,8 +27,13 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PostComment> $comments
+ * @property-read int|null $comments_count
+ * @property-read int $comment_count
+ * @property-read int $favourite_post_count
  * @property-read bool $is_admin
  * @property-read bool $is_moderator
+ * @property-read int $post_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
@@ -93,25 +98,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'role' => UserRole::User,
     ];
 
-    public function posts(): Post|Builder
-    {
-        return Post::whereHas('versions', function ($query) {
-            $query->where('author_id', $this->id)->limit(1);
-        });
-    }
-
-    public function favourite_posts(): HasManyThrough
-    {
-        return $this->hasManyThrough(
-            Post::class,
-            FavouritePost::class,
-            'user_id',
-            'id',
-            'id',
-            'post_id'
-        );
-    }
-
     public function comments(): HasMany
     {
         return $this->hasMany(PostComment::class, 'user_id');
@@ -119,17 +105,36 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getPostCountAttribute(): int
     {
-        return $this->posts()->count();
+        return Post::ofUser($this->id)->count();
     }
 
     public function getFavouritePostCountAttribute(): int
     {
-        return $this->favourite_posts()->count();
+        return Post::favouriteOfUser($this->id)->count();
     }
 
     public function getCommentCountAttribute(): int
     {
         return $this->comments()->count();
+    }
+
+    public function getCollectedLikeCountAttribute(): int
+    {
+        return Post::ofUser($this->id)
+            ->join('post_likes', 'posts.id', '=', 'post_likes.post_id')
+            ->count('post_likes.id');
+    }
+
+    public function getCollectedDownloadCountAttribute(): int
+    {
+        return Post::ofUser($this->id)->sum('posts.download_count');
+    }
+
+    public function getCollectedViewCountAttribute(): int
+    {
+        return Post::ofUser($this->id)
+            ->join('post_views', 'posts.id', '=', 'post_views.post_id')
+            ->count('post_views.id');
     }
 
     public function getIsAdminAttribute(): bool

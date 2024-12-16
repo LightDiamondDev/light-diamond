@@ -2,6 +2,7 @@
 
 import type {Post} from '@/types'
 import {computed, type PropType} from 'vue'
+import useCategoryRegistry from '../../categoryRegistry'
 
 const props = defineProps({
     post: {
@@ -58,7 +59,8 @@ const searchingCardDescription = computed(() => (
                     v-html="searchingCardDescription"
                 />
                 <p class="text-[12px] truncate absolute w-full bottom-0 ld-brilliant-text opacity-80">
-                    {{ post.version?.category?.name }} 16x16 1.21+
+                    {{ useCategoryRegistry().get(post.version?.category).singularName }}
+<!--                    16x16 1.21+-->
                 </p>
             </div>
             <div class="flex justify-center min-w-[3rem]">

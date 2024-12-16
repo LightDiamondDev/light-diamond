@@ -110,7 +110,7 @@ function onFavouriteClick() {
             class="set-mark flex items-center mini text-[12px]"
         >
             <span class="icon icon-download flex opacity-85"/>
-            <span class="counter flex p-1">1,1K</span>
+            <span class="counter flex p-1">{{ post.download_count }}</span>
         </RouterLink>
     </div>
 </template>

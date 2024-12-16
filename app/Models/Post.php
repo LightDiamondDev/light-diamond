@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Enums\PostVersionStatus;
 use Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $slug
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $download_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PostComment> $comments
  * @property-read int|null $comments_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FavouritePost> $favourites
@@ -32,13 +34,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $versions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PostView> $views
  * @property-read int|null $views_count
- * @method static \Illuminate\Database\Eloquent\Builder|Post newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Post newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Post query()
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereUpdatedAt($value)
+ * @method static Builder|Post favouriteOfUser(int $userId)
+ * @method static Builder|Post newModelQuery()
+ * @method static Builder|Post newQuery()
+ * @method static Builder|Post ofUser(int $userId)
+ * @method static Builder|Post query()
+ * @method static Builder|Post whereCreatedAt($value)
+ * @method static Builder|Post whereDownloadCount($value)
+ * @method static Builder|Post whereId($value)
+ * @method static Builder|Post whereSlug($value)
+ * @method static Builder|Post whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Post extends Model
@@ -91,6 +96,26 @@ class Post extends Model
     public function views(): HasMany
     {
         return $this->hasMany(PostView::class, 'post_id');
+    }
+
+    public function scopeOfUser(Builder $query, int $userId): Builder|Post
+    {
+        return $query
+            ->whereIn('posts.id', function ($query) use ($userId) {
+                $query->select('post_id')
+                    ->from('post_versions')
+                    ->where('author_id', $userId);
+            });
+    }
+
+    public function scopeFavouriteOfUser(Builder $query, int $userId): Builder|Post
+    {
+        return $query
+            ->whereIn('posts.id', function ($query) use ($userId) {
+                $query->select('post_id')
+                    ->from('favourite_posts')
+                    ->where('user_id', $userId);
+            });
     }
 
     public function getLikeCountAttribute(): int

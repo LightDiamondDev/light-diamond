@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
+use App\Models\PostVersion;
 use App\Models\PostVersionFile;
+use App\Models\PostVersionFileDownload;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -34,9 +37,9 @@ class PostVersionFileController extends Controller
 
         $file = $request->file('file');
 
-        $fileBaseName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $fileBaseName  = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $fileExtension = $file->getClientOriginalExtension();
-        $filename = $fileBaseName . '.' . $fileExtension;
+        $filename      = $fileBaseName . '.' . $fileExtension;
         for ($i = 1; Storage::disk('private')->exists('files/' . $filename); $i++) {
             $filename = $fileBaseName . '_' . Str::random(5) . '.' . $fileExtension;
         }
@@ -54,6 +57,26 @@ class PostVersionFileController extends Controller
 
         if ($postVersionFile === null || $postVersionFile->post_version_id !== $versionId || $postVersionFile->path === null) {
             abort(404, 'Файл для скачивания не найден.');
+        }
+
+        $ip = request()->ip();
+
+        $isFirstFileDownload = !PostVersionFileDownload::whereFileId($postVersionFile->id)->whereIp($ip)->exists();
+        if ($isFirstFileDownload) {
+            $postVersion = PostVersion::find($versionId);
+
+            $isFirstPostDownload = !PostVersionFileDownload::ofPost($postVersion->post_id)->whereIp($ip)->exists();
+            if ($isFirstPostDownload) {
+                Post::withoutTimestamps(function () use ($postVersion) {
+                    Post::whereId($postVersion->post_id)
+                        ->increment('download_count');
+                });
+            }
+
+            $newVersionDownload     = PostVersionFileDownload::make();
+            $newVersionDownload->ip = $ip;
+            $newVersionDownload->file()->associate($postVersionFile);
+            $newVersionDownload->save();
         }
 
         return Storage::disk('private')->download($postVersionFile->path, basename($postVersionFile->path));

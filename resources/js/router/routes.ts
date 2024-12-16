@@ -253,10 +253,11 @@ const routes: RouteRecordRaw[] = [
         children: [
             {
                 path: '',
+                alias: ['posts'],
                 name: 'profile.posts',
                 component: ProfilePosts,
                 meta: {
-                    title: 'Профиль — Посты',
+                    title: 'Профиль',
                 }
             },
             {

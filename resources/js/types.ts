@@ -12,9 +12,12 @@ export interface User {
     first_name?: string
     last_name?: string
     role?: UserRole
-    post_count: number
-    favourite_post_count: number
-    comment_count: number
+    post_count?: number
+    favourite_post_count?: number
+    comment_count?: number
+    collected_like_count?: number
+    collected_download_count?: number
+    collected_view_count?: number
     created_at?: string
     updated_at?: string
 }
@@ -44,6 +47,7 @@ export interface Post {
     favourite_count: number
     comment_count: number
     view_count: number
+    download_count: number
     is_liked: boolean
     is_favourite: boolean
     created_at: string

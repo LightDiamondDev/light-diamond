@@ -69,7 +69,7 @@ class UserController extends Controller
     {
         $user = User::whereUsername($username)
             ->first()
-            ?->append(['post_count', 'favourite_post_count', 'comment_count']);
+            ?->append(['post_count', 'favourite_post_count', 'comment_count', 'collected_like_count', 'collected_download_count', 'collected_view_count']);
 
         return response()->json($user);
     }

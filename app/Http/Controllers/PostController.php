@@ -8,6 +8,7 @@ use App\Models\Enums\GameEdition;
 use App\Models\Enums\PostVersionStatus;
 use App\Models\Post;
 use App\Models\PostView;
+use App\Models\User;
 use App\Registries\CategoryRegistry;
 use App\Registries\CategoryType;
 use App\Rules\ColumnExistsRule;
@@ -113,10 +114,12 @@ class PostController extends Controller
     {
         $post = Post::whereSlug($slug)->first();
         if ($post !== null) {
-            $postView = PostView::wherePostId($post->id)->first();
-            if ($postView === null) {
+            $ip = request()->ip();
+
+            $isPostView = PostView::wherePostId($post->id)->whereIp($ip)->exists();
+            if (!$isPostView) {
                 $newPostView     = PostView::make();
-                $newPostView->ip = request()->ip();
+                $newPostView->ip = $ip;
                 $newPostView->post()->associate($post);
                 $newPostView->save();
             }
@@ -151,9 +154,7 @@ class PostController extends Controller
         }
         $sortDirection = $sortOrder === -1 ? 'desc' : 'asc';
 
-        $posts = Post::whereHas('favourites', function ($query) use ($userId) {
-            $query->where('user_id', $userId);
-        })->orderBy($sortField, $sortDirection)->paginate($perPage);
+        $posts = Post::favouriteOfUser($userId)->orderBy($sortField, $sortDirection)->paginate($perPage);
 
         return $this->successJsonResponse([
             'records'    => $posts->items(),
@@ -191,9 +192,7 @@ class PostController extends Controller
         }
         $sortDirection = $sortOrder === -1 ? 'desc' : 'asc';
 
-        $posts = Post::whereHas('versions', function ($query) use ($userId) {
-            $query->where('author_id', $userId)->limit(1);
-        })->orderBy($sortField, $sortDirection)->paginate($perPage);
+        $posts = Post::ofUser($userId)->orderBy($sortField, $sortDirection)->paginate($perPage);
 
         return $this->successJsonResponse([
             'records'    => $posts->items(),

@@ -34,7 +34,7 @@ const props = defineProps({
 const route = useRoute()
 
 watch(route, () => {
-    changeTitle(getTitle().replace(/Профиль/g, `Профиль ${user.value?.username}`))
+    updateTitle()
 })
 
 const toastStore = useToastStore()
@@ -99,6 +99,10 @@ function onTabChange(event: TabMenuChangeEvent) {
     }
 }
 
+function updateTitle() {
+    changeTitle(getTitle().replace(/Профиль/g, `Профиль ${props.username}`))
+}
+
 const profileBackgroundSrc = ref('')
 const profileAvatarSrc = ref('')
 
@@ -108,7 +112,7 @@ profileAvatarSrc.value = '/images/users/avatars/dancing-parrot-animation.gif'
 // const activeColor = ref('#00ffff')
 
 loadUser()
-changeTitle(getTitle().replace(/Профиль/g, `Профиль ${props.username}`))
+updateTitle()
 </script>
 
 <template>
@@ -148,12 +152,7 @@ changeTitle(getTitle().replace(/Профиль/g, `Профиль ${props.userna
                     </RouterLink>
                     <div class="flex flex-col gap-2 px-4">
                         <div class="flex sm:flex-row flex-col items-center sm:gap-4 sm:mt-0 mt-4">
-                            <RouterLink
-                                class="flex text-[24px] border-0 w-fit"
-                                :to="{name: 'home'}"
-                            >
-                                {{ username }}
-                            </RouterLink>
+                            <p class="flex text-[24px] border-0 w-fit">{{ user.username }}</p>
                             <p v-if="user.post_count > 0" class="ld-trinity-text ld-title-font text-[24px]">Автор</p>
                         </div>
                         <!-- <p>Россия, 21 год</p> -->
@@ -162,21 +161,21 @@ changeTitle(getTitle().replace(/Профиль/g, `Профиль ${props.userna
                             <div class="flex flex-col items-center">
                                 <div class="ld-trinity-text flex gap-1">
                                     <span class="icon-heart icon flex"/>
-                                    <span class="ld-title-font text-[24px]">5,1K</span>
+                                    <span class="ld-title-font text-[24px]">{{ user.collected_like_count }}</span>
                                 </div>
                                 <p>Лайки</p>
                             </div>
                             <div class="flex flex-col items-center">
                                 <div class="ld-trinity-text flex gap-1">
                                     <span class="icon-download icon flex"/>
-                                    <span class="ld-title-font text-[24px]">9,3K</span>
+                                    <span class="ld-title-font text-[24px]">{{ user.collected_download_count }}</span>
                                 </div>
-                                <p>Скачиваний</p>
+                                <p>Скачивания</p>
                             </div>
                             <div class="flex flex-col items-center">
                                 <div class="ld-trinity-text flex gap-1">
                                     <span class="icon-eye icon flex"/>
-                                    <span class="ld-title-font text-[24px]">253,5K</span>
+                                    <span class="ld-title-font text-[24px]">{{ user.collected_view_count }}</span>
                                 </div>
                                 <p>Просмотры</p>
                             </div>
@@ -200,7 +199,7 @@ changeTitle(getTitle().replace(/Профиль/g, `Профиль ${props.userna
                                 class="w-full"
                                 :is="Component"
                                 :userId="user.id"
-                                :username="username"
+                                :username="user.username"
                             />
                         </Transition>
                     </RouterView>

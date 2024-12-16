@@ -79,8 +79,8 @@ function wasPostUpdated(post: Post) {
                                     <span class="icon flex" :class="useCategoryRegistry().get(post.version?.category).icon"/>
                                     <span>{{ useCategoryRegistry().get(post.version.category).singularName }}</span>
                                 </p>
-                                <p class="type flex items-center">16x16</p>
-                                <p class="type flex items-center">1.19+</p>
+<!--                                <p class="type flex items-center">16x16</p>-->
+<!--                                <p class="type flex items-center">1.19+</p>-->
                             </div>
                             <!--
                             <div class="progress-bar flex h-[24px] w-[64px] relative">
