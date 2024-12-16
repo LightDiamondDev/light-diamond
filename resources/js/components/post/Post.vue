@@ -6,7 +6,7 @@ import {computed, nextTick, onMounted, onUnmounted, onUpdated, reactive, ref, wa
 import {useAuthStore} from '@/stores/auth'
 import {useGlobalModalStore} from '@/stores/global-modal'
 import {useToastStore} from '@/stores/toast'
-import {useRoute, useRouter} from 'vue-router'
+import {useRoute, useRouter, RouterLink} from 'vue-router'
 
 import {changeTitle, convertDateToString, countHTMLTag, getErrorMessageByCode} from '@/helpers'
 
@@ -312,8 +312,10 @@ function openDownloadWindow() {
                             :class="{'icon-right-direction-arrow': isWideSidebar, 'icon-left-direction-arrow': !isWideSidebar}"
                         />
                     </button>
-                    <PostInfoBar class="right-post-info-bar xl:flex-col justify-center gap-4 duration-500"
-                        :post="post"/>
+                    <PostInfoBar
+                        class="right-post-info-bar xl:flex-col justify-center gap-4 duration-500"
+                        :post="post"
+                    />
                 </div>
                 <!-- xl:flex -->
                 <div class="next-bright-block bright-background hidden flex-col overflow-hidden">
@@ -397,6 +399,24 @@ function openDownloadWindow() {
             </div>
         </section>
     </div>
+
+    <div v-else class="unavailable-post flex justify-center items-center">
+        <div class="unavailable-post-container flex flex-col items-center">
+            <h1 class="text-4xl font-bold text-center mt-8 mb-4">Пост не найден</h1>
+            <div class="mob phantom flex justify-center items-center full-locked">
+                <div class="animation-flying-phantom"></div>
+            </div>
+            <RouterLink class="flex justify-center max-w-[480px] w-full mb-8" :to="{ name: 'home' }">
+                <Button
+                    press-classes="px-4"
+                    button-type="submit"
+                    icon="item-ender-pearl"
+                    icon-size="32px"
+                    label="Телепортироваться Домой"
+                />
+            </RouterLink>
+        </div>
+    </div>
 </template>
 
 <style>
@@ -449,6 +469,49 @@ function openDownloadWindow() {
 
 .wide .center-interaction {
     margin-bottom: 1rem;
+}
+
+.unavailable-post {
+    height: 720px;
+    width: 100%;
+}
+
+.mob.phantom {
+    overflow: hidden;
+    max-width: 320px;
+    height: 200px;
+    width: 100%;
+}
+
+.mob.phantom div {
+    background-size: 100% 100%;
+    height: 160px;
+    width: 320px;
+}
+
+/* =============== [ Медиа-Запрос { ?px < 1024px + desktop-height } ] =============== */
+
+@media screen and (max-width: 1023px) and (min-height: 654px) {
+    .unavailable-post {
+        height: 540px;
+    }
+}
+
+/* =============== [ Медиа-Запрос { ?px < 1024px + mobile-height } ] =============== */
+
+@media screen and (max-width: 1023px) and (max-height: 653px) {
+    .unavailable-post {
+        height: 380px;
+    }
+
+    .mob.phantom {
+        height: 100px;
+    }
+
+    .mob.phantom div {
+        height: 80px;
+        width: 160px;
+    }
 }
 
 /* =============== [ Медиа-Запрос { 1281px > ?px } ] =============== */

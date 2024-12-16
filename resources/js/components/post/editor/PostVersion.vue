@@ -174,7 +174,7 @@ function accept() {
 
     axios.patch(`/api/post-versions/${props.id}/accept`, data).then((response) => {
         if (response.data.success) {
-            toastStore.success('Материал успешно опубликован!')
+            toastStore.success('Пост успешно опубликован!')
             acceptOverlayPanel.value?.hide()
             loadPostVersion()
         } else {
@@ -347,9 +347,9 @@ loadPostVersion()
 
                             <div class="mark-block flex absolute bottom-2 gap-2">
                                 <div :class="{ 'new': isFirstVersion, 'update': !isFirstVersion }"
-                                     class="material-type new flex items-center h-fit gap-2 locked">
+                                     class="post-type new flex items-center h-fit gap-2 locked">
                                     <span class="icon-apple icon flex"/>
-                                    <p v-if="isFirstVersion" class="text-[9px] xs:text-[.7rem]">Новый Материал</p>
+                                    <p v-if="isFirstVersion" class="text-[9px] xs:text-[.7rem]">Новый Пост</p>
                                     <p v-else class="text-[9px] xs:text-[.7rem]">Обновление</p>
                                 </div>
                                 <div
@@ -428,7 +428,7 @@ loadPostVersion()
 
                     <div v-if="postVersion!.post" class="header-details-item flex xl:flex-col flex-row mt-1">
                         <div class="ld-secondary-text flex items-center min-w-[100px] xl:px-2.5 px-5 py-1">
-                            <p class="text-[12px]">Материал</p>
+                            <p class="text-[12px]">Пост</p>
                         </div>
                         <div class="flex items-center xl:px-2.5 px-4 py-1">
                             <RouterLink
@@ -591,9 +591,9 @@ loadPostVersion()
 
                 <Input
                     v-model="slug"
-                    class="material-url-id ld-tinted-background ld-secondary-border h-[40px]"
-                    placeholder="Ярлык Материала"
-                    id="material-url-id"
+                    class="post-url-id ld-tinted-background ld-secondary-border h-[40px]"
+                    placeholder="Ярлык Поста"
+                    id="post-url-id"
                 />
 
                 <p class="error">{{ errors['slug']?.[0] || ' ' }}</p>
@@ -601,7 +601,7 @@ loadPostVersion()
                 <p class="flex text-[10px]">{{ postUrl }}</p>
             </template>
             <template v-else>
-                Вы точно хотите опубликовать [обновить] Материал?
+                Вы точно хотите опубликовать изменения Поста?
             </template>
 
             <div class="flex gap-2">
@@ -634,11 +634,11 @@ loadPostVersion()
             <p class="flex">Вернуть на рассмотрение?</p>
 
             <p v-if="postVersion!.status === PostVersionStatus.ACCEPTED" class="flex">
-                Материал будет убран с Каталога и Пользователи потеряют к нему доступ.
+                Пост будет убран с Каталога и Пользователи потеряют к нему доступ.
             </p>
 
             <p v-else-if="postVersion!.status === PostVersionStatus.REJECTED" class="flex">
-                Материал будет восстановлен и перемещён на рассмотрение, пока не будет принят или снова отклонён.
+                Пост будет восстановлен и перемещён на рассмотрение, пока не будет принят или снова отклонён.
             </p>
 
             <div class="flex gap-2">
@@ -672,8 +672,8 @@ loadPostVersion()
 
             <Textarea
                 v-model="rejectDetails.reason"
-                class="material-reject-reason ld-tinted-background ld-secondary-border"
-                id="material-reject-reason"
+                class="post-reject-reason ld-tinted-background ld-secondary-border"
+                id="post-reject-reason"
                 :max-length="185"
                 :min-length="15"
                 placeholder="Неприемлимый Контент"
@@ -712,11 +712,11 @@ loadPostVersion()
 
             <Textarea
                 v-model="requestChangesDetails.message"
-                class="material-revision-reason ld-tinted-background ld-secondary-border"
-                id="material-revision-reason"
+                class="post-revision-reason ld-tinted-background ld-secondary-border"
+                id="post-revision-reason"
                 :max-length="185"
                 :min-length="15"
-                placeholder="Необходимо доработать Материал..."
+                placeholder="Необходимо доработать Пост..."
                 rows="3"
             />
 
@@ -773,8 +773,8 @@ loadPostVersion()
     line-height: 1.2;
 }
 
-.material-reject-reason textarea,
-.material-revision-reason textarea {
+.post-reject-reason textarea,
+.post-revision-reason textarea {
     min-height: 136px;
     padding: 4px 8px;
 }
@@ -809,7 +809,7 @@ loadPostVersion()
     font-size: 3rem;
 }
 
-.material-type, .time-ago {
+.post-type, .time-ago {
     padding: .125rem .25rem;
     cursor: pointer;
 }
@@ -887,7 +887,7 @@ loadPostVersion()
 /* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
 
 @media screen and (max-width: 450px) {
-    .material-type, .time-ago {
+    .post-type, .time-ago {
         padding: 0 .25rem;
         cursor: pointer;
     }

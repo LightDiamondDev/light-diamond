@@ -33,13 +33,13 @@ const searchingCardDescription = computed(() => (
 
 <template>
     <RouterLink
-        class="material-search-card ld-primary-background border-0
+        class="post-search-card ld-primary-background border-0
             flex items-center min-h-[64px] w-full"
         :to="{ name: 'post', params: {slug: post.slug} }"
     >
         <div class="preview-wrap flex min-w-[112px] overflow-hidden">
             <img
-                alt="Превью Материала"
+                alt="Превью Поста"
                 class="preview flex max-h-[60px] w-full full-locked duration-200"
                 :src="post.version?.cover_url"
                 style="aspect-ratio: 16/9; object-fit: cover"
@@ -71,13 +71,13 @@ const searchingCardDescription = computed(() => (
 </template>
 
 <style scoped>
-.material-search-card:hover .preview {
+.post-search-card:hover .preview {
     transform: scale(1.2);
 }
-.material-search-card:hover h3 {
+.post-search-card:hover h3 {
     color: var(--hover-text-color);
 }
-.material-search-card:hover .icon-right-arrow  {
+.post-search-card:hover .icon-right-arrow  {
     margin-left: 8px;
 }
 </style>

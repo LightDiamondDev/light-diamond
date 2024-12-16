@@ -69,12 +69,12 @@ const subtitleSwitcherInterval = setTimeout(setInterval(switchSubtitle, 8000), 3
                         </p>
                     </div>
                     <Button
-                        as="a"
+                        as="RouterLink"
                         class="xs:min-w-[60%] min-w-[80%] mt-8"
                         label-classes="lg:text-[1.4rem] text-[1.2rem]"
                         press-classes="transfusion-light gap-2 px-4"
                         icon="icon-bestiary lg:h-[48px] lg:w-[48px]"
-                        href="bedrock"
+                        :to="{name: 'catalog'}"
                         label="Смотреть Каталог"
                     />
                 </div>

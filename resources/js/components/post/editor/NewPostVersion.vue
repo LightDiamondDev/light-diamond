@@ -110,8 +110,8 @@ function saveAsDraft() {
     <template v-else>
         <div v-if="slug && !postVersion.post" class="unavailable-post flex justify-center items-center">
             <div class="unavailable-post-container flex flex-col items-center">
-                <h1 class="text-4xl font-bold text-center mt-8">Материал недоступен для обновления</h1>
-                <p class="text-muted text-center mt-4">Материал не существует, либо вы не имеете прав его обновлять.</p>
+                <h1 class="text-4xl font-bold text-center mt-8">Пост недоступен для обновления</h1>
+                <p class="text-muted text-center mt-4">Пост не существует, либо вы не имеете прав его обновлять.</p>
                 <div class="mob phantom flex justify-center items-center full-locked">
                     <div class="animation-flying-phantom"></div>
                 </div>
@@ -141,7 +141,7 @@ function saveAsDraft() {
                                 class="banner-title page-container flex flex-col justify-center items-center md:items-end max-w-[800px]"
                             >
                                 <h1 class="ld-title-font flex self-center text-center md:text-[3rem] text-[1.5rem] locked">
-                                    {{ postVersion.post ? 'Обновление Материала' : 'Создание Материала' }}
+                                    {{ postVersion.post ? 'Обновление Поста' : 'Создание Поста' }}
                                 </h1>
                             </div>
                         </template>
@@ -152,7 +152,7 @@ function saveAsDraft() {
                     <div class="create-post-upper-interaction flex flex-col w-full">
                         <div v-if="postVersion!.post" class="header-details-item flex xl:flex-col flex-row mt-1">
                             <div class="ld-secondary-text flex items-center min-w-[100px] xl:px-2.5 px-5 py-1">
-                                <p class="text-[12px]">Материал</p>
+                                <p class="text-[12px]">Пост</p>
                             </div>
                             <div class="flex items-center xl:px-2.5 px-4 py-1">
                                 <RouterLink
@@ -224,8 +224,8 @@ function saveAsDraft() {
     line-height: 1.2;
 }
 
-.material-reject-reason textarea,
-.material-revision-reason textarea {
+.post-reject-reason textarea,
+.post-revision-reason textarea {
     min-height: 136px;
     padding: 4px 8px;
 }
@@ -260,7 +260,7 @@ function saveAsDraft() {
     font-size: 3rem;
 }
 
-.material-type, .time-ago {
+.post-type, .time-ago {
     padding: .125rem .25rem;
     cursor: pointer;
 }
@@ -338,7 +338,7 @@ function saveAsDraft() {
 /* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
 
 @media screen and (max-width: 450px) {
-    .material-type, .time-ago {
+    .post-type, .time-ago {
         padding: 0 .25rem;
         cursor: pointer;
     }

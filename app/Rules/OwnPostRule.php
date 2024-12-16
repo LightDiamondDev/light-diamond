@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class OwnPostRule implements ValidationRule
 {
     /**
-     * @param int $value Id материала
+     * @param int $value Id поста
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
@@ -18,7 +18,7 @@ class OwnPostRule implements ValidationRule
         $post = Post::find($value);
 
         if ($post === null || $post->version->author_id !== Auth::user()->id) {
-            $fail("Материал с id $value не существует или не принадлежит вам.");
+            $fail("Пост с id $value не существует или принадлежит не вам.");
         }
     }
 }

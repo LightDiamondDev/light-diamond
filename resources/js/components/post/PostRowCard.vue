@@ -56,11 +56,11 @@ function subscribe() {
 </script>
 
 <template>
-    <div class="material-line flex items-center">
+    <div class="post-line flex items-center">
         <RouterLink class="cover-wrap flex" :to="{ name: 'home' }">
             <img alt="" class="cover flex w-full full-locked" :src="cover">
         </RouterLink>
-        <div class="material-info flex flex-col w-full gap-2">
+        <div class="post-info flex flex-col w-full gap-2">
             <RouterLink class="name flex h-[40px] pt-2" :to="{ name: 'home' }">
                 <p class="text-[1.1rem] duration-200">{{ title }}</p>
             </RouterLink>
@@ -100,27 +100,27 @@ function subscribe() {
     overflow: hidden;
     height: 88px;
 }
-.material-line .cover {
+.post-line .cover {
     transition: .2s;
 }
-.material-line:hover .cover {
+.post-line:hover .cover {
     transform: scale(1.1);
 }
-.material-info .name:hover p {
+.post-info .name:hover p {
     color: var(--hover-text-color);
 }
-.material-info button .counter,
-.material-info button .icon {
+.post-info button .counter,
+.post-info button .icon {
     color: var(--primary-color);
     filter: grayscale(100%);
     transition: .2s;
 }
-.material-info button:hover .counter,
-.material-info button:hover .icon {
+.post-info button:hover .counter,
+.post-info button:hover .icon {
     filter: grayscale(60%);
 }
-.material-info button.active .counter,
-.material-info button.active .icon {
+.post-info button.active .counter,
+.post-info button.active .icon {
     filter: grayscale(0);
 }
 </style>

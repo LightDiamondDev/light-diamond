@@ -73,12 +73,12 @@ const gameEditions = [
         value: null
     },
     {
-        icon: 'icon-bedrock-dev-small',
+        icon: 'icon-bedrock-flat',
         label: 'Бедрок',
         value: GameEdition.BEDROCK
     },
     {
-        icon: 'icon-minecraft-materials',
+        icon: 'icon-grass-flat',
         label: 'Джава',
         value: GameEdition.JAVA
     }
@@ -149,7 +149,7 @@ function addFileUrl() {
     isCurrentFileUrlNameError.value = false
     isCurrentFileUrlError.value = false
     if (currentFileUrlName.value.length < 3 || currentFileUrl.value.length < 3) {
-        toastStore.error('Название Материала и Ссылка должны содержать не менее 3-х символов!')
+        toastStore.error('Название Поста и ссылка должны содержать не менее 3-х символов!')
         isCurrentFileUrlNameError.value = true
         isCurrentFileUrlError.value = true
         return

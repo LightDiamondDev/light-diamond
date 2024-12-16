@@ -31,7 +31,7 @@ class PostVersionFileRule implements ValidationRule
             }
 
             if ($postVersionFile->post_version_id !== $this->postVersion->id) {
-                $fail("Файл с id $id не относится к данной версии материала.");
+                $fail("Файл с id $id не относится к данной заявке на публикацию.");
             }
         } else {
             $isPathLocation = isset($value['path']);
@@ -51,7 +51,7 @@ class PostVersionFileRule implements ValidationRule
                     });
                 }
                 if ($sameFileInAnotherPost->exists()) {
-                    $fail("Файл по пути $path используется в другом материале.");
+                    $fail("Файл по пути $path используется в другом посте.");
                     return;
                 }
 
