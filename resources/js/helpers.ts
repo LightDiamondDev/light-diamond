@@ -51,6 +51,18 @@ export function getFullDate(date: Date | string) {
     return date.toLocaleString()
 }
 
+export function getCounterLabel(counter: number) {
+    if (counter > 999) {
+        if (counter > 999999) {
+            return ((counter / 1000000).toFixed(1)).toLocaleString() + 'M'
+        } else {
+            return ((counter / 1000).toFixed(1)).toLocaleString() + 'K'
+        }
+    } else {
+        return counter
+    }
+}
+
 export function getFullPresentableDate(date: Date | string) {
     if (typeof date === 'string') {
         date = new Date(date)

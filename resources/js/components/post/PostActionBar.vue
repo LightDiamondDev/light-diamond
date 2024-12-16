@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import axios, {type AxiosError, type AxiosResponse} from 'axios'
-import {getErrorMessageByCode} from '@/helpers'
+import {getCounterLabel, getErrorMessageByCode} from '@/helpers'
 import {RouterLink} from 'vue-router'
 
 import Button from '@/components/elements/Button.vue'
@@ -85,32 +85,32 @@ function onFavouriteClick() {
     <div class="flex text-[12px]">
         <button :class="{ 'active': post.is_liked }" class="set-mark flex items-center" @click="onLikeClick">
             <EffectIcon icon="icon-heart"/>
-            <span class="counter flex p-1">{{ post.like_count }}</span>
+            <span class="counter flex p-1">{{ getCounterLabel(post.like_count) }}</span>
         </button>
         <button :class="{ 'active': post.is_favourite }" class="set-mark flex items-center" @click="onFavouriteClick">
             <EffectIcon icon="icon-diamond"/>
-            <span class="counter flex p-1">{{ post.favourite_count }}</span>
+            <span class="counter flex p-1">{{ getCounterLabel(post.favourite_count) }}</span>
         </button>
         <RouterLink
             :to="{name: 'post', params: {slug: post.slug}, hash: '#comments'}"
             class="set-mark flex items-center text-[12px]"
         >
             <span class="icon icon-comment flex opacity-85"/>
-            <span class="counter flex p-1">{{ post.comment_count }}</span>
+            <span class="counter flex p-1">{{ getCounterLabel(post.comment_count) }}</span>
         </RouterLink>
         <RouterLink
             :to="{name: 'post', params: {slug: post.slug}}"
             class="set-mark flex items-center mini text-[12px]"
         >
             <span class="icon icon-eye flex opacity-85"/>
-            <span class="counter flex p-1">{{ post.view_count }}</span>
+            <span class="counter flex p-1">{{ getCounterLabel(post.view_count) }}</span>
         </RouterLink>
         <RouterLink
             :to="{name: 'post', params: {slug: post.slug}}"
             class="set-mark flex items-center mini text-[12px]"
         >
             <span class="icon icon-download flex opacity-85"/>
-            <span class="counter flex p-1">{{ post.download_count }}</span>
+            <span class="counter flex p-1">{{ getCounterLabel(post.download_count) }}</span>
         </RouterLink>
     </div>
 </template>

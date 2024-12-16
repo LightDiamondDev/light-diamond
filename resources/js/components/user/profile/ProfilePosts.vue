@@ -82,12 +82,12 @@ loadPosts()
                 class="flex flex-col justify-center items-center min-h-[480px] gap-6"
             >
                 <p v-if="authStore.id === userId" class="text-muted text-center text-[14px] max-w-[480px]">
-                    <span>У Вас пока ещё нет Материалов, начните творить! ;D</span>
+                    <span>У Вас пока ещё нет Постов, начните творить! ;D</span>
                 </p>
                 <p v-else class="text-muted text-center text-[14px] max-w-[480px]">
                     <span>У </span>
                     <span>{{ username }}</span>
-                    <span> пока ещё нет Материалов.</span>
+                    <span> пока ещё нет Постов.</span>
                 </p>
                 <div class="mob wandering-trader flex justify-center items-center mb-4">
                     <div class="animation-wandering-trader h-[244px] w-[130px]"/>

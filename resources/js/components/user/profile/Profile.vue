@@ -3,7 +3,7 @@ import axios, {type AxiosError} from 'axios'
 import {computed, ref, watch} from 'vue'
 import {RouterLink, useRoute} from 'vue-router'
 
-import {changeTitle, getErrorMessageByCode, getTitle} from '@/helpers'
+import {changeTitle, getCounterLabel, getErrorMessageByCode, getTitle} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
 
 import {type Post, type User} from '@/types'
@@ -161,21 +161,21 @@ updateTitle()
                             <div class="flex flex-col items-center">
                                 <div class="ld-trinity-text flex gap-1">
                                     <span class="icon-heart icon flex"/>
-                                    <span class="ld-title-font text-[24px]">{{ user.collected_like_count }}</span>
+                                    <span class="ld-title-font text-[24px]">{{ getCounterLabel(user.collected_like_count) }}</span>
                                 </div>
                                 <p>Лайки</p>
                             </div>
                             <div class="flex flex-col items-center">
                                 <div class="ld-trinity-text flex gap-1">
                                     <span class="icon-download icon flex"/>
-                                    <span class="ld-title-font text-[24px]">{{ user.collected_download_count }}</span>
+                                    <span class="ld-title-font text-[24px]">{{ getCounterLabel(user.collected_download_count) }}</span>
                                 </div>
                                 <p>Скачивания</p>
                             </div>
                             <div class="flex flex-col items-center">
                                 <div class="ld-trinity-text flex gap-1">
                                     <span class="icon-eye icon flex"/>
-                                    <span class="ld-title-font text-[24px]">{{ user.collected_view_count }}</span>
+                                    <span class="ld-title-font text-[24px]">{{ getCounterLabel(user.collected_view_count) }}</span>
                                 </div>
                                 <p>Просмотры</p>
                             </div>

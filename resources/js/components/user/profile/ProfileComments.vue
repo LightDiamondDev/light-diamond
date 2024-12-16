@@ -87,7 +87,7 @@ loadComments()
                     <span>Пользователи пока не комментировали Ваше творчество — всё впереди! ;D</span>
                 </p>
                 <p v-else class="text-muted text-center text-[14px] max-w-[480px]">
-                    <span>Пользователи пока не комментировали Материалы </span>
+                    <span>Пользователи пока не комментировали творчество </span>
                     <span>{{ username }}</span>
                     <span>.</span>
                 </p>

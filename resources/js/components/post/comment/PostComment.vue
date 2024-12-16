@@ -296,7 +296,7 @@ const currentCommentHTMLHeight = computed(() =>
             <div :class="{'post-comment-highlighted': isHighlighted}" class="post-comment-body post-comment flex flex-col w-full">
                 <RouterLink
                     v-if="isProfileComment"
-                    class="ld-special-text mb-[-4px] ml-4 mt-4 hover:underline truncate"
+                    class="ld-special-text w-fit mb-[-4px] ml-4 mt-4 hover:underline truncate"
                     :to="{name: 'post', params: {slug: comment.post!.slug}}"
                 >
                     {{ useCategoryRegistry().get(comment.post.version.category).singularName + ' «' + comment.post.version.title + '»' }}
