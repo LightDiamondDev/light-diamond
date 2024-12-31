@@ -247,6 +247,9 @@ function uploadFile(file: File) {
                     <slot name="mark"/>
                 </div>
 
+                <div class="flex">
+
+                </div>
                 <Editor
                     v-model="postVersion.title"
                     :class="{'red-overlay': errors['title']}"

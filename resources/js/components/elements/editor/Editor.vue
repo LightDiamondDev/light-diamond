@@ -82,27 +82,27 @@ const editor = useEditor({
 const nodes: { [key: string]: EditorNodeInfo } = {
     'heading-1': {
         name: 'heading',
-        attributes: {level: 1},
+        attributes: {level: 2},
         displayName: 'Заголовок 1',
         shortcut: 'Ctrl+Alt+1',
         icon: 'icon-title-1',
-        callback: () => editor.value?.chain().focus()?.setHeading({level: 1}).run(),
+        callback: () => editor.value?.chain().focus()?.setHeading({level: 2}).run(),
     },
     'heading-2': {
         name: 'heading',
-        attributes: {level: 2},
+        attributes: {level: 3},
         displayName: 'Заголовок 2',
         shortcut: 'Ctrl+Alt+2',
         icon: 'icon-title-2',
-        callback: () => editor.value?.chain().focus().setHeading({level: 2}).run(),
+        callback: () => editor.value?.chain().focus().setHeading({level: 3}).run(),
     },
     'heading-3': {
         name: 'heading',
-        attributes: {level: 3},
+        attributes: {level: 4},
         displayName: 'Заголовок 3',
         shortcut: 'Ctrl+Alt+3',
         icon: 'icon-title-3',
-        callback: () => editor.value?.chain().focus().setHeading({level: 3}).run(),
+        callback: () => editor.value?.chain().focus().setHeading({level: 4}).run(),
     },
     'bulletList': {
         name: 'bulletList',
