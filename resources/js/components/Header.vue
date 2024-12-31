@@ -110,7 +110,7 @@ const postsNavigationSections = computed(() =>
                     }
                 )
         ),
-        {label: 'Аддон LD', icon: 'icon-apple', route: {name: 'post', params: {slug: 'light-diamond'}}}
+        // {label: 'Аддон LD', icon: 'icon-apple', route: {name: 'post', params: {slug: 'light-diamond'}}}
     ]
 )
 
@@ -123,8 +123,8 @@ const navigationSections = computed<NavigationSection[]>(() => [
         label: 'Полезное',
         children:
             [
-                {label: 'Бестиарий Light Diamond', icon: 'icon-bestiary'},
-                {label: 'Документация Light Diamond', icon: 'icon-documentary'},
+                // {label: 'Бестиарий Light Diamond', icon: 'icon-bestiary'},
+                // {label: 'Документация Light Diamond', icon: 'icon-documentary'},
                 {
                     label: 'Документация Microsoft',
                     icon: 'icon-microsoft-small',
@@ -132,7 +132,7 @@ const navigationSections = computed<NavigationSection[]>(() => [
                 },
                 {label: 'Документация Bedrock.Dev', icon: 'icon-bedrock-flat', url: 'https://bedrock.dev'},
                 {
-                    label: 'Образцы для Аддонов',
+                    label: 'Шаблоны для Аддонов',
                     icon: 'icon-grass-flat',
                     url: 'https://github.com/Mojang/bedrock-samples/releases'
                 }
@@ -151,9 +151,9 @@ const navigationSections = computed<NavigationSection[]>(() => [
         label: 'Помощь',
         children:
             [
-                {label: 'Правила Пользования', icon: 'icon-hand'},
-                {label: 'Политика Конфиденциальности', icon: 'icon-script'},
-                {label: 'О Проекте', icon: 'icon-faq'}
+                {label: 'Правила Пользования', icon: 'icon-hand', route: {name: 'terms-of-use'}},
+                {label: 'Политика Конфиденциальности', icon: 'icon-script', route: {name: 'privacy-policy'}},
+                {label: 'О Проекте', icon: 'icon-faq', route: {name: 'about-us'}}
             ]
     },
 ])

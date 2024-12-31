@@ -359,7 +359,7 @@
         }
 
         p, pre, img, blockquote {
-            margin-top: 1.2rem;
+            margin-top: 1.5rem;
             font-size: 14px;
         }
 
@@ -367,9 +367,14 @@
             margin-top: 0;
         }
 
-        li + li, ol, ul {
+        ol, ul {
             margin-top: 0.8rem;
         }
+
+        li + li {
+            margin-top: 1.5rem;
+        }
+
 
         /* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
 

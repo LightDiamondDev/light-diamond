@@ -5,8 +5,9 @@ import type {RouteRecordRaw} from 'vue-router'
 import type {Component} from 'vue'
 import {GameEdition, PostVersionStatus} from '@/types'
 
-import Home from '@/components/Home.vue'
+import AboutUs from '@/components/elements/AboutUs.vue'
 import Catalog from '@/components/catalog/Catalog.vue'
+import Home from '@/components/Home.vue'
 
 import NewPostVersion from '@/components/post/editor/NewPostVersion.vue'
 
@@ -16,6 +17,8 @@ import DashboardUsers from '@/components/dashboard/DashboardUsers.vue'
 
 import PostVersion from '@/components/post/editor/PostVersion.vue'
 import Post from '@/components/post/Post.vue'
+
+import PrivacyPolicy from '@/components/elements/PrivacyPolicy.vue'
 
 import Profile from '@/components/user/profile/Profile.vue'
 import ProfileComments from '@/components/user/profile/ProfileComments.vue'
@@ -29,6 +32,8 @@ import Settings from '@/components/settings/Settings.vue'
 import StudioPosts from '@/components/studio/StudioPosts.vue'
 import StudioSubmissions from '@/components/studio/StudioSubmissions.vue'
 import Studio from '@/components/studio/Studio.vue'
+
+import TermsOfUse from '@/components/elements/TermsOfUse.vue'
 
 import NotFound from '@/components/NotFound.vue'
 
@@ -53,6 +58,14 @@ const routes: RouteRecordRaw[] = [
         component: Home,
         meta: {
             title: 'Добро пожаловать'
+        }
+    },
+    {
+        path: '/about-us/',
+        name: 'about-us',
+        component: AboutUs,
+        meta: {
+            title: 'О Нас',
         }
     },
     {
@@ -226,6 +239,14 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
+        path: '/privacy-policy/',
+        name: 'privacy-policy',
+        component: PrivacyPolicy,
+        meta: {
+            title: 'Политика Конфиденциальности',
+        }
+    },
+    {
         path: '/email/verify/:id/:hash',
         name: 'verify-email',
         component: VerifyEmail,
@@ -305,6 +326,14 @@ const routes: RouteRecordRaw[] = [
                 }
             }
         ]
+    },
+    {
+        path: '/terms-of-use/',
+        name: 'terms-of-use',
+        component: TermsOfUse,
+        meta: {
+            title: 'Правила Использования',
+        }
     },
     {
         path: '/:pathMatch(.*)*',
