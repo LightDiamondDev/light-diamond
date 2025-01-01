@@ -264,6 +264,21 @@
         }
     }
 
+    .animation-cookies-notice-enter-active {
+        transition: 0.8s ease-in-out 3s
+    }
+
+    .animation-cookies-notice-leave-active {
+        transition: 0.8s ease;
+        opacity: 1;
+    }
+
+    .animation-cookies-notice-enter-from,
+    .animation-cookies-notice-leave-to {
+        transform: translateY(120%);
+        opacity: 0;
+    }
+
     body.lock-scroll .fixed.w-full {
         /*noinspection CssUnresolvedCustomProperty*/
         padding-right: var(--current-global-scrollbar-width);
