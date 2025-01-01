@@ -32,6 +32,12 @@ const menuItems = ref<DashboardMenuItem[]>([
         icon: 'icon-skin',
         route: 'dashboard.users',
         routes: [ 'dashboard.users' ]
+    },
+    {
+        label: 'Комментарии',
+        icon: 'icon-comment',
+        route: 'dashboard.comments',
+        routes: [ 'dashboard.comments' ]
     }
 ])
 
@@ -83,7 +89,7 @@ function setMobileMenu() {
                 <div class="h-[32px] w-[32px] arrow-tap"></div>
             </div>
         </div>
-        <div class="interface flex overflow-clip">
+        <div class="interface flex w-full overflow-clip">
             <aside class="manager-aside" :class="{ 'on': isMobileMenu }">
                 <div class="units">
 

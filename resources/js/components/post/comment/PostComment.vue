@@ -272,7 +272,7 @@ const currentCommentHTMLHeight = computed(() =>
 </script>
 
 <template>
-    <div class="flex gap-2 flex-1">
+    <div class="flex max-w-[100%] gap-2">
         <div v-if="editData" class="flex flex-col gap-2 flex-1 min-w-0">
             <p class="text-sm">Редактировать комментарий</p>
             <PostCommentEditor v-model="editData.content" class="post-comment-editor"/>
@@ -296,7 +296,7 @@ const currentCommentHTMLHeight = computed(() =>
             <div :class="{'post-comment-highlighted': isHighlighted}" class="post-comment-body post-comment flex flex-col w-full">
                 <RouterLink
                     v-if="isProfileComment"
-                    class="ld-special-text w-fit mb-[-4px] ml-4 mt-4 hover:underline truncate"
+                    class="ld-special-text hai w-fit mb-[-4px] ml-4 mt-4 hover:underline truncate"
                     :to="{name: 'post', params: {slug: comment.post!.slug}}"
                 >
                     {{ useCategoryRegistry().get(comment.post.version.category).singularName + ' «' + comment.post.version.title + '»' }}
@@ -319,8 +319,9 @@ const currentCommentHTMLHeight = computed(() =>
                                 right-[-8px] top-[-8px]"
                         />
                     </div>
+
                     <div class="flex flex-col gap-1 flex-1 min-w-0">
-                        <div class="comment-header flex justify-between items-center transition-all duration-300 gap-2">
+                        <div class="comment-header flex justify-between items-center w-full transition-all duration-300 gap-2">
                             <div class="flex md:items-center items-end gap-2">
                                 <p class="comment-username flex flex-wrap flex-row overflow-visible gap-3">
                                     <span class="flex gap-2">
@@ -354,7 +355,8 @@ const currentCommentHTMLHeight = computed(() =>
                             </div>
                             <span class="icon-ellipsis icon cursor-pointer" @click="actionsMenu!.toggle"/>
                         </div>
-                        <div class="flex flex-col">
+
+                        <div class="flex flex-col max-w-[100%]">
                             <span v-if="comment.parent_comment?.parent_comment_id">
                                 <RouterLink
                                     class="mention ld-tinted-background darker left ld-secondary-text
@@ -385,6 +387,7 @@ const currentCommentHTMLHeight = computed(() =>
                                 {{ isExpanded ? 'Скрыть' : 'Читать далее...' }}
                             </button>
                         </div>
+
                         <div class="flex gap-3 items-center -ml-2">
                             <button
                                 :class="{ 'active': comment.is_liked }"
@@ -403,7 +406,7 @@ const currentCommentHTMLHeight = computed(() =>
                                 style="animation: none"
                                 :to="getCommentRoute(comment.id)"
                             >
-                                <span class="text text-sm p-2">Перейти к Комментарию</span>
+                                <span class="show-comment text text-sm p-2">Перейти к Комментарию</span>
                             </RouterLink>
                         </div>
                         <div v-if="replyData" class="flex flex-col gap-2" @keydown.esc="() => replyData = null">
@@ -430,6 +433,9 @@ const currentCommentHTMLHeight = computed(() =>
                             </div>
                         </div>
                     </div>
+
+
+
                 </div>
             </div>
         </template>
@@ -446,6 +452,24 @@ const currentCommentHTMLHeight = computed(() =>
 </template>
 
 <style>
+.prima .show-comment {
+    color: var(--primary-text-color);
+    opacity: .8;
+}
+.prima .post-comment .ld-special-text.hai {
+    animation: comment-link-color-animation 5s infinite;
+}
+.prima .comment-read-more-button:hover,
+.prima .show-comment:hover {
+    color: var(--brilliant-color);
+}
+.prima blockquote {
+    border-left: 4px solid var(--brilliant-color)
+}
+.prima pre {
+    background-color: rgba(0, 15, 15, .2);
+    border: var(--primary-border);
+}
 .comments .icon-border {
     height: 42px;
     width: 42px;

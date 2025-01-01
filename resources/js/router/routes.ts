@@ -11,6 +11,7 @@ import Catalog from '@/components/catalog/Catalog.vue'
 import NewPostVersion from '@/components/post/editor/NewPostVersion.vue'
 
 import Dashboard from '@/components/dashboard/Dashboard.vue'
+import DashboardComments from '@/components/dashboard/DashboardComments.vue'
 import DashboardPostSubmissions from '@/components/dashboard/DashboardPostSubmissions.vue'
 import DashboardUsers from '@/components/dashboard/DashboardUsers.vue'
 
@@ -119,6 +120,14 @@ const routes: RouteRecordRaw[] = [
                 component: DashboardUsers,
                 meta: {
                     title: 'Пользователи — Панель Управления',
+                }
+            },
+            {
+                path: 'comments',
+                name: 'dashboard.comments',
+                component: DashboardComments,
+                meta: {
+                    title: 'Комментарии — Панель Управления',
                 }
             }
         ]
