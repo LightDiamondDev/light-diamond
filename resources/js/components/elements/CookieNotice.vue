@@ -1,18 +1,14 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue'
+import {ref} from 'vue'
 
 import ShineButton from '@/components/elements/ShineButton.vue'
 
-const isCookieAccepted = ref(localStorage.getItem('is-cookie-accepted'))
+const isCookieAccepted = ref(localStorage.getItem('is-cookie-accepted') === 'true')
 
 function acceptCookie() {
     localStorage.setItem('is-cookie-accepted', 'true')
     isCookieAccepted.value = true
 }
-
-onMounted(() => {
-    if (localStorage.getItem('is-cookie-accepted') === 'true') return
-})
 </script>
 
 <template>
