@@ -45,8 +45,8 @@ const verticalMenus = reactive<{ [key: string]: InstanceType<typeof EditorVertic
                     <template v-else>
                         <ItemButton
                             class="flex-shrink-0"
+                            :class="{ 'transfusion bordered': menuItem.isActive }"
                             @click="menuItem.callback"
-                            :severity="menuItem.isActive ? 'primary' : 'secondary'"
                             :icon="menuItem.icon"
                         />
                     </template>
