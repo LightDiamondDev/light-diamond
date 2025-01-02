@@ -16,7 +16,8 @@ const registerData = reactive({
     username: '',
     email: '',
     password: '',
-    password_confirmation: ''
+    password_confirmation: '',
+    agree: true
 })
 
 const isProcessing = ref(false)
@@ -55,7 +56,7 @@ function submitRegister() {
     <form action="" class="register flex flex-col items-center" name="register">
         <fieldset class="flex flex-col items-center">
             <div class="group flex flex-col items-center">
-                <span class="subtitle text-[1.1rem] m-2">Никнейм</span>
+                <span class="subtitle text-[1.1rem] m-1">Никнейм</span>
 
                 <Input
                     v-model="registerData.username"
@@ -66,11 +67,11 @@ function submitRegister() {
 
                 <span
                     :class="{ 'error': errors['username'], 'success': !errors['username']}"
-                    class="status text-[0.8rem] m-2"
+                    class="status text-[0.8rem] m-1"
                 >
                     {{ errors['username']?.[0] || '&nbsp;' }}
                 </span>
-                <span class="subtitle text-[1.1rem] m-2">E-mail</span>
+                <span class="subtitle text-[1.1rem] m-1">E-mail</span>
 
                 <Input
                     v-model="registerData.email"
@@ -82,13 +83,13 @@ function submitRegister() {
 
                 <span
                     :class="{ 'error': errors['email'], 'success': !errors['email']}"
-                    class="status text-[0.8rem] m-2"
+                    class="status text-[0.8rem] m-1"
                 >
                     {{ errors['email']?.[0] || '&nbsp;' }}
                 </span>
             </div>
             <div class="group set flex flex-col items-center">
-                <span class="subtitle text-[1.1rem] m-2">Пароль</span>
+                <span class="subtitle text-[1.1rem] m-1">Пароль</span>
 
                 <Input
                     v-model="registerData.password"
@@ -100,12 +101,12 @@ function submitRegister() {
 
                 <span
                     :class="{ 'error': errors['password'], 'success': !errors['password']}"
-                    class="status text-[0.8rem] m-2"
+                    class="status text-[0.8rem] m-1"
                 >
                     {{ errors['password']?.[0] || '&nbsp;' }}
                 </span>
 
-                <span class="subtitle text-[1.1rem] m-2">Повторный пароль</span>
+                <span class="subtitle text-[1.1rem] m-1">Повторный пароль</span>
 
                 <Input
                     v-model="registerData.password_confirmation"
@@ -117,29 +118,68 @@ function submitRegister() {
 
                 <span
                     :class="{ 'error': errors['password_confirmation'], 'success': !errors['password_confirmation']}"
-                    class="status text-[0.8rem] m-2"
+                    class="status text-[0.8rem] m-1"
                 >
                     {{ errors['password_confirmation']?.[0] || '&nbsp;' }}
                 </span>
             </div>
         </fieldset>
 
-        <Button
-            :loading="isProcessing"
-            button-type="submit"
-            class="w-[85%]"
-            icon="icon-bestiary"
-            label="Зарегистрироваться"
-            @click.prevent="submitRegister"
-        />
+        <fieldset class="flex flex-col items-center">
+            <div class="auth-options flex justify-between items-center mb-2 ">
+                <label class="policy-agree-line flex items-center" for="policy-agree-checkbox">
+                    <input
+                        v-model="registerData.agree"
+                        class="text-[0.9rem]"
+                        id="policy-agree-checkbox"
+                        name="agree"
+                        type="checkbox"
+                        value="true"
+                    >
+                    <span class="ld-checkbox icon-border flex justify-center items-center">
+                        <span class="icon-tick"/>
+                    </span>
+                    <span class="policy-agree-me text-[0.8rem] whitespace-nowrap">Я соглашаюсь</span>
+                </label>
+                <div class="terms ld-title-font flex flex-col text-center text-[0.7rem]">
+                    <RouterLink class="ld-brilliant-link border-0" :to="{ name: 'home' }">с Правилами Сайта</RouterLink>
+                    <RouterLink class="ld-brilliant-link border-0" :to="{ name: 'home' }">и Политикой Конфиденциальности</RouterLink>
+                </div>
+            </div>
 
-        <button class="help-button mb-2 mt-2" type="button">
-            <span class="p-2 text-[0.9rem]" @click="emit('switch-to-login-form')">Уже есть учётная запись?</span>
-        </button>
+            <Button
+                :loading="isProcessing"
+                button-type="submit"
+                class="w-[85%]"
+                icon="icon-bestiary max-w-[2rem]"
+                label="Зарегистрироваться"
+                @click.prevent="submitRegister"
+                :disabled="!registerData.agree"
+            />
+
+            <button class="help-button mb-2 mt-2" type="button">
+                <span class="p-2 text-[0.9rem]" @click="emit('switch-to-login-form')">Уже есть учётная запись?</span>
+            </button>
+        </fieldset>
 
     </form>
 </template>
 
-<style scoped>
+<style>
+.auth-dialog form fieldset .action-button .label {
+    width: fit-content;
+}
+</style>
 
+<style scoped>
+.ld-brilliant-link {
+    color: var(--brilliant-color);
+}
+.ld-brilliant-link:hover {
+    color: var(--hover-text-color);
+    text-decoration: underline;
+}
+.policy-agree-line {
+    background: none;
+}
 </style>

@@ -1,33 +1,8 @@
 <script setup lang="ts">
 import {computed, ref} from 'vue'
 import Dialog from '@/components/elements/Dialog.vue'
-import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm.vue'
-import LoginForm from '@/components/auth/LoginForm.vue'
-import RegisterForm from '@/components/auth/RegisterForm.vue'
-import {getRandomAuthSplash} from '@/stores/splashes'
-
-enum AuthFormType {
-    LOGIN,
-    FORGOT_PASSWORD,
-    REGISTER
-}
 
 const isVisible = defineModel<Boolean>('visible', {required: true})
-const formType = ref(AuthFormType.LOGIN)
-
-const authDialogTitle = computed(() => {
-    switch (formType.value) {
-        case AuthFormType.LOGIN:
-            return 'Вход'
-        case AuthFormType.FORGOT_PASSWORD:
-            return 'Сброс пароля'
-        case AuthFormType.REGISTER:
-            return 'Регистрация'
-    }
-})
-
-const activeSplash = getRandomAuthSplash()
-
 </script>
 
 <template>
@@ -39,38 +14,9 @@ const activeSplash = getRandomAuthSplash()
         :back-button="formType !== AuthFormType.LOGIN"
         @back="formType = AuthFormType.LOGIN"
     >
-        <template v-slot:left-content>
-            <div class="illustration flex justify-center items-center">
-                <div class="background-auth flex justify-center items-center">
-                    <RouterLink class="logo element-light-diamond-logo" :to="{ name: 'home' }">
-                        <span class="base">
-                            <span
-                                class="splash"
-                                :class="{
-                                    'large-splash': activeSplash.length > 30,
-                                    'small-splash': activeSplash.length < 31
-                                }"
-                            >
-                                {{ activeSplash }}
-                            </span>
-                        </span>
-                    </RouterLink>
-                    <div class="back-background background-cherry-blossom-grove"/>
-                </div>
-            </div>
-        </template>
-
         <Transition name="smooth-auth-switch">
 
-            <LoginForm
-                v-if="formType === AuthFormType.LOGIN"
-                @switch-to-forgot-password-form="formType = AuthFormType.FORGOT_PASSWORD"
-                @switch-to-register-form="formType = AuthFormType.REGISTER">
-            </LoginForm>
-
-            <ForgotPasswordForm v-else-if="formType === AuthFormType.FORGOT_PASSWORD"/>
-
-            <RegisterForm v-else @switch-to-login-form="formType = AuthFormType.LOGIN"/>
+            <div></div>
 
         </Transition>
 
@@ -132,24 +78,20 @@ const activeSplash = getRandomAuthSplash()
     width: 100%;
 }
 
-.auth-dialog form .auth-options .auth-remember-line,
-.auth-dialog form .auth-options .policy-agree-line {
+.auth-dialog form .auth-options .auth-remember-line {
     width: fit-content;
 }
 
-.auth-dialog form .auth-options .auth-remember-line input,
-.auth-dialog form .auth-options .policy-agree-line input {
+.auth-dialog form .auth-options .auth-remember-line input {
     width: fit-content;
 }
 
-.auth-dialog form .auth-options .auth-remember-line,
-.auth-dialog form .auth-options .policy-agree-line {
+.auth-dialog form .auth-options .auth-remember-line {
     cursor: pointer;
     border: none;
 }
 
-#auth-remember-checkbox,
-#policy-agree-checkbox {
+#auth-remember-checkbox {
     pointer-events: none;
     position: relative;
     opacity: 0;
@@ -167,29 +109,24 @@ const activeSplash = getRandomAuthSplash()
     width: 32px;
 }
 
-#auth-remember-checkbox + .ld-checkbox .icon-tick,
-#policy-agree-checkbox + .ld-checkbox .icon-tick {
+#auth-remember-checkbox + .ld-checkbox .icon-tick {
     position: relative;
     transition: .1s;
     bottom: 1px;
     opacity: 0;
 }
 
-.auth-remember-line .auth-remember-me,
-.policy-agree-line .auth-remember-me {
+.auth-remember-line .auth-remember-me {
     position: relative;
     right: 8px;
 }
 
 .auth-remember-line:hover .auth-remember-me,
-.policy-agree-line:hover .policy-agree-me,
-#auth-remember-checkbox:focus-visible + .ld-checkbox + .auth-remember-me,
-#policy-agree-checkbox:focus-visible + .ld-checkbox + .policy-agree-me {
+#auth-remember-checkbox:focus-visible + .ld-checkbox + .auth-remember-me {
     color: var(--hover-text-color);
 }
 
-#auth-remember-checkbox:checked + .ld-checkbox .icon-tick,
-#policy-agree-checkbox:checked + .ld-checkbox .icon-tick {
+#auth-remember-checkbox:checked + .ld-checkbox .icon-tick {
     opacity: 1;
 }
 
@@ -403,7 +340,6 @@ const activeSplash = getRandomAuthSplash()
     .auth-dialog {
         justify-content: center;
         align-items: center;
-        width: 100%;
     }
     .auth-dialog .interface {
         height: 380px;
