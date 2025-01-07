@@ -34,7 +34,11 @@ function toggleFavourite() {
 
 function onLikeClick() {
     if (!authStore.isAuthenticated) {
-        globalModalStore.isAuth = true
+        globalModalStore.isAuthModal = true
+        return
+    }
+    if (!authStore.hasVerifiedEmail) {
+        globalModalStore.isNotVerifiedEmailModal = true
         return
     }
     toggleLike()
@@ -58,7 +62,11 @@ function onLikeClick() {
 
 function onFavouriteClick() {
     if (!authStore.isAuthenticated) {
-        globalModalStore.isAuth = true
+        globalModalStore.isAuthModal = true
+        return
+    }
+    if (!authStore.hasVerifiedEmail) {
+        globalModalStore.isNotVerifiedEmailModal = true
         return
     }
     toggleFavourite()

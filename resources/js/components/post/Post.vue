@@ -209,7 +209,7 @@ function getDescendantComments(ancestorId: bigint): PostComment[] {
 
 function onNewCommentEditorClick() {
     if (!authStore.isAuthenticated) {
-        globalModalStore.isAuth = true
+        globalModalStore.isAuthModal = true
     }
 }
 
@@ -341,8 +341,7 @@ function openDownloadWindow() {
                             @click="onNewCommentEditorClick"
                         />
                         <Button
-                            :loading="isSubmittingNewComment"
-                            :disabled="!authStore.isAuthenticated"
+                            :disabled="!authStore.isAuthenticated || !authStore.hasVerifiedEmail"
                             class="self-center md:self-start max-h-[72px] max-w-[240px] w-[80%] mt-2"
                             @click="submitNewComment"
                             icon="icon-comment"
@@ -404,7 +403,7 @@ function openDownloadWindow() {
         <div class="unavailable-post-container flex flex-col items-center">
             <h1 class="text-4xl font-bold text-center mt-8 mb-4">Пост не найден</h1>
             <div class="mob phantom flex justify-center items-center full-locked">
-                <div class="animation-flying-phantom"></div>
+                <div class="animation-flying-phantom"/>
             </div>
             <RouterLink class="flex justify-center max-w-[480px] w-full mb-8" :to="{ name: 'home' }">
                 <Button

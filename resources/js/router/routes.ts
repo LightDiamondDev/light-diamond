@@ -40,6 +40,7 @@ declare module 'vue-router' {
     interface RouteMeta {
         title?: string
         requiresAuth?: boolean
+        requiresEmailVerified?: boolean
         requiresModerator?: boolean
         requiresAdmin?: boolean
         defaultComponent?: Component
@@ -83,6 +84,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
             title: 'Панель Управления',
             requiresAuth: true,
+            requiresEmailVerified: true,
             requiresModerator: true
         },
         children: [
@@ -130,7 +132,8 @@ const routes: RouteRecordRaw[] = [
         redirect: {name: 'studio.posts'},
         meta: {
             title: 'Контент-Студия',
-            requiresAuth: true
+            requiresAuth: true,
+            requiresEmailVerified: true
         },
         children: [
             {
@@ -193,7 +196,8 @@ const routes: RouteRecordRaw[] = [
         component: NewPostVersion,
         meta: {
             title: 'Создание Поста',
-            requiresAuth: true
+            requiresAuth: true,
+            requiresEmailVerified: true
         }
     },
     {
@@ -203,7 +207,8 @@ const routes: RouteRecordRaw[] = [
         component: NewPostVersion,
         meta: {
             title: 'Обновление Поста',
-            requiresAuth: true
+            requiresAuth: true,
+            requiresEmailVerified: true
         }
     },
     {
@@ -214,6 +219,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
             title: 'Заявка на публикацию',
             requiresAuth: true,
+            requiresEmailVerified: true
         }
     },
     {
@@ -285,7 +291,7 @@ const routes: RouteRecordRaw[] = [
         redirect: {name: 'settings.profile'},
         meta: {
             title: 'Настройки',
-            requiresAuth: true,
+            requiresAuth: true
         },
         children: [
             {

@@ -4,27 +4,26 @@ import Button from '@/components/elements/Button.vue'
 import {onMounted} from 'vue'
 
 const globalModalStore = useGlobalModalStore()
-useGlobalModalStore().auth = true
 
 onMounted(() => {
-    globalModalStore.isAuthModal = true
+    globalModalStore.isNotVerifiedEmailModal = true
 })
 </script>
 
 <template>
     <div class="global-error-window flex justify-center items-center">
         <div class="global-error-container ld-primary-background ld-primary-border flex flex-col items-center">
-            <h1 class="text-4xl font-bold text-center mt-8">У вас нет доступа!</h1>
-            <p class="text-muted text-center mt-4">Для просмотра страницы необходимо войти в аккаунт!</p>
+            <h1 class="text-4xl font-bold text-center max-w-[360px] mt-8">Неподтверждённый E-Mail</h1>
+            <p class="text-muted text-center mt-4">Чтобы совершить это действие, пожалуйста, подтвердите Ваш E-Mail.</p>
             <div class="mob parrot flex justify-center items-center full-locked">
                 <div class="animation-dancing-red-parrot"></div>
             </div>
             <Button
-                @click="globalModalStore.isAuthModal = !globalModalStore.isAuthModal"
-                class="w-[80%] my-8"
+                as="RouterLink"
+                class="max-w-[320px] w-[80%] my-8"
                 icon="item-diamond"
-                label="Войти"
-                type="button"
+                label="Подтвердить"
+                :to="{ name: 'settings.security' }"
             />
         </div>
     </div>

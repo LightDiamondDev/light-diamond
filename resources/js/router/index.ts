@@ -5,6 +5,7 @@ import {useAuthStore} from '@/stores/auth'
 import {changeTitle, getHeaderHeight} from '@/helpers'
 import AuthRequired from '@/components/auth/AuthRequired.vue'
 import NoPermission from '@/components/NoPermission.vue'
+import VerifiedEmailRequired from '@/components/auth/VerifiedEmailRequired.vue'
 
 let hashObserver: ResizeObserver | undefined = undefined
 let hashObserverDisconnectTimeout: number | undefined = undefined
@@ -76,7 +77,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, _from, next) => {
-    const authStore = useAuthStore()
+    const authStore= useAuthStore()
 
     function displayComponent(component?: Component) {
         to.matched[0].components!.default = component ?? to.matched[0].meta.defaultComponent!
@@ -89,6 +90,13 @@ router.beforeEach((to, _from, next) => {
             !authStore.isAuthenticated
         ) {
             displayComponent(AuthRequired)
+            return
+        }
+
+        if (
+            to.matched.some(record => record.meta.requiresEmailVerified)
+        ) {
+            displayComponent(VerifiedEmailRequired)
             return
         }
 

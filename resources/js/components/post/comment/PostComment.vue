@@ -223,7 +223,7 @@ function toggleLike() {
 
 function onLikeClick() {
     if (!authStore.isAuthenticated) {
-        globalModalStore.isAuth = true
+        globalModalStore.isAuthModal = true
         return
     }
     toggleLike()
@@ -247,7 +247,11 @@ function onLikeClick() {
 
 function onReplyClick() {
     if (!authStore.isAuthenticated) {
-        globalModalStore.isAuth = true
+        globalModalStore.isAuthModal = true
+        return
+    }
+    if (!authStore.hasVerifiedEmail) {
+        globalModalStore.isNotVerifiedEmailModal = true
         return
     }
     replyData.value = {}
