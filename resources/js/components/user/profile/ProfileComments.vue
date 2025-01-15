@@ -4,10 +4,10 @@ import {reactive, ref} from 'vue'
 
 import {getErrorMessageByCode} from '@/helpers'
 import {useAuthStore} from '@/stores/auth'
-import {type PostComment} from '@/types'
+import {type MaterialComment} from '@/types'
 
 import Paginator from '@/components/elements/Paginator.vue'
-import PostCommentComponent from '@/components/post/comment/PostComment.vue'
+import MaterialCommentComponent from '@/components/material/comment/MaterialComment.vue'
 
 const props = defineProps({
     userId: {
@@ -26,7 +26,7 @@ const loadRequestData = reactive({
 })
 
 const authStore = useAuthStore()
-const comments = ref<PostComment[]>([])
+const comments = ref<MaterialComment[]>([])
 const totalRecords = ref(0)
 
 const isLoading = ref(false)
@@ -96,7 +96,7 @@ loadComments()
                 </div>
             </div>
             <div v-else class="flex flex-col" :class="{'paginator-refresh': isLoading}">
-                <PostCommentComponent
+                <MaterialCommentComponent
                     v-for="comment in comments"
                     :comment="comment"
                     :id="`comment-${comment.id}`"
@@ -133,7 +133,7 @@ loadComments()
     aspect-ratio: 16 / 9;
     object-fit: cover;
 }
-.post-version-card:hover .preview {
+.material-submission-card:hover .preview {
     transform: scale(1.2);
 }
 </style>

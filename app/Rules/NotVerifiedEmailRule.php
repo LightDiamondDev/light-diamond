@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class NotVerifiedEmailRule implements ValidationRule
 {
-    private mixed $ignoreId = null;
+    private mixed  $ignoreId       = null;
     private string $ignoreIdColumn = 'id';
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
@@ -31,7 +31,7 @@ class NotVerifiedEmailRule implements ValidationRule
             return $this->ignoreModel($id, $idColumn);
         }
 
-        $this->ignoreId = $id;
+        $this->ignoreId       = $id;
         $this->ignoreIdColumn = $idColumn ?? $this->ignoreIdColumn;
 
         return $this;
@@ -40,7 +40,7 @@ class NotVerifiedEmailRule implements ValidationRule
     public function ignoreModel($model, $idColumn = null): self
     {
         $this->ignoreIdColumn = $idColumn ?? $model->getKeyName();
-        $this->ignoreId = $model->{$this->ignoreIdColumn};
+        $this->ignoreId       = $model->{$this->ignoreIdColumn};
 
         return $this;
     }

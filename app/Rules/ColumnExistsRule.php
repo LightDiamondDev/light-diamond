@@ -6,9 +6,9 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Schema;
 
-class ColumnExistsRule implements ValidationRule
+readonly class ColumnExistsRule implements ValidationRule
 {
-    public function __construct(private readonly string $table)
+    public function __construct(private string $table)
     {
     }
 

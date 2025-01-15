@@ -6,17 +6,17 @@ import {RouterLink, useRoute} from 'vue-router'
 import {changeTitle, getCounterLabel, getErrorMessageByCode, getTitle} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
 
-import {type Post, type User} from '@/types'
+import {type Material, type User} from '@/types'
 
 import TabMenu, {type TabMenuChangeEvent} from '@/components/elements/TabMenu.vue'
 import Button from '@/components/elements/Button.vue'
 import ProcessingDiggingBlocks from '@/components/elements/ProcessingDiggingBlocks.vue'
 
-interface PostVersionLoadResponseData {
+interface MaterialSubmissionLoadResponseData {
     success: boolean
     message?: string
     errors?: object
-    records?: Post[]
+    records?: Material[]
     pagination?: {
         total_records: number
         current_page: number
@@ -53,19 +53,19 @@ const isLoading = ref(false)
 
 const tabMenuItems = computed(() => [
     {
-        label: `Посты [${user.value?.post_count}]`,
+        label: `Материалы [${user.value?.materials_count}]`,
         icon: 'icon-news',
-        route: { name: 'profile.posts' },
-        routes: [ 'profile.posts' ]
+        route: { name: 'profile.materials' },
+        routes: [ 'profile.materials' ]
     },
     {
-        label: `Избранное [${user.value?.favourite_post_count}]`,
+        label: `Избранное [${user.value?.favourite_materials_count}]`,
         icon: 'icon-diamond',
-        route: { name: 'profile.favourite-posts' },
-        routes: [ 'profile.favourite-posts' ]
+        route: { name: 'profile.favourite-materials' },
+        routes: [ 'profile.favourite-materials' ]
     },
     {
-        label: `Комментарии [${user.value?.comment_count}]`,
+        label: `Комментарии [${user.value?.comments_count}]`,
         icon: 'icon-comment',
         route: { name: 'profile.comments' },
         routes: [ 'profile.comments' ]
@@ -95,7 +95,7 @@ function onTabChange(event: TabMenuChangeEvent) {
         loadRequestData.value.status = selectedStatus
         loadRequestData.value.page = 1
         totalRecords.value = 0
-        loadPostVersions()
+        loadMaterialSubmissions()
     }
 }
 
@@ -153,29 +153,35 @@ updateTitle()
                     <div class="flex flex-col gap-2 px-4">
                         <div class="flex sm:flex-row flex-col items-center sm:gap-4 sm:mt-0 mt-4">
                             <p class="flex text-[24px] border-0 w-fit">{{ user.username }}</p>
-                            <p v-if="user.post_count > 0" class="ld-trinity-text ld-title-font text-[24px]">Автор</p>
+                            <p v-if="user.materials_count > 0" class="ld-trinity-text ld-title-font text-[24px]">Автор</p>
                         </div>
                         <!-- <p>Россия, 21 год</p> -->
-                        <div v-if="user.post_count > 0" class="flex flex-wrap justify-center text-[14px] gap-8 mt-2">
+                        <div v-if="user.materials_count > 0" class="flex flex-wrap justify-center text-[14px] gap-8 mt-2">
 
                             <div class="flex flex-col items-center">
                                 <div class="ld-trinity-text flex gap-1">
                                     <span class="icon-heart icon flex"/>
-                                    <span class="ld-title-font text-[24px]">{{ getCounterLabel(user.collected_like_count) }}</span>
+                                    <span class="ld-title-font text-[24px]">{{
+                                            getCounterLabel(user.collected_likes_count)
+                                        }}</span>
                                 </div>
                                 <p>Лайки</p>
                             </div>
                             <div class="flex flex-col items-center">
                                 <div class="ld-trinity-text flex gap-1">
                                     <span class="icon-download icon flex"/>
-                                    <span class="ld-title-font text-[24px]">{{ getCounterLabel(user.collected_download_count) }}</span>
+                                    <span class="ld-title-font text-[24px]">{{
+                                            getCounterLabel(user.collected_downloads_count)
+                                        }}</span>
                                 </div>
                                 <p>Скачивания</p>
                             </div>
                             <div class="flex flex-col items-center">
                                 <div class="ld-trinity-text flex gap-1">
                                     <span class="icon-eye icon flex"/>
-                                    <span class="ld-title-font text-[24px]">{{ getCounterLabel(user.collected_view_count) }}</span>
+                                    <span class="ld-title-font text-[24px]">{{
+                                        getCounterLabel(user.collected_views_count)
+                                      }}</span>
                                 </div>
                                 <p>Просмотры</p>
                             </div>
