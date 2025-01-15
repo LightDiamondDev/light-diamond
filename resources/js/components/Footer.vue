@@ -1,11 +1,11 @@
 <script setup lang="ts">
+
 function scrollToTop() {
     window.scrollTo(0, 0)
 }
 </script>
 
 <template>
-
     <footer class="ld-primary-background ld-primary-border-top ld-shadow-text flex flex-col items-center w-full">
         <nav class="flex justify-between max-w-[1200px] w-full">
             <div class="sm:hidden ml-4 w-12"/>
@@ -16,7 +16,10 @@ function scrollToTop() {
                 <img alt="Logo" class="hidden xs:flex h-full min-w-152" src="/images/elements/light-diamond-logo.png"/>
                 <img alt="Logo" class="flex xs:hidden h-[52px]" src="/images/elements/light-diamond-logo-mobile.png"/>
             </RouterLink>
-            <RouterLink :to="{name: 'post', params: {slug: 'light-diamond'}}" class="xl:flex hidden items-center">
+            <RouterLink
+                :to="{name: 'material', params: {edition: 'bedrock', category: 'addons', slug: 'light-diamond'}}"
+                class="xl:flex hidden items-center"
+            >
                 <span class="icon icon-apple static"/>
                 <span>Аддон LD</span>
             </RouterLink>

@@ -1,13 +1,13 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\FavouritePostController;
-use App\Http\Controllers\PostCommentController;
-use App\Http\Controllers\PostCommentLikeController;
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\PostLikeController;
-use App\Http\Controllers\PostVersionController;
-use App\Http\Controllers\PostVersionFileController;
+use App\Http\Controllers\FavouriteMaterialController;
+use App\Http\Controllers\MaterialCommentController;
+use App\Http\Controllers\MaterialCommentLikeController;
+use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\MaterialFileController;
+use App\Http\Controllers\MaterialLikeController;
+use App\Http\Controllers\MaterialSubmissionController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UploadImageController;
 use App\Http\Controllers\UserController;
@@ -33,55 +33,56 @@ Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 
 Route::get('/users/{username}', [UserController::class, 'getByUsername']);
 
-Route::get('/posts', [PostController::class, 'get']);
-Route::get('/posts/{slug}', [PostController::class, 'getBySlug']);
-Route::get('/users/{userId}/posts', [PostController::class, 'getUserPosts'])->where('userId', '[0-9]+');
-Route::get('/users/{userId}/favourite-posts', [PostController::class, 'getUserFavouritePosts'])->where('userId', '[0-9]+');
+Route::get('/materials', [MaterialController::class, 'get']);
+Route::get('/materials/{slug}', [MaterialController::class, 'getBySlug']);
+Route::get('/users/{userId}/materials', [MaterialController::class, 'getUserMaterials'])->where('userId', '[0-9]+');
+Route::get('/users/{userId}/favourite-materials', [MaterialController::class, 'getUserFavouriteMaterials'])->where('userId', '[0-9]+');
 
-Route::get('/posts/{postId}/comments', [PostCommentController::class, 'getPostComments'])->where('postId', '[0-9]+');
-Route::get('/users/{userId}/comments', [PostCommentController::class, 'getUserComments'])->where('userId', '[0-9]+');
+Route::get('/materials/{materialId}/comments', [MaterialCommentController::class, 'getMaterialComments'])->where('materialId', '[0-9]+');
+Route::get('/users/{userId}/comments', [MaterialCommentController::class, 'getUserComments'])->where('userId', '[0-9]+');
 
-Route::get('/post-versions/{versionId}/download/{fileId}', [PostVersionFileController::class, 'download'])->where('versionId', '[0-9]+')->where('fileId', '[0-9]+');
+Route::get('/material-versions/{versionId}/download/{fileId}', [MaterialFileController::class, 'download'])->where('versionId', '[0-9]+')->where('fileId', '[0-9]+');
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::put('/settings/profile', [SettingsController::class, 'changeProfileSettings']);
-    Route::put('/settings/security/username', [SettingsController::class, 'changeUsername']);
+    Route::put('/settings/profile/username', [SettingsController::class, 'changeUsername']);
     Route::put('/settings/security/email', [SettingsController::class, 'changeEmail']);
     Route::put('/settings/security/password', [SettingsController::class, 'changePassword']);
     Route::post('/settings/security/email-verification', [SettingsController::class, 'sendEmailVerificationLink'])->middleware(['throttle:1,1']);
 
-    Route::post('/upload-image', [UploadImageController::class, 'upload']);
-    Route::post('/upload-post-file', [PostVersionFileController::class, 'upload']);
+    Route::post('/upload-image', [UploadImageController::class, 'upload'])->middleware(['throttle:10,2']);
+    Route::post('/upload-material-file', [MaterialFileController::class, 'upload'])->middleware(['throttle:3,10']);
 
-    Route::get('/post-versions/{id}', [PostVersionController::class, 'getById'])->where('id', '[0-9]+');
-    Route::post('/post-versions', [PostVersionController::class, 'createDraft']);
-    Route::post('/post-versions/submit', [PostVersionController::class, 'submitNew']);
-    Route::patch('/post-versions/{id}', [PostVersionController::class, 'updateDraft'])->where('id', '[0-9]+');
-    Route::patch('/post-versions/{id}/submit', [PostVersionController::class, 'submit'])->where('id', '[0-9]+');
+    Route::get('/auth/user/can-create-submission', [UserController::class, 'canCreateSubmission']);
 
-    Route::get('/users/{userId}/post-versions', [PostVersionController::class, 'getByUser'])->where('userId', '[0-9]+');
+    Route::get('/material-submissions/{id}', [MaterialSubmissionController::class, 'getById'])->where('id', '[0-9]+');
+    Route::post('/material-submissions', [MaterialSubmissionController::class, 'createDraft']);
+    Route::post('/material-submissions/submit', [MaterialSubmissionController::class, 'submitNew']);
+    Route::patch('/material-submissions/{id}', [MaterialSubmissionController::class, 'update'])->where('id', '[0-9]+');
+    Route::patch('/material-submissions/{id}/submit', [MaterialSubmissionController::class, 'submit'])->where('id', '[0-9]+');
 
-    Route::post('/posts/{postId}/likes', [PostLikeController::class, 'like'])->where('postId', '[0-9]+');
-    Route::delete('/posts/{postId}/likes', [PostLikeController::class, 'unlike'])->where('postId', '[0-9]+');
+    Route::get('/users/{userId}/material-submissions', [MaterialSubmissionController::class, 'getByUser'])->where('userId', '[0-9]+');
 
-    Route::post('/posts/{postId}/favourites', [FavouritePostController::class, 'addFavourite'])->where('postId', '[0-9]+');
-    Route::delete('/posts/{postId}/favourites', [FavouritePostController::class, 'removeFavourite'])->where('postId', '[0-9]+');
+    Route::post('/materials/{materialId}/likes', [MaterialLikeController::class, 'like'])->where('materialId', '[0-9]+');
+    Route::delete('/materials/{materialId}/likes', [MaterialLikeController::class, 'unlike'])->where('materialId', '[0-9]+');
 
-    Route::post('/posts/{postId}/comments', [PostCommentController::class, 'submit'])->where('id', '[0-9]+');
-    Route::delete('/post-comments/{id}', [PostCommentController::class, 'remove'])->where('id', '[0-9]+');
-    Route::patch('/post-comments/{id}', [PostCommentController::class, 'edit'])->where('id', '[0-9]+');
+    Route::post('/materials/{materialId}/favourites', [FavouriteMaterialController::class, 'addFavourite'])->where('materialId', '[0-9]+');
+    Route::delete('/materials/{materialId}/favourites', [FavouriteMaterialController::class, 'removeFavourite'])->where('materialId', '[0-9]+');
 
-    Route::post('/post-comments/{id}/likes', [PostCommentLikeController::class, 'like'])->where('id', '[0-9]+');
-    Route::delete('/post-comments/{id}/likes', [PostCommentLikeController::class, 'unlike'])->where('id', '[0-9]+');
+    Route::post('/materials/{materialId}/comments', [MaterialCommentController::class, 'submit'])->where('materialId', '[0-9]+');
+    Route::delete('/material-comments/{id}', [MaterialCommentController::class, 'remove'])->where('id', '[0-9]+');
+    Route::patch('/material-comments/{id}', [MaterialCommentController::class, 'edit'])->where('id', '[0-9]+');
+
+    Route::post('/material-comments/{id}/likes', [MaterialCommentLikeController::class, 'like'])->where('id', '[0-9]+');
+    Route::delete('/material-comments/{id}/likes', [MaterialCommentLikeController::class, 'unlike'])->where('id', '[0-9]+');
 
     Route::middleware('moderator')->group(function () {
         Route::get('/users', [UserController::class, 'get']);
 
-        Route::get('/post-versions', [PostVersionController::class, 'get']);
-        Route::put('/post-versions/{id}/assigned-moderator', [PostVersionController::class, 'assignModerator'])->where('id', '[0-9]+');
-        Route::patch('/post-versions/{id}/request-changes', [PostVersionController::class, 'requestChanges'])->where('id', '[0-9]+');
-        Route::patch('/post-versions/{id}/accept', [PostVersionController::class, 'accept'])->where('id', '[0-9]+');
-        Route::patch('/post-versions/{id}/reject', [PostVersionController::class, 'reject'])->where('id', '[0-9]+');
+        Route::get('/material-submissions', [MaterialSubmissionController::class, 'get']);
+        Route::put('/material-submissions/{id}/assigned-moderator', [MaterialSubmissionController::class, 'assignModerator'])->where('id', '[0-9]+');
+        Route::patch('/material-submissions/{id}/request-changes', [MaterialSubmissionController::class, 'requestChanges'])->where('id', '[0-9]+');
+        Route::patch('/material-submissions/{id}/accept', [MaterialSubmissionController::class, 'accept'])->where('id', '[0-9]+');
+        Route::patch('/material-submissions/{id}/reject', [MaterialSubmissionController::class, 'reject'])->where('id', '[0-9]+');
     });
 
     Route::middleware('admin')->group(function () {

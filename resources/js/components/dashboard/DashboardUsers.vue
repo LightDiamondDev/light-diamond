@@ -148,7 +148,7 @@ function onRecordSave() {
     <div class="section ld-shadow-text flex flex-col h-full">
         <div v-if="authStore.isAdmin" class="flex">
             <ShineButton
-                class="cancel ml-2 mt-2" icon="icon-trash"
+                class="danger ml-2 mt-2" icon="icon-trash"
                 @click="() => isDeleteSelectedModal = true"
                 :disabled="selectedRecords.length === 0"
             />
@@ -228,7 +228,6 @@ function onRecordSave() {
             v-model:visible="isEditRecordModal"
             title="Редактирование"
             class="user-form"
-            style="top: 0;"
         >
             <UserForm
                 :user="currentRecord!"
@@ -241,7 +240,6 @@ function onRecordSave() {
             v-model:visible="isDeleteSelectedModal"
             class="user-form"
             title="Удаление"
-            style="top: 0;"
         >
             <form action="" class="register flex flex-col items-center sm:min-w-[390px] max-w-[390px]" name="register">
                 <p class="subtitle md:text-[14px] text-[12px] text-center mb-4">
@@ -252,14 +250,14 @@ function onRecordSave() {
                     <Button
                         button-type="submit"
                         label="Удалить"
-                        class="delete min-w-[140px]"
+                        class="danger min-w-[140px]"
                         @click.prevent="onConfirmDeleteSelectedClick"
                     />
 
                     <Button
                         button-type="submit"
                         label="Отмена"
-                        class="cancel min-w-[140px]"
+                        class="secondary min-w-[140px]"
                         @click.prevent="isDeleteSelectedModal = false"
                     />
                 </div>
@@ -271,7 +269,6 @@ function onRecordSave() {
             v-model:visible="isDeleteRecordModal"
             class="user-form"
             title="Удаление"
-            style="top: 0;"
         >
             <form action="" class="register flex flex-col items-center sm:min-w-[390px] max-w-[390px]" name="register">
                 <p class="subtitle md:text-[14px] text-[12px] text-center mb-4">
@@ -282,14 +279,14 @@ function onRecordSave() {
                     <Button
                         button-type="submit"
                         label="Удалить"
-                        class="delete min-w-[140px]"
+                        class="danger min-w-[140px]"
                         @click.prevent="onConfirmDeleteClick"
                     />
 
                     <Button
                         button-type="submit"
                         label="Отмена"
-                        class="cancel min-w-[140px]"
+                        class="secondary min-w-[140px]"
                         @click.prevent="isDeleteRecordModal = false"
                     />
                 </div>

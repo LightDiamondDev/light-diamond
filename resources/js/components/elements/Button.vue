@@ -1,44 +1,44 @@
 <script setup lang="ts">
-    import ProcessingMovingItems from '@/components/elements/ProcessingMovingItems.vue'
+import ProcessingMovingItems from '@/components/elements/ProcessingMovingItems.vue'
 
-    const props = defineProps({
-        actionButtonClasses: String,
-        as: {
-            type: String,
-            default: 'button'
-        },
-        buttonType: {
-            type: String,
-            validator: (val) => [ 'button', 'submit', 'reset' ].includes(val),
-            default: 'button'
-        },
-        disabled: {
-            type: Boolean,
-            default: false
-        },
-        icon: {
-            type: String,
-            default: ''
-        },
-        labelClasses: String,
-        pressClasses: String,
-        loading: {
-            type: Boolean,
-            default: false
-        },
-        loadingItem: {
-            type: String,
-            default: 'item-diamond'
-        },
-        label: String
-    });
+const props = defineProps({
+    actionButtonClasses: String,
+    as: {
+        type: String,
+        default: 'button'
+    },
+    buttonType: {
+        type: String,
+        validator: (val) => ['button', 'submit', 'reset'].includes(val),
+        default: 'button'
+    },
+    disabled: {
+        type: Boolean,
+        default: false
+    },
+    icon: {
+        type: String,
+        default: ''
+    },
+    labelClasses: String,
+    pressClasses: String,
+    loading: {
+        type: Boolean,
+        default: false
+    },
+    loadingItem: {
+        type: String,
+        default: 'item-diamond'
+    },
+    label: String
+})
 </script>
 
 <template>
     <Component
         class="ld-press-button button-container flex justify-center items-center"
-        :class="{ 'disabled': disabled }"
-        :disabled="disabled"
+        :class="{ 'opacity-50': disabled || loading }"
+        :disabled="disabled || loading"
         :type="buttonType"
         :is="as"
     >
@@ -58,7 +58,5 @@
 </template>
 
 <style scoped>
-.disabled {
-    opacity: .5;
-}
+
 </style>

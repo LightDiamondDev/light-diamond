@@ -7,45 +7,35 @@ RUN \
       apt-utils \
       libpq-dev \
       libpng-dev \
+      libjpeg-dev \
+      libfreetype-dev \
       libzip-dev \
-      zip  \
+      zip \
       unzip \
-      npm  \
-      git && \
+      git \
+      npm \
+      jpegoptim \
+      optipng \
+      pngquant \
+      gifsicle \
+      webp \
+      libavif-bin && \
     pecl config-set php_ini "${PHP_INI_DIR}/php.ini" && \
-    docker-php-ext-install  \
-      pdo_mysql \
+    docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg &&\
+    docker-php-ext-install \
+      pdo_pgsql \
       bcmath \
       gd \
       zip && \
+    npm install -g svgo && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# Clone APFD extension repository
-RUN git clone https://github.com/m6w6/ext-apfd.git /usr/src/php/ext/apfd
-
-# Build and install APFD extension
-RUN cd /usr/src/php/ext/apfd && \
-    phpize && \
-    ./configure && \
-    make && \
-    make install && \
-    docker-php-ext-enable apfd
-
-# Clean up
-RUN rm -rf /usr/src/php/ext/apfd && \
-    apt-get purge -y \
-      git \
-      autoconf \
-      build-essential && \
-    apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install composer
 COPY --from=composer /usr/bin/composer /usr/local/bin/composer
 
 # Set the uid, gid and home directory of the www-data user to default values
-RUN usermod  --uid 1000 www-data && \
+RUN usermod --uid 1000 www-data && \
     groupmod --gid 1000 www-data && \
     usermod -d /home/www-data www-data && \
     mkdir /home/www-data && \
