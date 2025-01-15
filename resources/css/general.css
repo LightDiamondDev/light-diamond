@@ -293,7 +293,7 @@
         opacity: .6;
     }
 
-    .post-cover, .post-cover img {
+    .material-cover, .material-cover img {
         object-position: center;
         aspect-ratio: 16/9;
         /*
@@ -301,11 +301,11 @@
         */
     }
 
-    .post hr {
+    .material hr {
         margin: 2rem auto;
     }
 
-    .post, .post-comment {
+    .material, .material-comment {
 
         a {
             white-space: nowrap;
@@ -382,14 +382,14 @@
         }
     }
 
-    .post-content, .post-comment-content {
+    .material-content, .material-comment-content {
         --surface-50: #27272a;
         :first-child {
             margin-top: 0;
         }
     }
 
-    .post-content {
+    .material-content {
         p, pre, img, blockquote {
             margin-top: 1.2rem;
         }
@@ -399,7 +399,7 @@
         }
     }
 
-    .post-comment-content {
+    .material-comment-content {
         p, pre, img, blockquote {
             margin-top: 1em;
         }

@@ -12,12 +12,12 @@ export interface User {
     first_name?: string
     last_name?: string
     role?: UserRole
-    post_count?: number
-    favourite_post_count?: number
-    comment_count?: number
-    collected_like_count?: number
-    collected_download_count?: number
-    collected_view_count?: number
+    materials_count?: number
+    favourite_materials_count?: number
+    comments_count?: number
+    collected_likes_count?: number
+    collected_downloads_count?: number
+    collected_views_count?: number
     created_at?: string
     updated_at?: string
 }
@@ -39,76 +39,82 @@ export enum CategoryType {
     JAVA_MAPS = 'JAVA_MAPS'
 }
 
-export interface Post {
-    id: bigint
-    slug: string
-    version?: PostVersion
-    like_count: number
-    favourite_count: number
-    comment_count: number
-    view_count: number
-    download_count: number
-    is_liked: boolean
-    is_favourite: boolean
-    created_at: string
-    updated_at: string
-}
-
-export interface PostComment {
-    id: bigint
-    parent_comment_id?: bigint | null
-    parent_comment?: PostComment | null
-    post_id: bigint
-    post?: Post
-    user_id: bigint | null
-    user?: User | null
-    content: string
-    like_count: number
-    is_liked: boolean
-    created_at: string
-    updated_at: string
-}
-
-export interface PostVersionFile {
+export interface Material {
     id?: bigint
-    post_version_id?: bigint
-    name: string
-    path?: string | null
-    url?: string | null
-    size?: number | null
-    extension?: string | null
+    slug?: string
+    category?: CategoryType
+    edition?: GameEdition | null
+    state?: MaterialState | null
+    version?: MaterialVersion | null
+    versions?: MaterialVersion[]
+    likes_count?: number
+    favourites_count?: number
+    comments_count?: number
+    views_count?: number
+    downloads_count?: number
+    is_liked?: boolean
+    is_favourite?: boolean
+    active_submission_id?: bigint
+    published_at?: string | null
+    deleted_at?: string | null
+    created_at?: string
+    updated_at?: string
 }
 
-export enum PostVersionStatus {
+export interface MaterialState {
+    id?: bigint
+    material_id?: bigint
+    author_id?: bigint | null
+    localization?: MaterialLocalization
+    localizations?: MaterialLocalization[]
+    author?: User
+    published_at?: string
+    created_at?: string
+    updated_at?: string
+}
+
+export interface MaterialLocalization {
+    id?: bigint
+    material_state_id?: bigint
+    language?: string
+    cover?: string
+    cover_url?: string
+    title?: string
+    description?: string
+    content?: string
+}
+
+export enum MaterialSubmissionStatus {
     DRAFT = 'DRAFT',
     PENDING = 'PENDING',
     ACCEPTED = 'ACCEPTED',
     REJECTED = 'REJECTED',
 }
 
-export interface PostVersion {
+export enum SubmissionType {
+    CREATE = 'CREATE',
+    UPDATE = 'UPDATE',
+    DELETE = 'DELETE',
+}
+
+export interface MaterialSubmission {
     id?: bigint
-    post_id?: bigint | null
-    post?: Post | null
-    author_id?: bigint | null
-    author?: User | null
+    material_id?: bigint | null
+    material?: Material | null
+    material_state?: MaterialState | null
+    submitter_id?: bigint | null
+    submitter?: User | null
     assigned_moderator_id?: bigint | null
     assigned_moderator?: User | null
-    category?: CategoryType
-    cover?: string
-    cover_url?: string
-    cover_file?: File
-    title?: string
-    description?: string
-    content?: string
-    status?: PostVersionStatus
-    actions?: PostVersionAction[]
-    files?: PostVersionFile[]
+    type?: SubmissionType
+    status?: MaterialSubmissionStatus
+    actions?: MaterialSubmissionAction[]
+    version_submissions?: MaterialVersionSubmission[]
     created_at?: string
     updated_at?: string
 }
 
-export enum PostVersionActionType {
+export enum MaterialSubmissionActionType {
     SUBMIT = 'SUBMIT',
     REQUEST_CHANGES = 'REQUEST_CHANGES',
     ACCEPT = 'ACCEPT',
@@ -116,27 +122,127 @@ export enum PostVersionActionType {
     ASSIGN_MODERATOR = 'ASSIGN_MODERATOR',
 }
 
-export interface PostVersionActionRequestChanges {
-    message: string
+export interface MaterialSubmissionActionRequestChanges {
+    message?: string
 }
 
-export interface PostVersionActionReject {
-    reason: string
+export interface MaterialSubmissionActionReject {
+    reason?: string
 }
 
-export interface PostVersionActionAssignModerator {
-    moderator_id: bigint
-    moderator: User | null
+export interface MaterialSubmissionActionAssignModerator {
+    moderator_id?: bigint
+    moderator?: User | null
 }
 
-export interface PostVersionAction {
+export interface MaterialSubmissionAction {
     id?: bigint
-    version_id?: bigint
-    version?: PostVersion
+    submission_id?: bigint
     user_id?: bigint | null
     user?: User | null
-    type?: PostVersionActionType
-    details?: {} | PostVersionActionRequestChanges | PostVersionActionReject | PostVersionActionAssignModerator
+    type?: MaterialSubmissionActionType
+    details?: {} | MaterialSubmissionActionRequestChanges | MaterialSubmissionActionReject | MaterialSubmissionActionAssignModerator
     created_at?: string
     updated_at?: string
+}
+
+export interface MaterialVersion {
+    id?: bigint
+    material?: Material | null
+    material_id?: bigint
+    state?: MaterialVersionState | null
+    files?: MaterialFile[] | null
+    published_at?: string
+    deleted_at?: string | null
+    created_at?: string
+    updated_at?: string
+}
+
+export interface MaterialVersionState {
+    id?: bigint
+    version_id?: bigint
+    number?: string
+    localization?: MaterialVersionLocalization | null
+    localizations?: MaterialVersionLocalization[]
+    published_at?: string
+    created_at?: string
+    updated_at?: string
+}
+
+export interface MaterialVersionLocalization {
+    id?: bigint
+    version_state_id?: bigint
+    language?: string
+    name?: string | null
+    changelog?: string | null
+    created_at?: string
+    updated_at?: string
+}
+
+export interface MaterialVersionSubmission {
+    id?: bigint
+    version_id?: bigint
+    version?: MaterialVersion
+    material_submission_id?: bigint
+    version_state_id?: bigint | null
+    version_state?: MaterialVersionState | null
+    type?: SubmissionType
+    file_submissions?: MaterialFileSubmission[]
+}
+
+export interface MaterialFile {
+    id?: bigint
+    version_id?: bigint
+    state?: MaterialFileState | null
+    path?: string | null
+    url?: string | null
+    size?: number | null
+    extension?: string | null
+    published_at?: string
+    deleted_at?: string | null
+    created_at?: string
+    updated_at?: string
+}
+
+export interface MaterialFileState {
+    id?: bigint
+    file_id?: bigint
+    localization?: MaterialFileLocalization | null
+    localizations?: MaterialFileLocalization[]
+    published_at?: string
+    created_at?: string
+    updated_at?: string
+}
+
+export interface MaterialFileLocalization {
+    id?: bigint
+    file_state_id?: bigint
+    language?: string
+    name?: string
+}
+
+export interface MaterialFileSubmission {
+    id?: bigint
+    file_id?: bigint
+    file?: MaterialFile | null
+    version_submission_id?: bigint
+    file_state_id?: bigint | null
+    file_state?: MaterialFileState | null
+    type?: SubmissionType
+}
+
+export interface MaterialComment {
+    id: bigint
+    parent_comment_id?: bigint | null
+    parent_comment?: MaterialComment | null
+    material_id: bigint
+    version?: MaterialVersion
+    version_id?: bigint
+    user_id: bigint | null
+    user?: User | null
+    content: string
+    likes_count: number
+    is_liked: boolean
+    created_at: string
+    updated_at: string
 }

@@ -7,12 +7,12 @@ import {useToastStore} from '@/stores/toast'
 import {useRoute} from 'vue-router'
 
 import Button from '@/components/elements/Button.vue'
-import type {Post} from '@/types'
-import SearchingPostCard from '@/components/modals/SearchingPostCard.vue'
+import type {Material} from '@/types'
+import SearchingMaterialCard from '@/components/modals/SearchingMaterialCard.vue'
 
 const emit = defineEmits(['close'])
 
-const posts = ref<Post[]>([])
+const materials = ref<Material[]>([])
 
 const toastStore = useToastStore()
 const route = useRoute()
@@ -22,12 +22,12 @@ const searchTerm = ref('')
 const isTryingSearchTimeout = ref()
 const isLoaded = ref(false)
 
-enum PostSortType {
+enum MaterialSortType {
     LATEST = 'LATEST',
     POPULAR = 'POPULAR'
 }
 
-enum PostLoadPeriod {
+enum MaterialLoadPeriod {
     DAY = 'DAY',
     WEEK = 'WEEK',
     MONTH = 'MONTH',
@@ -39,15 +39,15 @@ const loadData = computed(() => ({
     page: 1,
     term: searchTerm.value,
     per_page: 10,
-    sort_type: PostSortType.POPULAR,
-    period: PostLoadPeriod.ALL_TIME
+    sort_type: MaterialSortType.POPULAR,
+    period: MaterialLoadPeriod.ALL_TIME
 }))
 
-function searchPosts() {
-    axios.get('/api/posts', {params: {...loadData.value}}).then((response) => {
-        const responseData: PostLoadResponseData = response.data
+function searchMaterials() {
+    axios.get('/api/materials', {params: {...loadData.value}}).then((response) => {
+        const responseData: MaterialLoadResponseData = response.data
         if (responseData.success) {
-            posts.value = responseData.records
+            materials.value = responseData.records
         }
     }).catch((error: AxiosError) => {
         toastStore.error(getErrorMessageByCode(error.response!.status))
@@ -60,8 +60,8 @@ function onInput() {
     isLoaded.value = false
     clearTimeout(isTryingSearchTimeout.value)
     isTryingSearchTimeout.value = setTimeout(() => {
-        searchPosts()
-    }, 1000)
+        searchMaterials()
+    }, 500)
 }
 </script>
 
@@ -94,8 +94,8 @@ function onInput() {
             >
                 <template v-if="isLoaded">
                     <div
-                        v-if="posts.length === 0"
-                        class="unavailable-post-container flex flex-col items-center p-8"
+                        v-if="materials.length === 0"
+                        class="unavailable-material-container flex flex-col items-center p-8"
                     >
                         <p class="text-center md:text-[14px] text-[12px]">
                             <span class="opacity-80">Не удалось найти результатов по запросу «</span>
@@ -116,13 +116,13 @@ function onInput() {
                         v-else
                         class="final-results flex flex-col items-center w-full gap-3
                             px-2.5 py-3 md:max-h-[548px] max-h-[60vh] overflow-auto"
-                        :class="{ 'md:pl-[1.5rem]': searchTerm.length > 0 && posts.length > 7 }"
+                        :class="{ 'md:pl-[1.5rem]': searchTerm.length > 0 && materials.length > 7 }"
                     >
-                        <SearchingPostCard
-                            v-for="(post) in posts"
+                        <SearchingMaterialCard
+                            v-for="(material) in materials"
                             class="max-w-[768px]"
-                            :key='post.id'
-                            :post="post"
+                            :key='material.id'
+                            :material="material"
                             :term="searchTerm"
                             @click="emit('close')"
                         />
