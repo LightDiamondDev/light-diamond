@@ -18,14 +18,19 @@ class PreferenceManager {
         return this.theme.endsWith('light')
     }
 
-    public switchLightTheme() {
-        this.theme = this.theme.replace('light', 'dark')
+    public switchTheme() {
+        let theme: string
+        if (this.isLightTheme()) {
+            theme = this.theme.replace('light', 'dark')
+        } else {
+            theme = this.theme.replace('dark', 'light')
+        }
 
-        // this.changeTheme(this.theme)
-        localStorage.setItem(PreferenceManager.themeKey, this.theme)
+        localStorage.setItem(PreferenceManager.themeKey, theme)
+        this.loadTheme(theme)
     }
 
-    private changeTheme(newTheme: string) {
+    private loadTheme(newTheme: string) {
         if (this.theme !== newTheme) {
             const linkElement = document.getElementById(PreferenceManager.themeLinkElementId)
 
@@ -48,11 +53,11 @@ class PreferenceManager {
         }
     }
 
-    public loadTheme() {
+    public loadStorageTheme() {
         const theme = localStorage.getItem(PreferenceManager.themeKey)
 
         if (theme != null && theme !== this.theme) {
-            this.changeTheme(theme)
+            this.loadTheme(theme)
         }
     }
 
@@ -97,7 +102,7 @@ class PreferenceManager {
     }
 
     public load() {
-        this.loadTheme()
+        this.loadStorageTheme()
         this.loadDesktopSidebar()
         this.loadHeaderFixed()
         this.loadEdition()

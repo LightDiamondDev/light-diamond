@@ -12,6 +12,8 @@ const props = defineProps({
     placeholder: String,
     textAreaClasses: String
 })
+
+const emit = defineEmits(['edit'])
 </script>
 
 <template>
@@ -26,6 +28,7 @@ const props = defineProps({
             :id="id"
             :placeholder="placeholder"
             type="text"
+            @input="emit('edit')"
         >
         </textarea>
     </label>

@@ -4,13 +4,10 @@ namespace App\Models;
 
 use App\Models\Enums\UserRole;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -19,40 +16,38 @@ use Laravel\Sanctum\HasApiTokens;
  * @property int $id
  * @property string $username
  * @property string $email
- * @property Carbon|null $email_verified_at
- * @property string|null $first_name
- * @property string|null $last_name
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property UserRole $role
  * @property mixed $password
  * @property string|null $remember_token
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PostComment> $comments
- * @property-read int|null $comments_count
- * @property-read int $comment_count
- * @property-read int $favourite_post_count
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MaterialComment> $comments
+ * @property-read int $comments_count
+ * @property-read int $collected_downloads_count
+ * @property-read int $collected_likes_count
+ * @property-read int $collected_views_count
+ * @property-read int $favourite_materials_count
  * @property-read bool $is_admin
  * @property-read bool $is_moderator
- * @property-read int $post_count
+ * @property-read int $materials_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
- * @method static Builder|User newModelQuery()
- * @method static Builder|User newQuery()
- * @method static Builder|User query()
- * @method static Builder|User whereCreatedAt($value)
- * @method static Builder|User whereEmail($value)
- * @method static Builder|User whereEmailVerifiedAt($value)
- * @method static Builder|User whereFirstName($value)
- * @method static Builder|User whereId($value)
- * @method static Builder|User whereLastName($value)
- * @method static Builder|User wherePassword($value)
- * @method static Builder|User whereRememberToken($value)
- * @method static Builder|User whereRole($value)
- * @method static Builder|User whereUpdatedAt($value)
- * @method static Builder|User whereUsername($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereRole($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
  * @mixin \Eloquent
  */
 class User extends Authenticatable implements MustVerifyEmail
@@ -90,8 +85,8 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'role' => UserRole::class,
+        'password'          => 'hashed',
+        'role'              => UserRole::class,
     ];
 
     protected $attributes = [
@@ -100,41 +95,39 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function comments(): HasMany
     {
-        return $this->hasMany(PostComment::class, 'user_id');
+        return $this->hasMany(MaterialComment::class, 'user_id');
     }
 
-    public function getPostCountAttribute(): int
+    public function getMaterialsCountAttribute(): int
     {
-        return Post::ofUser($this->id)->count();
+        return Material::ofUser($this->id)->count();
     }
 
-    public function getFavouritePostCountAttribute(): int
+    public function getFavouriteMaterialsCountAttribute(): int
     {
-        return Post::favouriteOfUser($this->id)->count();
+        return Material::favouriteOfUser($this->id)->count();
     }
 
-    public function getCommentCountAttribute(): int
+    public function getCommentsCountAttribute(): int
     {
         return $this->comments()->count();
     }
 
-    public function getCollectedLikeCountAttribute(): int
+    public function getCollectedLikesCountAttribute(): int
     {
-        return Post::ofUser($this->id)
-            ->join('post_likes', 'posts.id', '=', 'post_likes.post_id')
-            ->count('post_likes.id');
+        return Material::ofUser($this->id)
+            ->join('material_likes', 'materials.id', '=', 'material_likes.material_id')
+            ->count('material_likes.id');
     }
 
-    public function getCollectedDownloadCountAttribute(): int
+    public function getCollectedDownloadsCountAttribute(): int
     {
-        return Post::ofUser($this->id)->sum('posts.download_count');
+        return Material::ofUser($this->id)->sum('materials.downloads_count');
     }
 
-    public function getCollectedViewCountAttribute(): int
+    public function getCollectedViewsCountAttribute(): int
     {
-        return Post::ofUser($this->id)
-            ->join('post_views', 'posts.id', '=', 'post_views.post_id')
-            ->count('post_views.id');
+        return Material::ofUser($this->id)->sum('materials.views_count');
     }
 
     public function getIsAdminAttribute(): bool

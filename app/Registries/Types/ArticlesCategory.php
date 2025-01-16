@@ -4,7 +4,6 @@ namespace App\Registries\Types;
 
 use App\Models\Enums\GameEdition;
 use App\Registries\CategoryType;
-use App\Registries\Types\Category;
 
 class ArticlesCategory implements Category
 {

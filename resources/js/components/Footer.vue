@@ -1,11 +1,11 @@
 <script setup lang="ts">
+
 function scrollToTop() {
     window.scrollTo(0, 0)
 }
 </script>
 
 <template>
-
     <footer class="ld-primary-background ld-primary-border-top ld-shadow-text flex flex-col items-center w-full">
         <nav class="flex justify-between max-w-[1200px] w-full">
             <div class="sm:hidden ml-4 w-12"/>
@@ -16,22 +16,29 @@ function scrollToTop() {
                 <img alt="Logo" class="hidden xs:flex h-full min-w-152" src="/images/elements/light-diamond-logo.png"/>
                 <img alt="Logo" class="flex xs:hidden h-[52px]" src="/images/elements/light-diamond-logo-mobile.png"/>
             </RouterLink>
-            <RouterLink :to="{name: 'post', params: {slug: 'light-diamond'}}" class="xl:flex hidden items-center">
+            <RouterLink :to="{name: 'catalog'}" class="xl:flex hidden items-center gap-1">
+                <span class="icon icon-book static"/>
+                <span>Каталог</span>
+            </RouterLink>
+            <RouterLink
+                :to="{name: 'material', params: {edition: 'bedrock', category: 'addons', slug: 'light-diamond'}}"
+                class="xl:flex hidden items-center"
+            >
                 <span class="icon icon-apple static"/>
                 <span>Аддон LD</span>
             </RouterLink>
-            <a class="sm:flex hidden items-center" href="#">
-                <span class="icon icon-diamond static"/>
-                <span>Обновления</span>
-            </a>
-            <a class="md:flex hidden items-center" href="#">
-                <span class="icon icon-dagger static"/>
-                <span>Помощь</span>
-            </a>
-            <a class="sm:flex hidden items-center" href="#">
+<!--            <a class="sm:flex hidden items-center" href="#">-->
+<!--                <span class="icon icon-diamond static"/>-->
+<!--                <span>Обновления</span>-->
+<!--            </a>-->
+<!--            <a class="md:flex hidden items-center" href="#">-->
+<!--                <span class="icon icon-dagger static"/>-->
+<!--                <span>Помощь</span>-->
+<!--            </a>-->
+            <RouterLink :to="{name: 'about-us'}" class="xl:flex hidden items-center">
                 <span class="icon icon-faq static"/>
                 <span>О Проекте</span>
-            </a>
+            </RouterLink>
             <button class="footer-anchor flex justify-center items-center self-center mr-4" @click="scrollToTop">
                 <span class="icon icon-top-arrow"/>
             </button>
@@ -49,13 +56,13 @@ function scrollToTop() {
                 </a>
             </div>
             <div class="row flex sm:flex-row flex-col items-center mb-1">
-                <a class="flex items-center p-2" href="#">
+                <RouterLink class="flex items-center p-2" :to="{name: 'privacy-policy'}">
                     <span class="text-[12px]">Политика Конфиденциальности</span>
-                </a>
+                </RouterLink>
                 <div class="sm:flex hidden h-8 w-0.5"></div>
-                <a class="flex items-center p-2" href="#">
+                <RouterLink class="flex items-center p-2" :to="{name: 'terms-of-use'}">
                     <span class="text-[12px]">Условия Пользования</span>
-                </a>
+                </RouterLink>
             </div>
             <div class="row flex items-center mt-1 mb-1">
                 <p class="flex items-center p-2" href="#">
@@ -63,8 +70,8 @@ function scrollToTop() {
                 </p>
             </div>
             <div class="row flex items-center mt-1 mb-8">
-                <p class="flex items-center p-2" href="#">
-                    <span class="text-[12px]">© 2023 - 2024 Light Diamond. Все права защищены.</span>
+                <p class="flex items-center p-2">
+                    <span class="text-[12px]">© 2025 Light Diamond. Все права защищены.</span>
                 </p>
             </div>
         </div>
