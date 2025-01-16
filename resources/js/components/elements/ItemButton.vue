@@ -18,11 +18,14 @@ const props = defineProps({
         type="button"
         :is="as"
     >
-        <slot name="icon">
-            <span v-if="icon" :class="icon" class="icon flex min-w-[2rem]"/>
+        <slot name="container">
+            <slot name="icon">
+                <span v-if="icon" :class="icon" class="icon flex min-w-[2rem]"/>
+            </slot>
+            <slot name="label">
+                <span class="label text-start duration-200" :class="labelClasses">{{ label }}</span>
+            </slot>
         </slot>
-        <span class="label text-start duration-200" :class="labelClasses">{{ label }}</span>
-
     </Component>
 </template>
 

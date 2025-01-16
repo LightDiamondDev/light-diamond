@@ -1,4 +1,4 @@
-import {PostVersionStatus} from '@/types'
+import {MaterialSubmissionStatus} from '@/types'
 
 interface ImportMeta {
     env: {
@@ -31,6 +31,8 @@ export function getErrorMessageByCode(code: number) {
     switch (code) {
         case 403:
             return 'У вас нет доступа для совершения данной операции.'
+        case 404:
+            return 'Ресурс не найден.'
         case 429:
             return 'Слишком много запросов, повторите позже.'
         case 500:
@@ -155,26 +157,26 @@ export function getCheckedYear(number: number) {
     }
 }
 
-export function getPostVersionStatusInfo(status: PostVersionStatus) {
+export function getMaterialSubmissionStatusInfo(status: MaterialSubmissionStatus) {
     switch (status) {
-        case PostVersionStatus.ACCEPTED:
+        case MaterialSubmissionStatus.ACCEPTED:
             return {
-                colorClass: 'confirm',
+                colorClass: 'success',
                 name: 'Принято'
             }
-        case PostVersionStatus.DRAFT:
+        case MaterialSubmissionStatus.DRAFT:
             return {
                 colorClass: 'draft',
                 name: 'Черновик',
             }
-        case PostVersionStatus.PENDING:
+        case MaterialSubmissionStatus.PENDING:
             return {
                 colorClass: 'pending',
                 name: 'На рассмотрении'
             }
-        case PostVersionStatus.REJECTED:
+        case MaterialSubmissionStatus.REJECTED:
             return {
-                colorClass: 'cancel',
+                colorClass: 'danger',
                 name: 'Отклонено'
             }
     }

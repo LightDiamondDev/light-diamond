@@ -150,7 +150,7 @@ function uploadImage(file: File) {
             <input
                 :disabled="!editable"
                 @change="onChange"
-                accept="image/*"
+                :accept="allowedFormats"
                 type="file"
                 :id="id"
             />

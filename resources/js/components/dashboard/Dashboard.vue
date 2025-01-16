@@ -20,11 +20,11 @@ const menuItems = ref<DashboardMenuItem[]>([
     {
         label: 'Заявки на публикацию',
         icon: 'icon-news',
-        route: 'dashboard.post-submissions',
+        route: 'dashboard.material-submissions',
         routes: [
-            'dashboard.post-submissions',
-            'dashboard.post-submissions.accepted',
-            'dashboard.post-submissions.rejected'
+            'dashboard.material-submissions',
+            'dashboard.material-submissions.accepted',
+            'dashboard.material-submissions.rejected'
         ]
     },
     {

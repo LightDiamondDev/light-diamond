@@ -8,7 +8,7 @@ const preferenceManager = usePreferenceManager()
 <template>
     <div class="flex flex-col items-center p-1">
         <button class="settings-button flex justify-between items-center m-1 p-2"
-                @click="preferenceManager.switchLightTheme()"
+                @click="preferenceManager.switchTheme()"
         >
             <span v-if="preferenceManager.isLightTheme()" class="settings-icon icon icon-sun"></span>
             <span v-else class="settings-icon icon icon-moon"></span>

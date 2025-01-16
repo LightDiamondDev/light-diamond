@@ -3,39 +3,45 @@ import usePreferenceManager from '@/preference-manager'
 
 import type {RouteRecordRaw} from 'vue-router'
 import type {Component} from 'vue'
-import {GameEdition, PostVersionStatus} from '@/types'
+import {GameEdition, MaterialSubmissionStatus} from '@/types'
 
-import Home from '@/components/Home.vue'
+import AboutUs from '@/components/elements/AboutUs.vue'
 import Catalog from '@/components/catalog/Catalog.vue'
+import Home from '@/components/Home.vue'
 
-import NewPostVersion from '@/components/post/editor/NewPostVersion.vue'
+import NewMaterialSubmission from '@/components/material/editor/NewMaterialSubmission.vue'
 
 import Dashboard from '@/components/dashboard/Dashboard.vue'
 import DashboardComments from '@/components/dashboard/DashboardComments.vue'
-import DashboardPostSubmissions from '@/components/dashboard/DashboardPostSubmissions.vue'
+import DashboardMaterialSubmissions from '@/components/dashboard/DashboardMaterialSubmissions.vue'
 import DashboardUsers from '@/components/dashboard/DashboardUsers.vue'
 
-import PostVersion from '@/components/post/editor/PostVersion.vue'
-import Post from '@/components/post/Post.vue'
+import MaterialSubmission from '@/components/material/editor/MaterialSubmission.vue'
+import Material from '@/components/material/Material.vue'
+
+import PrivacyPolicy from '@/components/elements/PrivacyPolicy.vue'
 
 import Profile from '@/components/user/profile/Profile.vue'
 import ProfileComments from '@/components/user/profile/ProfileComments.vue'
-import ProfileFavouritePosts from '@/components/user/profile/ProfileFavouritePosts.vue'
-import ProfilePosts from '@/components/user/profile/ProfilePosts.vue'
+import ProfileFavouriteMaterials from '@/components/user/profile/ProfileFavouriteMaterials.vue'
+import ProfileMaterials from '@/components/user/profile/ProfileMaterials.vue'
 
 import ProfileSettings from '@/components/settings/ProfileSettings.vue'
 import SecuritySettings from '@/components/settings/SecuritySettings.vue'
 import Settings from '@/components/settings/Settings.vue'
 
-import StudioPosts from '@/components/studio/StudioPosts.vue'
+import StudioMaterials from '@/components/studio/StudioMaterials.vue'
 import StudioSubmissions from '@/components/studio/StudioSubmissions.vue'
 import Studio from '@/components/studio/Studio.vue'
+
+import TermsOfUse from '@/components/elements/TermsOfUse.vue'
 
 import NotFound from '@/components/NotFound.vue'
 
 import ResetForm from '@/components/auth/ResetForm.vue'
 
 import VerifyEmail from '@/components/auth/VerifyEmail.vue'
+import {changeTitle} from '@/helpers'
 
 declare module 'vue-router' {
     interface RouteMeta {
@@ -47,6 +53,15 @@ declare module 'vue-router' {
     }
 }
 
+function getEditionAndCategoryFromParams(params: object) {
+    const edition = params.edition ? GameEdition[(params.edition as string).toUpperCase() as keyof typeof GameEdition] : null
+    const category = useCategoryRegistry().getBySlugAndEdition(params.category as string, edition)
+
+    return {edition: edition, category: category}
+}
+
+const categorySlugs = useCategoryRegistry().getAll().map((category) => category.slug).join('|')
+
 const routes: RouteRecordRaw[] = [
     {
         path: '/',
@@ -57,30 +72,47 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
+        path: '/about-us/',
+        name: 'about-us',
+        component: AboutUs,
+        meta: {
+            title: 'О Нас',
+        }
+    },
+    {
         path: '/catalog',
         name: 'catalog',
         redirect: () => ({name: 'catalog-of', params: {edition: usePreferenceManager().getEdition().toLowerCase()}})
     },
     {
-        path: '/:edition(bedrock|java)/:category?',
+        path: `/:category(${categorySlugs})`,
+        redirect: (to) => ({
+            name: 'catalog-of',
+            params: {edition: usePreferenceManager().getEdition().toLowerCase(), category: to.params.category},
+        }),
+    },
+    {
+        path: `/:edition(bedrock|java)/:category(${categorySlugs})?`,
         name: 'catalog-of',
         component: Catalog,
-        props: ({params}) => {
-            const edition = GameEdition[(params.edition as string).toUpperCase() as keyof typeof GameEdition]
-            return {
-                edition: edition,
-                category: params.category ? useCategoryRegistry().getBySlugAndEdition(params.category as string, edition) : undefined
+        props: ({params}) => getEditionAndCategoryFromParams(params),
+        beforeEnter: (to, from, next) => {
+            const {category} = getEditionAndCategoryFromParams(to.params)
+            if (!category && to.params.category) {
+                next({
+                    name: 'catalog-of',
+                    params: {edition: to.params.edition},
+                })
+            } else {
+                next()
             }
         },
-        meta: {
-            title: 'Каталог'
-        }
     },
     {
         path: '/dashboard',
         name: 'dashboard',
         component: Dashboard,
-        redirect: {name: 'dashboard.post-submissions'},
+        redirect: {name: 'dashboard.material-submissions'},
         meta: {
             title: 'Панель Управления',
             requiresAuth: true,
@@ -88,31 +120,31 @@ const routes: RouteRecordRaw[] = [
         },
         children: [
             {
-                path: 'post-submissions',
-                name: 'dashboard.post-submissions',
-                component: DashboardPostSubmissions,
+                path: 'material-submissions',
+                name: 'dashboard.material-submissions',
+                component: DashboardMaterialSubmissions,
                 meta: {
                     title: 'Ожидающие заявки на публикацию — Панель Управления',
                 },
-                props: () => ({ status: PostVersionStatus.PENDING })
+                props: () => ({status: MaterialSubmissionStatus.PENDING})
             },
             {
-                path: 'post-submissions/accepted',
-                name: 'dashboard.post-submissions.accepted',
-                component: DashboardPostSubmissions,
+                path: 'material-submissions/accepted',
+                name: 'dashboard.material-submissions.accepted',
+                component: DashboardMaterialSubmissions,
                 meta: {
                     title: 'Принятые заявки на публикацию — Панель Управления',
                 },
-                props: () => ({ status: PostVersionStatus.ACCEPTED })
+                props: () => ({status: MaterialSubmissionStatus.ACCEPTED})
             },
             {
-                path: 'post-submissions/rejected',
-                name: 'dashboard.post-submissions.rejected',
-                component: DashboardPostSubmissions,
+                path: 'material-submissions/rejected',
+                name: 'dashboard.material-submissions.rejected',
+                component: DashboardMaterialSubmissions,
                 meta: {
                     title: 'Отклонённые заявки на публикацию — Панель Управления',
                 },
-                props: () => ({ status: PostVersionStatus.REJECTED })
+                props: () => ({status: MaterialSubmissionStatus.REJECTED})
             },
             {
                 path: 'users',
@@ -136,18 +168,18 @@ const routes: RouteRecordRaw[] = [
         path: '/studio',
         name: 'studio',
         component: Studio,
-        redirect: {name: 'studio.posts'},
+        redirect: {name: 'studio.materials'},
         meta: {
             title: 'Контент-Студия',
             requiresAuth: true
         },
         children: [
             {
-                path: 'posts',
-                name: 'studio.posts',
-                component: StudioPosts,
+                path: 'materials',
+                name: 'studio.materials',
+                component: StudioMaterials,
                 meta: {
-                    title: 'Посты — Контент-Студия',
+                    title: 'Материалы — Контент-Студия',
                 }
             },
             {
@@ -165,7 +197,7 @@ const routes: RouteRecordRaw[] = [
                 meta: {
                     title: 'Черновики заявок — Контент-Студия',
                 },
-                props: () => ({ status: PostVersionStatus.DRAFT})
+                props: () => ({status: MaterialSubmissionStatus.DRAFT})
             },
             {
                 path: 'submissions/pending',
@@ -174,7 +206,7 @@ const routes: RouteRecordRaw[] = [
                 meta: {
                     title: 'Ожидающие заявки — Контент-Студия',
                 },
-                props: () => ({ status: PostVersionStatus.PENDING})
+                props: () => ({status: MaterialSubmissionStatus.PENDING})
             },
             {
                 path: 'submissions/accepted',
@@ -183,7 +215,7 @@ const routes: RouteRecordRaw[] = [
                 meta: {
                     title: 'Принятые заявки — Контент-Студия',
                 },
-                props: () => ({ status: PostVersionStatus.ACCEPTED})
+                props: () => ({status: MaterialSubmissionStatus.ACCEPTED})
             },
             {
                 path: 'submissions/rejected',
@@ -192,46 +224,72 @@ const routes: RouteRecordRaw[] = [
                 meta: {
                     title: 'Отклонённые заявки — Контент-Студия',
                 },
-                props: () => ({ status: PostVersionStatus.REJECTED})
+                props: () => ({status: MaterialSubmissionStatus.REJECTED})
             }
         ]
     },
     {
-        path: '/create-post',
-        name: 'create-post',
-        component: NewPostVersion,
+        path: '/create-material',
+        name: 'create-material',
+        component: NewMaterialSubmission,
         meta: {
-            title: 'Создание Поста',
+            title: 'Создание Материала',
             requiresAuth: true
         }
     },
     {
-        path: '/update-post/:slug',
-        name: 'update-post',
-        props: ({params}) => ({slug: params.slug}),
-        component: NewPostVersion,
+        path: `/:edition(bedrock|java)?/:category(${categorySlugs})/:slug/update`,
+        name: 'update-material',
+        props: ({params}) => ({
+            ...getEditionAndCategoryFromParams(params),
+            slug: params.slug,
+        }),
+        beforeEnter: (to) => {
+            const {category} = getEditionAndCategoryFromParams(to.params)
+            if (!category) {
+                to.matched[0].components!.default = NotFound
+            }
+        },
+        component: NewMaterialSubmission,
         meta: {
-            title: 'Обновление Поста',
+            title: 'Обновление Материала',
             requiresAuth: true
         }
     },
     {
-        path: '/post-version/:id',
-        name: 'post-version',
+        path: '/material-submissions/:id',
+        name: 'material-submission',
         props: ({params}) => ({id: Number.parseInt(params.id as string, 10) || 0}),
-        component: PostVersion,
+        component: MaterialSubmission,
         meta: {
             title: 'Заявка на публикацию',
             requiresAuth: true,
         }
     },
     {
-        path: '/post/:slug/',
-        name: 'post',
-        props: true,
-        component: Post,
+        path: `/:edition(bedrock|java)?/:category(${categorySlugs})/:slug/`,
+        name: 'material',
+        props: ({params}) => ({
+            ...getEditionAndCategoryFromParams(params),
+            slug: params.slug,
+        }),
+        beforeEnter: (to) => {
+            const {category} = getEditionAndCategoryFromParams(to.params)
+            if (!category) {
+                to.matched[0].components!.default = NotFound
+            }
+        },
+        component: Material,
         meta: {
-            title: 'Пост',
+            title: 'Материал',
+        }
+    },
+    {
+        path: '/privacy-policy/',
+        name: 'privacy-policy',
+        component: PrivacyPolicy,
+        meta: {
+            title: 'Политика Конфиденциальности',
         }
     },
     {
@@ -251,28 +309,28 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
-        path: '/user/:username',
+        path: '/users/:username',
         name: 'profile',
         component: Profile,
         props: ({params}) => ({username: params.username}),
-        redirect: {name: 'profile.posts'},
+        redirect: {name: 'profile.materials'},
         meta: {
             title: 'Профиль'
         },
         children: [
             {
                 path: '',
-                alias: ['posts'],
-                name: 'profile.posts',
-                component: ProfilePosts,
+                alias: ['materials'],
+                name: 'profile.materials',
+                component: ProfileMaterials,
                 meta: {
                     title: 'Профиль',
                 }
             },
             {
-                path: 'favourite-posts',
-                name: 'profile.favourite-posts',
-                component: ProfileFavouritePosts,
+                path: 'favourite-materials',
+                name: 'profile.favourite-materials',
+                component: ProfileFavouriteMaterials,
                 meta: {
                     title: 'Профиль — Избранное',
                 }
@@ -314,6 +372,14 @@ const routes: RouteRecordRaw[] = [
                 }
             }
         ]
+    },
+    {
+        path: '/terms-of-use/',
+        name: 'terms-of-use',
+        component: TermsOfUse,
+        meta: {
+            title: 'Правила Использования',
+        }
     },
     {
         path: '/:pathMatch(.*)*',

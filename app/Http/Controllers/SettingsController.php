@@ -27,23 +27,6 @@ class SettingsController extends Controller
         return $this->successJsonResponse();
     }
 
-    public function changeProfileSettings(Request $request): JsonResponse
-    {
-        $validator = Validator::make($request->all(), [
-            'first_name' => ['string', 'nullable'],
-            'last_name' => ['string', 'nullable'],
-        ]);
-
-        if ($validator->fails()) {
-            return $this->errorJsonResponse('', $validator->errors());
-        }
-
-        $user = Auth::user();
-        $user->update($validator->getData());
-
-        return $this->successJsonResponse();
-    }
-
     public function changeUsername(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -54,7 +37,7 @@ class SettingsController extends Controller
             return $this->errorJsonResponse('', $validator->errors());
         }
 
-        $user = Auth::user();
+        $user           = Auth::user();
         $user->username = $request->get('username');
         $user->save();
 
@@ -64,7 +47,7 @@ class SettingsController extends Controller
     public function changeEmail(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'email' => ['required', 'email', 'confirmed', new NotVerifiedEmailRule()],
+            'email'              => ['required', 'email', 'confirmed', new NotVerifiedEmailRule()],
             'email_confirmation' => ['required'],
         ]);
 
@@ -74,8 +57,8 @@ class SettingsController extends Controller
 
         $email = $request->get('email');
 
-        $user = Auth::user();
-        $user->email = $email;
+        $user                    = Auth::user();
+        $user->email             = $email;
         $user->email_verified_at = null;
         $user->save();
 
@@ -87,7 +70,7 @@ class SettingsController extends Controller
     public function changePassword(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'password' => $this->getPasswordRules(),
+            'password'              => $this->getPasswordRules(),
             'password_confirmation' => ['required'],
         ]);
 
@@ -95,7 +78,7 @@ class SettingsController extends Controller
             return $this->errorJsonResponse('', $validator->errors());
         }
 
-        $user = Auth::user();
+        $user           = Auth::user();
         $user->password = $request->get('password');
         $user->save();
 
