@@ -2,7 +2,7 @@
 import axios, {type AxiosError} from 'axios'
 import {computed, onUnmounted, type PropType, reactive, ref, watch} from 'vue'
 import {BubbleMenu, EditorContent, type Extensions, FloatingMenu, useEditor} from '@tiptap/vue-3'
-import {getErrorMessageByCode, countHTMLTag} from '@/helpers'
+import {countHTMLTag, getErrorMessageByCode} from '@/helpers'
 import {EditorState} from 'prosemirror-state'
 import {useToastStore} from '@/stores/toast'
 
@@ -27,10 +27,6 @@ const props = defineProps({
         type: Object as PropType<Extensions>,
         required: true
     },
-    isCommentEditor: {
-        type: Boolean,
-        default: false
-    },
     plainText: {
         type: Boolean,
         default: false
@@ -38,8 +34,11 @@ const props = defineProps({
     withoutMenus: {
         type: Boolean,
         default: false
-    }
+    },
+    maxImageCount: Number,
 })
+
+const emit = defineEmits(['edit'])
 
 interface EditorNodeInfo {
     name: string
@@ -76,33 +75,38 @@ const editor = useEditor({
         currentEditorContent = props.plainText ? editor.getText() : editor.getHTML()
         contentModel.value = currentEditorContent
         htmlContent.value = editor.getHTML()
+        emit('edit')
     }
+})
+
+watch(() => props.editable, (isEditable) => {
+    editor.value?.setOptions({editable: isEditable})
 })
 
 const nodes: { [key: string]: EditorNodeInfo } = {
     'heading-1': {
         name: 'heading',
-        attributes: {level: 1},
+        attributes: {level: 2},
         displayName: 'Заголовок 1',
         shortcut: 'Ctrl+Alt+1',
         icon: 'icon-title-1',
-        callback: () => editor.value?.chain().focus()?.setHeading({level: 1}).run(),
+        callback: () => editor.value?.chain().focus()?.setHeading({level: 2}).run(),
     },
     'heading-2': {
         name: 'heading',
-        attributes: {level: 2},
+        attributes: {level: 3},
         displayName: 'Заголовок 2',
         shortcut: 'Ctrl+Alt+2',
         icon: 'icon-title-2',
-        callback: () => editor.value?.chain().focus().setHeading({level: 2}).run(),
+        callback: () => editor.value?.chain().focus().setHeading({level: 3}).run(),
     },
     'heading-3': {
         name: 'heading',
-        attributes: {level: 3},
+        attributes: {level: 4},
         displayName: 'Заголовок 3',
         shortcut: 'Ctrl+Alt+3',
         icon: 'icon-title-3',
-        callback: () => editor.value?.chain().focus().setHeading({level: 3}).run(),
+        callback: () => editor.value?.chain().focus().setHeading({level: 4}).run(),
     },
     'bulletList': {
         name: 'bulletList',
@@ -346,7 +350,7 @@ function onLinkOverlayPanelShow() {
 function openImageDialog(callback: ((file: File) => void)) {
     const input = document.createElement('input')
     input.type = 'file'
-    input.accept = 'image/jpeg, image/png, image/jpg, image/gif'
+    input.accept = 'image/jpeg, image/jpg, image/png, image/gif'
     input.style.display = 'none'
     input.onchange = () => {
         callback(input.files![0])
@@ -361,8 +365,8 @@ function uploadImage(image: File, callback: ((url: string) => void)) {
         return
     }
 
-    if (props.isCommentEditor && countHTMLTag(htmlContent.value, 'img') > 2) {
-        toastStore.error(`Вы не можете отправлять в комментариях более 3-х изображений!`, 'Превышен лимит!')
+    if (props.maxImageCount !== undefined && countHTMLTag(htmlContent.value, 'img') >= props.maxImageCount) {
+        toastStore.error(`Максимальное количество изображений: ${props.maxImageCount}!`, 'Превышен лимит!')
         return
     }
 
@@ -389,8 +393,8 @@ function setLink() {
         editor.value!
             .chain()
             .focus()
-            .setLink({ href: currentLink.href })
-            .insertContentAt({ from: selection.from, to: selection.to }, currentLink.text)
+            .setLink({href: currentLink.href})
+            .insertContentAt({from: selection.from, to: selection.to}, currentLink.text)
             .run()
     }
 
@@ -406,7 +410,8 @@ function unsetLink() {
 <template>
     <div class="editor">
         <BubbleMenu
-            v-if="editor && editable && !withoutMenus && menuItems.length > 0"
+            v-if="editor && !withoutMenus"
+            v-show="editable && menuItems.length > 0"
             :tippy-options="{zIndex: 1, maxWidth: 'none'}"
             class="hidden lg:block"
             :editor="editor"
@@ -416,7 +421,8 @@ function unsetLink() {
         </BubbleMenu>
 
         <FloatingMenu
-            v-if="editor && editable && !withoutMenus"
+            v-if="editor && !withoutMenus"
+            v-show="editable"
             :tippy-options="{ placement: 'left', offset: [0, 0], zIndex: 1 }"
             :should-show="({state}) => isAtEmptyRootParagraph(state)"
             class="hidden lg:block"
@@ -433,11 +439,14 @@ function unsetLink() {
             <EditorVerticalMenu ref="addNodeMenu" title="Добавить" :items="menuItems"/>
         </FloatingMenu>
 
-        <!-- @show="onLinkOverlayPanelShow" -->
-        <OverlayPanel v-if="editable && !withoutMenus" ref="linkOverlayPanel">
-            <form class="content-link-editor ld-primary-background" @submit.prevent="setLink">
+        <OverlayPanel v-if="editable && !withoutMenus" ref="linkOverlayPanel" @show="onLinkOverlayPanelShow">
+            <form
+                class="content-link-editor ld-primary-background ld-primary-border text-[14px]"
+                @submit.prevent="setLink"
+            >
                 <div class="flex">
-                    <Input v-model="currentLink.href" class="editor-link-url w-full" placeholder="https://" autocomplete="off"/>
+                    <Input v-model="currentLink.href" class="editor-link-url w-full" placeholder="https://"
+                           autocomplete="off"/>
                     <ItemButton
                         title="Сохранить ссылку"
                         severity="secondary"
@@ -452,7 +461,8 @@ function unsetLink() {
                     />
                 </div>
                 <div class="separator"></div>
-                <Input v-model="currentLink.text" class="editor-link-text w-full h-[3rem]" placeholder="Текст..." autocomplete="off"/>
+                <Input v-model="currentLink.text" class="editor-link-text w-full h-[3rem]" placeholder="Текст..."
+                       autocomplete="off"/>
             </form>
         </OverlayPanel>
 
@@ -462,7 +472,7 @@ function unsetLink() {
 
         <EditorHorizontalMenu
             v-if="editor && editable && !withoutMenus"
-            class="block lg:hidden sticky bottom-0 whitespace-nowrap"
+            class="block lg:hidden sticky bottom-0 whitespace-nowrap xs:-mx-4 -mx-2"
             :items="menuItems"
         />
     </div>

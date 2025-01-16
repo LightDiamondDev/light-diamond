@@ -153,12 +153,12 @@ function save() {
                     :loading="isProcessing"
                     button-type="submit"
                     label="Сохранить"
-                    class="confirm w-full"
+                    class="success w-full"
                 />
 
                 <Button
                     label="Отмена"
-                    class="cancel w-full"
+                    class="secondary w-full"
                     @click="$emit('cancel')"
                 />
             </div>

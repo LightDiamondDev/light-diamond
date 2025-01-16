@@ -2,17 +2,17 @@
 import axios, {type AxiosError} from 'axios'
 import {computed, type PropType, ref, watch} from 'vue'
 
-import {getErrorMessageByCode} from '@/helpers'
+import {changeTitle, getErrorMessageByCode} from '@/helpers'
 import {getRandomColor, getRandomSplash} from '@/stores/splashes'
 import usePreferenceManager from '@/preference-manager'
 import {RouterLink, useRoute, useRouter} from 'vue-router'
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
 
-import {GameEdition, type Post} from '@/types'
+import {GameEdition, type Material} from '@/types'
 
 import Banner from '@/components/elements/Banner.vue'
-import PostCard from '@/components/post/PostCard.vue'
+import MaterialCard from '@/components/material/MaterialCard.vue'
 import Paginator from '@/components/elements/Paginator.vue'
 import ShineButton from '@/components/elements/ShineButton.vue'
 import Button from '@/components/elements/Button.vue'
@@ -26,11 +26,11 @@ const props = defineProps({
     }
 })
 
-interface PostLoadResponseData {
+interface MaterialLoadResponseData {
     success: boolean
     message?: string
     errors?: string[][]
-    records?: Post[]
+    records?: Material[]
     pagination?: {
         total_records: number
         current_page: number
@@ -38,12 +38,12 @@ interface PostLoadResponseData {
     }
 }
 
-enum PostSortType {
+enum MaterialSortType {
     LATEST = 'LATEST',
     POPULAR = 'POPULAR'
 }
 
-enum PostLoadPeriod {
+enum MaterialLoadPeriod {
     DAY = 'DAY',
     WEEK = 'WEEK',
     MONTH = 'MONTH',
@@ -51,12 +51,12 @@ enum PostLoadPeriod {
     ALL_TIME = 'ALL_TIME'
 }
 
-const postLoadPeriodItems = [
-    {label: 'Всё время', value: PostLoadPeriod.ALL_TIME},
-    {label: 'Сутки', value: PostLoadPeriod.DAY},
-    {label: 'Неделя', value: PostLoadPeriod.WEEK},
-    {label: 'Месяц', value: PostLoadPeriod.MONTH},
-    {label: 'Год', value: PostLoadPeriod.YEAR}
+const materialLoadPeriodItems = [
+    {label: 'Всё время', value: MaterialLoadPeriod.ALL_TIME},
+    {label: 'Сутки', value: MaterialLoadPeriod.DAY},
+    {label: 'Неделя', value: MaterialLoadPeriod.WEEK},
+    {label: 'Месяц', value: MaterialLoadPeriod.MONTH},
+    {label: 'Год', value: MaterialLoadPeriod.YEAR}
 ]
 
 const authStore = useAuthStore()
@@ -65,7 +65,7 @@ const categoryRegistry = useCategoryRegistry()
 
 const bannerImagesSrc = ['/images/elements/general-banner-ancient-city.png']
 
-const posts = ref<Post[]>([])
+const materials = ref<Material[]>([])
 const router = useRouter()
 const route = useRoute()
 
@@ -79,8 +79,8 @@ const isLoading = ref(false)
 const isFilters = ref(false)
 const isHorizontalCards = ref(false)
 const currentPageNumber = ref(1)
-const sortType = ref(PostSortType.LATEST)
-const loadPeriod = ref(PostLoadPeriod.ALL_TIME)
+const sortType = ref(MaterialSortType.LATEST)
+const loadPeriod = ref(MaterialLoadPeriod.ALL_TIME)
 
 const loadData = computed(() => ({
     edition: props.edition!,
@@ -94,17 +94,18 @@ const loadData = computed(() => ({
 usePreferenceManager().setEdition(props.edition!)
 
 watch(() => [props.edition, props.category], () => {
-    loadPosts()
+    updateTitle()
+    loadMaterials()
 })
 
-function loadPosts() {
+function loadMaterials() {
     isLoading.value = true
 
-    axios.get('/api/posts', {params: {...loadData.value}}).then((response) => {
-        const responseData: PostLoadResponseData = response.data
+    axios.get('/api/materials', {params: {...loadData.value}}).then((response) => {
+        const responseData: MaterialLoadResponseData = response.data
         if (responseData.success) {
             totalRecordsCount.value = responseData.pagination!.total_records
-            posts.value = responseData.records!
+            materials.value = responseData.records!
         }
     }).catch((error: AxiosError) => {
         toastStore.error(getErrorMessageByCode(error.response!.status))
@@ -113,26 +114,26 @@ function loadPosts() {
     })
 }
 
-function changeSortType(type: PostSortType) {
+function changeSortType(type: MaterialSortType) {
     sortType.value = type
     currentPageNumber.value = 1
     switch (type) {
-        case PostSortType.LATEST:
-            loadPeriod.value = PostLoadPeriod.ALL_TIME
+        case MaterialSortType.LATEST:
+            loadPeriod.value = MaterialLoadPeriod.ALL_TIME
             break
-        case PostSortType.POPULAR:
-            loadPeriod.value = PostLoadPeriod.ALL_TIME
+        case MaterialSortType.POPULAR:
+            loadPeriod.value = MaterialLoadPeriod.ALL_TIME
             timePeriodCounter.value = 0
             break
     }
-    loadPosts()
+    loadMaterials()
 }
 
 function switchTimePeriod() {
     timePeriodCounter.value++
     if (timePeriodCounter.value === 5) timePeriodCounter.value = 0
-    loadPeriod.value = postLoadPeriodItems[timePeriodCounter.value].value
-    loadPosts()
+    loadPeriod.value = materialLoadPeriodItems[timePeriodCounter.value].value
+    loadMaterials()
 }
 
 function switchEdition() {
@@ -145,7 +146,14 @@ function scrollToBottom() {
     window.scrollTo(0, document.body.scrollHeight)
 }
 
-loadPosts()
+function updateTitle() {
+    let name = 'Каталог ' + props.edition!.charAt(0).toUpperCase() + props.edition!.slice(1).toLowerCase()
+    name = (props.category ? props.category.name : 'Все') + ' — ' + name
+    changeTitle(name)
+}
+
+updateTitle()
+loadMaterials()
 </script>
 
 <template>
@@ -157,7 +165,7 @@ loadPosts()
                     :to="{ name: 'catalog' }"
                 >
                     <h1 class="flex justify-center w-full absolute invisible">Каталог Light Diamond</h1>
-                    <img alt="Logo" class="posts-logo h-[48px] md:h-[100px]"
+                    <img alt="Logo" class="materials-logo h-[48px] md:h-[100px]"
                          src="/images/elements/light-diamond-catalog-logo-rus.png"/>
                     <span class="base flex justify-center items-center">
                     <span
@@ -189,25 +197,25 @@ loadPosts()
                             <ShineButton
                                 class="flex items-center"
                                 class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
-                                :class="{ 'active': sortType === PostSortType.LATEST }"
+                                :class="{ 'active': sortType === MaterialSortType.LATEST }"
                                 label="Свежие"
                                 icon="icon-clock"
-                                @click="changeSortType(PostSortType.LATEST)"
+                                @click="changeSortType(MaterialSortType.LATEST)"
                             />
                             <ShineButton
                                 class="flex items-center"
                                 class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
-                                :class="{ 'active': sortType === PostSortType.POPULAR }"
+                                :class="{ 'active': sortType === MaterialSortType.POPULAR }"
                                 label="Популярные"
                                 icon="icon-crown"
-                                @click="changeSortType(PostSortType.POPULAR)"
+                                @click="changeSortType(MaterialSortType.POPULAR)"
                             />
                             <ShineButton
-                                v-if="sortType === PostSortType.POPULAR"
+                                v-if="sortType === MaterialSortType.POPULAR"
                                 class="active flex items-center option w-[200px]"
                                 class-preset="ld-title-font justify-center sm:text-[16px]
                                     xs:text-[14px] text-[12px] gap-1 px-6 py-0.5 whitespace-nowrap"
-                                :label="postLoadPeriodItems[timePeriodCounter].label"
+                                :label="materialLoadPeriodItems[timePeriodCounter].label"
                                 icon="icon-crown"
                                 @click="switchTimePeriod()"
                             />
@@ -294,12 +302,12 @@ loadPosts()
                 </nav>
             </form>
 
-            <div v-if="isLoading && posts.length === 0" class="w-full">
-                <div class="posts flex flex-wrap w-full gap-2">
+            <div v-if="isLoading && materials.length === 0" class="w-full">
+                <div class="materials flex flex-wrap w-full gap-2">
 
                     <div
                         v-for="i in 6"
-                        class="post-card ld-primary-background flex"
+                        class="material-card ld-primary-background flex"
                         :class="{
                             'flex-col xl:max-w-[421px] lg:max-w-[32.8%] sm:max-w-[49.3%] max-w-full': !isHorizontalCards,
                             'horizontal md:flex-row flex-col': isHorizontalCards
@@ -317,7 +325,7 @@ loadPosts()
                             />
                             <div class="description-wrap flex flex-col flex-grow justify-between text-[12px] w-full">
                                 <div class="flex flex-col">
-                                    <div class="post-title-wrap transfusion h-[2rem]"/>
+                                    <div class="material-title-wrap transfusion h-[2rem]"/>
                                     <div
                                         class="description ld-tinted-background flex flex-col gap-2 p-2"
                                         :class="{ 'md:flex hidden': isHorizontalCards }"
@@ -336,7 +344,7 @@ loadPosts()
                                         }"
                                     >
                                         <div
-                                            class="post-info flex flex-wrap justify-between px-2"
+                                            class="material-info flex flex-wrap justify-between px-2"
                                             :class="{ 'sm:flex hidden w-full gap-8': isHorizontalCards }"
                                         >
                                             <div class="flex gap-3">
@@ -393,9 +401,9 @@ loadPosts()
                 <div class="ld-primary-background ld-primary-border h-[48px] w-full mb-2"/>
             </div>
             <template v-else>
-                <div v-if="posts.length === 0" class="unavailable-post flex justify-center items-center w-full">
-                    <div class="unavailable-post-container flex flex-col items-center p-8">
-                        <h1 class="ld-title-font text-center sm:text-[2rem] text-[1.2rem]">Посты не найдены</h1>
+                <div v-if="materials.length === 0" class="unavailable-material flex justify-center items-center w-full">
+                    <div class="unavailable-material-container flex flex-col items-center p-8">
+                        <h1 class="ld-title-font text-center sm:text-[2rem] text-[1.2rem]">Материалы не найдены</h1>
                         <div class="mob phantom flex justify-center items-center
                             sm:h-[200px] h-[100px] max-w-[320] w-full full-locked"
                         >
@@ -407,22 +415,22 @@ loadPosts()
                         </div>
                     </div>
                 </div>
-                <div v-else class="posts flex flex-wrap max-w-full w-full gap-2" :class="{'paginator-refresh': isLoading}">
-                    <PostCard
-                        v-for="post in posts"
+                <div v-else class="materials flex flex-wrap max-w-full w-full gap-2" :class="{'paginator-refresh': isLoading}">
+                    <MaterialCard
+                        v-for="material in materials"
                         class="xl:max-w-[421px] lg:max-w-[32.8%] sm:max-w-[49.3%] max-w-full w-full duration-200"
                         :is-horizontal-direction="isHorizontalCards"
-                        :post="post"
+                        :material="material"
                     />
                 </div>
             </template>
             <Paginator
                 v-model="currentPageNumber"
                 class="ld-primary-background ld-primary-border h-[48px] w-full mb-2 sm:sticky sm:bottom-[0]"
-                :class="{'hidden': posts.length === 0}"
+                :class="{'hidden': materials.length === 0}"
                 :records-at-page="loadData.per_page"
                 :total-records="totalRecordsCount"
-                @update:model-value="loadPosts"
+                @update:model-value="loadMaterials"
             />
         </section>
 
@@ -548,7 +556,7 @@ section.catalog {
 /* =============== [ Медиа-Запрос { ?px < 768px } ] =============== */
 
 @media screen and (max-width: 767px) {
-    .logo-wrap .posts-logo {
+    .logo-wrap .materials-logo {
         height: 72px;
     }
 
@@ -575,14 +583,14 @@ section.catalog {
     }
 }
 
-.posts {
+.materials {
     padding: .5rem 0;
 }
 
 /* =============== [ Медиа-Запрос { ?px < 1280px } ] =============== */
 
 @media screen and (max-width: 1279px) {
-    .posts {
+    .materials {
         padding: .5em;
     }
 }
@@ -603,7 +611,7 @@ section.catalog {
         right: -80px;
     }
 
-    .logo-wrap .posts-logo {
+    .logo-wrap .materials-logo {
         height: 48px;
     }
 

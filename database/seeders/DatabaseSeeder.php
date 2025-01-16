@@ -18,8 +18,6 @@ class DatabaseSeeder extends Seeder
              'username' => 'admin',
              'email' => 'admin@admin',
              'email_verified_at' => now(),
-             'first_name' => 'Администратор',
-             'last_name' => '',
              'role' => UserRole::Admin,
              'password' => bcrypt('admin'),
          ]);

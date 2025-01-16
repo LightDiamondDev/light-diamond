@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import {computed, type PropType, ref} from 'vue'
+import {computed, type PropType, ref, toRaw} from 'vue'
 import ItemButton from '@/components/elements/ItemButton.vue'
 
 const props = defineProps({
+    currentOption: null,
     buttonClasses: String,
     buttonWrapClasses: String,
     buttonLabelClasses: String,
@@ -26,28 +27,54 @@ const props = defineProps({
         required: true
     },
     optionsClasses: String,
-    optionClasses: String,
+    optionClasses: String|(Object as PropType<((args: { option: any }) => String)>),
     placeholder: {
         type: String,
         default: 'Выберите значение'
     }
 })
 
-const emit = defineEmits(['change', 'show'])
-const model = defineModel()
+export interface SelectOptionChangeEvent {
+    optionIndex: number
+    option: any
+}
+
+const emit = defineEmits<{
+    (e: 'change', event: SelectOptionChangeEvent): void,
+    (e: 'show'): void,
+}>()
+const model = defineModel({default: {}})
 const currentOption = computed(() => {
-    return props.options!.find(
-        (option) => model.value === (props.optionValueKey ? option[props.optionValueKey] : option)
+    return props.currentOption ?? props.options!.find(
+        (option) => toRaw(model.value) === (props.optionValueKey ? getValueByKeyPath(option, props.optionValueKey) : toRaw(option))
     )
 })
 const placeholder = ref(props.placeholder)
 
 function getOptionLabel(option) {
-    return option && props.optionLabelKey ? option[props.optionLabelKey] : option
+    return option && props.optionLabelKey ? getValueByKeyPath(option, props.optionLabelKey) : option.toString()
 }
 
 function getOptionIcon(option) {
-    return option && props.optionIconKey ? option[props.optionIconKey] : undefined
+    return option && props.optionIconKey ? getValueByKeyPath(option, props.optionIconKey) : undefined
+}
+
+function getOptionClasses(option: any) {
+    return typeof props.optionClasses === 'function'
+        ? props.optionClasses(option)
+        : props.optionClasses
+}
+
+function getValueByKeyPath(obj: object, keyPath: string): any {
+    const keys = keyPath.split('.')
+
+    return keys.reduce((currentValue, key) => {
+        const index = parseInt(key, 10)
+        if (!isNaN(index)) {
+            return currentValue?.[index]
+        }
+        return currentValue?.[key]
+    }, obj)
 }
 
 const isSelfMouseDown = ref(false)
@@ -97,10 +124,14 @@ function toggleSelect() {
 
 function change(option: any) {
     if (isSelectOpen.value) {
-        const newModelValue = props.optionValueKey ? option[props.optionValueKey] : option
-        if (newModelValue !== model.value) {
-            model.value = newModelValue
-            emit('change', option)
+        if (option !== currentOption.value) {
+            model.value = props.optionValueKey ? option[props.optionValueKey] : option
+
+            const eventArgs: SelectOptionChangeEvent = {
+                optionIndex: props.options!.findIndex((tmpOption) => tmpOption === option),
+                option: option
+            }
+            emit('change', eventArgs)
         }
         close()
     }
@@ -120,7 +151,7 @@ function change(option: any) {
             type="button"
             @click="toggleSelect"
         >
-            <span class="select-span flex items-center w-full min-w-0" :class="optionClasses">
+            <span class="select-span flex items-center w-full min-w-0" :class="getOptionClasses(currentOption)">
                 <template v-if="currentOption">
                     <slot name="option-icon" :option="currentOption">
                         <span v-if="optionIconKey" :class="getOptionIcon(currentOption)" class="icon"/>
@@ -128,12 +159,17 @@ function change(option: any) {
                 </template>
 
                 <span :class="buttonLabelClasses" class="text overflow-hidden">
-                    <span v-if="currentOption" class="truncate">{{ getOptionLabel(currentOption) }}</span>
+                    <template v-if="currentOption">
+                        <slot name="option-label" :option="currentOption">
+                            <span class="truncate">{{ getOptionLabel(currentOption) }}</span>
+                        </slot>
+                    </template>
                     <span v-else class="opacity-80 ml-2">{{ placeholder }}</span>
                 </span>
-            </span>
-            <span v-if="!disabled && editable" class="button-arrow flex justify-center items-center mr-2">
-                <span class="icon icon-down-arrow flex"></span>
+
+                <span v-if="!disabled && editable" class="button-arrow flex justify-center items-center mr-2 ml-auto">
+                    <span class="icon icon-down-arrow flex"></span>
+                </span>
             </span>
         </button>
         <Transition name="smooth-select-switch">
@@ -148,10 +184,16 @@ function change(option: any) {
                         :label="getOptionLabel(option)"
                         :icon="getOptionIcon(option)"
                         class="option flex"
-                        :class="optionClasses"
+                        :class="getOptionClasses(option)"
                     >
+                        <template #container>
+                            <slot name="option-container" :option="option"/>
+                        </template>
                         <template #icon>
                             <slot name="option-icon" :option="option"/>
+                        </template>
+                        <template #label>
+                            <slot name="option-label" :option="option"/>
                         </template>
                     </ItemButton>
                 </template>

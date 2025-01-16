@@ -6,17 +6,17 @@ import {getErrorMessageByCode} from '@/helpers'
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
 
-import {type Post, type PostVersion, PostVersionStatus} from '@/types'
-import PostVersionCard from '@/components/post/PostVersionCard.vue'
+import {type Material, type MaterialSubmission, MaterialSubmissionStatus} from '@/types'
+import MaterialSubmissionCard from '@/components/material/MaterialSubmissionCard.vue'
 
 import Paginator from '@/components/elements/Paginator.vue'
 import TabMenu, {type TabMenuChangeEvent} from '@/components/elements/TabMenu.vue'
 
-interface PostVersionLoadResponseData {
+interface MaterialSubmissionLoadResponseData {
     success: boolean
     message?: string
     errors?: object
-    records?: Post[]
+    records?: Material[]
     pagination?: {
         total_records: number
         current_page: number
@@ -26,15 +26,15 @@ interface PostVersionLoadResponseData {
 
 const props = defineProps({
     status: {
-        type: String as PropType<PostVersionStatus>,
-        default: PostVersionStatus.PENDING
+        type: String as PropType<MaterialSubmissionStatus>,
+        default: MaterialSubmissionStatus.PENDING
     }
 })
 
 const authStore = useAuthStore()
 const toastStore = useToastStore()
 
-const postVersions = ref<PostVersion[]>([])
+const materialSubmissions = ref<MaterialSubmission[]>([])
 const totalRecords = ref(0)
 
 const page = ref(1)
@@ -54,39 +54,39 @@ const tabMenuItems = computed(() => [
         icon: 'icon-script',
         route: { name: 'studio.submissions.drafts' },
         routes: [ 'studio.submissions.drafts' ],
-        status: PostVersionStatus.DRAFT
+        status: MaterialSubmissionStatus.DRAFT
     },
     {
         label: 'Ожидающие',
         icon: 'icon-clock',
         route: { name: 'studio.submissions.pending' },
         routes: [ 'studio.submissions.pending' ],
-        status: PostVersionStatus.PENDING
+        status: MaterialSubmissionStatus.PENDING
     },
     {
         label: 'Принятые',
         icon: 'icon-tick',
         route: { name: 'studio.submissions.accepted' },
         routes: [ 'studio.submissions.accepted' ],
-        status: PostVersionStatus.ACCEPTED
+        status: MaterialSubmissionStatus.ACCEPTED
     },
     {
         label: 'Отклонённые',
         icon: 'icon-small-cross',
         route: { name: 'studio.submissions.rejected' },
         routes: [ 'studio.submissions.rejected' ],
-        status: PostVersionStatus.REJECTED
+        status: MaterialSubmissionStatus.REJECTED
     }
 ])
 
-function loadPostVersions() {
+function loadMaterialSubmissions() {
     isLoading.value = true
-    postVersions.value = []
+    materialSubmissions.value = []
 
-    axios.get(`/api/users/${authStore.id}/post-versions`, {params: loadRequestData.value}).then((response) => {
-        const responseData: PostVersionLoadResponseData = response.data
+    axios.get(`/api/users/${authStore.id}/material-submissions`, {params: loadRequestData.value}).then((response) => {
+        const responseData: MaterialSubmissionLoadResponseData = response.data
         if (responseData.success) {
-            postVersions.value = responseData.records!
+            materialSubmissions.value = responseData.records!
             totalRecords.value = responseData.pagination!.total_records
         } else {
             toastStore.error('Произошла ошибка!')
@@ -104,11 +104,11 @@ function onTabChange(event: TabMenuChangeEvent) {
         loadRequestData.value.status = selectedStatus
         loadRequestData.value.page = 1
         totalRecords.value = 0
-        loadPostVersions()
+        loadMaterialSubmissions()
     }
 }
 
-loadPostVersions()
+loadMaterialSubmissions()
 </script>
 
 <template>
@@ -148,7 +148,7 @@ loadPostVersions()
                 </div>
                 <div v-else>
                     <div
-                        v-if="postVersions.length === 0"
+                        v-if="materialSubmissions.length === 0"
                         class="flex flex-col justify-center items-center min-h-[480px] gap-6"
                     >
                         <p class="text-muted text-center text-[14px] max-w-[480px]">
@@ -159,7 +159,7 @@ loadPostVersions()
                         </div>
                     </div>
                     <div v-else class="flex flex-col">
-                        <PostVersionCard v-for="postVersion in postVersions" :post-version="postVersion"/>
+                        <MaterialSubmissionCard v-for="materialSubmission in materialSubmissions" :material-submission="materialSubmission"/>
                     </div>
                 </div>
             </div>
@@ -171,7 +171,7 @@ loadPostVersions()
                 class="ld-primary-background ld-fixed-background ld-primary-border-top h-[48px] w-full"
                 :records-at-page="loadRequestData.per_page"
                 :total-records="totalRecords"
-                @update:model-value="loadPostVersions"
+                @update:model-value="loadMaterialSubmissions"
             />
         </div>
     </section>
