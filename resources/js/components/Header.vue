@@ -53,10 +53,10 @@ const userMenuItems = computed<MenuItem[]>(() => [
         route: {name: 'studio'}
     },
     {
-        label: 'Создать Пост',
+        label: 'Создать Материал',
         icon: 'icon-plus',
         visible: authStore.isAuthenticated,
-        route: {name: 'create-post'}
+        route: {name: 'create-material'}
     },
     {
         label: 'Настройки',
@@ -90,7 +90,7 @@ const userMenuItems = computed<MenuItem[]>(() => [
     },
 ])
 
-const postsNavigationSections = computed(() =>
+const contentNavigationSections = computed(() =>
     [
         {label: 'Каталог', icon: 'icon-book', route: {path: '/catalog'}},
         ...categoryRegistry.getAll().filter
@@ -110,14 +110,18 @@ const postsNavigationSections = computed(() =>
                     }
                 )
         ),
-        // {label: 'Аддон LD', icon: 'icon-apple', route: {name: 'post', params: {slug: 'light-diamond'}}}
+        {
+            label: 'Аддон LD',
+            icon: 'icon-apple',
+            route: {name: 'material', params: {edition: 'bedrock', category: 'addons', slug: 'light-diamond'}}
+        }
     ]
 )
 
 const navigationSections = computed<NavigationSection[]>(() => [
     {
         label: 'Контент',
-        children: postsNavigationSections.value
+        children: contentNavigationSections.value
     },
     {
         label: 'Полезное',
@@ -132,7 +136,7 @@ const navigationSections = computed<NavigationSection[]>(() => [
                 },
                 {label: 'Документация Bedrock.Dev', icon: 'icon-bedrock-flat', url: 'https://bedrock.dev'},
                 {
-                    label: 'Шаблоны для Аддонов',
+                    label: 'Ассеты Bedrock',
                     icon: 'icon-grass-flat',
                     url: 'https://github.com/Mojang/bedrock-samples/releases'
                 }
@@ -148,7 +152,7 @@ const navigationSections = computed<NavigationSection[]>(() => [
             ]
     },
     {
-        label: 'Помощь',
+        label: 'Информация',
         children:
             [
                 {label: 'Правила Пользования', icon: 'icon-hand', route: {name: 'terms-of-use'}},
@@ -228,10 +232,10 @@ function logout() {
         ref="userMenu"
     >
         <template v-slot:header>
-            <RouterLink
+            <ProfileLink
                 v-if="authStore.isAuthenticated"
                 class="profile-link laminated-link transfusion bordered flex items-center min-h-[64px] m-1"
-                :to="{ name: 'profile', params: {username: authStore.username} }"
+                :user="authStore.user"
             >
                 <!--
                 <span class="notifications-counter flex justify-center items-center absolute">15</span>
@@ -240,13 +244,13 @@ function logout() {
                     v-if="authStore.isAuthenticated"
                     border-class-list="h-10 w-10"
                     icon-class-list="h-7 w-7"
-                    :user="authStore.user!"
+                    :user="authStore.user"
                 />
                 <div class="flex flex-col">
                     <span class="username text-sm">{{ authStore.username }}</span>
                     <span class="subtitle text-[12px] opacity-70">Профиль</span>
                 </div>
-            </RouterLink>
+            </ProfileLink>
         </template>
     </Menu>
 

@@ -37,7 +37,7 @@ function submitChangeUsername() {
     isProcessingUsername.value = true
     usernameErrors.value = []
 
-    axios.put('/api/settings/security/username', usernameData.value).then((response) => {
+    axios.put('/api/settings/profile/username', usernameData.value).then((response) => {
         if (response.data.success) {
             toggleEditingUsername()
             toastStore.success('Никнейм успешно изменён!')
@@ -61,7 +61,7 @@ function submitChangeAvatar() {
     isProcessingUsername.value = true
     avatarErrors.value = []
 
-    axios.put('/api/settings/security/username', avatarData.value).then((response) => {
+    axios.put('/api/settings/profile/username', avatarData.value).then((response) => {
         if (response.data.success) {
             // toggleEditingAvatar()
             toastStore.success('Аватар успешно изменён!')
@@ -138,7 +138,7 @@ function submitChangeAvatar() {
                                     justify-between
                                     items-center
                                     h-[48px]"
-                                >
+                            >
                                 <div class="flex pl-3 text-[14px]">{{ authStore.username }}</div>
                                 <button
                                     class="edit-button p-[6px] mr-[-2px]"
@@ -169,17 +169,17 @@ function submitChangeAvatar() {
                     <div v-if="isEditingUsername" class="flex gap-2">
                         <Button
                             :disabled="usernameData.username === authStore.username || !usernameData.username"
-                            class="confirm max-h-[64px] max-w-[200px] w-[80%]"
+                            class="success max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="submit"
                             label="Подтвердить"
                             :loading="isProcessingUsername"
                             @click.prevent="submitChangeUsername()"
                         />
                         <Button
-                            class="cancel max-h-[64px] max-w-[200px] w-[80%]"
+                            class="secondary max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="button"
                             label="Отменить"
-                            :loading="isProcessingUsername"
+                            :disabled="isProcessingUsername"
                             @click.prevent="isEditingUsername = false"
                         />
                     </div>

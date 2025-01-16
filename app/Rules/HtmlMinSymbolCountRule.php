@@ -5,9 +5,9 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class HtmlMinSymbolCountRule implements ValidationRule
+readonly class HtmlMinSymbolCountRule implements ValidationRule
 {
-    public function __construct(private readonly int $minCount)
+    public function __construct(private int $minCount)
     {
     }
 

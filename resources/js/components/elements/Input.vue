@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, ref} from 'vue'
+import {computed, ref, watch} from 'vue'
 
 const props = defineProps({
     allowFloat: {
@@ -32,8 +32,18 @@ const prevInputValue = ref(inputValue.value)
 const currentType = computed(
     () => props.type !== 'password' ? props.type : (isPasswordHidden.value ? 'password' : 'text')
 )
+let isInternalModelChange = false
+
+watch(() => model.value, (value) => {
+    if (!isInternalModelChange) {
+        inputValue.value = value?.toString()
+    }
+    isInternalModelChange = false
+})
 
 function onInput() {
+    isInternalModelChange = true
+
     if (props.numeric) {
         if (inputValue.value === '') {
             prevInputValue.value = ''

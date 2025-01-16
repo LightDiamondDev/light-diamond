@@ -1,11 +1,11 @@
 <script setup lang="ts">
+
 function scrollToTop() {
     window.scrollTo(0, 0)
 }
 </script>
 
 <template>
-
     <footer class="ld-primary-background ld-primary-border-top ld-shadow-text flex flex-col items-center w-full">
         <nav class="flex justify-between max-w-[1200px] w-full">
             <div class="sm:hidden ml-4 w-12"/>
@@ -20,14 +20,13 @@ function scrollToTop() {
                 <span class="icon icon-book static"/>
                 <span>Каталог</span>
             </RouterLink>
-            <a class="md:flex hidden items-center" href="https://vk.com/wall-201103896_7412">
+            <RouterLink
+                :to="{name: 'material', params: {edition: 'bedrock', category: 'addons', slug: 'light-diamond'}}"
+                class="xl:flex hidden items-center"
+            >
                 <span class="icon icon-apple static"/>
                 <span>Аддон LD</span>
-            </a>
-<!--            <RouterLink :to="{name: 'post', params: {slug: 'light-diamond'}}" class="xl:flex hidden items-center">-->
-<!--                <span class="icon icon-apple static"/>-->
-<!--                <span>Аддон LD</span>-->
-<!--            </RouterLink>-->
+            </RouterLink>
 <!--            <a class="sm:flex hidden items-center" href="#">-->
 <!--                <span class="icon icon-diamond static"/>-->
 <!--                <span>Обновления</span>-->
@@ -72,7 +71,7 @@ function scrollToTop() {
             </div>
             <div class="row flex items-center mt-1 mb-8">
                 <p class="flex items-center p-2">
-                    <span class="text-[12px]">© 2023 - 2024 Light Diamond. Все права защищены.</span>
+                    <span class="text-[12px]">© 2025 Light Diamond. Все права защищены.</span>
                 </p>
             </div>
         </div>

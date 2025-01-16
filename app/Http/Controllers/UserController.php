@@ -6,6 +6,8 @@ use App\Models\Enums\UserRole;
 use App\Models\User;
 use App\Rules\ColumnExistsRule;
 use App\Rules\NotVerifiedEmailRule;
+use App\Services\User\UserService;
+use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,60 +18,42 @@ class UserController extends Controller
     use ApiJsonResponseTrait;
     use UsernameValidationRulesTrait;
     use PasswordValidationRulesTrait;
+    use HandlesPagination;
+
+
+    public function __construct(private readonly UserService $userService)
+    {
+    }
 
     public function get(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
+        $validator = $this->validatePagination($request, [
             'roles.*'    => [Rule::enum(UserRole::class)],
-            'page'       => ['integer'],
-            'per_page'   => ['integer'],
             'sort_field' => ['string', new ColumnExistsRule(User::getModel()->getTable())],
-            'sort_order' => ['integer', 'min:-1', 'max:1'],
         ]);
 
         if ($validator->fails()) {
             return $this->errorJsonResponse('', $validator->errors());
         }
 
-        $sortOrder = $request->integer('sort_order', -1);
-
-        if ($sortOrder === 0) {
-            $sortField     = 'created_at';
-            $sortDirection = 'desc';
-        } else {
-            $sortField     = $request->string('sort_field', 'created_at');
-            $sortDirection = $sortOrder === -1 ? 'desc' : 'asc';
-        }
+        ['perPage' => $perPage, 'sortField' => $sortField, 'sortDirection' => $sortDirection] =
+            $this->getPaginationParameters($request);
 
         $query = User::orderBy($sortField, $sortDirection);
         if ($request->has('roles')) {
             $query->whereIn('role', $request->input('roles'));
         }
 
-        if ($request->has('per_page') || $request->has('page')) {
-            $perPage = $request->integer('per_page', 10);
-            $users   = $query->paginate($perPage);
+        $users = $query->paginate($perPage);
 
-            return $this->successJsonResponse([
-                'records'    => $users->items(),
-                'pagination' => [
-                    'total_records' => $users->total(),
-                    'current_page'  => $users->currentPage(),
-                    'total_pages'   => $users->lastPage(),
-                ],
-            ]);
-        }
-
-        return $this->successJsonResponse([
-            'records' => $query->get(),
-        ]);
+        return $this->paginateResponse($users);
     }
 
-    public function getByUsername(Request $request, string $username): JsonResponse
+    public function getByUsername(string $username): JsonResponse
     {
         $user = User::whereUsername($username)
             ->first()
-            ?->append(['post_count', 'favourite_post_count', 'comment_count', 'collected_like_count', 'collected_download_count', 'collected_view_count']);
+            ?->append(['materials_count', 'favourite_materials_count', 'comments_count', 'collected_likes_count', 'collected_downloads_count', 'collected_views_count']);
 
         return response()->json($user);
     }
@@ -89,9 +73,7 @@ class UserController extends Controller
             return $this->errorJsonResponse('', $validator->errors());
         }
 
-        $user = User::make($request->only(['username', 'email', 'password', 'role', 'first_name', 'last_name']));
-
-        $user->save();
+        User::create($request->only(['username', 'email', 'password', 'role', 'first_name', 'last_name']));
 
         return $this->successJsonResponse();
     }
@@ -150,13 +132,20 @@ class UserController extends Controller
             return $this->errorJsonResponse('', $validator->errors());
         }
 
-        $ids = $request->get('ids');
-
-        foreach ($ids as $id) {
-            $user = User::find($id);
-            $user?->delete();
-        }
+        User::whereIn('id', $request->get('ids'))->delete();
 
         return $this->successJsonResponse();
+    }
+
+    public function canCreateSubmission(): JsonResponse
+    {
+        $activeSubmissionCount    = $this->userService->getUserActiveSubmissionCount(Auth::user());
+        $maxActiveSubmissionCount = $this->userService->getMaximumActiveSubmissionCount();
+
+        return response()->json([
+            'can_create_submission'       => $activeSubmissionCount < $maxActiveSubmissionCount,
+            'active_submission_count'     => $activeSubmissionCount,
+            'max_active_submission_count' => $maxActiveSubmissionCount,
+        ]);
     }
 }
