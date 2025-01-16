@@ -8,7 +8,7 @@ const globalModalStore = useGlobalModalStore()
 </script>
 
 <template>
-    <AuthDialog v-model:visible="globalModalStore.isAuthModal"/>
-    <VerifyEmailDialog v-model:visible="globalModalStore.isNotVerifiedEmailModal"/>
+    <AuthDialog v-model:visible="globalModalStore.authModal"/>
+    <VerifyEmailDialog v-model:visible="globalModalStore.notVerifiedEmailModal"/>
     <CookieNotice/>
 </template>

@@ -28,6 +28,8 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
 
+            $table->index(['deleted_at', 'published_at']);
+            $table->index(['category', 'deleted_at', 'published_at']);
             $table->index(['edition', 'deleted_at', 'published_at']);
             $table->index(['category', 'edition', 'deleted_at', 'published_at']);
             $table->index(['slug', 'category', 'edition', 'deleted_at', 'published_at']);

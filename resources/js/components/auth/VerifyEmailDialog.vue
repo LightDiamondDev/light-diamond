@@ -33,7 +33,7 @@ const isVisible = defineModel<Boolean>('visible', {required: true})
                     class="max-w-[300px] w-full"
                     icon="icon-bestiary min-w-[2rem]"
                     label="Подтвердить"
-                    @click="globalModalStore.isNotVerifiedEmailModal = false"
+                    @click="globalModalStore.notVerifiedEmailModal = false"
                     :to="{ name: 'settings.security' }"
                 />
             </div>

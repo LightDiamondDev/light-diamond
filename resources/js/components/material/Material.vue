@@ -234,7 +234,9 @@ function getDescendantComments(ancestorId: bigint): MaterialComment[] {
 
 function onNewCommentEditorClick() {
     if (!authStore.isAuthenticated) {
-        globalModalStore.isAuthModal = true
+        globalModalStore.authModal = true
+    } else if (!authStore.hasVerifiedEmail) {
+        globalModalStore.notVerifiedEmailModal = true
     }
 }
 

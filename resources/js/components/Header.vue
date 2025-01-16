@@ -80,7 +80,7 @@ const userMenuItems = computed<MenuItem[]>(() => [
         label: 'Войти',
         icon: 'icon-right-arrow',
         visible: !authStore.isAuthenticated,
-        action: () => globalModalStore.isAuthModal = true,
+        action: () => globalModalStore.authModal = true,
     },
     {
         label: 'Выйти',

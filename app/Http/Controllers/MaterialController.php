@@ -30,7 +30,7 @@ class MaterialController extends Controller
     {
         $validator = $this->validatePagination($request, [
             'category'  => ['string', Rule::enum(CategoryType::class)],
-            'edition'   => ['string', 'required', Rule::enum(GameEdition::class)],
+            'edition'   => ['string', Rule::enum(GameEdition::class)],
             'term'      => ['string', 'nullable'],
             'sort_type' => [Rule::enum(MaterialSortType::class)],
             'period'    => [Rule::enum(MaterialLoadPeriod::class)],
@@ -102,9 +102,11 @@ class MaterialController extends Controller
         if ($category->isNotEmpty()) {
             $materialsQuery->where('category', $category);
         }
-        $materialsQuery->where(
-            fn(Builder $query) => $query->where('edition', $edition)->orWhereNull('edition')
-        );
+        if ($edition->isNotEmpty()) {
+            $materialsQuery->where(
+                fn(Builder $query) => $query->where('edition', $edition)->orWhereNull('edition')
+            );
+        }
 
         if ($searchTerm->isNotEmpty()) {
             $materialsQuery->whereHas('state', function (Builder $query) use ($searchTerm) {
