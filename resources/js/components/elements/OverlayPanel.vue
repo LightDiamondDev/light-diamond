@@ -23,6 +23,7 @@ defineOptions({
     inheritAttrs: false
 })
 
+const emit = defineEmits(['show'])
 
 const isVisible = ref(false)
 const isContainerMouseDown = ref(false)
@@ -38,6 +39,8 @@ function show(targetOrEvent: HTMLElement | Event) {
 
     target.value = targetOrEvent instanceof HTMLElement ? targetOrEvent : targetOrEvent.currentTarget as HTMLElement
     isVisible.value = true
+
+    emit('show')
 
     nextTick(() => {
         alignOverlay()

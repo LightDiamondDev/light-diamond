@@ -68,7 +68,6 @@ function submitChangeEmail() {
     axios.put('/api/settings/security/email', emailData.value).then((response) => {
         if (response.data.success) {
             toggleEditingEmail()
-            toastStore.success('Email успешно изменён!')
             toastStore.info(
                 `Мы отправили Вам письмо со ссылкой для подтверждения Вашей НОВОЙ электронной почты!`,
                 'Подтверждение E-Mail',
@@ -222,17 +221,17 @@ function submitChangePassword() {
                     <div v-if="isEditingEmail" class="flex gap-2">
                         <Button
                             :disabled="emailData.email === authStore.email || emailData.email !== emailData.email_confirmation || !emailData.email"
-                            class="confirm max-h-[64px] max-w-[200px] w-[80%]"
+                            class="success max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="submit"
                             :loading="isProcessingEmail"
                             label="Подтвердить"
                             @click.prevent="submitChangeEmail()"
                         />
                         <Button
-                            class="cancel max-h-[64px] max-w-[200px] w-[80%]"
+                            class="secondary max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="button"
                             label="Отменить"
-                            :loading="isProcessingEmail"
+                            :disabled="isProcessingEmail"
                             @click.prevent="isEditingEmail = false"
                         />
                     </div>
@@ -247,7 +246,7 @@ function submitChangePassword() {
                             </p>
                             <ShineButton
                                 :loading="isProcessingSendEmailVerificationLink"
-                                class="ld-shine-button warning max-w-[240px] mr-2 my-2"
+                                class="warning-lite max-w-[240px] mr-2 my-2"
                                 class-preset="text-[12px] gap-2 px-2"
                                 @click="sendEmailVerificationLink"
                                 label="Отправить повторно"
@@ -325,17 +324,17 @@ function submitChangePassword() {
                     <div v-if="isEditingPassword" class="flex gap-2">
                         <Button
                             :disabled="passwordData.password !== passwordData.password_confirmation || !passwordData.password"
-                            class="confirm max-h-[64px] max-w-[200px] w-[80%]"
+                            class="success max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="submit"
                             label="Подтвердить"
                             :loading="isProcessingPassword"
                             @click.prevent="submitChangePassword()"
                         />
                         <Button
-                            class="cancel max-h-[64px] max-w-[200px] w-[80%]"
+                            class="secondary max-h-[64px] max-w-[200px] w-[80%]"
                             button-type="button"
                             label="Отменить"
-                            :loading="isProcessingPassword"
+                            :disabled="isProcessingPassword"
                             @click.prevent="isEditingPassword = false"
                         />
                     </div>

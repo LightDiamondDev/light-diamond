@@ -96,7 +96,7 @@ dialogClasses.value = props.position === 'center' ? 'items-center ' + props.dial
 
         <div
             v-if="isVisible"
-            class="dialog-background outer flex justify-center fixed w-full h-full left-0 z-[3]"
+            class="dialog-background outer flex justify-center fixed w-full h-full top-0 left-0 z-[3]"
             :class="dialogClasses"
             @mousedown="onMaskMouseDown"
             @mouseup="onMaskMouseUp"
@@ -125,7 +125,7 @@ dialogClasses.value = props.position === 'center' ? 'items-center ' + props.dial
 
                         <div v-else class="back-button-replacement m-2"/>
 
-                        <h1 class="text-[1.2rem] md:text-[1.8rem]">{{ title }}</h1>
+                        <h1 class="text-[1.2rem] md:text-[1.8rem] text-center">{{ title }}</h1>
 
                         <button
                             v-if="closeButton"

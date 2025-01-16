@@ -3,8 +3,9 @@ import {type Component} from 'vue'
 import routes from '@/router/routes'
 import {useAuthStore} from '@/stores/auth'
 import {changeTitle, getHeaderHeight} from '@/helpers'
-import AuthRequired from '@/components/auth/AuthRequired.vue'
+import NotAuthenticated from '@/components/auth/NotAuthenticated.vue'
 import NoPermission from '@/components/NoPermission.vue'
+import NotVerifiedEmail from '@/components/auth/NotVerifiedEmail.vue'
 
 let hashObserver: ResizeObserver | undefined = undefined
 let hashObserverDisconnectTimeout: number | undefined = undefined
@@ -85,24 +86,32 @@ router.beforeEach((to, _from, next) => {
 
     function processRouteNavigation() {
         if (
-            to.matched.some(record => record.meta.requiresAuth) &&
-            !authStore.isAuthenticated
+            to.matched.some(record => record.meta.requiresAuth)
+            && !authStore.isAuthenticated
         ) {
-            displayComponent(AuthRequired)
+            displayComponent(NotAuthenticated)
             return
         }
 
         if (
-            to.matched.some(record => record.meta.requiresModerator) &&
-            !authStore.isModerator
+            to.matched.some(record => record.meta.requiresEmailVerified)
+            && !authStore.hasVerifiedEmail
+        ) {
+            displayComponent(NotVerifiedEmail)
+            return
+        }
+
+        if (
+            to.matched.some(record => record.meta.requiresModerator)
+            && !authStore.isModerator
         ) {
             displayComponent(NoPermission)
             return
         }
 
         if (
-            to.matched.some(record => record.meta.requiresAdmin) &&
-            !authStore.isAdmin
+            to.matched.some(record => record.meta.requiresAdmin)
+            && !authStore.isAdmin
         ) {
             displayComponent(NoPermission)
             return

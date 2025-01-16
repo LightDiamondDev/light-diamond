@@ -164,6 +164,12 @@ return [
         'password' => [
             'confirmed' => 'Пароль не совпадает с повторным.',
         ],
+        'material.category' => [
+            'required_if' => 'Обязательно для заполнения.',
+        ],
+        'version_submissions.*.file_submissions' => [
+            'required_if' => 'Обязательно для заполнения.',
+        ],
     ],
 
     /*

@@ -361,21 +361,24 @@
         color: var(--hover-text-color);
     }
 
-    .button-container.cancel .action-button:hover .press .label,
-    .button-container.confirm .action-button:hover .press .label,
-    .button-container.warning .action-button:hover .press .label {
+    .button-container.danger .action-button:hover .press .label,
+    .button-container.danger-lite .action-button:hover .press .label,
+    .button-container.secondary .action-button:hover .press .label,
+    .button-container.success .action-button:hover .press .label,
+    .button-container.warning .action-button:hover .press .label,
+    .button-container.warning-lite .action-button:hover .press .label {
         color: var(--primary-text-color);
     }
 
-    .button-container.cancel .action-button {
+    .button-container.secondary .action-button {
         background-color: rgba(30, 120, 130, .8);
     }
 
-    .button-container.confirm .action-button {
+    .button-container.success .action-button {
         background-color: rgba(10, 120, 10, .8);
     }
 
-    .button-container.delete .action-button {
+    .button-container.danger .action-button {
         background-color: rgba(180, 30, 50, .8);
     }
 
@@ -425,130 +428,130 @@
         color: var(--brilliant-color);
     }
 
-    .content-studio .post-line .cover-wrap {
+    .content-studio .material-line .cover-wrap {
         border: 2px solid rgba(255, 255, 255, .8);
     }
 
-    .post .author-wrap:focus-visible .username,
-    .post .author-wrap:hover .username {
+    .material .author-wrap:focus-visible .username,
+    .material .author-wrap:hover .username {
         color: var(--trinity-text-color);
     }
 
-    .post .editor-link-text,
-    .post .editor-link-url {
+    .material .editor-link-text,
+    .material .editor-link-url {
         color: var(--primary-text-color);
     }
 
-    .post .text-muted,
-    .post .item-button .label {
+    .material .text-muted,
+    .material .item-button .label {
         color: var(--primary-text-color);
     }
 
-    .post .text-muted {
+    .material .text-muted {
         text-align: center;
     }
 
-    .post .upload-image-container,
-    .post .upload-file-container {
+    .material .upload-image-container,
+    .material .upload-file-container {
         outline: 2px dashed var(--secondary-text-color);
         transition: .5s;
     }
 
-    .post .loaded {
+    .material .loaded {
         color: var(--primary-text-color);
     }
 
-    .post textarea::placeholder {
+    .material textarea::placeholder {
         color: var(--secondary-text-color);
         opacity: .8;
     }
 
-    .post .interface .author-wrap:hover span.username {
+    .material .interface .author-wrap:hover span.username {
         color: var(--trinity-text-color);
     }
 
-    .post .upload-image-container:hover,
-    .post .upload-file-container:hover {
+    .material .upload-image-container:hover,
+    .material .upload-file-container:hover {
         outline: 2px dashed rgb(0, 150, 150);
     }
 
-    .post .upload-image-container.dragover,
-    .post .upload-file-container.dragover {
+    .material .upload-image-container.dragover,
+    .material .upload-file-container.dragover {
         outline: 8px dashed rgba(0, 150, 150, 1);
     }
 
-    .post .upload-file-container.dragover .upload-file-heading,
-    .post .upload-image-container.dragover .upload-image-heading,
-    .post .upload-file-container:hover .upload-file-heading,
-    .post .upload-image-container:hover .upload-image-heading {
+    .material .upload-file-container.dragover .upload-file-heading,
+    .material .upload-image-container.dragover .upload-image-heading,
+    .material .upload-file-container:hover .upload-file-heading,
+    .material .upload-image-container:hover .upload-image-heading {
         color: rgba(0, 85, 101, .8);
     }
 
-    .post blockquote {
+    .material blockquote {
         border-left: 4px solid rgba(0, 85, 101, .8);
     }
 
-    .post * {
+    .material * {
         line-height: 1.8;
     }
 
-    .post h1 {
+    .material h1 {
         font-size: 3rem;
         line-height: 1.2;
         margin: 1rem 0;
     }
 
-    .post h2 {
+    .material h2 {
         font-size: 2.5rem;
         line-height: 1.2;
         margin: 1rem 0;
     }
 
-    .post h3 {
+    .material h3 {
         font-size: 2rem;
         line-height: 1.2;
         margin: .5rem 0;
     }
 
-    .post h4 {
+    .material h4 {
         font-size: 1.5rem;
     }
 
-    .post h5 {
+    .material h5 {
         font-size: 1.2rem;
     }
 
-    .post h6 {
+    .material h6 {
         font-size: 1rem;
     }
 
-    .post ul {
+    .material ul {
         list-style-type: square;
     }
 
-    .post strong,
-    .post b {
+    .material strong,
+    .material b {
         font-weight: 800;
     }
 
-    .post .origin-info .username {
+    .material .origin-info .username {
         color: var(--secondary-text-color);
     }
 
-    .post .post-moderator {
+    .material .material-moderator {
         border: 0;
     }
 
-    .post .label-input-text textarea {
+    .material .label-input-text textarea {
         color: var(--primary-text-color);
         padding: .5rem .8rem;
     }
-    .post .label-input-text textarea::placeholder {
+    .material .label-input-text textarea::placeholder {
         color: var(--primary-text-color);
         opacity: .5;
     }
 
-    .post hr {
+    .material hr {
         border: 1px solid var(--secondary-text-color);
         opacity: .4;
     }
@@ -584,8 +587,8 @@
 
     .design-settings-form div .settings-button:focus-visible,
     .design-settings-form div .settings-button:hover,
-    .post-search-card:hover .description,
-    .post-search-card:focus-visible .description {
+    .material-search-card:hover .description,
+    .material-search-card:focus-visible .description {
         background: linear-gradient(90deg, rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05));
         animation: transfusion-animation 10s linear infinite;
         background-size: 400% 100%;
@@ -640,9 +643,9 @@
     }
 
     .mark-block .new {
-        background: radial-gradient(100% 100% at 100% 0, rgba(255, 180, 50, .05) 0, rgba(255, 180, 50, .2) 100%);
+        background: radial-gradient(100% 100% at 100% 0, rgba(100, 255, 100, .05) 0, rgba(100, 255, 100, .2) 100%);
         animation: transfusion-animation 10s linear infinite;
-        border: 2px solid rgba(255, 180, 50, .3);
+        border: 2px solid rgba(100, 255, 100, .3);
     }
 
     .mark-block .time-ago {
@@ -652,9 +655,9 @@
     }
 
     .mark-block .update {
-        background: radial-gradient(100% 100% at 100% 0, rgba(100, 255, 100, .05) 0, rgba(100, 255, 100, .2) 100%);
+        background: radial-gradient(100% 100% at 100% 0, rgba(255, 180, 50, .05) 0, rgba(255, 180, 50, .2) 100%);
         animation: transfusion-animation 10s linear infinite;
-        border: 2px solid rgba(100, 255, 100, .3);
+        border: 2px solid rgba(255, 180, 50, .3);
     }
 
     .message {
@@ -681,160 +684,159 @@
     }
 
     .overlay-panel,
-    .post-card .description-wrap {
+    .material-card .description-wrap {
         border: 2px solid rgba(0, 255, 255, .3);
     }
 
-    .post-search-card .preview-wrap {
+    .material-search-card .preview-wrap {
         border-bottom: 2px solid rgba(255, 255, 255, .3);
         border-left: 2px solid rgba(255, 255, 255, .3);
         border-top: 2px solid rgba(255, 255, 255, .3);
         border-right: none;
     }
-    .post-card .preview-wrap {
+    .material-card .preview-wrap {
         border-right: 2px solid rgba(255, 255, 255, .3);
         border-left: 2px solid rgba(255, 255, 255, .3);
         border-top: 2px solid rgba(255, 255, 255, .3);
         border-bottom: none;
     }
 
-    .post-card.horizontal .preview-wrap {
+    .material-card.horizontal .preview-wrap {
         border-bottom: 2px solid rgba(255, 255, 255, .3);
         border-left: 2px solid rgba(255, 255, 255, .3);
         border-top: 2px solid rgba(255, 255, 255, .3);
         border-right: none;
     }
 
-    .post-card .author-avatar-frame,
-    .post-card .progress-bar {
+    .material-card .author-avatar-frame,
+    .material-card .progress-bar {
         border: 2px solid rgba(255, 255, 255, .8);
     }
 
-    .post-comment-actions {
+    .material-comment-actions {
         border-top: 2px solid rgba(0, 255, 255, .3);
     }
 
-    .post-comment a {
+    .material-comment a {
         animation: comment-link-color-animation 5s infinite;
     }
 
-    .post-comment-editor .editor-horizontal-menu {
+    .material-comment-editor .editor-horizontal-menu {
         border-top: var(--primary-border);
     }
 
-    .post-comment-editor * {
+    .material-comment-editor * {
         text-shadow: none;
     }
 
-    .post-comment-editor {
+    .material-comment-editor {
         background: linear-gradient(rgba(0, 15, 15, .5), transparent);
         border: 2px solid rgba(255, 255, 255, .8);
     }
 
-    .post-comment-highlighted .post-comment-inner {
-        animation: post-comment-highlighted 3s ease;
+    .material-comment-highlighted .material-comment-inner {
+        animation: material-comment-highlighted 3s ease;
     }
-    .post-comment-highlighted.post-comment-body {
+    .material-comment-highlighted.material-comment-body {
         background: linear-gradient(90deg, rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05));
         animation: transfusion-animation 10s linear infinite;
         background-size: 400% 100%;
     }
 
-    .post-comment-editor blockquote {
+    .material-comment-editor blockquote {
         border-left: 4px solid rgba(0, 255, 255, .8);
         padding: 0 0 0 16px;
     }
 
-    .ld-secondary-background .post-comment blockquote,
-    .ld-secondary-background .post-comment .mention {
+    .ld-secondary-background .material-comment blockquote,
+    .ld-secondary-background .material-comment .mention {
         border-left: 4px solid var(--trinity-text-color);
     }
 
-    .ld-primary-background .post-comment blockquote,
-    .ld-primary-background .post-comment .mention {
+    .ld-primary-background .material-comment blockquote,
+    .ld-primary-background .material-comment .mention {
         border-left: 4px solid rgba(0, 255, 255, .8);
     }
 
-    .post-comment .mention {
+    .material-comment .mention {
         border-bottom: none;
         border-right: none;
         border-top: none;
     }
 
-    .ld-secondary-background .post-comment code,
-    .ld-secondary-background .post-comment pre {
+    .ld-secondary-background .material-comment code,
+    .ld-secondary-background .material-comment pre {
         background-color: rgba(0, 15, 15, .05);
     }
 
-    .ld-secondary-background .post-comment pre {
+    .ld-secondary-background .material-comment pre {
         border: 2px solid rgba(0, 15, 15, .2);
     }
 
-    .ld-primary-background .post-comment pre {
+    .ld-primary-background .material-comment pre {
         border: 2px solid rgba(0, 255, 255, .2);
     }
 
-    .ld-primary-background .post-comment-editor code,
-    .ld-primary-background .post-comment-editor pre,
-    .ld-primary-background .post-comment code,
-    .ld-primary-background .post-comment pre {
+    .ld-primary-background .material-comment-editor code,
+    .ld-primary-background .material-comment-editor pre,
+    .ld-primary-background .material-comment code,
+    .ld-primary-background .material-comment pre {
         background-color: rgba(0, 15, 15, .2);
         color: rgba(255, 255, 255, .9);
     }
 
-    .ld-primary-background .post-comment-editor pre code,
-    .ld-primary-background .post-comment pre code,
-    .ld-secondary-background .post-comment-editor pre code,
-    .ld-secondary-background .post-comment pre code {
+    .ld-primary-background .material-comment-editor pre code,
+    .ld-primary-background .material-comment pre code,
+    .ld-secondary-background .material-comment-editor pre code,
+    .ld-secondary-background .material-comment pre code {
         background-color: transparent;
     }
 
-    .post-comment-editor code,
-    .post-comment code {
+    .material-comment-editor code,
+    .material-comment code {
         padding: .5rem;
     }
 
-    .post-comment-editor pre {
+    .material-comment-editor pre {
         padding: .5rem;
     }
 
-    .post-comment-editor pre code,
-    .post-comment pre code {
+    .material-comment-editor pre code,
+    .material-comment pre code {
         padding: 0;
     }
 
-    .post-comment-editor code,
-    .post-comment code,
-    .post-comment-editor pre,
-    .post-comment pre {
+    .material-comment-editor code,
+    .material-comment code,
+    .material-comment-editor pre,
+    .material-comment pre {
         border: 2px solid rgba(0, 255, 255, .2);
     }
 
-    .post-comment-editor pre code,
-    .post-comment pre code {
+    .material-comment-editor pre code,
+    .material-comment pre code {
         border: none;
     }
 
-    .ld-secondary-background .post-comment-reply-button {
+    .ld-secondary-background .material-comment-reply-button {
         color: var(--trinity-text-color);
     }
 
-    .ld-primary-background .post-comment-reply-button {
+    .ld-primary-background .material-comment-reply-button {
         color: var(--brilliant-color);
     }
 
-    .post-comment-editor ol {
+    .material-comment-editor ol {
         list-style-type: decimal;
     }
 
-    .post-comment-editor ul,
-    .post-comment ul {
+    .material-comment-editor ul,
+    .material-comment ul {
         list-style-type: square;
     }
 
-    .post-comment .ld-special-text,
     .ld-special-text,
-    .post a {
+    .material a {
         animation: special-text-animation 5s infinite;
         cursor: pointer;
     }
@@ -843,45 +845,45 @@
         animation: term-text-color-animation 5s infinite;
     }
 
-    .post a:hover {
+    .material a:hover {
         text-decoration: underline;
     }
 
-    .post code,
-    .post pre {
+    .material code,
+    .material pre {
         background-color: #e0e0e0;
     }
 
-    .post pre {
+    .material pre {
         background-image: url('/images/elements/base-background-code.png');
         border: 2px solid rgba(0, 15, 15, .1);
     }
 
-    .post-interaction .post-moderator .select-button .label {
+    .material-interaction .material-moderator .select-button .label {
         white-space: nowrap;
     }
 
-    .post-interaction .post-reject-reason,
-    .post-interaction .post-revision-reason,
-    .post-interaction .post-url-id  {
+    .material-interaction .material-reject-reason,
+    .material-interaction .material-revision-reason,
+    .material-interaction .material-url-id  {
         background: linear-gradient(rgba(0, 15, 15, .5), transparent);
         border: 2px solid var(--border-color);
     }
 
-    .post-title {
+    .material-title {
         font-weight: normal;
     }
 
-    .post-version-actions,
-    .post-version-action-message {
+    .material-submission-actions,
+    .material-submission-action-message {
         background: linear-gradient(rgba(0, 15, 15, .5), transparent);
     }
 
-    .post-version-action-message {
+    .material-submission-action-message {
         border: 2px solid rgba(255, 255, 255, .5);
     }
 
-    .post-version-card:hover {
+    .material-submission-card:hover {
         background-color: rgba(255, 255, 255, .1);
     }
 
@@ -954,7 +956,7 @@
         color: var(--trinity-text-color);
     }
 
-    .left-post-interaction .set-mark .counter {
+    .left-material-interaction .set-mark .counter {
         color: var(--trinity-text-color);
     }
 
@@ -1017,26 +1019,39 @@
         background: radial-gradient(100% 100% at 100% 0, rgba(50, 200, 200, .3) 0, rgba(0, 255, 255, .3) 100%);
     }
 
-    .ld-shine-button.cancel .press {
+    .ld-shine-button.danger .press {
         background: radial-gradient(100% 100% at 100% 0, rgba(255, 30, 50, .5) 0, rgba(255, 10, 30, .5) 100%);
+        border: 2px solid rgba(255, 59, 76, 0.5);
     }
 
-    .ld-shine-button.cancel .press:hover .preset {
+    .ld-shine-button.danger .press:hover .preset {
         background: linear-gradient(90deg, rgba(255, 50, 150, .3), rgba(65, 35, 10, .3), rgba(255, 50, 150, .3), rgba(65, 35, 10, .3), rgba(255, 50, 150, .3));
         animation: transfusion-animation 10s linear infinite;
         background-size: 400% 100%;
     }
 
-    .ld-shine-button.confirm .press,
+    .ld-shine-button.danger-lite .press {
+        background: radial-gradient(100% 100% at 100% 0, rgba(255, 30, 50, 0.4) 0, rgba(255, 10, 30, 0.4) 100%);
+        border: 2px solid rgba(255, 59, 76, 0.4);
+    }
+
+    .ld-shine-button.success .press,
     .ld-shine-button.edition .press {
         background: radial-gradient(100% 100% at 100% 0, rgba(50, 200, 50, .3) 0, rgba(30, 120, 30, .3) 100%);
     }
 
-    .ld-shine-button.reconsider .press {
-        background: radial-gradient(100% 100% at 100% 0, rgba(235, 150, 50, .3) 0, rgba(200, 120, 30, .3) 100%);
+    .ld-shine-button.warning .press {
+        background: radial-gradient(100% 100% at 100% 0, rgba(213, 125, 19, 0.64) 0, rgba(175, 109, 31, 0.64) 100%);
+        border: 2px solid rgba(211, 126, 26, 0.64);
     }
 
-    .ld-shine-button.warning .press {
+    .ld-shine-button.warning .press:hover .preset {
+        background: linear-gradient(90deg, rgba(213, 125, 19, 0.3), rgba(108, 67, 19, 0.3), rgba(213, 125, 19, 0.3), rgba(108, 67, 19, 0.3), rgba(213, 125, 19, 0.3));
+        animation: transfusion-animation 10s linear infinite;
+        background-size: 400% 100%;
+    }
+
+    .ld-shine-button.warning-lite .press {
         background: radial-gradient(100% 100% at 100% 0, rgba(200, 180, 50, .3) 0, rgba(180, 160, 30, .3) 100%);
         border: 2px solid rgba(200, 180, 50, .8);
     }
@@ -1075,10 +1090,6 @@
         color: rgba(30, 180, 30, 1);
     }
 
-    .text-inactive {
-        color: rgba(150, 150, 150, 1);
-    }
-
     .text-revision {
         color: rgba(235, 150, 50, 1);
     }
@@ -1093,7 +1104,7 @@
         background-size: 400% 100%;
     }
 
-    .transfusion-light {
+    .transfusion.lite {
         background: linear-gradient(90deg, rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05), rgba(0, 255, 255, .2), rgba(0, 255, 255, .05));
         animation: transfusion-animation 10s linear infinite;
         background-size: 400% 100%;
@@ -1115,29 +1126,46 @@
         background-size: 400% 100%;
     }
 
-    .transfusion.cancel {
-        background: linear-gradient(90deg, rgba(255, 30, 50, .3), rgba(255, 30, 50, .5), rgba(255, 30, 50, .3), rgba(255, 30, 50, .5), rgba(255, 30, 50, .3));
+    .transfusion.danger {
+        background: linear-gradient(90deg, rgba(255, 30, 50, .5), rgba(255, 30, 50, .6), rgba(255, 30, 50, .5), rgba(255, 30, 50, .6), rgba(255, 30, 50, .5));
         background-size: 400% 100%;
     }
 
-    .transfusion.confirm {
+    .transfusion.bordered.danger {
+        border: 2px solid rgba(255, 59, 76, 0.5);
+    }
+
+    .transfusion.success {
         background: linear-gradient(90deg, rgba(30, 180, 30, .2), rgba(30, 180, 30, .4), rgba(50, 200, 100, .2), rgba(50, 200, 100, .4), rgba(30, 180, 30, .2));
         background-size: 400% 100%;
     }
 
     .transfusion.draft {
-        background: linear-gradient(90deg, rgba(150, 150, 150, .2), rgba(150, 150, 150, .4), rgba(120, 200, 200, .2), rgba(120, 200, 200, .4), rgba(150, 150, 150, .2));
+        background: linear-gradient(90deg, rgba(150, 150, 150, 0.5), rgba(150, 150, 150, 0.7), rgba(150, 150, 150, 0.5), rgba(150, 150, 150, 0.7), rgba(150, 150, 150, 0.5));
         background-size: 400% 100%;
+    }
+
+    .transfusion.bordered.draft {
+        border: 2px solid rgba(150, 150, 150, 0.7);
     }
 
     .transfusion.inactive {
-        background: linear-gradient(90deg, rgba(150, 150, 150, .2), rgba(150, 150, 150, .4), rgba(150, 150, 150, .2), rgba(150, 150, 150, .4), rgba(150, 150, 150, .2));
+        background: linear-gradient(90deg, rgba(150, 150, 150, 0.5), rgba(150, 150, 150, 0.7), rgba(150, 150, 150, 0.5), rgba(150, 150, 150, 0.7), rgba(150, 150, 150, 0.5));
         background-size: 400% 100%;
+        border: 2px solid rgba(150, 150, 150, 0.7);
+    }
+
+    .transfusion.bordered.inactive {
+        border: 2px solid rgba(150, 150, 150, 0.7);
     }
 
     .transfusion.pending {
-        background: linear-gradient(90deg, rgba(255, 230, 50, .2), rgba(255, 230, 50, .4), rgba(255, 150, 50, .2), rgba(255, 150, 50, .4), rgba(255, 230, 50, .2));
+        background: linear-gradient(90deg, rgba(213, 125, 19, 0.64), rgba(175, 109, 31, 0.64), rgba(213, 125, 19, 0.64), rgba(175, 109, 31, 0.64), rgba(213, 125, 19, 0.64));
         background-size: 400% 100%;
+    }
+
+    .transfusion.bordered.pending {
+        border: 2px solid rgba(211, 126, 26, 0.64);
     }
 
     .transfusion.warning {
@@ -1161,7 +1189,7 @@
         font-size: 10px;
     }
 
-    .unavailable-post h1, .unavailable-post p {
+    .unavailable-material h1, .unavailable-material p {
         color: var(--secondary-text-color);
         text-shadow: none;
     }
@@ -1219,12 +1247,12 @@
     .head-font,
     .left-header-sidebar .unit-title,
     .list-label-text,
-    .post h1,
-    .post h2,
-    .post h3,
-    .post h4,
-    .post h5,
-    .post h6,
+    .material h1,
+    .material h2,
+    .material h3,
+    .material h4,
+    .material h5,
+    .material h6,
     .select .label,
     .settings .settings-container form .section-title,
     .settings-button span,
@@ -1236,20 +1264,20 @@
 
     .catalog .splash,
     .left-header-sidebar .item-button,
-    .post-interaction .post-moderator.select .options .label,
-    .post-interaction .post-moderator .select-button .label,
-    .post-moderator.select .options .label,
+    .material-interaction .material-moderator.select .options .label,
+    .material-interaction .material-moderator .select-button .label,
+    .material-moderator.select .options .label,
     .regular-font,
     .user-menu .profile-link .title {
         font-family: Monocraft, sans-serif;
     }
 
-    .post-comment-editor code,
-    .post-comment-editor pre,
-    .post-comment code,
-    .post-comment pre,
-    .post code,
-    .post pre,
+    .material-comment-editor code,
+    .material-comment-editor pre,
+    .material-comment code,
+    .material-comment pre,
+    .material code,
+    .material pre,
     pre, pre.is-empty {
         font-family: "Pixel Code Pro", sans-serif;
     }
@@ -1258,7 +1286,7 @@
         animation: icon-trigger-up-animation .3s ease;
     }
 
-    .profile-wrap .post-comment .username {
+    .profile-wrap .material-comment .username {
         color: var(--trinity-text-color);
         animation: none;
     }
@@ -1349,6 +1377,10 @@
 
     .icon-comment {
         background-image: url('/images/icons/diamond-comment.png');
+    }
+
+    .icon-cookie {
+        background-image: url('/images/icons/diamond-cookie.png');
     }
 
     .icon-cross {
@@ -1761,7 +1793,7 @@
         100% { color: rgba(0, 165, 185, 1); }
     }
 
-    @keyframes post-comment-highlighted
+    @keyframes material-comment-highlighted
     {
         from { background-color: rgba(0, 255, 255, .5); }
         to { background-color: rgba(0, 255, 255, 0); }
@@ -1817,27 +1849,27 @@
     /* =============== [ Медиа-Запрос { ?px < 641px } ] =============== */
 
     @media screen and (max-width: 640px) {
-        .post h1 {
+        .material h1 {
             font-size: 2.5rem;
         }
 
-        .post h2 {
+        .material h2 {
             font-size: 2rem;
         }
 
-        .post h3 {
+        .material h3 {
             font-size: 1.5rem;
         }
 
-        .post h4 {
+        .material h4 {
             font-size: 1.2rem;
         }
 
-        .post h5 {
+        .material h5 {
             font-size: 1rem;
         }
 
-        .post h6 {
+        .material h6 {
             font-size: .8rem;
         }
     }
@@ -1845,13 +1877,13 @@
     /* =============== [ Медиа-Запрос { 451px > ?px } ] =============== */
 
     @media screen and (min-width: 451px) {
-        .post-comment-editor a,
-        .post-comment-editor code,
-        .post-comment-editor li,
-        .post-comment-editor ol,
-        .post-comment-editor p,
-        .post-comment-editor pre,
-        .post-comment-editor ul {
+        .material-comment-editor a,
+        .material-comment-editor code,
+        .material-comment-editor li,
+        .material-comment-editor ol,
+        .material-comment-editor p,
+        .material-comment-editor pre,
+        .material-comment-editor ul {
             font-size: 14px;
         }
     }
@@ -1859,13 +1891,13 @@
     /* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
 
     @media screen and (max-width: 450px) {
-        .post-comment-editor a,
-        .post-comment-editor code,
-        .post-comment-editor li,
-        .post-comment-editor ol,
-        .post-comment-editor p,
-        .post-comment-editor pre,
-        .post-comment-editor ul {
+        .material-comment-editor a,
+        .material-comment-editor code,
+        .material-comment-editor li,
+        .material-comment-editor ol,
+        .material-comment-editor p,
+        .material-comment-editor pre,
+        .material-comment-editor ul {
             font-size: 12px;
         }
 
@@ -1877,7 +1909,7 @@
     /* =============== [ Медиа-Запрос { ?px < 425px } ] =============== */
 
     @media screen and (max-width: 424px) {
-        .post-card.horizontal .preview-wrap {
+        .material-card.horizontal .preview-wrap {
             border-right: 2px solid rgba(255, 255, 255, .3);
             border-left: 2px solid rgba(255, 255, 255, .3);
             border-top: 2px solid rgba(255, 255, 255, .3);

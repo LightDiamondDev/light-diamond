@@ -30,21 +30,27 @@ const props = defineProps({
         default: 'item-diamond'
     },
     label: String
-});
+})
 </script>
 
 <template>
     <Component
         class="ld-shine-button flex items-center option"
         :class="{ 'opacity-50': disabled }"
-        :disabled="disabled"
+        :disabled="disabled || loading"
         :type="buttonType"
         :is="as"
     >
         <span class="wrap flex w-full" :class="classWrap">
             <span class="press ld-shadow-text flex w-full" :class="classPress">
                 <span class="preset flex items-center w-full" :class="classPreset">
-                    <ProcessingMovingItems v-if="loading" class="loading-icon" :item="loadingItem" height="28px" width="28px"/>
+                    <ProcessingMovingItems
+                        v-if="loading"
+                        class="loading-icon"
+                        :item="loadingItem"
+                        height="28px"
+                        width="28px"
+                    />
                     <span
                         v-if="!loading && icon !== ''"
                         class="icon min-w-[1rem]"
