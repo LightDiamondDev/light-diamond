@@ -1,16 +1,10 @@
 <script setup lang="ts">
-
-import {type PropType, ref} from 'vue'
-
+import {ref} from 'vue'
 import {useAuthStore} from '@/stores/auth'
-import {useGlobalModalStore} from '@/stores/global-modal'
 import {useToastStore} from '@/stores/toast'
-import {useRoute, RouterLink} from 'vue-router'
-
+import {RouterLink, useRoute} from 'vue-router'
 import Button from '@/components/elements/Button.vue'
-
 import ProcessingDiggingBlocks from '@/components/elements/ProcessingDiggingBlocks.vue'
-import type {User} from '@/types'
 
 defineProps({
     title: {
@@ -25,7 +19,6 @@ const route = useRoute()
 
 const isLoading = ref(true)
 const isWideSidebar = ref(true)
-
 </script>
 
 <template>
@@ -39,24 +32,27 @@ const isWideSidebar = ref(true)
         <section class="section flex justify-between xl:flex-row flex-col-reverse xl:items-start items-center
             xl:max-w-[1280px] max-w-[832px] w-full gap-4 lg:mt-4">
 
-            <aside class="left-post-interaction xl-left-post-interaction
+            <aside class="left-material-interaction xl-left-material-interaction
                 xl:flex hidden xl:flex-col sticky text-[12px] mb-12"
             >
-<!--                <PostActionBar class="ld-secondary-background-container flex-col gap-4" :post="post"/>-->
+                <!--                <MaterialActionBar class="ld-secondary-background-container flex-col gap-4" :material="material"/>-->
             </aside>
 
             <div
-                class="post center-interaction bright-background ld-fixed-background flex flex-col items-center max-w-[832px] w-full"
-                ref="postContent">
+                class="material center-interaction bright-background ld-fixed-background flex flex-col items-center max-w-[832px] w-full"
+                ref="materialContent">
 
-                <div class="post-info-dates xl:hidden flex lg:justify-between justify-center w-full xs:px-4 px-2">
+                <div class="material-info-dates xl:hidden flex lg:justify-between justify-center w-full xs:px-4 px-2">
 
-                    <div class="post-info-bar ld-secondary-text flex xl:flex-col flex-wrap justify-center gap-4 lg:mt-0 mt-4 duration-500">
+                    <div
+                        class="material-info-bar ld-secondary-text flex xl:flex-col flex-wrap justify-center gap-4 lg:mt-0 mt-4 duration-500">
                         <span class="author-wrap flex items-center w-fit border-0 sm:gap-0 gap-2">
 
                             <span class="flex justify-center items-center mr-2">
-                                <span class="icon icon-border icon-outline flex justify-center items-center md:h-10 md:w-10 h-8 w-8">
-                                    <img alt="" class="md:h-7 md:w-7 h-6 w-6 mt-0" src="/images/users/avatars/avatar-light-diamond.png">
+                                <span
+                                    class="icon icon-border icon-outline flex justify-center items-center md:h-10 md:w-10 h-8 w-8">
+                                    <img alt="" class="md:h-7 md:w-7 h-6 w-6 mt-0"
+                                         src="/images/users/avatars/avatar-light-diamond.png">
                                 </span>
                             </span>
 
@@ -66,34 +62,16 @@ const isWideSidebar = ref(true)
                             </span>
                         </span>
 
-
-                        <!-- v-if="post.updated_at !== post.created_at" -->
-<!--                        <div  class="date-update flex items-center sm:gap-0 gap-2">-->
-<!--                            <span class="icon-refresh icon flex mr-1"/>-->
-<!--                            <div class="date-action flex flex-col">-->
-<!--                                <span class="date-action-subtitle sm:flex hidden">Обновлено</span>-->
-<!--                                <span class="flex xs:items-start items-center text-center sm:max-w-none max-w-[90px]"-->
-<!--                                      v-tooltip.top="getFullPresentableDate(post.updated_at)"-->
-<!--                                >-->
-<!--                                    {{ getRelativeDate(post.updated_at) }}-->
-<!--                                </span>-->
-<!--                            </div>-->
-<!--                        </div>-->
                         <div class="date-publication flex items-center sm:gap-0 gap-2">
                             <span class="icon-apple icon flex mr-1"/>
                             <div class="date-action flex flex-col">
                                 <span class="date-action-subtitle sm:flex hidden">Опубликовано</span>
-                                <span class="flex xs:items-start items-center text-center sm:max-w-none max-w-[90px]"
-                                      v-tooltip.top="'1 января 2025 10:00'"
-                                >
-                                    1 января 2025
+                                <span class="flex xs:items-start items-center text-center sm:max-w-none max-w-[90px]">
+                                    25 января 2025
                                 </span>
                             </div>
                         </div>
                     </div>
-
-
-
 
                     <button class="lg:flex hidden items-start" @click="isWideSidebar = !isWideSidebar">
                         <span class="icon flex my-4"
@@ -101,17 +79,17 @@ const isWideSidebar = ref(true)
                     </button>
                 </div>
 
-                <h1 class="post-name ld-secondary-text text-center
+                <h1 class="material-name ld-secondary-text text-center
                     md:text-[3rem] sm:text-[2rem] text-[1.5rem] my-4 xs:px-4 px-2"
                 >
                     {{ title }}
                 </h1>
 
-<!--                <div class="preview-wrap flex w-full mt-0 xs:mx-4 xs:px-4 px-2">-->
-<!--                    <img alt="" class="preview w-full mt-0" :src="post!.version!.cover_url">-->
-<!--                </div>-->
+                <!--                <div class="preview-wrap flex w-full mt-0 xs:mx-4 xs:px-4 px-2">-->
+                <!--                    <img alt="" class="preview w-full mt-0" :src="material!.version!.cover_url">-->
+                <!--                </div>-->
 
-                <div class="ld-secondary-text post max-w-full xs:px-4 px-2 py-2">
+                <div class="ld-secondary-text material max-w-full xs:px-4 px-2 py-2">
                     <slot name="content"/>
                 </div>
 
@@ -119,12 +97,12 @@ const isWideSidebar = ref(true)
                     class="ld-secondary-background ld-fixed-background ld-trinity-border-top xl:hidden
                         flex sm:justify-start justify-center sticky w-full bottom-0 mt-2 xs:px-4 px-2 py-2"
                 >
-<!--                    <PostActionBar class="ld-secondary-background-container xs:gap-4 gap-2" :post="post"/>-->
+                    <!--                    <MaterialActionBar class="ld-secondary-background-container xs:gap-4 gap-2" :material="material"/>-->
                 </div>
 
             </div>
 
-            <aside class="right-post-interaction xl-right-post-interaction xl:flex hidden xl:flex-col xl:sticky
+            <aside class="right-material-interaction xl-right-material-interaction xl:flex hidden xl:flex-col xl:sticky
                 text-[12px] xl:max-w-[336px] gap-4"
             >
                 <div class="first-bright-block bright-background flex flex-col">
@@ -135,34 +113,37 @@ const isWideSidebar = ref(true)
                         />
                     </button>
 
-                    <!-- PostInfoBar -->
+                    <!-- MaterialInfoBar -->
                     <div
-                        class="post-info-bar ld-secondary-text flex flex-wrap justify-center lg:mt-0 mt-4
-                            right-post-info-bar xl:flex-col gap-4 duration-500">
+                        class="material-info-bar ld-secondary-text flex flex-wrap justify-center lg:mt-0 mt-4
+                            right-material-info-bar xl:flex-col gap-4 duration-500">
                         <span class="author-wrap flex items-center w-fit border-0 sm:gap-0 gap-2">
 
                             <span class="flex justify-center items-center mr-2">
-                                <span class="icon icon-border icon-outline flex justify-center items-center md:h-10 md:w-10 h-8 w-8">
-                                    <img alt="" class="md:h-7 md:w-7 h-6 w-6 mt-0" src="/images/users/avatars/avatar-light-diamond.png">
+                                <span
+                                    class="icon icon-border icon-outline flex justify-center items-center md:h-10 md:w-10 h-8 w-8">
+                                    <img alt="" class="md:h-7 md:w-7 h-6 w-6 mt-0"
+                                         src="/images/users/avatars/avatar-light-diamond.png">
                                 </span>
                             </span>
 
-                            <span class="date-action author flex flex-col sm:items-start items-center whitespace-nowrap">
+                            <span
+                                class="date-action author flex flex-col sm:items-start items-center whitespace-nowrap">
                                 <span class="date-action-subtitle sm:flex hidden">Автор</span>
                                 <span>Light Diamond</span>
                             </span>
                         </span>
 
 
-                        <!-- v-if="post.updated_at !== post.created_at" -->
+                        <!-- v-if="material.updated_at !== material.created_at" -->
                         <!--                        <div  class="date-update flex items-center sm:gap-0 gap-2">-->
                         <!--                            <span class="icon-refresh icon flex mr-1"/>-->
                         <!--                            <div class="date-action flex flex-col">-->
                         <!--                                <span class="date-action-subtitle sm:flex hidden">Обновлено</span>-->
                         <!--                                <span class="flex xs:items-start items-center text-center sm:max-w-none max-w-[90px]"-->
-                        <!--                                      v-tooltip.top="getFullPresentableDate(post.updated_at)"-->
+                        <!--                                      v-tooltip.top="getFullPresentableDate(material.updated_at)"-->
                         <!--                                >-->
-                        <!--                                    {{ getRelativeDate(post.updated_at) }}-->
+                        <!--                                    {{ getRelativeDate(material.updated_at) }}-->
                         <!--                                </span>-->
                         <!--                            </div>-->
                         <!--                        </div>-->
@@ -170,30 +151,26 @@ const isWideSidebar = ref(true)
                             <span class="icon-apple icon flex mr-1"/>
                             <div class="date-action flex flex-col">
                                 <span class="date-action-subtitle sm:flex hidden">Опубликовано</span>
-                                <span class="flex xs:items-start items-center text-center sm:max-w-none max-w-[90px]"
-                                      v-tooltip.top="'1 января 2025 10:00'"
-                                >
-                                    1 января 2025
+                                <span class="flex xs:items-start items-center text-center sm:max-w-none max-w-[90px]">
+                                    25 января 2025
                                 </span>
                             </div>
                         </div>
                     </div>
 
-
                 </div>
                 <!-- xl:flex -->
                 <div class="next-bright-block bright-background hidden flex-col overflow-hidden">
-                    <div class="post-addition-content flex flex-col w-full p-4 duration-500" style="color: dimgray">
+                    <div class="material-addition-content flex flex-col w-full p-4 duration-500" style="color: dimgray">
                         Дополнительный Контент
                     </div>
                 </div>
             </aside>
-
         </section>
     </div>
 
-    <div v-else class="unavailable-post flex justify-center items-center">
-        <div class="unavailable-post-container flex flex-col items-center">
+    <div v-else class="unavailable-material flex justify-center items-center">
+        <div class="unavailable-material-container flex flex-col items-center">
             <h1 class="text-4xl font-bold text-center mt-8 mb-4">Страница не найдена</h1>
             <div class="mob phantom flex justify-center items-center full-locked">
                 <div class="animation-flying-phantom"/>
@@ -244,17 +221,17 @@ const isWideSidebar = ref(true)
     border: var(--secondary-border);
 }
 
-.xl-left-post-interaction,
-.xl-right-post-interaction {
+.xl-left-material-interaction,
+.xl-right-material-interaction {
     transition: .5s;
 }
 
-.post-addition-content {
+.material-addition-content {
     transform: translateX(100%);
     opacity: 0;
 }
 
-.wide .post-addition-content {
+.wide .material-addition-content {
     transform: translateX(0);
     opacity: 1;
 }
@@ -263,7 +240,7 @@ const isWideSidebar = ref(true)
     margin-bottom: 1rem;
 }
 
-.unavailable-post {
+.unavailable-material {
     height: 720px;
     width: 100%;
 }
@@ -284,7 +261,7 @@ const isWideSidebar = ref(true)
 /* =============== [ Медиа-Запрос { ?px < 1024px + desktop-height } ] =============== */
 
 @media screen and (max-width: 1023px) and (min-height: 654px) {
-    .unavailable-post {
+    .unavailable-material {
         height: 540px;
     }
 }
@@ -292,7 +269,7 @@ const isWideSidebar = ref(true)
 /* =============== [ Медиа-Запрос { ?px < 1024px + mobile-height } ] =============== */
 
 @media screen and (max-width: 1023px) and (max-height: 653px) {
-    .unavailable-post {
+    .unavailable-material {
         height: 380px;
     }
 
@@ -309,30 +286,30 @@ const isWideSidebar = ref(true)
 /* =============== [ Медиа-Запрос { 1281px > ?px } ] =============== */
 
 @media screen and (min-width: 1281px) {
-    .xl-left-post-interaction,
-    .xl-right-post-interaction {
+    .xl-left-material-interaction,
+    .xl-right-material-interaction {
         width: 208px;
         top: 96px;
     }
 
-    .wide .xl-right-post-interaction {
+    .wide .xl-right-material-interaction {
         width: 336px;
         top: 80px;
     }
 
-    .xl-left-post-interaction {
+    .xl-left-material-interaction {
         margin-top: 0;
     }
 
-    .wide .xl-left-post-interaction {
+    .wide .xl-left-material-interaction {
         width: 80px;
     }
 
-    .right-post-info-bar {
+    .right-material-info-bar {
         padding-left: 3rem;
     }
 
-    .wide .right-post-info-bar {
+    .wide .right-material-info-bar {
         padding: 0 1rem 1rem 1rem;
     }
 
@@ -364,7 +341,7 @@ const isWideSidebar = ref(true)
 /* =============== [ Медиа-Запрос { ?px < 1281px } ] =============== */
 
 @media screen and (max-width: 1280px) {
-    .xl-right-post-interaction {
+    .xl-right-material-interaction {
         width: 100%;
     }
 
