@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {useGlobalModalStore} from '@/stores/global-modal'
 import AuthDialog from '@/components/auth/AuthDialog.vue'
-import VerifyEmailDialog from '@/components/auth/VerifyEmailDialog.vue'
+import NotVerifiedEmailDialog from '@/components/auth/NotVerifiedEmailDialog.vue'
 import CookieNotice from '@/components/elements/CookieNotice.vue'
 
 const globalModalStore = useGlobalModalStore()
@@ -9,6 +9,6 @@ const globalModalStore = useGlobalModalStore()
 
 <template>
     <AuthDialog v-model:visible="globalModalStore.authModal"/>
-    <VerifyEmailDialog v-model:visible="globalModalStore.notVerifiedEmailModal"/>
+    <NotVerifiedEmailDialog v-model:visible="globalModalStore.notVerifiedEmailModal"/>
     <CookieNotice/>
 </template>

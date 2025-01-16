@@ -49,48 +49,50 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/settings/security/password', [SettingsController::class, 'changePassword']);
     Route::post('/settings/security/email-verification', [SettingsController::class, 'sendEmailVerificationLink'])->middleware(['throttle:1,1']);
 
-    Route::post('/upload-image', [UploadImageController::class, 'upload'])->middleware(['throttle:10,2']);
-    Route::post('/upload-material-file', [MaterialFileController::class, 'upload'])->middleware(['throttle:3,10']);
+    Route::middleware('verified')->group(function () {
+        Route::post('/upload-image', [UploadImageController::class, 'upload'])->middleware(['throttle:10,2']);
+        Route::post('/upload-material-file', [MaterialFileController::class, 'upload'])->middleware(['throttle:3,10']);
 
-    Route::get('/auth/user/can-create-submission', [UserController::class, 'canCreateSubmission']);
+        Route::get('/auth/user/can-create-submission', [UserController::class, 'canCreateSubmission']);
 
-    Route::get('/material-submissions/{id}', [MaterialSubmissionController::class, 'getById'])->where('id', '[0-9]+');
-    Route::post('/material-submissions', [MaterialSubmissionController::class, 'createDraft']);
-    Route::post('/material-submissions/submit', [MaterialSubmissionController::class, 'submitNew']);
-    Route::patch('/material-submissions/{id}', [MaterialSubmissionController::class, 'update'])->where('id', '[0-9]+');
-    Route::patch('/material-submissions/{id}/submit', [MaterialSubmissionController::class, 'submit'])->where('id', '[0-9]+');
+        Route::get('/material-submissions/{id}', [MaterialSubmissionController::class, 'getById'])->where('id', '[0-9]+');
+        Route::post('/material-submissions', [MaterialSubmissionController::class, 'createDraft']);
+        Route::post('/material-submissions/submit', [MaterialSubmissionController::class, 'submitNew']);
+        Route::patch('/material-submissions/{id}', [MaterialSubmissionController::class, 'update'])->where('id', '[0-9]+');
+        Route::patch('/material-submissions/{id}/submit', [MaterialSubmissionController::class, 'submit'])->where('id', '[0-9]+');
 
-    Route::get('/users/{userId}/material-submissions', [MaterialSubmissionController::class, 'getByUser'])->where('userId', '[0-9]+');
+        Route::get('/users/{userId}/material-submissions', [MaterialSubmissionController::class, 'getByUser'])->where('userId', '[0-9]+');
 
-    Route::post('/materials/{materialId}/likes', [MaterialLikeController::class, 'like'])->where('materialId', '[0-9]+');
-    Route::delete('/materials/{materialId}/likes', [MaterialLikeController::class, 'unlike'])->where('materialId', '[0-9]+');
+        Route::post('/materials/{materialId}/likes', [MaterialLikeController::class, 'like'])->where('materialId', '[0-9]+');
+        Route::delete('/materials/{materialId}/likes', [MaterialLikeController::class, 'unlike'])->where('materialId', '[0-9]+');
 
-    Route::post('/materials/{materialId}/favourites', [FavouriteMaterialController::class, 'addFavourite'])->where('materialId', '[0-9]+');
-    Route::delete('/materials/{materialId}/favourites', [FavouriteMaterialController::class, 'removeFavourite'])->where('materialId', '[0-9]+');
+        Route::post('/materials/{materialId}/favourites', [FavouriteMaterialController::class, 'addFavourite'])->where('materialId', '[0-9]+');
+        Route::delete('/materials/{materialId}/favourites', [FavouriteMaterialController::class, 'removeFavourite'])->where('materialId', '[0-9]+');
 
-    Route::post('/materials/{materialId}/comments', [MaterialCommentController::class, 'submit'])->where('materialId', '[0-9]+');
-    Route::delete('/material-comments/{id}', [MaterialCommentController::class, 'remove'])->where('id', '[0-9]+');
-    Route::patch('/material-comments/{id}', [MaterialCommentController::class, 'edit'])->where('id', '[0-9]+');
+        Route::post('/materials/{materialId}/comments', [MaterialCommentController::class, 'submit'])->where('materialId', '[0-9]+');
+        Route::delete('/material-comments/{id}', [MaterialCommentController::class, 'remove'])->where('id', '[0-9]+');
+        Route::patch('/material-comments/{id}', [MaterialCommentController::class, 'edit'])->where('id', '[0-9]+');
 
-    Route::post('/material-comments/{id}/likes', [MaterialCommentLikeController::class, 'like'])->where('id', '[0-9]+');
-    Route::delete('/material-comments/{id}/likes', [MaterialCommentLikeController::class, 'unlike'])->where('id', '[0-9]+');
+        Route::post('/material-comments/{id}/likes', [MaterialCommentLikeController::class, 'like'])->where('id', '[0-9]+');
+        Route::delete('/material-comments/{id}/likes', [MaterialCommentLikeController::class, 'unlike'])->where('id', '[0-9]+');
 
-    Route::middleware('moderator')->group(function () {
-        Route::get('/users', [UserController::class, 'get']);
+        Route::middleware('moderator')->group(function () {
+            Route::get('/users', [UserController::class, 'get']);
 
-        Route::get('/material-submissions', [MaterialSubmissionController::class, 'get']);
-        Route::put('/material-submissions/{id}/assigned-moderator', [MaterialSubmissionController::class, 'assignModerator'])->where('id', '[0-9]+');
-        Route::patch('/material-submissions/{id}/request-changes', [MaterialSubmissionController::class, 'requestChanges'])->where('id', '[0-9]+');
-        Route::patch('/material-submissions/{id}/accept', [MaterialSubmissionController::class, 'accept'])->where('id', '[0-9]+');
-        Route::patch('/material-submissions/{id}/reject', [MaterialSubmissionController::class, 'reject'])->where('id', '[0-9]+');
+            Route::get('/material-submissions', [MaterialSubmissionController::class, 'get']);
+            Route::put('/material-submissions/{id}/assigned-moderator', [MaterialSubmissionController::class, 'assignModerator'])->where('id', '[0-9]+');
+            Route::patch('/material-submissions/{id}/request-changes', [MaterialSubmissionController::class, 'requestChanges'])->where('id', '[0-9]+');
+            Route::patch('/material-submissions/{id}/accept', [MaterialSubmissionController::class, 'accept'])->where('id', '[0-9]+');
+            Route::patch('/material-submissions/{id}/reject', [MaterialSubmissionController::class, 'reject'])->where('id', '[0-9]+');
 
-        Route::get('/material-comments', [MaterialCommentController::class, 'get']);
-    });
+            Route::get('/material-comments', [MaterialCommentController::class, 'get']);
+        });
 
-    Route::middleware('admin')->group(function () {
-        Route::post('/users', [UserController::class, 'add']);
-        Route::put('/users/{id}', [UserController::class, 'update'])->where('id', '[0-9]+');;
-        Route::delete('/users/{id}', [UserController::class, 'delete'])->where('id', '[0-9]+');;
-        Route::delete('/users', [UserController::class, 'deleteMultiple']);
+        Route::middleware('admin')->group(function () {
+            Route::post('/users', [UserController::class, 'add']);
+            Route::put('/users/{id}', [UserController::class, 'update'])->where('id', '[0-9]+');;
+            Route::delete('/users/{id}', [UserController::class, 'delete'])->where('id', '[0-9]+');;
+            Route::delete('/users', [UserController::class, 'deleteMultiple']);
+        });
     });
 });

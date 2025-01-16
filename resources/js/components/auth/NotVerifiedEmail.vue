@@ -6,7 +6,7 @@ import Button from '@/components/elements/Button.vue'
     <div class="global-error-window flex justify-center items-center">
         <div class="global-error-container ld-primary-background ld-primary-border flex flex-col items-center">
             <h1 class="text-4xl font-bold text-center max-w-[360px] mt-8">Неподтверждённый E-Mail</h1>
-            <p class="text-muted text-center mt-4">Чтобы совершить это действие, пожалуйста, подтвердите Ваш E-Mail.</p>
+            <p class="text-muted text-center mt-4">Для доступа к странице, пожалуйста, подтвердите Ваш E-Mail.</p>
             <div class="mob parrot flex justify-center items-center full-locked">
                 <div class="animation-dancing-red-parrot"></div>
             </div>

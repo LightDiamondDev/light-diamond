@@ -68,7 +68,6 @@ function submitChangeEmail() {
     axios.put('/api/settings/security/email', emailData.value).then((response) => {
         if (response.data.success) {
             toggleEditingEmail()
-            toastStore.success('Email успешно изменён!')
             toastStore.info(
                 `Мы отправили Вам письмо со ссылкой для подтверждения Вашей НОВОЙ электронной почты!`,
                 'Подтверждение E-Mail',
