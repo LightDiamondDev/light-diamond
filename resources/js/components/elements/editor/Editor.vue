@@ -439,9 +439,11 @@ function unsetLink() {
             <EditorVerticalMenu ref="addNodeMenu" title="Добавить" :items="menuItems"/>
         </FloatingMenu>
 
-        <!-- @show="onLinkOverlayPanelShow" -->
-        <OverlayPanel v-if="editable && !withoutMenus" ref="linkOverlayPanel">
-            <form class="content-link-editor ld-primary-background ld-primary-border text-[14px]" @submit.prevent="setLink">
+        <OverlayPanel v-if="editable && !withoutMenus" ref="linkOverlayPanel" @show="onLinkOverlayPanelShow">
+            <form
+                class="content-link-editor ld-primary-background ld-primary-border text-[14px]"
+                @submit.prevent="setLink"
+            >
                 <div class="flex">
                     <Input v-model="currentLink.href" class="editor-link-url w-full" placeholder="https://"
                            autocomplete="off"/>
