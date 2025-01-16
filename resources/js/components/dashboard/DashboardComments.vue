@@ -1,21 +1,11 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
 import {computed, ref} from 'vue'
-
 import {getErrorMessageByCode} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
-
 import {type MaterialComment} from '@/types'
-
 import Paginator from '@/components/elements/Paginator.vue'
 import MaterialCommentComponent from '@/components/material/comment/MaterialComment.vue'
-
-const props = defineProps({
-    userId: {
-        type: Number,
-        default: 1
-    }
-})
 
 const toastStore = useToastStore()
 
