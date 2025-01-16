@@ -1,8 +1,10 @@
 <?php
 
+use Illuminate\Database\Grammar;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Fluent;
 
 return new class extends Migration
 {
@@ -11,9 +13,13 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Grammar::macro('typeCitext', function (Fluent $column) {
+            return 'citext';
+        });
+
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique();
+            $table->addColumn('citext', 'username')->unique();
             $table->string('email')->index();
             $table->timestamp('email_verified_at')->nullable();
             $table->enum('role', ['USER', 'MODERATOR', 'ADMIN'])->default('USER')->index();

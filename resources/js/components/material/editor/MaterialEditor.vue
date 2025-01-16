@@ -997,7 +997,7 @@ loadVersionSubmissions()
         >
             <form action="" class="flex flex-col items-center sm:min-w-[390px] max-w-[390px]">
                 <p class="subtitle md:text-[14px] text-[12px] text-center mb-4">
-                    Вы действительно хотите удалить {{ fileSubmissionForRemove.file.path ? 'ссылочный ' : '' }}файл
+                    Вы действительно хотите удалить {{ fileSubmissionForRemove.file.path ? '' : 'ссылочный ' }}файл
                     «{{ fileSubmissionForRemove!.file_state.localizations![0].name }}»?
                 </p>
 
