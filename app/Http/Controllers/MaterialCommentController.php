@@ -17,6 +17,18 @@ class MaterialCommentController extends Controller
 {
     use ApiJsonResponseTrait, HandlesPagination;
 
+    public function get(Request $request): JsonResponse
+    {
+        ['perPage' => $perPage] = $this->getPaginationParameters($request);
+
+        $comments = MaterialComment
+            ::with(['version.material', 'parentComment.version.material'])
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+
+        return $this->paginateResponse($comments);
+    }
+
     public function getMaterialComments(Request $request, int $materialId): JsonResponse
     {
         $validator = Validator::make($request->all(), [

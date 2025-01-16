@@ -5,22 +5,21 @@ import {computed, ref} from 'vue'
 import {getErrorMessageByCode} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
 
-import {type PostComment} from '@/types'
+import {type MaterialComment} from '@/types'
 
 import Paginator from '@/components/elements/Paginator.vue'
-import {type TabMenuChangeEvent} from '@/components/elements/TabMenu.vue'
-import PostCommentComponent from '@/components/post/comment/PostComment.vue'
+import MaterialCommentComponent from '@/components/material/comment/MaterialComment.vue'
 
 const props = defineProps({
     userId: {
         type: Number,
-        default: 2
+        default: 1
     }
 })
 
 const toastStore = useToastStore()
 
-const comments = ref<PostComment[]>([])
+const comments = ref<MaterialComment[]>([])
 const totalRecords = ref(0)
 
 const page = ref(1)
@@ -33,13 +32,11 @@ const loadRequestData = computed(() => ({
 
 const isLoading = ref(false)
 
-//     axios.get('/api/post-versions', {params: loadRequestData.value}).then((response) => {
-
 function loadComments() {
     isLoading.value = true
     comments.value = []
 
-    axios.get(`/api/users/${props.userId}/comments`, {params: loadRequestData}).then((response) => {
+    axios.get(`/api/material-comments`, {params: loadRequestData}).then((response) => {
         const responseData: CommentLoadResponseData = response.data
         if (responseData.success) {
             comments.value = responseData.records!
@@ -102,7 +99,7 @@ loadComments()
                         <div>
                             <p class="p-4">Комментариев: {{ comments.length }}</p>
                         </div>
-                        <PostCommentComponent
+                        <MaterialCommentComponent
                             v-for="comment in comments"
                             :comment="comment"
                             :id="`comment-${comment.id}`"
@@ -134,6 +131,7 @@ loadComments()
         max-width: calc(100% - 318px);
     }
 }
+
 /* =============== [ Медиа-Запрос { 1181px > ?px } ] =============== */
 
 @media screen and (min-width: 1181px) {

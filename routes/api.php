@@ -83,6 +83,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/material-submissions/{id}/request-changes', [MaterialSubmissionController::class, 'requestChanges'])->where('id', '[0-9]+');
         Route::patch('/material-submissions/{id}/accept', [MaterialSubmissionController::class, 'accept'])->where('id', '[0-9]+');
         Route::patch('/material-submissions/{id}/reject', [MaterialSubmissionController::class, 'reject'])->where('id', '[0-9]+');
+
+        Route::get('/material-comments', [MaterialCommentController::class, 'get']);
     });
 
     Route::middleware('admin')->group(function () {
