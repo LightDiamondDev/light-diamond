@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import axios, {type AxiosError} from 'axios'
-import {RouterLink, useRouter, useRoute} from 'vue-router'
+import axios from 'axios'
+import {RouterLink, useRoute, useRouter} from 'vue-router'
 import {onMounted, ref} from 'vue'
 
 import {useToastStore} from '@/stores/toast'
@@ -26,7 +26,9 @@ function tryVerifyEmail() {
     axios.post(fullUrl).then((response) => {
         isSuccess.value = response.data.success
         responseMessage.value = response.data.message || ''
-        toastStore.success(`Ваша учётная запись успешно подтверждена!`)
+        if (isSuccess.value) {
+            toastStore.success(`Ваша учётная запись успешно подтверждена!`)
+        }
     }).finally(() => {
         isProcessing.value = false
     })
@@ -66,28 +68,34 @@ function tryVerifyEmail() {
     height: 720px;
     width: 100%;
 }
+
 .global-error-container {
     max-width: 480px;
     width: 95%;
 }
+
 .mob.phantom {
     overflow: hidden;
     max-width: 320px;
     height: 200px;
     width: 100%;
 }
+
 .mob.phantom div {
     background-size: 100% 100%;
     height: 160px;
     width: 320px;
 }
+
 .global-error-window h1,
 .global-error-window p {
     color: var(--primary-text-color);
 }
+
 .global-error-container a {
     width: 95%;
 }
+
 .global-error-container p {
     max-width: 400px;
     padding: 0 12px;
@@ -107,9 +115,11 @@ function tryVerifyEmail() {
     .global-error-window {
         height: 390px;
     }
+
     .mob.phantom {
         height: 100px;
     }
+
     .mob.phantom div {
         height: 80px;
         width: 160px;
