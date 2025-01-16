@@ -20,7 +20,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->addColumn('citext', 'username')->unique();
-            $table->string('email')->index();
+            $table->addColumn('citext', 'email')->index();
             $table->timestamp('email_verified_at')->nullable();
             $table->enum('role', ['USER', 'MODERATOR', 'ADMIN'])->default('USER')->index();
             $table->string('password');
