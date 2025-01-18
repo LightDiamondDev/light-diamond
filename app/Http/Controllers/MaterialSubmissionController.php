@@ -122,26 +122,14 @@ class MaterialSubmissionController extends Controller
             ]);
         } else {
             $materialSubmission->load([
-                'material' => fn(BelongsTo $q) => $q->withoutGlobalScope(SoftDeletingScope::class)->with([
-                    'versions' => fn(HasMany $q) => $q->withoutGlobalScope(SoftDeletingScope::class)->with([
-                        'files' => fn(HasMany $q) => $q->withoutGlobalScope(SoftDeletingScope::class),
+                'material' => fn(BelongsTo $q) => $q->withoutGlobalScopes()->with([
+                    'versions' => fn(HasMany $q) => $q->withoutGlobalScopes()->with([
+                        'files' => fn(HasMany $q) => $q->withoutGlobalScopes(),
                     ]),
                 ]),
                 'versionSubmissions'
             ]);
         }
-
-        $materialSubmission->material?->versions->each(function (MaterialVersion $version) {
-            $version->files->each(function (MaterialFile $file) {
-                $file->makeVisible('url');
-            });
-        });
-
-        $materialSubmission->versionSubmissions->each(function (MaterialVersionSubmission $versionSubmission) {
-            $versionSubmission->fileSubmissions->each(function (MaterialFileSubmission $fileSubmission) {
-                $fileSubmission->file->makeVisible('url');
-            });
-        });
 
         return $materialSubmission;
     }

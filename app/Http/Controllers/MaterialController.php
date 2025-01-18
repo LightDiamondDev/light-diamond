@@ -6,11 +6,13 @@ use App\Http\Controllers\Enums\MaterialLoadPeriod;
 use App\Http\Controllers\Enums\MaterialSortType;
 use App\Models\Enums\GameEdition;
 use App\Models\Material;
+use App\Models\MaterialFile;
 use App\Models\MaterialVersion;
 use App\Models\MaterialView;
 use App\Registries\CategoryRegistry;
 use App\Registries\CategoryType;
 use App\Rules\ColumnExistsRule;
+use Auth;
 use Illuminate\Database\Eloquent\Builder as Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -165,6 +167,15 @@ class MaterialController extends Controller
                 $newVersionView->save();
             }
         }
+
+        $user = Auth::user();
+        $material?->versions->each(function (MaterialVersion $version) use ($material, $user) {
+            $version->files->each(function (MaterialFile $file) use ($material, $user) {
+                if ($user === null || !$user->is_moderator && $material->state->author_id !== $user->id) {
+                    $file->makeHidden('url');
+                }
+            });
+        });
 
         return response()->json($material);
     }
