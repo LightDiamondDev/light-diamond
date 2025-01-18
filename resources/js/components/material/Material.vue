@@ -8,7 +8,7 @@ import {useGlobalModalStore} from '@/stores/global-modal'
 import {useToastStore} from '@/stores/toast'
 import {RouterLink, useRoute, useRouter} from 'vue-router'
 
-import {changeTitle, convertDateToString, countHTMLTag, getErrorMessageByCode} from '@/helpers'
+import {changeTitle, convertDateToString, countHTMLTag, getErrorMessageByCode, withCaptcha} from '@/helpers'
 
 import {GameEdition, type Material, type MaterialComment, type MaterialVersion} from '@/types'
 
@@ -162,31 +162,33 @@ function loadComments() {
 }
 
 function submitNewComment() {
-    newComment.errors = {}
-    isSubmittingNewComment.value = true
+    withCaptcha(() => {
+        newComment.errors = {}
+        isSubmittingNewComment.value = true
 
-    if (countHTMLTag(newComment.content!, 'p') < 1) {
-        toastStore.error(`В комментарии должно быть хотя бы одно слово`, 'Комментарии')
-        return
-    }
-
-    axios.post(`/api/materials/${material.value!.id}/comments`, {content: newComment.content}).then((response) => {
-        if (response.data.success) {
-            toastStore.info('Вы прокомментировали «' + material!.value!.state!.localization!.title + '».', 'Комментарии')
-            addComment(response.data.id, newComment.content!)
-            newComment.content = ''
-        } else {
-            if (response.data.errors) {
-                newComment.errors = {} = response.data.errors
-            }
-            if (response.data.message) {
-                toastStore.error(response.data.message)
-            }
+        if (countHTMLTag(newComment.content!, 'p') < 1) {
+            toastStore.error(`В комментарии должно быть хотя бы одно слово`, 'Комментарии')
+            return
         }
-    }).catch((error: AxiosError) => {
-        toastStore.error(getErrorMessageByCode(error.response!.status))
-    }).finally(() => {
-        isSubmittingNewComment.value = false
+
+        axios.post(`/api/materials/${material.value!.id}/comments`, {content: newComment.content}).then((response) => {
+            if (response.data.success) {
+                toastStore.info('Вы прокомментировали «' + material!.value!.state!.localization!.title + '».', 'Комментарии')
+                addComment(response.data.id, newComment.content!)
+                newComment.content = ''
+            } else {
+                if (response.data.errors) {
+                    newComment.errors = {} = response.data.errors
+                }
+                if (response.data.message) {
+                    toastStore.error(response.data.message)
+                }
+            }
+        }).catch((error: AxiosError) => {
+            toastStore.error(getErrorMessageByCode(error.response!.status))
+        }).finally(() => {
+            isSubmittingNewComment.value = false
+        })
     })
 }
 

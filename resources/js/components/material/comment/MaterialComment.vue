@@ -2,7 +2,7 @@
 import axios, {type AxiosError, type AxiosResponse} from 'axios'
 import {computed, onMounted, onUnmounted, type PropType, reactive, ref} from 'vue'
 
-import {getAppUrl, getErrorMessageByCode, getFullPresentableDate, getRelativeDate} from '@/helpers'
+import {getAppUrl, getErrorMessageByCode, getFullPresentableDate, getRelativeDate, withCaptcha} from '@/helpers'
 import {useAuthStore} from '@/stores/auth'
 import {useGlobalModalStore} from '@/stores/global-modal'
 import {useRoute, useRouter} from 'vue-router'
@@ -143,33 +143,35 @@ function submitEdit() {
 }
 
 function submitReply() {
-    replyData.value!.errors = {}
-    isSubmittingReply.value = true
+    withCaptcha(() => {
+        replyData.value!.errors = {}
+        isSubmittingReply.value = true
 
-    axios.post(
-        `/api/materials/${material.value!.id}/comments`,
-        {parent_comment_id: comment.id, content: replyData.value!.content}
-    ).then((response) => {
-        if (response.data.success) {
-            if (comment.user?.username === authStore.username) {
-                toastStore.info('Вы ответили на свой комментарий.', 'Комментарии')
+        axios.post(
+            `/api/materials/${material.value!.id}/comments`,
+            {parent_comment_id: comment.id, content: replyData.value!.content}
+        ).then((response) => {
+            if (response.data.success) {
+                if (comment.user?.username === authStore.username) {
+                    toastStore.info('Вы ответили на свой комментарий.', 'Комментарии')
+                } else {
+                    toastStore.info('Вы ответили на комментарий Пользователя ' + comment.user?.username + '.', 'Комментарии')
+                }
+                emit('submitReply', response.data.id, replyData.value!.content!)
+                replyData.value = null
             } else {
-                toastStore.info('Вы ответили на комментарий Пользователя ' + comment.user?.username + '.', 'Комментарии')
+                if (response.data.errors) {
+                    replyData.value!.errors = {} = response.data.errors
+                }
+                if (response.data.message) {
+                    toastStore.error(response.data.message)
+                }
             }
-            emit('submitReply', response.data.id, replyData.value!.content!)
-            replyData.value = null
-        } else {
-            if (response.data.errors) {
-                replyData.value!.errors = {} = response.data.errors
-            }
-            if (response.data.message) {
-                toastStore.error(response.data.message)
-            }
-        }
-    }).catch((error: AxiosError) => {
-        toastStore.error(getErrorMessageByCode(error.response!.status))
-    }).finally(() => {
-        isSubmittingReply.value = false
+        }).catch((error: AxiosError) => {
+            toastStore.error(getErrorMessageByCode(error.response!.status))
+        }).finally(() => {
+            isSubmittingReply.value = false
+        })
     })
 }
 
@@ -333,7 +335,8 @@ const currentCommentHTMLHeight = computed(() =>
                     </div>
 
                     <div class="flex flex-col gap-1 flex-1 min-w-0">
-                        <div class="comment-header flex justify-between items-center w-full transition-all duration-300 gap-2">
+                        <div
+                            class="comment-header flex justify-between items-center w-full transition-all duration-300 gap-2">
                             <div class="flex md:items-center items-end gap-2">
                                 <p class="comment-username flex flex-wrap flex-row overflow-visible gap-3">
                                     <span class="flex gap-2">
@@ -470,20 +473,25 @@ const currentCommentHTMLHeight = computed(() =>
     color: var(--primary-text-color);
     opacity: .8;
 }
+
 .prima .material-comment .ld-special-text.hai {
     animation: comment-link-color-animation 5s infinite;
 }
+
 .prima .comment-read-more-button:hover,
 .prima .show-comment:hover {
     color: var(--brilliant-color);
 }
+
 .prima blockquote {
     border-left: 4px solid var(--brilliant-color)
 }
+
 .prima pre {
     background-color: rgba(0, 15, 15, .2);
     border: var(--primary-border);
 }
+
 .comments .icon-border {
     height: 42px;
     width: 42px;

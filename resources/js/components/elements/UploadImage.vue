@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {useToastStore} from '@/stores/toast'
 import {ref} from 'vue'
-import {getErrorMessageByCode} from '@/helpers'
+import {withCaptcha, getErrorMessageByCode} from '@/helpers'
 import axios, {type AxiosError} from 'axios'
 
 const props = defineProps({
@@ -101,21 +101,23 @@ function uploadImage(file: File) {
             return
         }
 
-        const formData = new FormData()
-        formData.append('image', file)
-        axios.post('/api/upload-image', formData).then((response) => {
-            if (response.data.success) {
-                const imagePath = response.data.image_path
-                const imageUrl = response.data.image_url
-                emit('upload', imagePath)
-                imageSrc.value = imageUrl
-            } else {
-                if (response.data.errors) {
-                    toastStore.error(response.data.errors['image'][0])
+        withCaptcha(() => {
+            const formData = new FormData()
+            formData.append('image', file)
+            axios.post('/api/upload-image', formData).then((response) => {
+                if (response.data.success) {
+                    const imagePath = response.data.image_path
+                    const imageUrl = response.data.image_url
+                    emit('upload', imagePath)
+                    imageSrc.value = imageUrl
+                } else {
+                    if (response.data.errors) {
+                        toastStore.error(response.data.errors['image'][0])
+                    }
                 }
-            }
-        }).catch((error: AxiosError) => {
-            toastStore.error(getErrorMessageByCode(error.response!.status))
+            }).catch((error: AxiosError) => {
+                toastStore.error(getErrorMessageByCode(error.response!.status))
+            })
         })
     }
     tempImg.src = URL.createObjectURL(file)

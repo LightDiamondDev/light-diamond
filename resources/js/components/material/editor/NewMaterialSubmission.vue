@@ -2,7 +2,7 @@
 import MaterialEditor from '@/components/material/editor/MaterialEditor.vue'
 import {computed, type PropType, ref} from 'vue'
 import axios, {type AxiosError} from 'axios'
-import {getErrorMessageByCode} from '@/helpers'
+import {getErrorMessageByCode, withCaptcha} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
 import OverlayPanel from '@/components/elements/OverlayPanel.vue'
 import {RouterLink, useRouter} from 'vue-router'
@@ -118,52 +118,56 @@ function loadMaterial() {
 }
 
 function submit() {
-    isSubmitting.value = true
-    errors.value = {}
+    withCaptcha(() => {
+        isSubmitting.value = true
+        errors.value = {}
 
-    axios.post('/api/material-submissions/submit', materialSubmission.value).then((response) => {
-        if (response.data.success) {
-            toastStore.success('Заявка отправлена на рассмотрение.')
-            submitOverlayPanel.value?.hide()
-            router.push({name: 'material-submission', params: {id: response.data.id}})
-        } else {
-            if (response.data.errors) {
-                toastStore.error('Не все поля заполнены корректно.')
-                errors.value = response.data.errors
+        axios.post('/api/material-submissions/submit', materialSubmission.value).then((response) => {
+            if (response.data.success) {
+                toastStore.success('Заявка отправлена на рассмотрение.')
+                submitOverlayPanel.value?.hide()
+                router.push({name: 'material-submission', params: {id: response.data.id}})
+            } else {
+                if (response.data.errors) {
+                    toastStore.error('Не все поля заполнены корректно.')
+                    errors.value = response.data.errors
+                }
+                if (response.data.message) {
+                    toastStore.error(response.data.message)
+                }
             }
-            if (response.data.message) {
-                toastStore.error(response.data.message)
-            }
-        }
-    }).catch((error: AxiosError) => {
-        toastStore.error(getErrorMessageByCode(error.response!.status))
-    }).finally(() => {
-        isSubmitting.value = false
+        }).catch((error: AxiosError) => {
+            toastStore.error(getErrorMessageByCode(error.response!.status))
+        }).finally(() => {
+            isSubmitting.value = false
+        })
     })
 }
 
 function saveAsDraft() {
-    isSavingAsDraft.value = true
-    errors.value = {}
+    withCaptcha(() => {
+        isSavingAsDraft.value = true
+        errors.value = {}
 
-    axios.post('/api/material-submissions', materialSubmission.value).then((response) => {
-        if (response.data.success) {
-            toastStore.success('Заявка сохранена как черновик.')
-            const materialSubmissionId = response.data.id
-            router.push({name: 'material-submission', params: {id: materialSubmissionId}})
-        } else {
-            if (response.data.errors) {
-                toastStore.error('Не все поля заполнены верно.')
-                errors.value = response.data.errors
+        axios.post('/api/material-submissions', materialSubmission.value).then((response) => {
+            if (response.data.success) {
+                toastStore.success('Заявка сохранена как черновик.')
+                const materialSubmissionId = response.data.id
+                router.push({name: 'material-submission', params: {id: materialSubmissionId}})
+            } else {
+                if (response.data.errors) {
+                    toastStore.error('Не все поля заполнены верно.')
+                    errors.value = response.data.errors
+                }
+                if (response.data.message) {
+                    toastStore.error(response.data.message)
+                }
             }
-            if (response.data.message) {
-                toastStore.error(response.data.message)
-            }
-        }
-    }).catch((error: AxiosError) => {
-        toastStore.error(getErrorMessageByCode(error.response!.status))
-    }).finally(() => {
-        isSavingAsDraft.value = false
+        }).catch((error: AxiosError) => {
+            toastStore.error(getErrorMessageByCode(error.response!.status))
+        }).finally(() => {
+            isSavingAsDraft.value = false
+        })
     })
 }
 </script>

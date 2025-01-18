@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
-import {reactive} from 'vue'
-import {ref} from 'vue'
+import {reactive, ref} from 'vue'
 
-import {getErrorMessageByCode} from '@/helpers'
+import {withCaptcha, getErrorMessageByCode} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
 
 import Button from '@/components/elements/Button.vue'
@@ -11,33 +10,34 @@ import Input from '@/components/elements/Input.vue'
 
 const toastStore = useToastStore()
 
-const forgotPasswordData = reactive({ email: '' })
+const forgotPasswordData = reactive({email: ''})
 const isProcessing = ref(false)
 const errors = ref([])
 
 function submitForgotPassword() {
-    isProcessing.value = true
-    errors.value = []
+    withCaptcha(() => {
+        isProcessing.value = true
+        errors.value = []
 
-    axios.post('/api/auth/forgot-password', forgotPasswordData).then((response) => {
-        if (response.data.success) {
-            toastStore.success(`Ссылка для сброса пароля отправлена на ${forgotPasswordData.email}.`)
-        } else {
-            if (response.data.errors) {
-                errors.value = response.data.errors
+        axios.post('/api/auth/forgot-password', forgotPasswordData).then((response) => {
+            if (response.data.success) {
+                toastStore.success(`Ссылка для сброса пароля отправлена на ${forgotPasswordData.email}.`)
+            } else {
+                if (response.data.errors) {
+                    errors.value = response.data.errors
+                }
+                if (response.data.message) {
+                    toastStore.error(`${response.data.message}`)
+                }
+                return
             }
-            if (response.data.message) {
-                toastStore.error(`${response.data.message}`)
-            }
-            return
-        }
-    }).catch((error: AxiosError) => {
-        toastStore.error(getErrorMessageByCode(error.response!.status))
-    }).finally(() => {
-        isProcessing.value = false
+        }).catch((error: AxiosError) => {
+            toastStore.error(getErrorMessageByCode(error.response!.status))
+        }).finally(() => {
+            isProcessing.value = false
+        })
     })
 }
-
 </script>
 
 <template>

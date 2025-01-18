@@ -3,7 +3,6 @@ import {type RouteLocation, useRoute, useRouter} from 'vue-router'
 import {useToastStore} from '@/stores/toast'
 import {useAuthStore} from '@/stores/auth'
 import {watch} from 'vue'
-
 import GlobalModals from '@/components/GlobalModals.vue'
 import Toaster from '@/components/elements/Toaster.vue'
 import Header from '@/components/Header.vue'

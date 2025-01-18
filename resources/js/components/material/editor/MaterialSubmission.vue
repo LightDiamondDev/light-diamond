@@ -12,7 +12,8 @@ import {
     getErrorMessageByCode,
     getFullPresentableDate,
     getMaterialSubmissionStatusInfo,
-    getRelativeDate
+    getRelativeDate,
+    withCaptcha
 } from '@/helpers'
 
 import {
@@ -158,53 +159,57 @@ function loadModerators() {
 }
 
 function submit() {
-    isSubmitting.value = true
-    errors.value = {}
+    withCaptcha(() => {
+        isSubmitting.value = true
+        errors.value = {}
 
-    axios.patch(`/api/material-submissions/${props.id}/submit`, materialSubmission.value).then((response) => {
-        if (response.data.success) {
-            materialSubmission.value = response.data.submission
-            isChanged.value = false
-            toastStore.success('Заявка отправлена на рассмотрение.')
-            submitOverlayPanel.value?.hide()
-        } else {
-            if (response.data.errors) {
-                toastStore.error('Не все поля заполнены корректно.')
-                errors.value = response.data.errors
+        axios.patch(`/api/material-submissions/${props.id}/submit`, materialSubmission.value).then((response) => {
+            if (response.data.success) {
+                materialSubmission.value = response.data.submission
+                isChanged.value = false
+                toastStore.success('Заявка отправлена на рассмотрение.')
+                submitOverlayPanel.value?.hide()
+            } else {
+                if (response.data.errors) {
+                    toastStore.error('Не все поля заполнены корректно.')
+                    errors.value = response.data.errors
+                }
+                if (response.data.message) {
+                    toastStore.error(response.data.message)
+                }
             }
-            if (response.data.message) {
-                toastStore.error(response.data.message)
-            }
-        }
-    }).catch((error: AxiosError) => {
-        toastStore.error(getErrorMessageByCode(error.response!.status))
-    }).finally(() => {
-        isSubmitting.value = false
+        }).catch((error: AxiosError) => {
+            toastStore.error(getErrorMessageByCode(error.response!.status))
+        }).finally(() => {
+            isSubmitting.value = false
+        })
     })
 }
 
 function saveChanges() {
-    isUpdating.value = true
-    errors.value = {}
+    withCaptcha(() => {
+        isUpdating.value = true
+        errors.value = {}
 
-    axios.patch(`/api/material-submissions/${props.id}`, materialSubmission.value).then((response) => {
-        if (response.data.success) {
-            materialSubmission.value = response.data.submission
-            isChanged.value = false
-            toastStore.success('Изменения успешно сохранены.')
-        } else {
-            if (response.data.errors) {
-                toastStore.error('Не все поля заполнены корректно.')
-                errors.value = response.data.errors
+        axios.patch(`/api/material-submissions/${props.id}`, materialSubmission.value).then((response) => {
+            if (response.data.success) {
+                materialSubmission.value = response.data.submission
+                isChanged.value = false
+                toastStore.success('Изменения успешно сохранены.')
+            } else {
+                if (response.data.errors) {
+                    toastStore.error('Не все поля заполнены корректно.')
+                    errors.value = response.data.errors
+                }
+                if (response.data.message) {
+                    toastStore.error(response.data.message)
+                }
             }
-            if (response.data.message) {
-                toastStore.error(response.data.message)
-            }
-        }
-    }).catch((error: AxiosError) => {
-        toastStore.error(getErrorMessageByCode(error.response!.status))
-    }).finally(() => {
-        isUpdating.value = false
+        }).catch((error: AxiosError) => {
+            toastStore.error(getErrorMessageByCode(error.response!.status))
+        }).finally(() => {
+            isUpdating.value = false
+        })
     })
 }
 

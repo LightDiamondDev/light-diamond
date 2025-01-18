@@ -58,6 +58,10 @@ class MaterialFile extends Model
         'extension',
     ];
 
+    protected $hidden = [
+        'url',
+    ];
+
     protected $casts = [
         'published_at' => 'datetime',
     ];

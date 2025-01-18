@@ -1,9 +1,14 @@
 import {MaterialSubmissionStatus} from '@/types'
+import {useGlobalModalStore} from '@/stores/global-modal'
+import Cookies from 'js-cookie'
+import {useAuthStore} from '@/stores/auth'
 
 interface ImportMeta {
     env: {
         VITE_APP_NAME: string
         VITE_APP_URL: string
+        VITE_HCAPTCHA_SITEKEY: string
+        VITE_HCAPTCHA_ENABLED: boolean
     }
 }
 
@@ -11,8 +16,12 @@ export function getAppUrl(): string {
     return import.meta.env.VITE_APP_URL
 }
 
+export function getHCaptchaSiteKey(): string {
+    return import.meta.env.VITE_HCAPTCHA_SITEKEY
+}
+
 export function getTitle() {
-    return document.title = document.title.slice(0, -16)
+    return document.title.slice(0, -(' — ' + import.meta.env.VITE_APP_NAME).length)
 }
 
 export function changeTitle(title: string) {
@@ -39,6 +48,23 @@ export function getErrorMessageByCode(code: number) {
             return 'Произошла внутренняя ошибка...'
         default:
             return ''
+    }
+}
+
+export function withCaptcha(action: () => void) {
+    if (
+        import.meta.env.VITE_HCAPTCHA_ENABLED
+        && !useAuthStore().isModerator
+        && !Cookies.get('hcaptcha_token')
+    ) {
+        useGlobalModalStore().captchaModal = true
+        useGlobalModalStore().captchaModalAction = (token) => {
+            const inTenMinutes = new Date(new Date().getTime() + 10 * 60 * 1000)
+            Cookies.set('hcaptcha_token', token, {expires: inTenMinutes})
+            action()
+        }
+    } else {
+        action()
     }
 }
 

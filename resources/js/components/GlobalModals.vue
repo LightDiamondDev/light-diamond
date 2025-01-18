@@ -2,8 +2,8 @@
 import {useGlobalModalStore} from '@/stores/global-modal'
 import AuthDialog from '@/components/auth/AuthDialog.vue'
 import NotVerifiedEmailDialog from '@/components/auth/NotVerifiedEmailDialog.vue'
+import CaptchaDialog from '@/components/modals/CaptchaDialog.vue'
 import CookieNotice from '@/components/elements/CookieNotice.vue'
-import CaptchaDialog from '@/components/elements/CaptchaDialog.vue'
 
 const globalModalStore = useGlobalModalStore()
 </script>
@@ -11,6 +11,6 @@ const globalModalStore = useGlobalModalStore()
 <template>
     <AuthDialog v-model:visible="globalModalStore.authModal"/>
     <NotVerifiedEmailDialog v-model:visible="globalModalStore.notVerifiedEmailModal"/>
+    <CaptchaDialog v-model:visible="globalModalStore.captchaModal"/>
     <CookieNotice/>
-<!--    <CaptchaDialog v-model:visible="globalModalStore.isCaptcha"/>-->
 </template>

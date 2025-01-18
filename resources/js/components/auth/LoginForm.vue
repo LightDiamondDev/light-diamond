@@ -2,7 +2,7 @@
 import axios, {type AxiosError} from 'axios'
 import {reactive, ref} from 'vue'
 
-import {getErrorMessageByCode} from '@/helpers'
+import {withCaptcha, getErrorMessageByCode} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
 import {useRoute, useRouter} from 'vue-router'
 
@@ -28,26 +28,28 @@ const emit = defineEmits([
 ])
 
 function submitLogin() {
-    isProcessing.value = true
-    errors.value = []
+    withCaptcha(() => {
+        isProcessing.value = true
+        errors.value = []
 
-    axios.post('/api/auth/login', loginData).then((response) => {
-        if (response.data.success) {
-            router.replace({path: route.path, query: {...route.query, authorized: true}}).then(() => {
-                router.go(0)
-            })
-        } else {
-            if (response.data.errors) {
-                errors.value = response.data.errors
+        axios.post('/api/auth/login', loginData).then((response) => {
+            if (response.data.success) {
+                router.replace({path: route.path, query: {...route.query, authorized: true}}).then(() => {
+                    router.go(0)
+                })
+            } else {
+                if (response.data.errors) {
+                    errors.value = response.data.errors
+                }
+                if (response.data.message) {
+                    toastStore.error(response.data.message)
+                }
             }
-            if (response.data.message) {
-                toastStore.error(response.data.message)
-            }
-        }
-    }).catch((error: AxiosError) => {
-        toastStore.error(getErrorMessageByCode(error.response!.status))
-    }).finally(() => {
-        isProcessing.value = false
+        }).catch((error: AxiosError) => {
+            toastStore.error(getErrorMessageByCode(error.response!.status))
+        }).finally(() => {
+            isProcessing.value = false
+        })
     })
 }
 </script>

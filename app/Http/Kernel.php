@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'moderator' => \App\Http\Middleware\RequireModerator::class,
         'admin' => \App\Http\Middleware\RequireAdmin::class,
+        'verify.captcha' => \App\Http\Middleware\VerifyHCaptcha::class,
     ];
 }

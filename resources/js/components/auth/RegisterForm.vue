@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
-import {reactive} from 'vue'
-import {ref} from 'vue'
+import {reactive, ref} from 'vue'
 
-import {getErrorMessageByCode} from '@/helpers'
+import {withCaptcha, getErrorMessageByCode} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
-import {useRouter, useRoute} from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 
 import Button from '@/components/elements/Button.vue'
 import Input from '@/components/elements/Input.vue'
@@ -25,29 +24,31 @@ const errors = ref([])
 const router = useRouter()
 const route = useRoute()
 
-const emit = defineEmits([ 'switch-to-login-form' ])
+const emit = defineEmits(['switch-to-login-form'])
 
 function submitRegister() {
-    isProcessing.value = true
-    errors.value = []
+    withCaptcha(() => {
+        errors.value = []
+        isProcessing.value = true
 
-    axios.post('/api/auth/register', registerData).then((response) => {
-        if (response.data.success) {
-            router.replace({ path: route.path, query: { ...route.query, registered: true } }).then(() => {
-                router.go(0)
-            })
-        } else {
-            if (response.data.errors) {
-                errors.value = response.data.errors
+        axios.post('/api/auth/register', registerData).then((response) => {
+            if (response.data.success) {
+                router.replace({path: route.path, query: {...route.query, registered: true}}).then(() => {
+                    router.go(0)
+                })
+            } else {
+                if (response.data.errors) {
+                    errors.value = response.data.errors
+                }
+                if (response.data.message) {
+                    toastStore.error(response.data.message)
+                }
             }
-            if (response.data.message) {
-                toastStore.error(response.data.message)
-            }
-        }
-    }).catch((error: AxiosError) => {
-        toastStore.error(getErrorMessageByCode(error.response!.status))
-    }).finally(() => {
-        isProcessing.value = false
+        }).catch((error: AxiosError) => {
+            toastStore.error(getErrorMessageByCode(error.response!.status))
+        }).finally(() => {
+            isProcessing.value = false
+        })
     })
 }
 </script>
@@ -143,7 +144,9 @@ function submitRegister() {
                 </label>
                 <div class="terms ld-title-font flex flex-col text-center text-[0.7rem]">
                     <RouterLink class="ld-brilliant-link border-0" :to="{ name: 'home' }">с Правилами Сайта</RouterLink>
-                    <RouterLink class="ld-brilliant-link border-0" :to="{ name: 'home' }">и Политикой Конфиденциальности</RouterLink>
+                    <RouterLink class="ld-brilliant-link border-0" :to="{ name: 'home' }">и Политикой
+                        Конфиденциальности
+                    </RouterLink>
                 </div>
             </div>
 
@@ -175,10 +178,12 @@ function submitRegister() {
 .ld-brilliant-link {
     color: var(--brilliant-color);
 }
+
 .ld-brilliant-link:hover {
     color: var(--hover-text-color);
     text-decoration: underline;
 }
+
 .policy-agree-line {
     background: none;
 }

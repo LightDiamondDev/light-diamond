@@ -8,12 +8,15 @@ docker compose build
 echo "Создаём .env на основе .env.example..."
 docker compose run --rm --no-deps app cp .env.example .env
 
-# Запрашиваем пароль для базы данных
+# Запрашиваем секретные данные для .env
 read -p "Введите пароль для базы данных (DB_PASSWORD): " DB_PASSWORD
+read -p "Введите HCaptcha sitekey: " HCAPTCHA_SITEKEY
+read -p "Введите HCaptcha secret: " HCAPTCHA_SECRET
 
 # Обновляем .env
 sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env
-echo "Пароль для базы данных обновлён в .env."
+sed -i "s/HCAPTCHA_SITEKEY=.*/HCAPTCHA_SITEKEY=$HCAPTCHA_SITEKEY/" .env
+sed -i "s/HCAPTCHA_SECRET=.*/HCAPTCHA_SECRET=$HCAPTCHA_SECRET/" .env
 
 # Устанавливаем PHP-зависимости
 echo "Устанавливаем PHP-зависимости..."

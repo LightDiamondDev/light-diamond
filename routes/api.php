@@ -26,10 +26,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/auth/user', fn(Request $request) => $request->user());
-Route::post('/auth/login', [AuthController::class, 'login']);
-Route::post('/auth/register', [AuthController::class, 'register']);
+Route::post('/auth/login', [AuthController::class, 'login'])->middleware('verify.captcha');
+Route::post('/auth/register', [AuthController::class, 'register'])->middleware('verify.captcha');
 Route::post('/auth/logout', [AuthController::class, 'logout']);
-Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('verify.captcha');
 
 Route::get('/users/{username}', [UserController::class, 'getByUsername']);
 
@@ -41,7 +41,7 @@ Route::get('/users/{userId}/favourite-materials', [MaterialController::class, 'g
 Route::get('/materials/{materialId}/comments', [MaterialCommentController::class, 'getMaterialComments'])->where('materialId', '[0-9]+');
 Route::get('/users/{userId}/comments', [MaterialCommentController::class, 'getUserComments'])->where('userId', '[0-9]+');
 
-Route::get('/material-versions/{versionId}/download/{fileId}', [MaterialFileController::class, 'download'])->where('versionId', '[0-9]+')->where('fileId', '[0-9]+');
+Route::get('/material-versions/{versionId}/download/{fileId}', [MaterialFileController::class, 'download'])->middleware('verify.captcha')->where('versionId', '[0-9]+')->where('fileId', '[0-9]+');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::put('/settings/profile/username', [SettingsController::class, 'changeUsername']);
@@ -50,16 +50,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/settings/security/email-verification', [SettingsController::class, 'sendEmailVerificationLink'])->middleware(['throttle:1,1']);
 
     Route::middleware('verified')->group(function () {
-        Route::post('/upload-image', [UploadImageController::class, 'upload'])->middleware(['throttle:10,2']);
-        Route::post('/upload-material-file', [MaterialFileController::class, 'upload'])->middleware(['throttle:3,10']);
+        Route::post('/upload-image', [UploadImageController::class, 'upload'])->middleware('verify.captcha')->middleware(['throttle:10,2']);
+        Route::post('/upload-material-file', [MaterialFileController::class, 'upload'])->middleware('verify.captcha')->middleware(['throttle:3,10']);
 
         Route::get('/auth/user/can-create-submission', [UserController::class, 'canCreateSubmission']);
 
         Route::get('/material-submissions/{id}', [MaterialSubmissionController::class, 'getById'])->where('id', '[0-9]+');
-        Route::post('/material-submissions', [MaterialSubmissionController::class, 'createDraft']);
-        Route::post('/material-submissions/submit', [MaterialSubmissionController::class, 'submitNew']);
-        Route::patch('/material-submissions/{id}', [MaterialSubmissionController::class, 'update'])->where('id', '[0-9]+');
-        Route::patch('/material-submissions/{id}/submit', [MaterialSubmissionController::class, 'submit'])->where('id', '[0-9]+');
+        Route::post('/material-submissions', [MaterialSubmissionController::class, 'createDraft'])->middleware('verify.captcha');
+        Route::post('/material-submissions/submit', [MaterialSubmissionController::class, 'submitNew'])->middleware('verify.captcha');
+        Route::patch('/material-submissions/{id}', [MaterialSubmissionController::class, 'update'])->middleware('verify.captcha')->where('id', '[0-9]+');
+        Route::patch('/material-submissions/{id}/submit', [MaterialSubmissionController::class, 'submit'])->middleware('verify.captcha')->where('id', '[0-9]+');
 
         Route::get('/users/{userId}/material-submissions', [MaterialSubmissionController::class, 'getByUser'])->where('userId', '[0-9]+');
 
@@ -69,7 +69,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/materials/{materialId}/favourites', [FavouriteMaterialController::class, 'addFavourite'])->where('materialId', '[0-9]+');
         Route::delete('/materials/{materialId}/favourites', [FavouriteMaterialController::class, 'removeFavourite'])->where('materialId', '[0-9]+');
 
-        Route::post('/materials/{materialId}/comments', [MaterialCommentController::class, 'submit'])->where('materialId', '[0-9]+');
+        Route::post('/materials/{materialId}/comments', [MaterialCommentController::class, 'submit'])->middleware('verify.captcha')->where('materialId', '[0-9]+');
         Route::delete('/material-comments/{id}', [MaterialCommentController::class, 'remove'])->where('id', '[0-9]+');
         Route::patch('/material-comments/{id}', [MaterialCommentController::class, 'edit'])->where('id', '[0-9]+');
 

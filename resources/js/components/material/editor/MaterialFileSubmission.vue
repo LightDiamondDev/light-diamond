@@ -5,7 +5,7 @@ import Input from '@/components/elements/Input.vue'
 import Select from '@/components/elements/Select.vue'
 import axios, {type AxiosError} from 'axios'
 import Button from '@/components/elements/Button.vue'
-import {getErrorMessageByCode, getFullPresentableDate, getRelativeDate} from '@/helpers'
+import {withCaptcha, getErrorMessageByCode, getFullPresentableDate, getRelativeDate} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
 
 const props = defineProps({
@@ -144,26 +144,28 @@ function download() {
     if (props.fileSubmission!.file!.url) {
         window.open(props.fileSubmission!.file!.url!, '_blank')
     } else {
-        const versionId = props.fileSubmission!.file!.version_id
-        const fileId = props.fileSubmission!.file!.id
+        withCaptcha(() => {
+            const versionId = props.fileSubmission!.file!.version_id
+            const fileId = props.fileSubmission!.file!.id
 
-        if (versionId === undefined || fileId === undefined) {
-            return
-        }
+            if (versionId === undefined || fileId === undefined) {
+                return
+            }
 
-        axios.get(`/api/material-versions/${versionId}/download/${fileId}`, {responseType: 'blob'}).then((response) => {
-            const href = URL.createObjectURL(response.data)
+            axios.get(`/api/material-versions/${versionId}/download/${fileId}`, {responseType: 'blob'}).then((response) => {
+                const href = URL.createObjectURL(response.data)
 
-            const link = document.createElement('a')
-            link.href = href
-            link.download = props.fileSubmission!.file!.path!.replace(/^.*[\\/]/, '')
-            document.body.appendChild(link)
-            link.click()
+                const link = document.createElement('a')
+                link.href = href
+                link.download = props.fileSubmission!.file!.path!.replace(/^.*[\\/]/, '')
+                document.body.appendChild(link)
+                link.click()
 
-            document.body.removeChild(link)
-            URL.revokeObjectURL(href)
-        }).catch((error: AxiosError) => {
-            useToastStore().error(getErrorMessageByCode(error.response!.status))
+                document.body.removeChild(link)
+                URL.revokeObjectURL(href)
+            }).catch((error: AxiosError) => {
+                useToastStore().error(getErrorMessageByCode(error.response!.status))
+            })
         })
     }
 }

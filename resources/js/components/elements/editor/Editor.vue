@@ -2,7 +2,7 @@
 import axios, {type AxiosError} from 'axios'
 import {computed, onUnmounted, type PropType, reactive, ref, watch} from 'vue'
 import {BubbleMenu, EditorContent, type Extensions, FloatingMenu, useEditor} from '@tiptap/vue-3'
-import {countHTMLTag, getErrorMessageByCode} from '@/helpers'
+import {countHTMLTag, withCaptcha, getErrorMessageByCode} from '@/helpers'
 import {EditorState} from 'prosemirror-state'
 import {useToastStore} from '@/stores/toast'
 
@@ -370,19 +370,21 @@ function uploadImage(image: File, callback: ((url: string) => void)) {
         return
     }
 
-    const formData = new FormData()
-    formData.append('image', image)
+    withCaptcha(() => {
+        const formData = new FormData()
+        formData.append('image', image)
 
-    axios.post('/api/upload-image', formData).then((response) => {
-        if (response.data.success) {
-            callback(response.data.image_url)
-        } else {
-            if (response.data.errors) {
-                toastStore.error(response.data.errors['image'][0])
+        axios.post('/api/upload-image', formData).then((response) => {
+            if (response.data.success) {
+                callback(response.data.image_url)
+            } else {
+                if (response.data.errors) {
+                    toastStore.error(response.data.errors['image'][0])
+                }
             }
-        }
-    }).catch((error: AxiosError) => {
-        toastStore.error(getErrorMessageByCode(error.response!.status))
+        }).catch((error: AxiosError) => {
+            toastStore.error(getErrorMessageByCode(error.response!.status))
+        })
     })
 }
 

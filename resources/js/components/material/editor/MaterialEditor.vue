@@ -11,7 +11,7 @@ import {
     type MaterialVersionSubmission,
     SubmissionType
 } from '@/types'
-import {convertDateToString, getErrorMessageByCode} from '@/helpers'
+import {convertDateToString, withCaptcha, getErrorMessageByCode} from '@/helpers'
 import useCategoryRegistry from '@/categoryRegistry'
 import {useToastStore} from '@/stores/toast'
 
@@ -332,39 +332,41 @@ function onCategoryChange() {
 }
 
 function uploadFile(file: File) {
-    const formData = new FormData()
-    formData.append('file', file)
+    withCaptcha(() => {
+        const formData = new FormData()
+        formData.append('file', file)
 
-    axios.post('/api/upload-material-file', formData).then((response) => {
-        if (response.data.success) {
-            toastStore.success('Файл успешно загружен!')
-            const filePath = response.data.file_path
-            const nowDate = new Date().toISOString()
+        axios.post('/api/upload-material-file', formData).then((response) => {
+            if (response.data.success) {
+                toastStore.success('Файл успешно загружен!')
+                const filePath = response.data.file_path
+                const nowDate = new Date().toISOString()
 
-            currentVersionSubmission.value!.file_submissions?.push({
-                type: SubmissionType.CREATE,
-                file: {
-                    name: file.name,
-                    path: filePath,
-                    size: file.size,
-                    extension: filePath.slice(filePath.lastIndexOf('.') + 1),
-                    created_at: nowDate,
-                    updated_at: nowDate,
-                },
-                file_state: {
-                    localizations: [
-                        {language: 'ru', name: file.name}
-                    ],
-                },
-            })
-            emit('edit')
-        } else {
-            if (response.data.errors) {
-                toastStore.error(response.data.errors['file'][0])
+                currentVersionSubmission.value!.file_submissions?.push({
+                    type: SubmissionType.CREATE,
+                    file: {
+                        name: file.name,
+                        path: filePath,
+                        size: file.size,
+                        extension: filePath.slice(filePath.lastIndexOf('.') + 1),
+                        created_at: nowDate,
+                        updated_at: nowDate,
+                    },
+                    file_state: {
+                        localizations: [
+                            {language: 'ru', name: file.name}
+                        ],
+                    },
+                })
+                emit('edit')
+            } else {
+                if (response.data.errors) {
+                    toastStore.error(response.data.errors['file'][0])
+                }
             }
-        }
-    }).catch((error: AxiosError) => {
-        toastStore.error(getErrorMessageByCode(error.response!.status))
+        }).catch((error: AxiosError) => {
+            toastStore.error(getErrorMessageByCode(error.response!.status))
+        })
     })
 }
 
