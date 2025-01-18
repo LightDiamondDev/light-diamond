@@ -2,6 +2,8 @@ import {MaterialSubmissionStatus} from '@/types'
 import {useGlobalModalStore} from '@/stores/global-modal'
 import Cookies from 'js-cookie'
 import {useAuthStore} from '@/stores/auth'
+import axios, {type AxiosError} from 'axios'
+import {useToastStore} from '@/stores/toast'
 
 interface ImportMeta {
     env: {
@@ -55,13 +57,24 @@ export function withCaptcha(action: () => void) {
     if (
         import.meta.env.VITE_HCAPTCHA_ENABLED
         && !useAuthStore().isModerator
-        && !Cookies.get('hcaptcha_token')
+        && !Cookies.get('captcha_solved')
     ) {
         useGlobalModalStore().captchaModal = true
-        useGlobalModalStore().captchaModalAction = (token) => {
-            const inTenMinutes = new Date(new Date().getTime() + 10 * 60 * 1000)
-            Cookies.set('hcaptcha_token', token, {expires: inTenMinutes})
-            action()
+        useGlobalModalStore().captchaModalAction = async (captchaToken: string) => {
+            axios.post('/api/captcha-tokens', {token: captchaToken}).then((response) => {
+                if (response.data.success) {
+                    const expiry = new Date(response.data.expiry)
+                    Cookies.set('captcha_solved', '1', {expires: expiry})
+                    action()
+                } else {
+                    if (response.data.message) {
+                        useToastStore().error(`${response.data.message}`)
+                    }
+                    return
+                }
+            }).catch((error: AxiosError) => {
+                useToastStore().error(getErrorMessageByCode(error.response!.status))
+            })
         }
     } else {
         action()

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CaptchaTokenController;
 use App\Http\Controllers\FavouriteMaterialController;
 use App\Http\Controllers\MaterialCommentController;
 use App\Http\Controllers\MaterialCommentLikeController;
@@ -42,6 +43,8 @@ Route::get('/materials/{materialId}/comments', [MaterialCommentController::class
 Route::get('/users/{userId}/comments', [MaterialCommentController::class, 'getUserComments'])->where('userId', '[0-9]+');
 
 Route::get('/material-versions/{versionId}/download/{fileId}', [MaterialFileController::class, 'download'])->middleware('verify.captcha')->where('versionId', '[0-9]+')->where('fileId', '[0-9]+');
+
+Route::post('/captcha-tokens', [CaptchaTokenController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::put('/settings/profile/username', [SettingsController::class, 'changeUsername']);
