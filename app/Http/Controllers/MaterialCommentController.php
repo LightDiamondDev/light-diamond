@@ -93,7 +93,7 @@ class MaterialCommentController extends Controller
         $user = Auth::user();
 
         $comment          = MaterialComment::make();
-        $comment->content = $request->get('content');
+        $comment->content = clean($request->get('content'), config('purifier.comment'));
         $comment->version()->associate($material->version);
         $comment->user()->associate($user);
         if ($parentComment !== null) {

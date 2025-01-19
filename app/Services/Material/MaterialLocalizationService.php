@@ -16,7 +16,7 @@ class MaterialLocalizationService
         $localization->cover       = $dto->cover;
         $localization->title       = $dto->title;
         $localization->description = $dto->description;
-        $localization->content     = $dto->content;
+        $localization->content     = clean($dto->content, config('purifier.material'));
         $localization->save();
 
         return $localization;
@@ -36,8 +36,8 @@ class MaterialLocalizationService
         if ($dto->description !== null) {
             $localization->description = $dto->description;
         }
-        if ($dto->content !== null) {
-            $localization->content = $dto->content;
+        if ($dto->content !== null && $dto->content !== $localization->content) {
+            $localization->content = clean($dto->content, config('purifier.material'));
         }
         $localization->save();
     }
