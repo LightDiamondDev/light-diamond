@@ -539,8 +539,9 @@ loadMaterialSubmission()
                             }"
                             class-wrap="ld-primary-background"
                             class-preset="gap-1 px-2 py-0.5 whitespace-nowrap"
+                            class-label="block truncate"
                             label="История действий"
-                            icon="icon-script"
+                            icon="icon-script min-w-[2rem]"
                             @click="openHistoryDialog"
                         />
                     </div>

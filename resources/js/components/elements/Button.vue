@@ -52,11 +52,7 @@ const props = defineProps({
                 />
                 <span class="label duration-200" :class="labelClasses">{{ label }}</span>
             </span>
-            <span class="base"></span>
+            <span class="base"/>
         </span>
     </Component>
 </template>
-
-<style scoped>
-
-</style>

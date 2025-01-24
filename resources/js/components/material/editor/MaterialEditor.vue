@@ -1,17 +1,11 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
 import {computed, type PropType, ref, toRaw, watch} from 'vue'
-import {
-    GameEdition,
-    type MaterialFile,
-    type MaterialFileState,
-    type MaterialFileSubmission,
-    type MaterialSubmission,
-    type MaterialVersion,
-    type MaterialVersionSubmission,
-    SubmissionType
-} from '@/types'
+
 import {convertDateToString, withCaptcha, getErrorMessageByCode} from '@/helpers'
+import {useAuthStore} from '@/stores/auth'
+import usePreferenceManager from '@/preference-manager'
+import {deepClone, pick} from '@/utils/object'
 import useCategoryRegistry from '@/categoryRegistry'
 import {useToastStore} from '@/stores/toast'
 
@@ -28,6 +22,17 @@ import {Underline} from '@tiptap/extension-underline'
 
 import CharacterCount from '@tiptap/extension-character-count'
 
+import {
+    GameEdition,
+    type MaterialFile,
+    type MaterialFileState,
+    type MaterialFileSubmission,
+    type MaterialSubmission,
+    type MaterialVersion,
+    type MaterialVersionSubmission,
+    SubmissionType
+} from '@/types'
+
 import Button from '@/components/elements/Button.vue'
 import Editor from '@/components/elements/editor/Editor.vue'
 import InputError from '@/components/elements/InputError.vue'
@@ -37,16 +42,16 @@ import ShineButton from '@/components/elements/ShineButton.vue'
 import Textarea from '@/components/elements/Textarea.vue'
 import UploadImage from '@/components/elements/UploadImage.vue'
 import UploadFile from '@/components/elements/UploadFile.vue'
+
 import MaterialFileSubmissionComponent, {
     type FileUpdateEvent
 } from '@/components/material/editor/MaterialFileSubmission.vue'
-import UserAvatar from '@/components/user/UserAvatar.vue'
-import Dialog from '@/components/elements/Dialog.vue'
-import ProfileLink from '@/components/elements/ProfileLink.vue'
+
 import Checkbox from '@/components/elements/Checkbox.vue'
-import {useAuthStore} from '@/stores/auth'
+import Dialog from '@/components/elements/Dialog.vue'
 import MaterialVersionSubmissionSelect from '@/components/material/editor/MaterialVersionSubmissionSelect.vue'
-import {deepClone, pick} from '@/utils/object'
+import ProfileLink from '@/components/elements/ProfileLink.vue'
+import UserAvatar from '@/components/user/UserAvatar.vue'
 
 defineProps({
     editable: {
@@ -74,6 +79,7 @@ const emit = defineEmits(['edit'])
 const materialSubmission = defineModel<MaterialSubmission>({required: true})
 
 const categoryRegistry = useCategoryRegistry()
+const preferenceManager = usePreferenceManager()
 const toastStore = useToastStore()
 
 const currentLocalization = computed(() => materialSubmission.value.material_state!.localizations![0])
@@ -106,16 +112,18 @@ const currentVersionSubmission = computed<MaterialVersionSubmission | undefined>
 })
 
 const fileSubmissionForRemove = ref<MaterialFileSubmission>()
-const isVersionFormVisible = ref(false)
-const isVersionRemoveFormVisible = ref(false)
+
 const versionFormData = ref()
 const versionFormErrors = ref<{ [key: string]: string[] }>({})
 const newFileUrlName = ref('')
 const newFileUrl = ref('')
-const isWide = ref(true)
+
+const isMaterialFileUploading = ref(false)
 const isNewFileUrlNameError = ref(false)
 const isNewFileUrlError = ref(false)
 const isRemovingFile = ref(false)
+const isVersionFormVisible = ref(false)
+const isVersionRemoveFormVisible = ref(false)
 
 const currentFiles = computed<MaterialFile[]>(() => {
     if (!currentVersionSubmission.value) {
@@ -187,9 +195,11 @@ const gameEditions = [
 ]
 
 const titleEditorExtensions = [
-    Text,
     CharacterCount.configure({
         limit: 100
+    }),
+    Document.extend({
+        content: 'heading',
     }),
     History,
     Heading.configure({
@@ -198,28 +208,20 @@ const titleEditorExtensions = [
         },
         levels: [1],
     }),
-    Document.extend({
-        content: 'heading',
-    }),
     Placeholder.configure({
         placeholder: 'Название',
-    })
+    }),
+    Text
 ]
 
 const contentEditorExtensions = [
-    StarterKit.configure({
-        heading: false,
-        blockquote: false,
-    }),
-    Heading
-        .extend({
-            marks: ''
-        })
-        .configure({
-            levels: [1, 2, 3],
-        }),
     Blockquote.extend({
         priority: 101,
+    }),
+    Heading.extend({ marks: '' }).configure({ levels: [2, 3, 4], }),
+    Image,
+    Link.configure({
+        openOnClick: 'whenNotEditable',
     }),
     Placeholder.configure({
         placeholder: ({node}) => {
@@ -233,11 +235,11 @@ const contentEditorExtensions = [
             }
         },
     }),
-    Underline,
-    Link.configure({
-        openOnClick: 'whenNotEditable',
+    StarterKit.configure({
+        heading: false,
+        blockquote: false
     }),
-    Image
+    Underline
 ]
 
 function loadVersionSubmissions() {
@@ -336,6 +338,8 @@ function uploadFile(file: File) {
         const formData = new FormData()
         formData.append('file', file)
 
+        isMaterialFileUploading.value = true
+
         axios.post('/api/upload-material-file', formData).then((response) => {
             if (response.data.success) {
                 toastStore.success('Файл успешно загружен!')
@@ -366,6 +370,8 @@ function uploadFile(file: File) {
             }
         }).catch((error: AxiosError) => {
             toastStore.error(getErrorMessageByCode(error.response!.status))
+        }).finally(() => {
+            isMaterialFileUploading.value = false
         })
     })
 }
@@ -559,7 +565,7 @@ loadVersionSubmissions()
 <template>
     <div
         v-if="materialSubmission" class="smooth-dark-background flex flex-col items-center w-full duration-500"
-        :class="{'wide': isWide}"
+        :class="{'wide': preferenceManager.isMaterialFullViewVisible()}"
     >
         <slot name="banner"/>
         <section
@@ -581,8 +587,14 @@ loadVersionSubmissions()
                 </aside>
 
                 <div class="material-info-dates xl:hidden flex lg:justify-between justify-center w-full">
-                    <button class="lg:flex hidden items-start" @click="isWide = !isWide">
-                        <span class="icon flex my-4" :class="{'icon-right-arrow': isWide, 'icon-left-arrow': !isWide}"/>
+                    <button class="lg:flex hidden items-start" @click="preferenceManager.switchMaterialFullView()">
+                        <span
+                            class="icon flex my-4"
+                            :class="{
+                                'icon-right-direction-arrow': preferenceManager.isMaterialFullViewVisible(),
+                                'icon-left-direction-arrow': !preferenceManager.isMaterialFullViewVisible()
+                            }"
+                        />
                     </button>
                 </div>
 
@@ -695,8 +707,7 @@ loadVersionSubmissions()
 
                 <Select
                     button-classes="ld-primary-background ld-primary-border ld-title-font w-full"
-                    options-classes="ld-primary-background ld-primary-border md:top-[66px]
-                        top-[50px]"
+                    options-classes="ld-primary-background ld-primary-border md:top-[66px] top-[50px]"
                     option-classes="md:min-h-[64px] min-h-[48px] gap-4 pl-6"
                     class="material-category flex items-center w-full my-4"
                     :class="{'red-border': errors['material.category']}"
@@ -721,7 +732,7 @@ loadVersionSubmissions()
                         style="background-color: var(--secondary-text-color);"
                     />
 
-                    <div class="w-full flex items-center">
+                    <div class="material-version-editor-buttons w-full flex items-center">
                         <MaterialVersionSubmissionSelect
                             :current-version-submission="currentVersionSubmission!"
                             :version-submissions="sortedVersionSubmissions"
@@ -804,6 +815,7 @@ loadVersionSubmissions()
                                 :editable="editable"
                                 icon="icon-download"
                                 id="upload-material-file"
+                                :is-uploading="isMaterialFileUploading"
                                 title="Загрузить Файл"
                                 :max-size-in-megabytes="20"
                                 @upload="uploadFile"
@@ -871,9 +883,13 @@ loadVersionSubmissions()
                 text-[12px] xl:max-w-[336px] gap-4"
             >
                 <div class="first-bright-block bright-background flex flex-col p-1 gap-2">
-                    <button class="flex justify-end" @click="isWide = !isWide">
-                        <span class="icon flex"
-                              :class="{'icon-right-direction-arrow': isWide, 'icon-left-direction-arrow': !isWide}"
+                    <button class="flex justify-end" @click="preferenceManager.switchMaterialFullView()">
+                        <span
+                            class="icon flex"
+                            :class="{
+                                'icon-right-direction-arrow': preferenceManager.isMaterialFullViewVisible(),
+                                'icon-left-direction-arrow': !preferenceManager.isMaterialFullViewVisible()
+                            }"
                         />
                     </button>
                     <slot name="sidebar"/>

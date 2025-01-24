@@ -143,8 +143,8 @@ function submitRegister() {
                     <span class="policy-agree-me text-[0.8rem] whitespace-nowrap">Я соглашаюсь</span>
                 </label>
                 <div class="terms ld-title-font flex flex-col text-center text-[0.7rem]">
-                    <RouterLink class="ld-brilliant-link border-0" :to="{ name: 'home' }">с Правилами Сайта</RouterLink>
-                    <RouterLink class="ld-brilliant-link border-0" :to="{ name: 'home' }">и Политикой
+                    <RouterLink class="ld-brilliant-link border-0" :to="{ name: 'terms-of-use' }">с Правилами Сайта</RouterLink>
+                    <RouterLink class="ld-brilliant-link border-0" :to="{ name: 'privacy-policy' }">и Политикой
                         Конфиденциальности
                     </RouterLink>
                 </div>

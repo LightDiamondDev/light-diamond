@@ -7,11 +7,13 @@ class PreferenceManager {
     private static readonly themeKey = 'theme'
     private static readonly isDesktopSidebarKey = 'is-desktop-sidebar'
     private static readonly isHeaderFixedKey = 'is-header-fixed'
+    private static readonly isMaterialFullViewKey = 'is-material-full-view'
     private static readonly editionKey = 'edition'
 
     private theme = 'ld-cyan-light'
     private isDesktopSidebar = false
     private isHeaderFixed = false
+    private isMaterialFullView = false
     private edition = PreferenceManager.defaultEdition
 
     public isLightTheme() {
@@ -87,6 +89,19 @@ class PreferenceManager {
         this.isHeaderFixed = localStorage.getItem(PreferenceManager.isHeaderFixedKey) === 'true'
     }
 
+    public isMaterialFullViewVisible() {
+        return this.isMaterialFullView
+    }
+
+    public switchMaterialFullView() {
+        this.isMaterialFullView = !this.isMaterialFullView
+        localStorage.setItem(PreferenceManager.isMaterialFullViewKey, String(this.isMaterialFullView))
+    }
+
+    public loadMaterialFullView() {
+        this.isMaterialFullView = localStorage.getItem(PreferenceManager.isMaterialFullViewKey) === 'true'
+    }
+
     public getEdition() {
         return this.edition
     }
@@ -105,6 +120,7 @@ class PreferenceManager {
         this.loadStorageTheme()
         this.loadDesktopSidebar()
         this.loadHeaderFixed()
+        this.loadMaterialFullView()
         this.loadEdition()
     }
 }

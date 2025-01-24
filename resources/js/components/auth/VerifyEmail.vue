@@ -43,7 +43,7 @@ function tryVerifyEmail() {
             <h1 v-else class="text-4xl font-bold text-center mt-8">Проверка...</h1>
 
             <p v-if="isSuccess" class="text-muted mt-4">
-                {{ responseMessage || 'Адрес электронной почты успешно подтверждён! Приятного пользования Сайтом!' }}
+                {{ responseMessage || 'Адрес электронной почты успешно подтверждён! Наслаждайтесь классными эмоциями и вдохновением!' }}
             </p>
             <p v-else class="text-muted mt-4">{{
                     responseMessage || 'Произошла неизвестная ошибка!'
@@ -56,9 +56,14 @@ function tryVerifyEmail() {
 
             <ProcessingMovingItems v-if="isProcessing" class="mb-9 mt-4" height="64px" width="64px"/>
 
-            <RouterLink v-if="isSuccess" class="flex justify-center mb-8" :to="{ name: 'home' }">
-                <Button button-type="submit" icon="icon-diamond" label="Отлично, вперёд!"/>
-            </RouterLink>
+            <Button
+                as="RouterLink"
+                class="max-w-[360px] w-full mb-4"
+                press-classes="transfusion-light px-4"
+                icon="icon-diamond"
+                :to="{name: 'home'}"
+                label="Отлично, вперёд!"
+            />
         </div>
     </div>
 </template>
@@ -98,7 +103,6 @@ function tryVerifyEmail() {
 
 .global-error-container p {
     max-width: 400px;
-    padding: 0 12px;
 }
 
 /* =============== [ Медиа-Запрос { ?px < 1024px + desktop-height } ] =============== */

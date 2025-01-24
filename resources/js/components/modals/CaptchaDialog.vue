@@ -18,14 +18,11 @@ function onVerify(token: string) {
         form-container-classes="overflow-hidden w-[380px]"
         title="Вы человек?"
     >
-        <HCaptcha
-            class="ml-9 mb-4"
-            :sitekey="getHCaptchaSiteKey()"
-            @verify="onVerify"
-        />
+        <div class="flex justify-center mb-4">
+            <HCaptcha
+                :sitekey="getHCaptchaSiteKey()"
+                @verify="onVerify"
+            />
+        </div>
     </Dialog>
 </template>
-
-<style>
-
-</style>

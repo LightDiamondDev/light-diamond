@@ -39,7 +39,3 @@ const versionModel = defineModel<MaterialVersion>({default: {}})
         </template>
     </Select>
 </template>
-
-<style scoped>
-
-</style>

@@ -4,7 +4,9 @@ import axios, {type AxiosError} from 'axios'
 import {computed, nextTick, onMounted, onUnmounted, onUpdated, type PropType, reactive, ref, watch} from 'vue'
 
 import {useAuthStore} from '@/stores/auth'
+import useCategoryRegistry, {type Category} from '@/categoryRegistry'
 import {useGlobalModalStore} from '@/stores/global-modal'
+import usePreferenceManager from '@/preference-manager'
 import {useToastStore} from '@/stores/toast'
 import {RouterLink, useRoute, useRouter} from 'vue-router'
 
@@ -20,7 +22,6 @@ import MaterialActionBar from '@/components/material/MaterialActionBar.vue'
 import MaterialCommentComponent from '@/components/material/comment/MaterialComment.vue'
 import MaterialCommentEditor from '@/components/material/comment/MaterialCommentEditor.vue'
 import MaterialFile from '@/components/material/MaterialFile.vue'
-import useCategoryRegistry, {type Category} from '@/categoryRegistry'
 import MaterialVersionSelect from '@/components/material/MaterialVersionSelect.vue'
 
 const props = defineProps({
@@ -42,7 +43,9 @@ interface EditedComment {
 
 const authStore = useAuthStore()
 const globalModalStore = useGlobalModalStore()
+const preferenceManager = usePreferenceManager()
 const toastStore = useToastStore()
+
 const route = useRoute()
 const router = useRouter()
 
@@ -58,7 +61,6 @@ const isLoading = ref(true)
 const isLoadingComments = ref(true)
 const isSubmittingNewComment = ref(false)
 const isDownloadWindow = ref(false)
-const isWideSidebar = ref(true)
 
 const rootComments = computed(() => comments.value!.filter((comment) => !comment.parent_comment_id))
 const isDownloadable = computed(() => useCategoryRegistry().get(material.value!.category).isDownloadable)
@@ -253,24 +255,8 @@ function openDownloadWindow() {
         <ProcessingDiggingBlocks processing-classes="md:h-[192px] md:w-[192px] h-[128px] w-[128px]"/>
     </div>
     <div v-else-if="material" class="smooth-dark-background flex flex-col items-center w-full duration-500"
-         :class="{'wide': isWideSidebar}"
+         :class="{'wide': preferenceManager.isMaterialFullViewVisible()}"
     >
-        <!--        <Dialog-->
-        <!--            v-if="isDownloadable"-->
-        <!--            class="material-submission-history w-full"-->
-        <!--            form-container-classes="max-w-[800px] w-full"-->
-        <!--            v-model:visible="isDownloadWindow"-->
-        <!--            title="Скачать"-->
-        <!--            style="top: 0"-->
-        <!--            :header="true"-->
-        <!--            :modal="true"-->
-        <!--        >-->
-        <!--            <div class="ld-tinted-background darker flex flex-col sm:gap-4 gap-2 sm:p-4 p-2">-->
-        <!--                <h2 class="ld-title-font text-center">{{ material.state.localization.title }}</h2>-->
-        <!--                -->
-        <!--            </div>-->
-        <!--        </Dialog>-->
-        <div></div>
         <section class="section flex justify-between xl:flex-row flex-col-reverse xl:items-start items-center
             xl:max-w-[1280px] max-w-[832px] w-full gap-4 lg:mt-4">
 
@@ -286,10 +272,15 @@ function openDownloadWindow() {
 
                 <div class="material-info-dates xl:hidden flex lg:justify-between justify-center w-full">
                     <MaterialInfoBar class="xl:flex-col flex-wrap justify-center gap-4 lg:mt-0 mt-4 duration-500"
-                                     :material="material"/>
-                    <button class="lg:flex hidden items-start" @click="isWideSidebar = !isWideSidebar">
-                        <span class="icon flex my-4"
-                              :class="{'icon-right-arrow': isWideSidebar, 'icon-left-arrow': !isWideSidebar}"/>
+                        :material="material"/>
+                    <button class="lg:flex hidden items-start" @click="preferenceManager.switchMaterialFullView()">
+                        <span
+                            class="icon flex my-4"
+                            :class="{
+                                'icon-right-arrow': preferenceManager.isMaterialFullViewVisible(),
+                                'icon-left-arrow': !preferenceManager.isMaterialFullViewVisible()
+                            }"
+                        />
                     </button>
                 </div>
 
@@ -320,7 +311,7 @@ function openDownloadWindow() {
                             <h4 class="ld-secondary-text flex xs:flex-row flex-col justify-center text-center xs:gap-2 mt-0">
                                 Скачать материал
                             </h4>
-                            <template v-for="(file, i) in currentVersion.files">
+                            <template v-for="(file, index) in currentVersion.files" :key="index">
                                 <MaterialFile :file="file"/>
                             </template>
                         </div>
@@ -339,10 +330,13 @@ function openDownloadWindow() {
                 text-[12px] xl:max-w-[336px] gap-4"
             >
                 <div class="first-bright-block bright-background flex flex-col">
-                    <button class="flex justify-end p-[4px]" @click="isWideSidebar = !isWideSidebar">
+                    <button class="flex justify-end p-[4px]" @click="preferenceManager.switchMaterialFullView()">
                         <span
                             class="icon flex"
-                            :class="{'icon-right-direction-arrow': isWideSidebar, 'icon-left-direction-arrow': !isWideSidebar}"
+                            :class="{
+                                'icon-right-direction-arrow': preferenceManager.isMaterialFullViewVisible(),
+                                'icon-left-direction-arrow': !preferenceManager.isMaterialFullViewVisible()
+                            }"
                         />
                     </button>
                     <MaterialInfoBar
@@ -362,17 +356,22 @@ function openDownloadWindow() {
         <section class="ld-primary-background ld-fixed-background flex w-full relative">
             <div class="ld-tinted-reversed-background darker flex justify-center w-full xs:px-4 px-2">
                 <div class="comments page-container max-w-[832px] mb-4" id="comments">
-                    <div class="comments-title flex gap-3 py-4">
+                    <div class="comments-title flex gap-3 p-4">
                         <p class="md:text-[1.2rem] text-base">Комментарии</p>
                         <p class="text-[var(--primary-color)]">{{ material!.comments_count }}</p>
                     </div>
 
-                    <div class="flex flex-col gap-2">
+                    <div class="flex flex-col gap-2 px-4">
                         <MaterialCommentEditor
                             v-model="newComment.content"
                             class="material-comment-editor"
+                            :class="{'red-border': newComment.errors?.['content']?.[0]}"
+                            :style="{
+                                'border: 2px solid var(--primary-text-color);': newComment.errors?.['content']?.[0]
+                            }"
                             @click="onNewCommentEditorClick"
                         />
+                        <p class="error text-[14px]">{{ newComment.errors?.['content']?.[0] || ' ' }}</p>
                         <Button
                             :loading="isSubmittingNewComment"
                             :disabled="!authStore.isAuthenticated || !authStore.hasVerifiedEmail"

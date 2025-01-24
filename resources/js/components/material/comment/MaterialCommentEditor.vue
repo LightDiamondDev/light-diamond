@@ -4,7 +4,7 @@ import {Placeholder} from '@tiptap/extension-placeholder'
 import {Underline} from '@tiptap/extension-underline'
 import {Link} from '@tiptap/extension-link'
 import {Blockquote} from '@tiptap/extension-blockquote'
-import {Image} from '@tiptap/extension-image'
+// import {Image} from '@tiptap/extension-image'
 
 import Editor from '@/components/elements/editor/Editor.vue'
 
@@ -33,7 +33,7 @@ const editorExtensions = [
     Link.configure({
         openOnClick: 'whenNotEditable',
     }),
-    // Image,
+    // Image
 ]
 </script>
 
@@ -65,8 +65,4 @@ const editorExtensions = [
             padding: .5rem;
         }
     }
-</style>
-
-<style scoped>
-
 </style>

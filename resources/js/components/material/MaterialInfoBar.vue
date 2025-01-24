@@ -32,17 +32,19 @@ const wasMaterialUpdated = computed(() => props.material!.published_at !== props
                 />
             </span>
             <div class="date-action author flex flex-col sm:items-start items-center">
-                <span class="date-action-subtitle sm:flex hidden">Автор</span>
-                <span>{{ material.state!.author?.username ?? 'Некто' }}</span>
+                <span class="date-action-subtitle sm:flex hidden" style="line-height: 1.4">Автор</span>
+                <span style="line-height: 1.4">{{ material.state!.author?.username ?? 'Некто' }}</span>
             </div>
         </ProfileLink>
 
         <div v-if="wasMaterialUpdated" class="date-update flex items-center sm:gap-0 gap-2">
             <span class="icon-refresh icon flex mr-1"/>
             <div class="date-action flex flex-col">
-                <span class="date-action-subtitle sm:flex hidden">Обновлено</span>
-                <span class="flex xs:items-start items-center text-center sm:max-w-none max-w-[90px]"
-                      v-tooltip.top="getFullPresentableDate(material.version!.published_at)"
+                <span class="date-action-subtitle sm:flex hidden" style="line-height: 1.4">Обновлено</span>
+                <span
+                    class="flex xs:items-start items-center text-center sm:max-w-none"
+                    v-tooltip.top="getFullPresentableDate(material.version!.published_at)"
+                    style="line-height: 1.4"
                 >
                     {{ getRelativeDate(material.version!.published_at) }}
                 </span>
@@ -52,15 +54,19 @@ const wasMaterialUpdated = computed(() => props.material!.published_at !== props
         <div class="date-publication flex items-center sm:gap-0 gap-2">
             <span class="icon-apple icon flex mr-1"/>
             <div class="date-action flex flex-col">
-                <span class="date-action-subtitle sm:flex hidden">Опубликовано</span>
-                <span class="flex xs:items-start items-center text-center sm:max-w-none max-w-[90px]"
-                      v-tooltip.top="getFullPresentableDate(material.published_at)"
+                <span class="date-action-subtitle sm:flex hidden" style="line-height: 1.4">Опубликовано</span>
+                <span
+                    class="flex xs:items-start items-center text-center sm:max-w-none"
+                    v-tooltip.top="getFullPresentableDate(material.published_at)"
+                    style="line-height: 1.4"
                 >
                     {{ getRelativeDate(material.published_at) }}
                 </span>
             </div>
         </div>
+
     </div>
+
 </template>
 
 <style scoped>

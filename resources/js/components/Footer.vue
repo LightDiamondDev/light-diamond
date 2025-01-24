@@ -17,26 +17,26 @@ function scrollToTop() {
                 <img alt="Logo" class="flex xs:hidden h-[52px]" src="/images/elements/light-diamond-logo-mobile.png"/>
             </RouterLink>
             <RouterLink :to="{name: 'catalog'}" class="xl:flex hidden items-center gap-1">
-                <span class="icon icon-book static"/>
+                <span class="icon icon-book"/>
                 <span>Каталог</span>
             </RouterLink>
             <RouterLink
                 :to="{name: 'material', params: {edition: 'bedrock', category: 'addons', slug: 'light-diamond'}}"
                 class="xl:flex hidden items-center"
             >
-                <span class="icon icon-apple static"/>
+                <span class="icon icon-apple"/>
                 <span>Аддон LD</span>
             </RouterLink>
 <!--            <a class="sm:flex hidden items-center" href="#">-->
-<!--                <span class="icon icon-diamond static"/>-->
+<!--                <span class="icon icon-diamond"/>-->
 <!--                <span>Обновления</span>-->
 <!--            </a>-->
 <!--            <a class="md:flex hidden items-center" href="#">-->
-<!--                <span class="icon icon-dagger static"/>-->
+<!--                <span class="icon icon-dagger"/>-->
 <!--                <span>Помощь</span>-->
 <!--            </a>-->
             <RouterLink :to="{name: 'about-us'}" class="xl:flex hidden items-center">
-                <span class="icon icon-faq static"/>
+                <span class="icon icon-faq"/>
                 <span>О Проекте</span>
             </RouterLink>
             <button class="footer-anchor flex justify-center items-center self-center mr-4" @click="scrollToTop">
