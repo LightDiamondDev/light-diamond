@@ -9,9 +9,11 @@ echo "Создаём .env на основе .env.example..."
 docker compose run --rm --no-deps app cp .env.example .env
 
 # Запрашиваем секретные данные для .env
+stty -echo
 read -p "Введите пароль для базы данных (DB_PASSWORD): " DB_PASSWORD
 read -p "Введите HCaptcha sitekey: " HCAPTCHA_SITEKEY
 read -p "Введите HCaptcha secret: " HCAPTCHA_SECRET
+stty echo
 
 # Обновляем .env
 sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env
@@ -38,7 +40,22 @@ docker compose run --rm --no-deps app php artisan storage:link
 echo "Создаём таблицы БД и выполняем начальное заполнение данных..."
 docker compose run --rm app php artisan migrate:fresh --seed
 
-# Останавливаем контейнеры
-docker compose down
+# Запрашиваем пароль для первого администратора
+stty -echo
+read -p "Введите пароль для администратора (admin): " ADMIN_PASSWORD
+stty echo
+
+# Создаём администратора через User::factory()
+echo "Создаём администратора..."
+docker compose run --rm app php artisan tinker --execute="
+use App\Models\User;
+use App\Models\Enums\UserRole;
+User::factory()->create([
+    'username' => 'admin',
+    'email' => 'admin@admin',
+    'email_verified_at' => now(),
+    'role' => UserRole::Admin,
+    'password' => bcrypt('$ADMIN_PASSWORD'),
+]);"
 
 echo "Готово! Базовая настройка проекта завершена."
