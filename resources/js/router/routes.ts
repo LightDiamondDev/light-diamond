@@ -384,7 +384,7 @@ const routes: RouteRecordRaw[] = [
         name: 'terms-of-use',
         component: TermsOfUse,
         meta: {
-            title: 'Правила Использования',
+            title: 'Условия Использования',
         }
     },
     {

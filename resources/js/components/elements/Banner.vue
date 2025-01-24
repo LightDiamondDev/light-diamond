@@ -279,4 +279,12 @@ launchBannerParticles(BannerParticles.SNOWFLAKES)
     from { transform: rotate(0); left: 80%; top: -5%; }
     to { transform: rotate(720deg); left: 50%; top: 100%; }
 }
+
+/* =============== [ Медиа-Запрос { ?px < 451px } ] =============== */
+
+@media screen and (min-width: 1920px) {
+    .banner-slide {
+        background-size: contain;
+    }
+}
 </style>

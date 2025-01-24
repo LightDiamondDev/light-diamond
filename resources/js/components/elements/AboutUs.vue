@@ -15,6 +15,8 @@ import Document from '@/components/elements/Document.vue'
 
             <p>Станьте частью большой семьи Light Diamond на нашем <a href="https://lightdiamond.ru">Сайте</a>, в <a href="https://t.me/light_diamond_channel">Телеграм-Канале</a> и <a href="https://vk.com/light.diamond">ВКонтакте</a>, чтобы всегда находить то, что Вам по душе! Давайте вместе творить для Minecraft!</p>
 
+            <p>Связаться с нами: <a href="mailto:support@lightdiamond.net">support@lightdiamond.net</a></p>
+
             <img alt="Light Diamond" src="/images/elements/ld-diamond.png">
 
         </template>

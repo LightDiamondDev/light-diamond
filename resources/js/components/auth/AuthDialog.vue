@@ -40,7 +40,7 @@ const activeSplash = getRandomAuthSplash()
         @back="formType = AuthFormType.LOGIN"
     >
         <template v-slot:left-content>
-            <div class="illustration flex justify-center items-center">
+            <div class="illustration lg:flex hidden justify-center items-center">
                 <div class="background-auth flex justify-center items-center">
                     <RouterLink class="logo element-light-diamond-logo" :to="{ name: 'home' }">
                         <span class="base">

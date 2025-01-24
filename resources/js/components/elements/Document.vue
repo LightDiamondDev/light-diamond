@@ -100,7 +100,7 @@ const isLoading = ref(true)
                 <!--                    <img alt="" class="preview w-full mt-0" :src="material!.version!.cover_url">-->
                 <!--                </div>-->
 
-                <div class="ld-secondary-text material max-w-full xs:px-4 px-2 py-2">
+                <div class="ld-secondary-text material max-w-full pb-8 xs:px-4 px-2 py-2">
                     <slot name="content"/>
                 </div>
 
