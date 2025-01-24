@@ -25,7 +25,8 @@ const props = defineProps({
 const preferenceManager = usePreferenceManager()
 
 const wasUpdated = computed(() => props.materialSubmission!.updated_at !== props.materialSubmission!.created_at)
-const lastAction = computed(() => props.materialSubmission!.actions!.at(props.materialSubmission!.actions!.length - 1))
+const actions = computed(() => props.materialSubmission!.actions!.sort((a, b) => a.created_at!.localeCompare(b.created_at!)))
+const lastAction = computed(() => actions.value!.at(actions.value!.length - 1))
 </script>
 
 <template>

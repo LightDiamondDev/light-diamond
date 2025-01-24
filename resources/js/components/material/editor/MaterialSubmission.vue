@@ -90,7 +90,8 @@ const materialRoute = computed(() => ({
 }))
 
 const materialUrl = computed(() => new URL(router.resolve(materialRoute.value).fullPath, getAppUrl()).href)
-const lastAction = computed(() => materialSubmission.value!.actions!.at(materialSubmission.value!.actions!.length - 1))
+const actions = computed(() => materialSubmission.value!.actions!.sort((a, b) => a.created_at!.localeCompare(b.created_at!)))
+const lastAction = computed(() => actions.value!.at(actions.value!.length - 1))
 const rejectDetails = reactive<MaterialSubmissionActionReject>({reason: ''})
 const requestChangesDetails = reactive<MaterialSubmissionActionRequestChanges>({message: ''})
 
@@ -365,7 +366,7 @@ loadMaterialSubmission()
             :modal="true"
         >
             <div class="material-submission-actions flex flex-col gap-4 md:p-6 xs:p-4 p-2" ref="actionHistoryContainer">
-                <MaterialSubmissionAction v-for="action in materialSubmission.actions" :action="action"/>
+                <MaterialSubmissionAction v-for="action in actions" :action="action"/>
             </div>
         </Dialog>
 
@@ -518,7 +519,7 @@ loadMaterialSubmission()
                         </div>
                     </div>
 
-                    <div v-if="materialSubmission.actions!.length !== 0"
+                    <div v-if="actions!.length !== 0"
                          class="flex flex-col xl:gap-1 gap-2 mt-1 xl:pb-1 xl:px-2 px-4">
                         <div class="separator flex opacity-40 xl:mb-1 bg-[var(--secondary-text-color)]"/>
                         <div
