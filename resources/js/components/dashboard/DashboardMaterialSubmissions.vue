@@ -152,8 +152,10 @@ loadMaterialSubmissions()
                         </div>
                     </div>
                     <div v-else class="flex flex-col">
-                        <MaterialSubmissionCard v-for="materialSubmission in materialSubmissions"
-                                                :material-submission="materialSubmission"/>
+                        <MaterialSubmissionCard
+                            v-for="materialSubmission in materialSubmissions"
+                            :material-submission="materialSubmission"
+                        />
                     </div>
                 </div>
             </div>

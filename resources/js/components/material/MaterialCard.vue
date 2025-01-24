@@ -4,6 +4,7 @@ import {type Material} from '@/types'
 
 import {getFullPresentableDate, getRelativeDate} from '@/helpers'
 import useCategoryRegistry from '../../categoryRegistry'
+import usePreferenceManager from '@/preference-manager'
 
 import UserAvatar from '@/components/user/UserAvatar.vue'
 import MaterialActionBar from '@/components/material/MaterialActionBar.vue'
@@ -29,6 +30,8 @@ const materialRoute = computed(() => ({
     }
 }))
 
+const preferenceManager = usePreferenceManager()
+
 const wasMaterialUpdated = computed(() => props.material!.published_at !== props.material!.version!.published_at)
 </script>
 
@@ -40,9 +43,18 @@ const wasMaterialUpdated = computed(() => props.material!.published_at !== props
         <div class="inner flex flex-grow"
              :class="{ 'flex-col': !isHorizontalDirection, 'xs:flex-row flex-col': isHorizontalDirection }">
             <RouterLink
-                class="preview-wrap flex overflow-hidden"
+                class="preview-wrap flex relative overflow-hidden"
                 :to="materialRoute"
             >
+                <div
+                    v-if="preferenceManager.isMaterialCategoryInPreviewVisible()"
+                    class="material-preview-category ld-tinted-background left flex pr-10 absolute"
+                >
+                    <p class="type flex items-center text-[12px]">
+                        <span class="icon flex" :class="useCategoryRegistry().get(material.category).icon"/>
+                        <span>{{ useCategoryRegistry().get(material.category).singularName }}</span>
+                    </p>
+                </div>
                 <img
                     alt="Превью Материала"
                     class="preview flex w-full full-locked duration-200"
@@ -80,7 +92,7 @@ const wasMaterialUpdated = computed(() => props.material!.published_at !== props
                             class="material-info info flex flex-wrap justify-between px-2"
                             :class="{'sm:flex hidden w-full gap-8': isHorizontalDirection, 'gap-2': !isHorizontalDirection }"
                         >
-                            <div class="types flex flex-wrap gap-3 opacity-80">
+                            <div v-if="!preferenceManager.isMaterialCategoryInPreviewVisible()" class="types flex flex-wrap gap-3">
                                 <p class="type flex items-center">
                                     <span class="icon flex" :class="useCategoryRegistry().get(material.category).icon"/>
                                     <span>{{ useCategoryRegistry().get(material.category).singularName }}</span>

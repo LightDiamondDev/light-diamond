@@ -3,6 +3,7 @@ import {computed, type PropType} from 'vue'
 import {RouterLink} from 'vue-router'
 import {getFullPresentableDate, getRelativeDate} from '@/helpers'
 import useCategoryRegistry from '@/categoryRegistry'
+import usePreferenceManager from '@/preference-manager'
 
 import {type MaterialSubmission, MaterialSubmissionActionType as ActionType, UserRole} from '@/types'
 
@@ -21,6 +22,8 @@ const props = defineProps({
     }
 })
 
+const preferenceManager = usePreferenceManager()
+
 const wasUpdated = computed(() => props.materialSubmission!.updated_at !== props.materialSubmission!.created_at)
 const lastAction = computed(() => props.materialSubmission!.actions!.at(props.materialSubmission!.actions!.length - 1))
 </script>
@@ -33,10 +36,22 @@ const lastAction = computed(() => props.materialSubmission!.actions!.at(props.ma
                     sm:h-[112px] sm:max-w-[196px] sm:min-w-[196px]
                     xs:h-[76px] xs:max-w-[132px] xs:min-w-[132px]
                     h-[58px] max-w-[100px] min-w-[100px]
-                    overflow-hidden"
+                    relative overflow-hidden"
                 :to="{ name: 'material-submission', params: {id: materialSubmission.id} }"
             >
-                <img alt="" class="preview flex w-full full-locked duration-500" :src="materialSubmission.material_state!.localization!.cover_url">
+                <div
+                    v-if="preferenceManager.isMaterialCategoryInPreviewVisible()"
+                    class="material-preview-category ld-tinted-background left flex pr-10 py-1 absolute"
+                >
+                    <p class="type flex items-center text-[10px]">
+                        <span
+                            class="icon flex"
+                            :class="useCategoryRegistry().get(materialSubmission.material?.category).icon"
+                        />
+                        <span>{{ useCategoryRegistry().get(materialSubmission.material.category).singularName }}</span>
+                    </p>
+                </div>
+                <img alt="Превью" class="preview flex w-full full-locked duration-500" :src="materialSubmission.material_state!.localization!.cover_url">
             </RouterLink>
             <div class="description-wrap flex flex-col w-full">
                 <RouterLink
@@ -64,7 +79,7 @@ const lastAction = computed(() => props.materialSubmission!.actions!.at(props.ma
                             {{ materialSubmission.material_state!.author?.username ?? 'Некто' }}
                         </p>
                     </ProfileLink>
-                    <div class="flex border-0 gap-1">
+                    <div v-if="!preferenceManager.isMaterialCategoryInPreviewVisible()" class="flex border-0 gap-1">
                         <span
                             class="icon flex"
                             :class="useCategoryRegistry().get(materialSubmission.material!.category).icon"

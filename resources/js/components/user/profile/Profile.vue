@@ -108,7 +108,7 @@ const profileAvatarSrc = ref('')
 
 // profileBackgroundSrc.value = '/images/elements/home-banner-trial-chamber.png'
 profileBackgroundSrc.value = '/images/elements/default.png'
-profileAvatarSrc.value = '/images/users/avatars/dancing-parrot-animation.gif'
+profileAvatarSrc.value = '/images/users/avatars/avatar-light-diamond.png'
 // const activeColor = ref('#00ffff')
 
 loadUser()

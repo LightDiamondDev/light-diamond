@@ -7,6 +7,7 @@ class PreferenceManager {
     private static readonly themeKey = 'theme'
     private static readonly isDesktopSidebarKey = 'is-desktop-sidebar'
     private static readonly isHeaderFixedKey = 'is-header-fixed'
+    private static readonly isMaterialCategoryInPreviewKey = 'is-material-category-in-preview'
     private static readonly isMaterialFullViewKey = 'is-material-full-view'
     private static readonly editionKey = 'edition'
 
@@ -14,6 +15,7 @@ class PreferenceManager {
     private isDesktopSidebar = false
     private isHeaderFixed = false
     private isMaterialFullView = false
+    private isMaterialCategoryInPreview = false
     private edition = PreferenceManager.defaultEdition
 
     public isLightTheme() {
@@ -93,13 +95,26 @@ class PreferenceManager {
         return this.isMaterialFullView
     }
 
+    public isMaterialCategoryInPreviewVisible() {
+        return this.isMaterialCategoryInPreview
+    }
+
     public switchMaterialFullView() {
         this.isMaterialFullView = !this.isMaterialFullView
         localStorage.setItem(PreferenceManager.isMaterialFullViewKey, String(this.isMaterialFullView))
     }
 
+    public switchMaterialCategoryInPreview() {
+        this.isMaterialCategoryInPreview = !this.isMaterialCategoryInPreview
+        localStorage.setItem(PreferenceManager.isMaterialCategoryInPreviewKey, String(this.isMaterialCategoryInPreview))
+    }
+
     public loadMaterialFullView() {
         this.isMaterialFullView = localStorage.getItem(PreferenceManager.isMaterialFullViewKey) === 'true'
+    }
+
+    public loadMaterialCategoryInPreview() {
+        this.isMaterialCategoryInPreview = localStorage.getItem(PreferenceManager.isMaterialCategoryInPreviewKey) === 'true'
     }
 
     public getEdition() {
@@ -121,6 +136,7 @@ class PreferenceManager {
         this.loadDesktopSidebar()
         this.loadHeaderFixed()
         this.loadMaterialFullView()
+        this.loadMaterialCategoryInPreview()
         this.loadEdition()
     }
 }

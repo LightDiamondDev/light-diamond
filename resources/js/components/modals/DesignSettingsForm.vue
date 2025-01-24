@@ -7,29 +7,62 @@ const preferenceManager = usePreferenceManager()
 
 <template>
     <div class="flex flex-col items-center p-1">
-        <button class="settings-button flex justify-between items-center m-1 p-2"
-                @click="preferenceManager.switchTheme()"
+        <button
+            class="settings-button flex justify-between items-center m-1 p-2"
+            @click="preferenceManager.switchTheme()"
         >
-            <span v-if="preferenceManager.isLightTheme()" class="settings-icon icon icon-sun"></span>
-            <span v-else class="settings-icon icon icon-moon"></span>
+            <span
+                class="settings-icon icon"
+                :class="{
+                    'icon-sun': preferenceManager.isLightTheme(),
+                    'icon-moon': !preferenceManager.isLightTheme()
+                }"
+            />
             <span class="text-base">Тёмная Тема</span>
             <Switcher :active=preferenceManager.isLightTheme() />
         </button>
 
-        <button class="settings-button flex justify-between items-center m-1 p-2"
-            @click="preferenceManager.switchHeaderFixed()"
+        <button
+            class="settings-button xl:flex justify-between items-center hidden m-1 p-2"
+            @click="preferenceManager.switchDesktopSidebar()"
         >
-            <span v-if="preferenceManager.isHeaderFixedVisible()" class="settings-icon icon icon-fixed-header"></span>
-            <span v-else class="settings-icon icon icon-free-header"></span>
+            <span
+                class="settings-icon icon"
+                :class="{
+                    'icon-units': preferenceManager.isDesktopSidebarVisible(),
+                    'icon-cross': !preferenceManager.isDesktopSidebarVisible()
+                }"
+            />
+            <span class="text-base">Боковое Меню</span>
+            <Switcher :active=!preferenceManager.isDesktopSidebarVisible() />
+        </button>
+
+        <button class="settings-button flex justify-between items-center m-1 p-2"
+                @click="preferenceManager.switchHeaderFixed()"
+        >
+            <span
+                class="settings-icon icon"
+                :class="{
+                    'icon-fixed-header': preferenceManager.isHeaderFixedVisible(),
+                    'icon-free-header': !preferenceManager.isHeaderFixedVisible()
+                }"
+            />
             <span class="text-base">Свободная Шапка</span>
             <Switcher :active=preferenceManager.isHeaderFixedVisible() />
         </button>
 
-        <button class="settings-button xl:flex justify-between items-center hidden m-1 p-2" @click="preferenceManager.switchDesktopSidebar()">
-            <span v-if="preferenceManager.isDesktopSidebarVisible()" class="icon icon-units"></span>
-            <span v-else class="settings-icon icon icon-cross"></span>
-            <span class="text-base">Боковое Меню</span>
-            <Switcher :active=!preferenceManager.isDesktopSidebarVisible() />
+        <button class="settings-button flex justify-between items-center m-1 p-2"
+                @click="preferenceManager.switchMaterialCategoryInPreview()"
+        >
+            <span
+                class="settings-icon icon"
+                :class="{
+                    'icon-brilliant': preferenceManager.isMaterialCategoryInPreviewVisible(),
+                    'icon-cross': !preferenceManager.isMaterialCategoryInPreviewVisible()
+                }"
+            />
+            <span class="text-base">Категория в Превью</span>
+            <Switcher :active=!preferenceManager.isMaterialCategoryInPreviewVisible() />
         </button>
     </div>
 </template>

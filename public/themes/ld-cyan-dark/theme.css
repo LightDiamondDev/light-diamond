@@ -133,11 +133,15 @@
         background: linear-gradient(90deg, rgba(0, 15, 15, .5), transparent);
     }
 
+    .ld-tinted-background.right {
+        background: linear-gradient(90deg, transparent, rgba(0, 15, 15, .5));
+    }
+
     .ld-tinted-reversed-background {
         background: linear-gradient(transparent, rgba(0, 15, 15, .5));
     }
 
-    .ld-tinted-background.darker{
+    .ld-tinted-background.darker {
         background: linear-gradient(rgba(0, 15, 15, .8), transparent);
     }
 

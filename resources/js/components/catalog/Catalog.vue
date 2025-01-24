@@ -376,7 +376,7 @@ loadMaterials()
                                         :class="{ 'md:flex hidden': isHorizontalCards }"
                                         style="scrollbar-width: thin"
                                     >
-                                        <div v-for="i in 5" class="flex items-center gap-2">
+                                        <div v-for="index in 5" :key="index" class="flex items-center gap-2">
                                             <div class="skeleton transfusion h-8 min-w-8"/>
                                             <div class="skeleton transfusion flex h-4 w-[2rem]"/>
                                         </div>
