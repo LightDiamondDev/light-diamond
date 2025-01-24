@@ -25,6 +25,7 @@ services:
         volumes:
             - ./docker/nginx/html:/usr/share/nginx/html
             - ./docker/nginx/certs:/etc/nginx/certs:ro
+            - ./docker/nginx/nginx-proxy-overrides.conf:/etc/nginx/conf.d/nginx-proxy-overrides.conf
             - /var/run/docker.sock:/tmp/docker.sock:ro
 
     acme-companion:
