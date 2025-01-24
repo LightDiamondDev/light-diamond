@@ -309,15 +309,17 @@ const currentCommentHTMLHeight = computed(() =>
                 class="material-comment-body material-comment flex flex-col w-full"
                 style="transition: background-color 5s"
             >
-                <RouterLink
-                    v-if="isProfileComment"
-                    class="ld-special-text hi my-2 mx-4 hover:underline truncate"
-                    :to="materialRoute"
-                >
-                    {{
-                        useCategoryRegistry().get(material.category).singularName + ' «' + material.state.localization.title + '»'
-                    }}
-                </RouterLink>
+                <div class="transfusion flex px-4">
+                    <RouterLink
+                        v-if="isProfileComment"
+                        class="ld-special-text hi inline-block w-full text-center hover:underline truncate"
+                        :to="materialRoute"
+                    >
+                        {{
+                            useCategoryRegistry().get(material.category).singularName + ' «' + material.state.localization.title + '»'
+                        }}
+                    </RouterLink>
+                </div>
                 <div class="material-comment-inner flex w-full gap-2 p-4">
                     <div class="flex relative">
                         <UserAvatar
@@ -427,7 +429,7 @@ const currentCommentHTMLHeight = computed(() =>
                                 style="animation: none"
                                 :to="getCommentRoute(comment.id)"
                             >
-                                <span class="show-comment text text-sm p-2">Перейти к Комментарию</span>
+                                <span class="show-comment text text-sm p-2 opacity-80">Перейти к Комментарию</span>
                             </RouterLink>
                         </div>
                         <div v-if="replyData" class="flex flex-col gap-2" @keydown.esc="() => replyData = null">
