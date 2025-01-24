@@ -30,7 +30,7 @@ class AuthController extends Controller
         $attributes = $request->only('username', 'password');
 
         if (!Auth::attempt($attributes, $request->get('remember', true))) {
-            return $this->errorJsonResponse('Неверное имя пользователя или пароль.');
+            return $this->errorJsonResponse('Неверное имя Пользователя или пароль.');
         }
 
         return $this->successJsonResponse();
@@ -75,7 +75,7 @@ class AuthController extends Controller
         $user = User::find($id);
 
         if ($user->hasVerifiedEmail()) {
-            return $this->errorJsonResponse('E-mail адрес пользователя ' . $user->username . ' уже подтвержден.');
+            return $this->errorJsonResponse('E-mail адрес Пользователя ' . $user->username . ' уже подтверждён.');
         }
 
         $validator = Validator::make(
@@ -85,12 +85,12 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return $this->errorJsonResponse(
-                'E-mail адрес ' . $user->email . ' уже подтвержден у другого пользователя.'
+                'E-mail адрес ' . $user->email . ' уже подтвержден у другого Пользователя.'
             );
         }
 
         if (!$user->markEmailAsVerified()) {
-            return $this->errorJsonResponse('Не получилось внести изменения в базе данных.');
+            return $this->errorJsonResponse('Не получилось внести изменения в Базе Данных.');
         }
 
         return $this->successJsonResponse();
@@ -109,7 +109,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->get('email'))->whereNotNull('email_verified_at')->first();
 
         if ($user === null) {
-            return $this->errorJsonResponse('', ['email' => ['Данный E-mail не подтвержден ни на одном аккаунте.']]);
+            return $this->errorJsonResponse('', ['email' => ['Данный E-mail не подтвержден ни на одном Аккаунте.']]);
         }
 
         $status = Password::sendResetLink(['id' => $user->id]);

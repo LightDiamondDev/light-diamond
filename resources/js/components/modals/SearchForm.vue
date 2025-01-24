@@ -95,7 +95,7 @@ function onInput() {
                 <template v-if="isLoaded">
                     <div
                         v-if="materials.length === 0"
-                        class="unavailable-material-container flex flex-col items-center p-8"
+                        class="unavailable-material-container flex flex-col items-center max-w-[768px] p-8"
                     >
                         <p class="text-center md:text-[14px] text-[12px]">
                             <span class="opacity-80">Не удалось найти результатов по запросу «</span>

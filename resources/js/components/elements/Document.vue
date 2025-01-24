@@ -2,7 +2,10 @@
 import {ref} from 'vue'
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
+import usePreferenceManager from '@/preference-manager'
+
 import {RouterLink, useRoute} from 'vue-router'
+
 import Button from '@/components/elements/Button.vue'
 import ProcessingDiggingBlocks from '@/components/elements/ProcessingDiggingBlocks.vue'
 
@@ -14,11 +17,11 @@ defineProps({
 })
 
 const authStore = useAuthStore()
+const preferenceManager = usePreferenceManager()
 const toastStore = useToastStore()
 const route = useRoute()
 
 const isLoading = ref(true)
-const isWideSidebar = ref(true)
 </script>
 
 <template>
@@ -26,7 +29,7 @@ const isWideSidebar = ref(true)
         <ProcessingDiggingBlocks processing-classes="md:h-[192px] md:w-[192px] h-[128px] w-[128px]"/>
     </div>
     <div v-else-if="true" class="smooth-dark-background flex flex-col items-center w-full duration-500"
-         :class="{'wide': isWideSidebar}"
+         :class="{'wide': preferenceManager.isMaterialFullViewVisible()}"
     >
         <div/>
         <section class="section flex justify-between xl:flex-row flex-col-reverse xl:items-start items-center
@@ -56,26 +59,34 @@ const isWideSidebar = ref(true)
                                 </span>
                             </span>
 
-                            <span class="date-action author flex flex-col sm:items-start items-center">
-                                <span class="date-action-subtitle sm:flex hidden">Автор</span>
-                                <span>Light Diamond</span>
+                            <span class="date-action author flex flex-col sm:items-start items-center text-[14px]">
+                                <span class="date-action-subtitle text-[var(--trinity-text-color)] sm:flex hidden" style="line-height: 1.4">Автор</span>
+                                <span style="line-height: 1.4">Light Diamond</span>
                             </span>
                         </span>
 
                         <div class="date-publication flex items-center sm:gap-0 gap-2">
                             <span class="icon-apple icon flex mr-1"/>
-                            <div class="date-action flex flex-col">
-                                <span class="date-action-subtitle sm:flex hidden">Опубликовано</span>
-                                <span class="flex xs:items-start items-center text-center sm:max-w-none max-w-[90px]">
+                            <div class="date-action flex flex-col text-[14px]">
+                                <span class="date-action-subtitle text-[var(--trinity-text-color)] sm:flex hidden" style="line-height: 1.4">Опубликовано</span>
+                                <span
+                                    class="flex xs:items-start items-center text-center sm:max-w-none"
+                                    style="line-height: 1.4"
+                                >
                                     25 января 2025
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    <button class="lg:flex hidden items-start" @click="isWideSidebar = !isWideSidebar">
-                        <span class="icon flex my-4"
-                              :class="{'icon-right-arrow': isWideSidebar, 'icon-left-arrow': !isWideSidebar}"/>
+                    <button class="lg:flex hidden items-start" @click="preferenceManager.switchMaterialFullView()">
+                        <span
+                            class="icon flex my-4"
+                            :class="{
+                                'icon-right-arrow': preferenceManager.isMaterialFullViewVisible(),
+                                'icon-left-arrow': !preferenceManager.isMaterialFullViewVisible()
+                            }"
+                        />
                     </button>
                 </div>
 
@@ -106,10 +117,13 @@ const isWideSidebar = ref(true)
                 text-[12px] xl:max-w-[336px] gap-4"
             >
                 <div class="first-bright-block bright-background flex flex-col">
-                    <button class="flex justify-end p-[4px]" @click="isWideSidebar = !isWideSidebar">
+                    <button class="flex justify-end p-[4px]" @click="preferenceManager.switchMaterialFullView()">
                         <span
                             class="icon flex"
-                            :class="{'icon-right-direction-arrow': isWideSidebar, 'icon-left-direction-arrow': !isWideSidebar}"
+                            :class="{
+                                'icon-right-direction-arrow': preferenceManager.isMaterialFullViewVisible(),
+                                'icon-left-direction-arrow': !preferenceManager.isMaterialFullViewVisible()
+                            }"
                         />
                     </button>
 
@@ -129,7 +143,7 @@ const isWideSidebar = ref(true)
 
                             <span
                                 class="date-action author flex flex-col sm:items-start items-center whitespace-nowrap">
-                                <span class="date-action-subtitle sm:flex hidden">Автор</span>
+                                <span class="date-action-subtitle text-[var(--trinity-text-color)] sm:flex hidden">Автор</span>
                                 <span>Light Diamond</span>
                             </span>
                         </span>
@@ -150,7 +164,7 @@ const isWideSidebar = ref(true)
                         <div class="date-publication flex items-center sm:gap-0 gap-2">
                             <span class="icon-apple icon flex mr-1"/>
                             <div class="date-action flex flex-col">
-                                <span class="date-action-subtitle sm:flex hidden">Опубликовано</span>
+                                <span class="date-action-subtitle text-[var(--trinity-text-color)] sm:flex hidden">Опубликовано</span>
                                 <span class="flex xs:items-start items-center text-center sm:max-w-none max-w-[90px]">
                                     25 января 2025
                                 </span>

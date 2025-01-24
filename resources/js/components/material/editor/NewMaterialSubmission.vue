@@ -275,7 +275,7 @@ function saveAsDraft() {
                             class-wrap="ld-primary-background"
                             class-preset="text-[11px] gap-2 px-2 py-0.5"
                             label="Сохранить как черновик"
-                            icon="icon-book"
+                            icon="icon-book min-w-[2rem]"
                             :disabled="!materialEditor?.hasAllFieldsFilled()"
                             @click="saveAsDraft"
                         />

@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import {useToastStore} from '@/stores/toast'
 import {ref} from 'vue'
+import {useToastStore} from '@/stores/toast'
 import {withCaptcha, getErrorMessageByCode} from '@/helpers'
+
 import axios, {type AxiosError} from 'axios'
+
+import ProcessingMovingItems from '@/components/elements/ProcessingMovingItems.vue'
 
 const props = defineProps({
     allowedGif: {
@@ -29,6 +32,10 @@ const props = defineProps({
         type: Number,
         required: true
     },
+    uploadingItem: {
+        type: String,
+        default: 'item-diamond'
+    }
 })
 
 const emit = defineEmits<{
@@ -46,6 +53,7 @@ const minHeight = props.minHeight
 const minWidth = props.minWidth
 
 const isDraggingOver = ref(false)
+const isUploading = ref(false)
 
 function onChange(event: any) {
     if (props.editable && event.target && event.target.files[0]) {
@@ -102,6 +110,7 @@ function uploadImage(file: File) {
         }
 
         withCaptcha(() => {
+            isUploading.value = true
             const formData = new FormData()
             formData.append('image', file)
             axios.post('/api/upload-image', formData).then((response) => {
@@ -110,13 +119,16 @@ function uploadImage(file: File) {
                     const imageUrl = response.data.image_url
                     emit('upload', imagePath)
                     imageSrc.value = imageUrl
+                    isUploading.value = false
                 } else {
                     if (response.data.errors) {
                         toastStore.error(response.data.errors['image'][0])
                     }
+                    isUploading.value = false
                 }
             }).catch((error: AxiosError) => {
                 toastStore.error(getErrorMessageByCode(error.response!.status))
+                isUploading.value = false
             })
         })
     }
@@ -126,37 +138,41 @@ function uploadImage(file: File) {
 
 <template>
     <label
-        :class="{ 'disabled': !editable, 'cursor-pointer': editable, 'dragover': isDraggingOver, 'loaded': imageSrc }"
+        :class="{
+            'disabled': !editable, 'cursor-pointer': editable, 'dragover': isDraggingOver,
+             'loaded': imageSrc , 'uploading': isUploading
+        }"
         class="upload-image-container flex justify-center items-center locked"
-        :style="'background-image: url(' + imageSrc + ');'"
+        :style="'background-image: url(' + imageSrc + ')'"
         @dragenter.prevent="onDragEnter"
         @dragleave="onDragLeave"
         @dragover.prevent
         @drop.prevent="onDrop"
         :for="id"
     >
-        <em
-            class="upload-image-info-wrap flex justify-center items-center h-full w-full"
-            :class="{ 'loaded': imageSrc }"
-        >
-        <span
-            class="upload-image-info flex flex-col items-center gap-2 p-4"
-        >
-            <span class="upload-image-heading flex gap-2">
-                <span :class="icon" class="icon relative"></span>
-                <span class="head-font md:text-[1.2rem] text-center duration-200">{{ title }}</span>
+        <em class="upload-image-info-wrap flex justify-center items-center h-full w-full" :class="{ 'loaded': imageSrc }">
+            <span class="upload-image-info flex flex-col items-center gap-2 p-4">
+                <span class="upload-image-heading flex gap-2">
+                    <span :class="icon" class="icon relative"/>
+                    <span class="head-font md:text-[1.2rem] text-center duration-200">{{ title }}</span>
+                </span>
+                <span class="text-center">Минимальное разрешение — {{ minWidth }} × {{ minHeight }}</span>
+                <span class="text-center">Максимальный размер — {{ maxSizeInMegabytes }} Мб</span>
+                <span class="text-center">{{ allowedImageFormats.join(' / ') }}</span>
+                <ProcessingMovingItems
+                    v-if="isUploading"
+                    :item="uploadingItem"
+                    height="4rem"
+                    width="4rem"
+                />
+                <input
+                    :disabled="!editable"
+                    @change="onChange"
+                    :accept="allowedFormats"
+                    type="file"
+                    :id="id"
+                />
             </span>
-            <span class="text-center">Минимальное разрешение — {{ minWidth }} × {{ minHeight }}</span>
-            <span class="text-center">Максимальный размер — {{ maxSizeInMegabytes }} Мб</span>
-            <span class="text-center">{{ allowedImageFormats.join(' / ') }}</span>
-            <input
-                :disabled="!editable"
-                @change="onChange"
-                :accept="allowedFormats"
-                type="file"
-                :id="id"
-            />
-        </span>
         </em>
     </label>
 </template>
@@ -222,6 +238,7 @@ em.loaded .upload-image-heading {
     outline: 0;
 }
 
+.upload-image-container.uploading .upload-image-info-wrap,
 .upload-image-container.dragover .upload-image-info-wrap {
     opacity: 1;
 }

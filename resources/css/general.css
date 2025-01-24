@@ -151,10 +151,11 @@
 
     .element-light-diamond-logo { background-image: url('/public/images/elements/light-diamond-logo.png'); }
     .element-light-diamond-logo-mobile { background-image: url('/public/images/elements/light-diamond-logo-mobile.png'); }
-    .element-light-diamond-catalog-logo { background-image: url('/public/images/elements/light-diamond-catalog-logo.png'); }
+    .element-light-diamond-catalog-logo { background-image: url('/public/images/elements/light-diamond-catalog-logo-rus.png'); }
 
-    .item-diamond-pickaxe { background-image: url('/public/images/items/diamond-pickaxe.png'); }
-    .item-diamond { background-image: url('/public/images/items/diamond.png'); }
+    .item-diamond-pickaxe { background-image: url('/public/images/items/diamond-pickaxe.svg'); }
+    .item-diamond-sword { background-image: url('/public/images/items/diamond-sword.svg'); }
+    .item-diamond { background-image: url('/public/images/items/diamond.svg'); }
     .item-ender-pearl { background-image: url('/public/images/items/ender-pearl.png'); }
     .item-gold-ingot { background-image: url('/public/images/items/gold-ingot.png'); }
 
@@ -318,6 +319,12 @@
 
     .material hr {
         margin: 2rem auto;
+    }
+
+    .material-comment-editor {
+        ol, ul {
+            padding-left: 2rem;
+        }
     }
 
     .material, .material-comment {

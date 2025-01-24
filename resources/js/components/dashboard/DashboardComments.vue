@@ -1,16 +1,25 @@
-<script setup lang="ts">
+<script setup lang='ts'>
 import axios, {type AxiosError} from 'axios'
 import {computed, ref} from 'vue'
-import {getErrorMessageByCode} from '@/helpers'
-import {useToastStore} from '@/stores/toast'
-import {type MaterialComment} from '@/types'
-import Paginator from '@/components/elements/Paginator.vue'
-import MaterialCommentComponent from '@/components/material/comment/MaterialComment.vue'
 
+import {getErrorMessageByCode} from '@/helpers'
+import {useAuthStore} from '@/stores/auth'
+import {useToastStore} from '@/stores/toast'
+
+import MaterialCommentComponent from '@/components/material/comment/MaterialComment.vue'
+import {type MaterialComment, type User} from '@/types'
+
+import Paginator from '@/components/elements/Paginator.vue'
+
+const authStore = useAuthStore()
 const toastStore = useToastStore()
 
 const comments = ref<MaterialComment[]>([])
+
+const records = ref<User[]>([])
 const totalRecords = ref(0)
+
+const isLoading = ref(false)
 
 const page = ref(1)
 const perPage = ref(8)
@@ -19,8 +28,6 @@ const loadRequestData = computed(() => ({
     page: page.value,
     per_page: perPage.value
 }))
-
-const isLoading = ref(false)
 
 function loadComments() {
     isLoading.value = true
@@ -42,65 +49,63 @@ function loadComments() {
 }
 
 loadComments()
+
 </script>
 
 <template>
-    <section class="dash-com-section section flex flex-col">
-        <div class="ld-shadow-text flex flex-col min-h-[100vh] w-full">
-            <div class="flex w-full">
-                <div class="flex md:justify-start justify-center"/>
-
-                <div v-if="isLoading" class="flex flex-col">
-                    <div v-for="i in 5" :key="i" class="flex w-full gap-2 p-2">
-
-                        <div class="skeleton transfusion flex
-                            sm:h-[112px] sm:max-w-[196px] sm:min-w-[196px]
-                            xs:h-[76px] xs:max-w-[132px] xs:min-w-[132px]
-                            h-[58px] max-w-[100px] min-w-[100px]
-                            overflow-hidden"
-                        />
-                        <div class="flex flex-col w-full gap-2">
-                            <div class="skeleton transfusion flex h-4 max-w-[360px] w-full"/>
-                            <div class="skeleton transfusion flex h-3 max-w-[80%] w-full"/>
+    <div class="section ld-shadow-text flex flex-col h-full">
+        <div v-if="isLoading" class="flex flex-col gap-6 px-2">
+            <div class="skeleton transfusion flex max-w-[192px] h-4 w-full mt-4 mx-2"/>
+            <div v-for="i in 5" :key="i" class="flex w-full gap-2 p-2">
+                <div class="flex flex-col w-full gap-3">
+                    <p class="skeleton transfusion flex max-w-[512px] h-4 mb-2"/>
+                    <div class="flex flex-wrap items-center md:text-[12px] text-[10px] gap-2 mt-0.5">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div class="skeleton transfusion flex h-10 w-10 mr-2"/>
+                            <p class="skeleton transfusion flex h-4 w-[112px]"/>
+                            <p class="skeleton transfusion flex h-4 w-[96px]"/>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-6 ml-[3.5rem]">
+                        <div class="flex flex-col gap-3">
+                            <div class="skeleton transfusion flex h-3 max-w-[85%] w-full"/>
+                            <div class="skeleton transfusion flex h-3 max-w-[70%] w-full"/>
                             <div class="skeleton transfusion flex h-3 max-w-[55%] w-full"/>
-                            <div class="flex flex-wrap items-center md:text-[12px] text-[10px] gap-2 mt-0.5">
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <div class="skeleton transfusion flex h-7 w-7"/>
-                                    <p class="skeleton transfusion flex h-4 w-[96px]"/>
-                                    <p class="skeleton transfusion flex h-4 w-[72px]"/>
-                                </div>
-                            </div>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div class="skeleton transfusion flex h-8 w-8"/>
+                            <p class="skeleton transfusion flex h-4 w-[32px] mr-4"/>
+                            <p class="skeleton transfusion flex h-4 max-w-[192px] w-full"/>
                         </div>
                     </div>
                 </div>
-                <template v-else>
-                    <div
-                        v-if="comments.length === 0"
-                        class="flex flex-col justify-center items-center min-h-[480px] gap-6"
-                    >
-                        <p class="text-muted text-center text-[14px] max-w-[480px]">
-                            Хм... Комментарии не найдены.
-                        </p>
-                        <div class="mob wandering-trader flex justify-center items-center mb-4">
-                            <div class="animation-wandering-trader h-[244px] w-[130px]"></div>
-                        </div>
-                    </div>
-                    <div v-else class="prima flex flex-col max-w-[100%]" :class="{'paginator-refresh': isLoading}">
-                        <div>
-                            <p class="p-4">Комментариев: {{ comments.length }}</p>
-                        </div>
-                        <MaterialCommentComponent
-                            v-for="comment in comments"
-                            :comment="comment"
-                            :id="`comment-${comment.id}`"
-                            is-profile-comment
-                            :key="comment.id"
-                        />
-                    </div>
-                </template>
             </div>
-
         </div>
+        <template v-else>
+            <div
+                v-if="comments.length === 0"
+                class="flex flex-col justify-center items-center min-h-[480px] gap-6"
+            >
+                <p class="text-muted text-center text-[14px] max-w-[480px]">
+                    Хм... Комментарии не найдены.
+                </p>
+                <div class="mob wandering-trader flex justify-center items-center mb-4">
+                    <div class="animation-wandering-trader h-[244px] w-[130px]"></div>
+                </div>
+            </div>
+            <div v-else class="flex flex-col">
+                <p class="p-4">Комментариев: {{ comments.length }}</p>
+                <div class="data-table flex flex-col min-h-[100vh] overflow-x-auto">
+                    <MaterialCommentComponent
+                        v-for="comment in comments"
+                        :comment="comment"
+                        :id="`comment-${comment.id}`"
+                        is-profile-comment
+                        :key="comment.id"
+                    />
+                </div>
+            </div>
+        </template>
         <div class="flex sticky bottom-[0]" style="z-index: 1">
             <Paginator
                 v-model="loadRequestData.page"
@@ -110,23 +115,5 @@ loadComments()
                 @update:model-value="loadComments"
             />
         </div>
-    </section>
+    </div>
 </template>
-
-<style scoped>
-/* =============== [ Медиа-Запрос { 1081px > ?px } ] =============== */
-
-@media screen and (min-width: 1081px) {
-    .dash-com-section {
-        max-width: calc(100% - 318px);
-    }
-}
-
-/* =============== [ Медиа-Запрос { 1181px > ?px } ] =============== */
-
-@media screen and (min-width: 1181px) {
-    .dash-com-section {
-        max-width: calc(100% - 210px);
-    }
-}
-</style>

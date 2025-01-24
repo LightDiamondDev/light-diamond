@@ -10,6 +10,7 @@ const props = defineProps({
         type: String,
         default: 'button'
     },
+    classLabel: String,
     classPreset: String,
     classPress: String,
     classWrap: String,
@@ -56,7 +57,12 @@ const props = defineProps({
                         class="icon min-w-[1rem]"
                         :class="icon"
                     />
-                    <span class="label text-center flex items-center duration-200">{{ label }}</span>
+                    <span
+                        class="label text-center flex items-center duration-200 truncate"
+                        :class="classLabel"
+                    >
+                        {{ label }}
+                    </span>
                 </span>
             </span>
         </span>
@@ -65,5 +71,7 @@ const props = defineProps({
 </template>
 
 <style scoped>
-
+.flex.block {
+    display: block;
+}
 </style>

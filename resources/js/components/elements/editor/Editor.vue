@@ -64,12 +64,19 @@ const editor = useEditor({
     editorProps: {
         attributes: {
             class: `focus:outline-none ${props.editorClass}`
+        },
+        handleDrop: function(view, event, slice, moved) {
+            if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) {
+                uploadImage(event.dataTransfer.files[0])
+            }
+            return false
         }
     },
 
     editable: props.editable,
     enableInputRules: false,
     extensions: props.extensions,
+
     content: contentModel.value,
     onUpdate: ({editor}) => {
         currentEditorContent = props.plainText ? editor.getText() : editor.getHTML()

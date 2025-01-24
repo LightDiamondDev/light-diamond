@@ -55,6 +55,7 @@ launchBannerParticles(BannerParticles.SNOWFLAKES)
     <div class="banner flex justify-center max-w-[100vw] w-full overflow-hidden">
         <div
             class="banner-slide bg-fixed flex h-full w-full duration-1000"
+            style="background-position-x: center; background-repeat: no-repeat"
             :style="{ 'background-image': `url(${bannerImagesSrc[currentBannerImageSrc]})` }"
         >
             <div class="banner-effects flex justify-center snowflakes h-full w-full relative" :class="{ 'effects-off': !isBannerAnimation }">
@@ -277,27 +278,5 @@ launchBannerParticles(BannerParticles.SNOWFLAKES)
 @keyframes falling-snowflake-animation15 {
     from { transform: rotate(0); left: 80%; top: -5%; }
     to { transform: rotate(720deg); left: 50%; top: 100%; }
-}
-</style>
-
-<style scoped>
-.banner-slide {
-    background-repeat: no-repeat;
-}
-
-/* =============== [ Медиа-Запрос { 1920px < ?px } ] =============== */
-
-@media screen and (min-width: 1920px) {
-    .banner-slide {
-        background-size: cover;
-    }
-}
-
-/* =============== [ Медиа-Запрос { ?px < 1920px } ] =============== */
-
-@media screen and (max-width: 1919px) {
-    .banner-slide {
-        background-position-x: center;
-    }
 }
 </style>
