@@ -365,7 +365,7 @@ loadMaterialSubmission()
             :modal="true"
         >
             <div class="material-submission-actions flex flex-col gap-4 md:p-6 xs:p-4 p-2" ref="actionHistoryContainer">
-                <MaterialSubmissionAction v-for="action in materialSubmission.actions" :action="action"/>
+                <MaterialSubmissionAction v-for="action in materialSubmission.actions!.sort((a, b) => a.created_at!.localeCompare(b.created_at!))" :action="action"/>
             </div>
         </Dialog>
 
