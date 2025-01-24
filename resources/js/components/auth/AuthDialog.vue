@@ -396,6 +396,7 @@ const activeSplash = getRandomAuthSplash()
 
 /* =============== [ Медиа-Запрос { ?px < 1024px + mobile-height } ] =============== */
 
+/*
 @media screen and (max-width: 1023px) and (max-height: 653px) {
     .auth-dialog .illustration {
         display: none;
@@ -435,6 +436,7 @@ const activeSplash = getRandomAuthSplash()
         margin: 0.25rem;
     }
 }
+*/
 
 /* =============== [ Медиа-Запрос { ?px < 426px } ] =============== */
 
