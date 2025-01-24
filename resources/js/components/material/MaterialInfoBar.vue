@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {useAuthStore} from '@/stores/auth'
 import {getFullPresentableDate, getRelativeDate} from '@/helpers'
+import useCategoryRegistry from '../../categoryRegistry'
+
 import {type Material} from '@/types'
 import UserAvatar from '@/components/user/UserAvatar.vue'
 import {computed, type PropType} from 'vue'
@@ -36,6 +38,20 @@ const wasMaterialUpdated = computed(() => props.material!.published_at !== props
                 <span style="line-height: 1.4">{{ material.state!.author?.username ?? 'Некто' }}</span>
             </div>
         </ProfileLink>
+
+        <div class="date-publication flex items-center sm:gap-0 gap-2">
+            <span class="icon flex mr-1" :class="useCategoryRegistry().get(material.category).icon"/>
+            <div class="date-action flex flex-col">
+                <span class="date-action-subtitle sm:flex hidden" style="line-height: 1.4">Категория</span>
+                <span
+                    class="flex xs:items-start items-center text-center sm:max-w-none"
+                    v-tooltip.top="'Категория'"
+                    style="line-height: 1.4"
+                >
+                    {{ useCategoryRegistry().get(material.category).singularName }}
+                </span>
+            </div>
+        </div>
 
         <div v-if="wasMaterialUpdated" class="date-update flex items-center sm:gap-0 gap-2">
             <span class="icon-refresh icon flex mr-1"/>
