@@ -30,7 +30,8 @@ export function changeTitle(title: string) {
     document.title = title + ' — ' + import.meta.env.VITE_APP_NAME
 }
 
-export function countHTMLTag(html: string, tag: string) {
+export function countHTMLTag(html: string|undefined, tag: string) {
+    if (!html) return
     return (html.match(new RegExp(tag, 'g')) || []).length
 }
 
@@ -95,7 +96,7 @@ export function getFullDate(date: Date | string) {
 export function getCounterLabel(counter: number) {
     if (counter > 999) {
         if (counter > 999999) {
-            return ((counter / 1000000).toFixed(1)).toLocaleString() + 'M'
+            return ((counter / 1000000).toFixed(2)).toLocaleString() + 'M'
         } else {
             return ((counter / 1000).toFixed(1)).toLocaleString() + 'K'
         }

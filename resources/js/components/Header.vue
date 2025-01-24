@@ -337,11 +337,10 @@ function logout() {
 
                 <RouterLink
                     :to="{name: 'home'}"
-                    class="logo-wrap flex items-center duration-200 h-[70%]"
+                    class="logo-wrap flex items-center duration-200 h-[70%] xs:ml-0 ml-2"
                     :class="{'opacity-0': isHeaderSidebar}"
                 >
-                    <img alt="Logo" class="hidden xs:flex h-full min-w-152"
-                         src="/images/elements/light-diamond-logo.png"/>
+                    <img alt="Logo" class="hidden xs:flex h-full min-w-152" src="/images/elements/light-diamond-logo.png"/>
                     <img alt="Logo" class="flex xs:hidden h-full" src="/images/elements/light-diamond-logo-mobile.png"/>
                 </RouterLink>
 

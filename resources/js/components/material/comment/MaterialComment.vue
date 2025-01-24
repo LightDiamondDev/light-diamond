@@ -304,18 +304,21 @@ const currentCommentHTMLHeight = computed(() =>
             </div>
         </div>
         <template v-else>
-            <div :class="{'material-comment-highlighted': isHighlighted}"
-                 class="material-comment-body material-comment flex flex-col w-full">
+            <div
+                :class="{'material-comment-highlighted': isHighlighted}"
+                class="material-comment-body material-comment flex flex-col w-full"
+                style="transition: background-color 5s"
+            >
                 <RouterLink
                     v-if="isProfileComment"
-                    class="ld-special-text hai w-fit mb-[-4px] ml-4 mt-4 hover:underline truncate"
+                    class="ld-special-text hi my-2 mx-4 hover:underline truncate"
                     :to="materialRoute"
                 >
                     {{
                         useCategoryRegistry().get(material.category).singularName + ' «' + material.state.localization.title + '»'
                     }}
                 </RouterLink>
-                <div class="material-comment-inner flex w-full gap-2">
+                <div class="material-comment-inner flex w-full gap-2 p-4">
                     <div class="flex relative">
                         <UserAvatar
                             border-class-list="md:h-10 md:min-w-10 h-8 min-w-8"
@@ -372,7 +375,7 @@ const currentCommentHTMLHeight = computed(() =>
                         </div>
 
                         <div class="flex flex-col max-w-[100%]">
-                            <span v-if="comment.parent_comment?.parent_comment_id">
+                            <span v-if="comment.parent_comment">
                                 <RouterLink
                                     class="mention ld-tinted-background darker left ld-secondary-text
                                         flex flex-col sm:text-[14px] text-[12px] mb-2 pl-3 py-2"
@@ -433,7 +436,7 @@ const currentCommentHTMLHeight = computed(() =>
                                 <p class="text-[var(--primary-color)] mt-0">{{ comment.user!.username }}</p>
                             </div>
                             <MaterialCommentEditor v-model="replyData.content" class="material-comment-editor"/>
-                            <div class="flex w-full self-start gap-4">
+                            <div class="flex md:flex-row flex-row-reverse self-start w-full gap-4">
                                 <Button
                                     class="success max-h-[72px] sm:max-w-[200px] w-full"
                                     label-classes="xs:text-base text-sm"
@@ -474,7 +477,7 @@ const currentCommentHTMLHeight = computed(() =>
     opacity: .8;
 }
 
-.prima .material-comment .ld-special-text.hai {
+.prima .material-comment .ld-special-text.hi {
     animation: comment-link-color-animation 5s infinite;
 }
 
@@ -522,6 +525,11 @@ const currentCommentHTMLHeight = computed(() =>
 
 .material-comment-html {
     transition: height .5s ease;
+}
+
+.mention .icon {
+    margin-right: 4px;
+    margin-left: 4px;
 }
 </style>
 

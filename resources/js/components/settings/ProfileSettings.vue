@@ -104,7 +104,7 @@ function submitChangeAvatar() {
                             v-model="avatarData.avatar"
                             filler-icon="icon-white-pencil"
                             id="settings-profile-avatar"
-                            image-path="/images/users/content/funny-girl.png"
+                            image-path="/images/users/avatars/avatar-light-diamond.png"
                         />
                     </div>
                     <div class="description flex flex-col">

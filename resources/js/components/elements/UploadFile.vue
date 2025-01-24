@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useToastStore} from '@/stores/toast'
 import {ref} from 'vue'
+import ProcessingMovingItems from '@/components/elements/ProcessingMovingItems.vue'
 
 const props = defineProps({
     id: String,
@@ -9,11 +10,19 @@ const props = defineProps({
         default: true
     },
     icon: String,
+    isUploading: {
+        type: Boolean,
+        default: false
+    },
     title: String,
     files: String,
     maxSizeInMegabytes: {
         type: Number,
         required: true
+    },
+    uploadingItem: {
+        type: String,
+        default: 'item-diamond'
     }
 })
 
@@ -101,6 +110,12 @@ function uploadFile(file: File) {
                     maxSizeInMegabytes
                 }} Мб</span>
             <span class="text-center md:text-[14px] text-[12px]">{{ allowedFileFormats.join(' / ') }}</span>
+            <ProcessingMovingItems
+                v-if="isUploading"
+                :item="uploadingItem"
+                height="4rem"
+                width="4rem"
+            />
             <input
                 ref="input"
                 @change="onChange"
