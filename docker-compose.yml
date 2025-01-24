@@ -12,7 +12,7 @@ services:
             - app
             - node-vite
         environment:
-            VIRTUAL_HOST: ${APP_HOST:-localhost}
+            VIRTUAL_HOST: ${APP_HOST:-lightdiamond.local}
             LETSENCRYPT_HOST: ${APP_HOST}
 #            LETSENCRYPT_EMAIL: ${EMAIL}
 
