@@ -11,6 +11,7 @@ docker compose run --rm --no-deps app cp .env.example .env
 # Запрашиваем секретные данные для .env
 stty -echo
 read -p "Введите пароль для базы данных (DB_PASSWORD): " DB_PASSWORD
+DB_PASSWORD=$(printf '%s\n' "$DB_PASSWORD" | sed 's/[\/&]/\\&/g')
 echo ""
 read -p "Введите HCaptcha sitekey: " HCAPTCHA_SITEKEY
 echo ""
