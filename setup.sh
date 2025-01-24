@@ -11,14 +11,17 @@ docker compose run --rm --no-deps app cp .env.example .env
 # Запрашиваем секретные данные для .env
 stty -echo
 read -p "Введите пароль для базы данных (DB_PASSWORD): " DB_PASSWORD
+echo ""
 read -p "Введите HCaptcha sitekey: " HCAPTCHA_SITEKEY
+echo ""
 read -p "Введите HCaptcha secret: " HCAPTCHA_SECRET
+echo ""
 stty echo
 
 # Обновляем .env
-sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env
-sed -i "s/HCAPTCHA_SITEKEY=.*/HCAPTCHA_SITEKEY=$HCAPTCHA_SITEKEY/" .env
-sed -i "s/HCAPTCHA_SECRET=.*/HCAPTCHA_SECRET=$HCAPTCHA_SECRET/" .env
+sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=\"$DB_PASSWORD\"/" .env
+sed -i "s/HCAPTCHA_SITEKEY=.*/HCAPTCHA_SITEKEY=\"$HCAPTCHA_SITEKEY\"/" .env
+sed -i "s/HCAPTCHA_SECRET=.*/HCAPTCHA_SECRET=\"$HCAPTCHA_SECRET\"/" .env
 
 # Устанавливаем PHP-зависимости
 echo "Устанавливаем PHP-зависимости..."
@@ -43,6 +46,7 @@ docker compose run --rm app php artisan migrate:fresh --seed
 # Запрашиваем пароль для первого администратора
 stty -echo
 read -p "Введите пароль для администратора (admin): " ADMIN_PASSWORD
+echo ""
 stty echo
 
 # Создаём администратора через User::factory()
