@@ -155,7 +155,7 @@ const navigationSections = computed<NavigationSection[]>(() => [
         label: 'Информация',
         children:
             [
-                {label: 'Правила Пользования', icon: 'icon-hand', route: {name: 'terms-of-use'}},
+                {label: 'Условия Использования', icon: 'icon-hand', route: {name: 'terms-of-use'}},
                 {label: 'Политика Конфиденциальности', icon: 'icon-script', route: {name: 'privacy-policy'}},
                 {label: 'О Проекте', icon: 'icon-faq', route: {name: 'about-us'}}
             ]

@@ -294,7 +294,7 @@ function openDownloadWindow() {
                     <img alt="" class="preview w-full mt-0" :src="material!.state!.localization!.cover_url">
                 </div>
 
-                <div class="ld-secondary-text max-w-full py-2"
+                <div class="ld-secondary-text max-w-full pb-8 py-2"
                      v-html="material!.state!.localization!.content"/>
 
                 <div v-if="isDownloadable" class="flex flex-col gap-2 w-full" id="download">

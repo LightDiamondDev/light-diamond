@@ -128,7 +128,7 @@ import Document from '@/components/elements/Document.vue'
 
             <h2>Контактная информация</h2>
 
-            <p>Если у Вас есть вопросы или предложения относительно нашей Политики Конфиденциальности, пожалуйста, свяжитесь с нами по адресу: ilyagrost584@gmail.com.</p>
+            <p>Если у Вас есть вопросы или предложения относительно нашей Политики Конфиденциальности, пожалуйста, свяжитесь с нами по адресу: <a href="mailto:support@lightdiamond.net">support@lightdiamond.net</a>.</p>
 
         </template>
     </Document>

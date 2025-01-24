@@ -61,7 +61,7 @@ function scrollToTop() {
                 </RouterLink>
                 <div class="sm:flex hidden h-8 w-0.5"></div>
                 <RouterLink class="flex items-center p-2" :to="{name: 'terms-of-use'}">
-                    <span class="text-[12px]">Условия Пользования</span>
+                    <span class="text-[12px]">Условия Использования</span>
                 </RouterLink>
             </div>
             <div class="row flex items-center mt-1 mb-1">
