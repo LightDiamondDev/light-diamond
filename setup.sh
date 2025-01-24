@@ -56,7 +56,7 @@ docker compose run --rm app php artisan tinker --execute="
 use App\Models\User;
 use App\Models\Enums\UserRole;
 User::factory()->create([
-    'username' => 'admin',
+    'username' => 'Admin',
     'email' => 'admin@admin',
     'email_verified_at' => now(),
     'role' => UserRole::Admin,
