@@ -10,15 +10,15 @@ export default defineConfig((configEnv) => {
     return {
         publicDir: 'public',
         resolve: {
-            alias: [
-                {find: '@', replacement: path.resolve(__dirname, 'resources', 'js')},
-            ],
+            alias: {
+                '@': path.resolve(__dirname, 'resources/js'),
+            },
         },
         server: {
             host: '0.0.0.0',
             hmr: {
                 clientPort: parseInt(env.VITE_PORT),
-                host: env.VITE_APP_URL.replace(/^(https?:\/\/)/, ''),
+                host: env.VITE_APP_HOST || 'localhost',
                 protocol: 'ws'
             },
             port: 5173,
