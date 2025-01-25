@@ -139,7 +139,9 @@ readonly class MaterialSubmissionService
                 }
             }
         } else {
-            $this->versionService->create($material, $now);
+            if ($materialSubmission->type === SubmissionType::Create) {
+                $this->versionService->create($material, $now);
+            }
         }
     }
 
