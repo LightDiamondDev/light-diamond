@@ -449,7 +449,7 @@ class MaterialSubmissionController extends Controller
         );
         $validator->sometimes(
             'version_submissions.*.version_state',
-            ['bail', 'required', 'integer'],
+            ['bail', 'required', 'array'],
             fn() => $category?->isDownloadable()
         );
 
@@ -516,7 +516,7 @@ class MaterialSubmissionController extends Controller
         );
         $validator->sometimes(
             'version_submissions.*.version_state',
-            ['bail', 'required', 'integer'],
+            ['bail', 'required', 'array'],
             fn() => $category?->isDownloadable()
         );
 
