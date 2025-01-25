@@ -176,14 +176,14 @@ function confirmExit() {
 }
 
 function onBeforePageUnload(e: BeforeUnloadEvent|CloseEvent) {
-    if (materialEditor.value!.hasAnyOfFieldsFilled() && !confirmExit()) {
+    if (materialEditor.value?.hasAnyOfFieldsFilled() && !confirmExit()) {
         e.preventDefault()
         e.returnValue = ''
     }
 }
 
 onBeforeRouteLeave((to, from , next) => {
-    if (isSavingAsDraft.value || isSubmitting.value || !materialEditor.value!.hasAnyOfFieldsFilled() || confirmExit()) {
+    if (isSavingAsDraft.value || isSubmitting.value || !materialEditor.value?.hasAnyOfFieldsFilled() || confirmExit()) {
         next()
     } else {
         next(false)
