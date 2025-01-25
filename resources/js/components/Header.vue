@@ -302,6 +302,7 @@ function logout() {
                         :icon="childSection.icon"
                         :to="childSection.route"
                         class="min-h-[64px] text-[14px] gap-3 pl-12 pr-4"
+                        @click="closeHeaderSidebar()"
                     />
                     <ItemButton
                         v-else
@@ -310,6 +311,7 @@ function logout() {
                         :icon="childSection.icon"
                         :href="childSection.url"
                         class="min-h-[64px] text-[14px] gap-3 pl-12 pr-4"
+                        @click="closeHeaderSidebar()"
                     />
                 </template>
 
