@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
 
-import {computed, nextTick, reactive, ref} from 'vue'
+import {computed, nextTick, onMounted, onUnmounted, reactive, ref} from 'vue'
 
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
-import {RouterLink, useRouter} from 'vue-router'
+import {onBeforeRouteLeave, RouterLink, useRouter} from 'vue-router'
 
 import {
     getAppUrl,
@@ -345,6 +345,35 @@ function openHistoryDialog() {
 function scrollActionHistoryContainerToBottom() {
     actionHistoryContainer.value!.scrollTo({top: actionHistoryContainer.value!.scrollHeight, behavior: 'smooth'})
 }
+
+function confirmExit() {
+    return window.confirm('Вы не сохранили изменения! Вы точно хотите выйти?')
+}
+
+function onBeforePageUnload(e: BeforeUnloadEvent|CloseEvent) {
+    if (isChanged.value && !confirmExit()) {
+        e.preventDefault()
+        e.returnValue = ''
+    }
+}
+
+onBeforeRouteLeave((to, from , next) => {
+    if (!isChanged.value || confirmExit()) {
+        next()
+    } else {
+        next(false)
+    }
+})
+
+onMounted(() => {
+    window.addEventListener('beforeunload', onBeforePageUnload)
+    window.addEventListener('close', onBeforePageUnload)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('beforeunload', onBeforePageUnload)
+    window.removeEventListener('close', onBeforePageUnload)
+})
 
 loadMaterialSubmission()
 </script>

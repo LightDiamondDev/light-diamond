@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import MaterialEditor from '@/components/material/editor/MaterialEditor.vue'
-import {computed, type PropType, ref} from 'vue'
+import {computed, onMounted, onUnmounted, type PropType, ref} from 'vue'
 import axios, {type AxiosError} from 'axios'
 import {getErrorMessageByCode, withCaptcha} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
 import OverlayPanel from '@/components/elements/OverlayPanel.vue'
-import {RouterLink, useRouter} from 'vue-router'
+import {onBeforeRouteLeave, RouterLink, useRouter} from 'vue-router'
 import {GameEdition, type Material, type MaterialSubmission, SubmissionType} from '@/types'
 import {useAuthStore} from '@/stores/auth'
 import ShineButton from '@/components/elements/ShineButton.vue'
@@ -170,6 +170,35 @@ function saveAsDraft() {
         })
     })
 }
+
+function confirmExit() {
+    return window.confirm('Вы не сохранили заявку! Вы точно хотите выйти?')
+}
+
+function onBeforePageUnload(e: BeforeUnloadEvent|CloseEvent) {
+    if (materialEditor.value!.hasAnyOfFieldsFilled() && !confirmExit()) {
+        e.preventDefault()
+        e.returnValue = ''
+    }
+}
+
+onBeforeRouteLeave((to, from , next) => {
+    if (!materialEditor.value!.hasAnyOfFieldsFilled() || confirmExit()) {
+        next()
+    } else {
+        next(false)
+    }
+})
+
+onMounted(() => {
+    window.addEventListener('beforeunload', onBeforePageUnload)
+    window.addEventListener('close', onBeforePageUnload)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('beforeunload', onBeforePageUnload)
+    window.removeEventListener('close', onBeforePageUnload)
+})
 </script>
 
 <template>

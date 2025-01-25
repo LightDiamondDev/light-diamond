@@ -71,6 +71,7 @@ defineProps({
 })
 
 defineExpose({
+    hasAnyOfFieldsFilled,
     hasAllFieldsFilled
 })
 
@@ -540,6 +541,16 @@ function removeVersion() {
 
     isVersionRemoveFormVisible.value = false
     emit('edit')
+}
+
+function hasAnyOfFieldsFilled() {
+    return currentLocalization.value.title?.length > 0
+        || currentLocalization.value.cover
+        || currentLocalization.value.content?.length > 0
+        || currentLocalization.value.description?.length > 0
+        || materialSubmission.value.material!.category !== undefined
+        // TODO: Добавить проверку на количество файлов в каждой версии
+        || versions.value.length > 0
 }
 
 function hasAllFieldsFilled() {
