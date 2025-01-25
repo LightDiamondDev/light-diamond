@@ -183,7 +183,7 @@ function onBeforePageUnload(e: BeforeUnloadEvent|CloseEvent) {
 }
 
 onBeforeRouteLeave((to, from , next) => {
-    if (!materialEditor.value!.hasAnyOfFieldsFilled() || confirmExit()) {
+    if (isSavingAsDraft.value || isSubmitting.value || !materialEditor.value!.hasAnyOfFieldsFilled() || confirmExit()) {
         next()
     } else {
         next(false)
