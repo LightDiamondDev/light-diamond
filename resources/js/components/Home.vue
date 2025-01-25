@@ -51,7 +51,7 @@ const subtitleSwitcherInterval = setTimeout(setInterval(switchSubtitle, 8000), 3
 </script>
 
 <template>
-    <Banner class="h-[94vh]" style="background-size: cover" :images-src="bannerImagesSrc">
+    <Banner class="banner-full h-[94vh]" :images-src="bannerImagesSrc">
         <template v-slot:banner-content>
             <div class="banner-tinted-content flex flex-col justify-center lg:items-start items-center w-full">
                 <div class="flex flex-col lg:items-start items-center max-w-[640px] lg:ml-[5%] lg:mt-[25%]">
@@ -126,6 +126,16 @@ const subtitleSwitcherInterval = setTimeout(setInterval(switchSubtitle, 8000), 3
 @media screen and (max-width: 1023px) {
     .banner-tinted-content {
         background: linear-gradient(transparent, rgba(0, 0, 0, .7), black)
+    }
+}
+</style>
+
+<style>
+/* =============== [ Медиа-Запрос { 1920px > ?px } ] =============== */
+
+@media screen and (min-width: 1920px) {
+    .banner-slide {
+        background-size: contain;
     }
 }
 </style>
