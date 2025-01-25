@@ -10,7 +10,7 @@ interface ImportMeta {
         VITE_APP_NAME: string
         VITE_APP_URL: string
         VITE_HCAPTCHA_SITEKEY: string
-        VITE_HCAPTCHA_ENABLED: boolean
+        VITE_HCAPTCHA_ENABLED: string
     }
 }
 
@@ -56,7 +56,7 @@ export function getErrorMessageByCode(code: number) {
 
 export function withCaptcha(action: () => void) {
     if (
-        import.meta.env.VITE_HCAPTCHA_ENABLED
+        import.meta.env.VITE_HCAPTCHA_ENABLED !== 'false'
         && !useAuthStore().isModerator
         && !Cookies.get('captcha_solved')
     ) {
