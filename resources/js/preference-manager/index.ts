@@ -15,7 +15,7 @@ class PreferenceManager {
     private isDesktopSidebar = false
     private isHeaderFixed = false
     private isMaterialFullView = false
-    private isMaterialCategoryInPreview = false
+    private isMaterialCategoryInPreview = true
     private edition = PreferenceManager.defaultEdition
 
     public isLightTheme() {
@@ -114,7 +114,8 @@ class PreferenceManager {
     }
 
     public loadMaterialCategoryInPreview() {
-        this.isMaterialCategoryInPreview = localStorage.getItem(PreferenceManager.isMaterialCategoryInPreviewKey) === 'true'
+        const isMaterialCategoryInPreview = localStorage.getItem(PreferenceManager.isMaterialCategoryInPreviewKey)
+        this.isMaterialCategoryInPreview = isMaterialCategoryInPreview === null || isMaterialCategoryInPreview === 'true'
     }
 
     public getEdition() {
