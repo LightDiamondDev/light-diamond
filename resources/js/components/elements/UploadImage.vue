@@ -39,11 +39,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-    (e: 'upload', imagePath: string): void
+    (e: 'upload', imagePath: string, imageUrl: string): void
 }>()
 
 const model = defineModel<string>({default: ''})
-const imageSrc = ref(props.imageSrc)
 const toastStore = useToastStore()
 
 const allowedImageFormats = props.allowedGif ? ['PNG', 'JPG', 'JPEG', 'GIF'] : ['PNG', 'JPG', 'JPEG']
@@ -117,8 +116,7 @@ function uploadImage(file: File) {
                 if (response.data.success) {
                     const imagePath = response.data.image_path
                     const imageUrl = response.data.image_url
-                    emit('upload', imagePath)
-                    imageSrc.value = imageUrl
+                    emit('upload', imagePath, imageUrl)
                     isUploading.value = false
                 } else {
                     if (response.data.errors) {

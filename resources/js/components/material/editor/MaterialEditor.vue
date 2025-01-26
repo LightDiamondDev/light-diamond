@@ -302,8 +302,9 @@ function loadFileSubmissions() {
     })
 }
 
-function onCoverUpload(imagePath: string) {
+function onCoverUpload(imagePath: string, imageUrl: string) {
     currentLocalization.value.cover = imagePath
+    currentLocalization.value.cover_url = imageUrl
     emit('edit')
 }
 
