@@ -61,6 +61,9 @@ onMounted(() => {
 
 onUnmounted(() => {
     document.removeEventListener('keydown', onKeyDown)
+    if (isVisible.value) {
+        unlockGlobalScroll()
+    }
 })
 
 function onKeyDown(event: KeyboardEvent) {
