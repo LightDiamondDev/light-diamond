@@ -94,6 +94,7 @@ const actions = computed(() => materialSubmission.value!.actions!.sort((a, b) =>
 const lastAction = computed(() => actions.value!.at(actions.value!.length - 1))
 const rejectDetails = reactive<MaterialSubmissionActionReject>({reason: ''})
 const requestChangesDetails = reactive<MaterialSubmissionActionRequestChanges>({message: ''})
+const messageDetails = reactive<MaterialSubmissionActionRequestChanges>({message: ''})
 
 const actionHistoryContainer = ref<HTMLElement>()
 
@@ -106,6 +107,7 @@ const isRejecting = ref(false)
 const isRequestingChanges = ref(false)
 const isSubmitting = ref(false)
 const isUpdating = ref(false)
+const isSendingMessage = ref(false)
 
 const errors = ref<{ [key: string]: string[] }>({})
 
@@ -224,6 +226,16 @@ function assignModerator(event: SelectOptionChangeEvent) {
     ).then((response) => {
         if (response.data.success) {
             toastStore.success(`Назначен Модератор ${moderator.username}.`)
+            materialSubmission.value!.actions!.push({
+                user_id: authStore.id,
+                user: authStore.user,
+                type: MaterialSubmissionActionType.ASSIGN_MODERATOR,
+                details: {
+                    moderator_id: moderator.id,
+                    moderator: moderator,
+                },
+                created_at: new Date().toISOString(),
+            })
         } else {
             if (response.data.message) {
                 toastStore.error(response.data.message)
@@ -232,6 +244,39 @@ function assignModerator(event: SelectOptionChangeEvent) {
         }
     }).catch((error: AxiosError) => {
         toastStore.error(getErrorMessageByCode(error.response!.status))
+    })
+}
+
+function message() {
+    withCaptcha(() => {
+        isSendingMessage.value = true
+        axios.post(
+            `/api/material-submissions/${props.id}/messages`,
+            messageDetails
+        ).then((response) => {
+            if (response.data.success) {
+                materialSubmission.value!.actions!.push({
+                    user_id: authStore.id,
+                    user: authStore.user,
+                    type: MaterialSubmissionActionType.MESSAGE,
+                    details: {
+                        message: messageDetails.message
+                    },
+                    created_at: new Date().toISOString(),
+                })
+                messageDetails.message = ''
+                nextTick(scrollActionHistoryContainerToBottom)
+            } else {
+                if (response.data.message) {
+                    toastStore.error(response.data.message)
+                    errors.value = response.data.errors
+                }
+            }
+        }).catch((error: AxiosError) => {
+            toastStore.error(getErrorMessageByCode(error.response!.status))
+        }).finally(() => {
+            isSendingMessage.value = false
+        })
     })
 }
 
@@ -350,14 +395,14 @@ function confirmExit() {
     return window.confirm('Вы не сохранили изменения! Вы точно хотите выйти?')
 }
 
-function onBeforePageUnload(e: BeforeUnloadEvent|CloseEvent) {
+function onBeforePageUnload(e: BeforeUnloadEvent | CloseEvent) {
     if (isChanged.value && !confirmExit()) {
         e.preventDefault()
         e.returnValue = ''
     }
 }
 
-onBeforeRouteLeave((to, from , next) => {
+onBeforeRouteLeave((to, from, next) => {
     if (!isChanged.value || confirmExit()) {
         next()
     } else {
@@ -397,6 +442,27 @@ loadMaterialSubmission()
             <div class="material-submission-actions flex flex-col gap-4 md:p-6 xs:p-4 p-2" ref="actionHistoryContainer">
                 <MaterialSubmissionAction v-for="action in actions" :action="action"/>
             </div>
+            <form
+                v-if="![MaterialSubmissionStatus.REJECTED, MaterialSubmissionStatus.ACCEPTED].includes(materialSubmission.status) || authStore.isModerator"
+                class="sticky flex bottom-0 left-0 w-full md:px-4 xs:px-2 py-2 border-t"
+                @submit.prevent="message()"
+            >
+                <Input
+                    v-model="messageDetails.message"
+                    max-length="1000"
+                    id="submission-message"
+                    placeholder="Ваше сообщение..."
+                    autocomplete="off"
+                    class="w-full text-xs"
+                />
+                <button
+                    class="flex justify-center items-center h-full lg:min-w-[48px] min-w-[36px] border-0 ml-auto"
+                    :class="{ 'opacity-50': !messageDetails.message || messageDetails.message.length < 2 || isSendingMessage }"
+                    :disabled="!messageDetails.message || messageDetails.message.length < 2 || isSendingMessage"
+                >
+                    <span class="icon-long-right-arrow icon flex" v-tooltip.top="'Отправить'"/>
+                </button>
+            </form>
         </Dialog>
 
         <MaterialEditor

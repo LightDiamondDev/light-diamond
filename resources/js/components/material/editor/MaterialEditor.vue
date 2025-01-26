@@ -2,7 +2,7 @@
 import axios, {type AxiosError} from 'axios'
 import {computed, type PropType, ref, toRaw, watch} from 'vue'
 
-import {convertDateToString, withCaptcha, getErrorMessageByCode} from '@/helpers'
+import {convertDateToString, getErrorMessageByCode, withCaptcha} from '@/helpers'
 import {useAuthStore} from '@/stores/auth'
 import usePreferenceManager from '@/preference-manager'
 import {deepClone, pick} from '@/utils/object'
@@ -219,7 +219,7 @@ const contentEditorExtensions = [
     Blockquote.extend({
         priority: 101,
     }),
-    Heading.extend({ marks: '' }).configure({ levels: [2, 3, 4], }),
+    Heading.extend({marks: ''}).configure({levels: [2, 3, 4],}),
     Image,
     Link.configure({
         openOnClick: 'whenNotEditable',
@@ -689,7 +689,7 @@ loadVersionSubmissions()
                         v-model="currentLocalization.description"
                         :editable="editable"
                         id="material-description"
-                        :max-length="165"
+                        :max-length="180"
                         :min-length="15"
                         placeholder="Описание"
                         rows="3"
