@@ -14,6 +14,7 @@ use App\Models\MaterialVersion;
 use App\Models\MaterialVersionState;
 use App\Models\User;
 use App\Registries\CategoryRegistry;
+use App\Services\BotNotification\BotNotificationService;
 use App\Services\Material\Dto\MaterialSubmissionActionDto;
 use App\Services\Material\Dto\MaterialSubmissionCreateDto;
 use App\Services\Material\Dto\MaterialSubmissionUpdateDto;
@@ -22,10 +23,12 @@ use App\Services\MaterialVersion\MaterialVersionSubmissionService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Telegram\Bot\Laravel\Facades\Telegram;
 
 readonly class MaterialSubmissionService
 {
     public function __construct(
+        private BotNotificationService $botNotificationService,
         private MaterialSubmissionActionService  $actionService,
         private MaterialVersionService           $versionService,
         private MaterialVersionSubmissionService $versionSubmissionService,
@@ -77,6 +80,8 @@ readonly class MaterialSubmissionService
             new MaterialSubmissionActionDto(MaterialSubmissionActionType::Submit)
         );
 
+        $this->botNotificationService->notifyNewSubmission($materialSubmission);
+
         return $materialSubmission;
     }
 
@@ -88,6 +93,8 @@ readonly class MaterialSubmissionService
             $materialSubmission,
             new MaterialSubmissionActionDto(MaterialSubmissionActionType::Submit)
         );
+
+        $this->botNotificationService->notifyNewSubmission($materialSubmission);
     }
 
     public function requestChanges(MaterialSubmission $materialSubmission, MaterialSubmissionUpdateDto $dto): void
