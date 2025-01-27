@@ -186,9 +186,13 @@ function onRecordSave() {
                     <ProfileLink class="row-item flex items-center h-[48px] w-[23%]" :user="record">
                         {{ record.username }}
                     </ProfileLink>
-                    <div class="row-item email-row flex items-center h-[48px] w-[35%] gap-1">
+                    <div class="row-item email-row flex items-center h-[48px] w-[35%] gap-2">
                         <span>{{ record.email }}</span>
-                        <span v-if="!record.email_verified_at" class="icon-yellow-warning icon flex" v-tooltip.top="'Неподтверждённый E-mail'"/>
+                        <span
+                            v-if="!record.email_verified_at"
+                            class="icon-yellow-warning icon flex max-h-[1rem]"
+                            v-tooltip.top="'Неподтверждённый E-mail'"
+                        />
                     </div>
 
                     <span
