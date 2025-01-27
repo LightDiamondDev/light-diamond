@@ -6,7 +6,7 @@ import {getErrorMessageByCode, withCaptcha} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
 import OverlayPanel from '@/components/elements/OverlayPanel.vue'
 import {RouterLink, useRouter} from 'vue-router'
-import {GameEdition, type Material, type MaterialSubmission, SubmissionType} from '@/types'
+import {GameEdition, type Material, type MaterialSubmission, MaterialSubmissionStatus, SubmissionType} from '@/types'
 import {useAuthStore} from '@/stores/auth'
 import ShineButton from '@/components/elements/ShineButton.vue'
 import Banner from '@/components/elements/Banner.vue'
@@ -264,8 +264,9 @@ function saveAsDraft() {
                     <div class="upper-unavailable flex flex-col gap-2">
                         <ShineButton
                             class-wrap="ld-primary-background"
-                            class-preset="text-[11px] gap-2 px-2 py-0.5"
-                            class="success whitespace-nowrap"
+                            class-preset="text-[11px] gap-2 px-2 py-0.5 whitespace-nowrap"
+                            class-label="block truncate"
+                            class="success"
                             label="На рассмотрение"
                             icon="icon-eye"
                             :disabled="!materialEditor?.hasAllFieldsFilled()"
@@ -273,9 +274,10 @@ function saveAsDraft() {
                         />
                         <ShineButton
                             class-wrap="ld-primary-background"
-                            class-preset="text-[11px] gap-2 px-2 py-0.5"
+                            class-preset="text-[11px] gap-2 px-2 py-0.5 whitespace-nowrap"
+                            class-label="block truncate"
                             label="Сохранить как черновик"
-                            icon="icon-book min-w-[2rem]"
+                            icon="icon-book  min-w-[2rem]"
                             :disabled="!materialEditor?.hasAllFieldsFilled()"
                             @click="saveAsDraft"
                         />

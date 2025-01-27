@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import axios, {type AxiosError, type AxiosResponse} from 'axios'
-import {getCounterLabel, getErrorMessageByCode} from '@/helpers'
+import {computed, type PropType} from 'vue'
 import {RouterLink} from 'vue-router'
+
+import {useAuthStore} from '@/stores/auth'
+import useCategoryRegistry from '@/categoryRegistry'
+import {useGlobalModalStore} from '@/stores/global-modal'
+import {useToastStore} from '@/stores/toast'
+import {getCounterLabel, getErrorMessageByCode} from '@/helpers'
 
 import Button from '@/components/elements/Button.vue'
 import EffectIcon from '@/components/elements/EffectIcon.vue'
-import {useAuthStore} from '@/stores/auth'
-import {useGlobalModalStore} from '@/stores/global-modal'
-import {useToastStore} from '@/stores/toast'
-import {computed, type PropType} from 'vue'
 import type {Material} from '@/types'
-import useCategoryRegistry from '@/categoryRegistry'
+
 
 const props = defineProps({
     material: {
@@ -20,6 +22,7 @@ const props = defineProps({
 })
 
 const authStore = useAuthStore()
+const categoryRegistry = useCategoryRegistry()
 const globalModalStore = useGlobalModalStore()
 const toastStore = useToastStore()
 
@@ -125,6 +128,7 @@ function onFavouriteClick() {
             <span class="counter flex p-1">{{ getCounterLabel(material.views_count) }}</span>
         </RouterLink>
         <RouterLink
+            v-if="useCategoryRegistry().get(material.category).isDownloadable"
             :to="{...materialRoute, hash: '#download'}"
             class="set-mark flex items-center mini text-[12px]"
         >
@@ -133,7 +137,3 @@ function onFavouriteClick() {
         </RouterLink>
     </div>
 </template>
-
-<style scoped>
-
-</style>

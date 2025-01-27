@@ -93,7 +93,7 @@ const wasMaterialUpdated = computed(() => props.material!.published_at !== props
                             :class="{'sm:flex hidden w-full gap-8': isHorizontalDirection, 'gap-2': !isHorizontalDirection }"
                         >
                             <div v-if="!preferenceManager.isMaterialCategoryInPreviewVisible()" class="types flex flex-wrap gap-3">
-                                <p class="type flex items-center">
+                                <p class="type flex items-center gap-1">
                                     <span class="icon flex" :class="useCategoryRegistry().get(material.category).icon"/>
                                     <span>{{ useCategoryRegistry().get(material.category).singularName }}</span>
                                 </p>

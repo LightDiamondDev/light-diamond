@@ -565,7 +565,8 @@ loadMaterialSubmission()
                         <div class="separator flex opacity-40" style="background-color: var(--secondary-text-color);"/>
                         <ShineButton
                             class-wrap="ld-primary-background"
-                            class-preset="gap-2 px-2 py-0.5"
+                            class-preset="text-[11px] gap-2 px-2 py-0.5 whitespace-nowrap"
+                            class-label="block truncate"
                             class="success"
                             label="Принять"
                             icon="icon-tick"
@@ -574,7 +575,8 @@ loadMaterialSubmission()
                         />
                         <ShineButton
                             class-wrap="ld-primary-background"
-                            class-preset="gap-2 px-2 py-0.5"
+                            class-preset="text-[11px] gap-2 px-2 py-0.5 whitespace-nowrap"
+                            class-label="block truncate"
                             class="warning"
                             label="На доработку"
                             icon="icon-refresh"
@@ -583,7 +585,8 @@ loadMaterialSubmission()
                         />
                         <ShineButton
                             class-wrap="ld-primary-background"
-                            class-preset="gap-2 px-2 py-0.5"
+                            class-preset="text-[11px] gap-2 px-2 py-0.5 whitespace-nowrap"
+                            class-label="block truncate"
                             class="danger"
                             label="Отклонить"
                             icon="icon-small-cross"
@@ -593,12 +596,12 @@ loadMaterialSubmission()
                         <div class="separator flex opacity-40 xl:mb-1 bg-[var(--secondary-text-color)]"/>
                         <ShineButton
                             class-wrap="ld-primary-background"
-                            class-preset="gap-2 px-2 py-0.5"
-                            class="w-full"
+                            class-preset="text-[11px] gap-2 px-2 py-0.5 whitespace-nowrap"
+                            class-label="block truncate"
                             label="Сохранить изменения"
+                            icon="icon-book min-w-[2rem]"
                             :loading="isUpdating"
                             :disabled="!isChanged || !materialEditor?.hasAllFieldsFilled()"
-                            icon="icon-book"
                             @click="saveChanges"
                         />
                     </div>
@@ -620,7 +623,7 @@ loadMaterialSubmission()
                         class-preset="gap-2 px-2 py-0.5"
                         class="w-full"
                         label="Сохранить изменения"
-                        icon="icon-book"
+                        icon="icon-book min-w-[2rem]"
                         :loading="isUpdating"
                         :disabled="!isChanged || !materialEditor?.hasAllFieldsFilled()"
                         @click="saveChanges"

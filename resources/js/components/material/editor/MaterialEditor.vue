@@ -732,6 +732,10 @@ loadVersionSubmissions()
                         style="background-color: var(--secondary-text-color);"
                     />
 
+                    <h4 class="ld-secondary-text flex xs:flex-row flex-col justify-center text-center xs:gap-2 mt-3">
+                        <span>Версия Материала</span>
+                    </h4>
+
                     <div class="material-version-editor-buttons w-full flex items-center">
                         <MaterialVersionSubmissionSelect
                             :current-version-submission="currentVersionSubmission!"

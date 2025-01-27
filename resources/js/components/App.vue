@@ -38,7 +38,7 @@ watch(route, (to: RouteLocation) => {
     <Toaster/>
     <div class="surface-ground ld-secondary-background ld-fixed-background flex flex-col items-center w-full">
         <Header/>
-        <main class="flex flex-col items-center w-full">
+        <main class="flex flex-col items-center w-full pt-[var(--header-height)]">
             <RouterView/>
         </main>
         <Footer/>

@@ -164,7 +164,7 @@ function change(option: any) {
                             <span class="truncate">{{ getOptionLabel(currentOption) }}</span>
                         </slot>
                     </template>
-                    <span v-else class="opacity-80 ml-2">{{ placeholder }}</span>
+                    <span v-else class="ml-2 whitespace-nowrap opacity-80">{{ placeholder }}</span>
                 </span>
 
                 <span v-if="!disabled && editable" class="button-arrow flex justify-center items-center mr-2 ml-auto">
