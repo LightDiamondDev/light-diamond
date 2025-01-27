@@ -32,8 +32,8 @@ readonly class BotNotificationService
                 'text' => <<<TEXT
                     Новая заявка на публикацию\!
 
-                    *Отправитель:* $submitterName
                     *Название:* $materialSubmissionTitle
+                    *Отправитель:* $submitterName
                     *Ссылка:* $materialSubmissionUrl
                     TEXT
             ]);
