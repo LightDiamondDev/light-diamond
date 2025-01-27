@@ -269,7 +269,7 @@ loadMaterials()
                         </button>
                         -->
                         <button
-                            class="catalog-anchor flex justify-center items-center self-center"
+                            class="catalog-anchor flex justify-center items-center self-center relative"
                             @click="scrollToBottom"
                             type="button"
                         >
@@ -543,13 +543,13 @@ section.catalog {
 
 @keyframes catalog-anchor-icon-animation {
     0% {
-        margin-top: -10px;
+        top: -10px;
     }
     50% {
-        margin-top: 10px;
+        top: 10px;
     }
     100% {
-        margin-top: -10px;
+        top: -10px;
     }
 }
 

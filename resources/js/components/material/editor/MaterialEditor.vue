@@ -231,9 +231,9 @@ const contentEditorExtensions = [
                 case 'codeBlock':
                     return '// Код'
                 default:
-                    return 'Какой-нибудь текст...'
+                    return 'Полное описание Материала'
             }
-        },
+        }
     }),
     StarterKit.configure({
         heading: false,
@@ -679,7 +679,7 @@ loadVersionSubmissions()
                         id="material-description"
                         :max-length="165"
                         :min-length="15"
-                        placeholder="Описание"
+                        placeholder="Краткое описание для карточки Материала"
                         rows="3"
                         @edit="emit('edit')"
                     />

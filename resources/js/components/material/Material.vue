@@ -309,7 +309,7 @@ function openDownloadWindow() {
                     >
                         <div class="flex flex-col w-full gap-3 mb-4">
                             <h4 class="ld-secondary-text flex xs:flex-row flex-col justify-center text-center xs:gap-2 mt-0">
-                                Скачать материал
+                                Скачать Материал
                             </h4>
                             <template v-for="(file, index) in currentVersion.files" :key="index">
                                 <MaterialFile :file="file"/>
@@ -456,6 +456,11 @@ function openDownloadWindow() {
 <style>
 .tooltip::before {
     margin-left: -100px;
+}
+
+.material-info-dates .date-publication,
+.material-info-dates .date-update {
+    max-width: 90px;
 }
 </style>
 

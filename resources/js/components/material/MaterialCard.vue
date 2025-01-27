@@ -50,7 +50,7 @@ const wasMaterialUpdated = computed(() => props.material!.published_at !== props
                     v-if="preferenceManager.isMaterialCategoryInPreviewVisible()"
                     class="material-preview-category ld-tinted-background left flex pr-10 absolute"
                 >
-                    <p class="type flex items-center text-[12px]">
+                    <p class="type flex items-center gap-1 text-[10px]">
                         <span class="icon flex" :class="useCategoryRegistry().get(material.category).icon"/>
                         <span>{{ useCategoryRegistry().get(material.category).singularName }}</span>
                     </p>
@@ -130,7 +130,7 @@ const wasMaterialUpdated = computed(() => props.material!.published_at !== props
                                 class="type ago flex items-center text-end opacity-80 cursor-pointer gap-1 ml-1"
                             >
                                 <span class="icon-clock icon flex"/>
-                                <span class="xs:w-auto w-[60px]">
+                                <span class="xs:w-auto w-[60px] text-center">
                                     {{
                                         getRelativeDate(material.version!.published_at)
                                     }}

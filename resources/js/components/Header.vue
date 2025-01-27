@@ -261,7 +261,7 @@ function logout() {
         <aside
             class="
                 left-header-sidebar  ld-primary-background ld-shadow-text
-                overflow-y-scroll max-w-[300px]
+                overflow-y-scroll max-w-[282px]
                 transition duration-500 h-full
                 flex flex-col fixed"
             :class="{
@@ -301,7 +301,7 @@ function logout() {
                         :label="childSection.label"
                         :icon="childSection.icon"
                         :to="childSection.route"
-                        class="min-h-[64px] text-[14px] gap-3 pl-12 pr-4"
+                        class="min-h-[64px] text-[14px] gap-3 pl-6 pr-4"
                     />
                     <ItemButton
                         v-else
@@ -309,7 +309,7 @@ function logout() {
                         :label="childSection.label"
                         :icon="childSection.icon"
                         :href="childSection.url"
-                        class="min-h-[64px] text-[14px] gap-3 pl-12 pr-4"
+                        class="min-h-[64px] text-[14px] gap-3 pl-6 pr-4"
                     />
                 </template>
 
@@ -318,10 +318,11 @@ function logout() {
         <div class="close-header-sidebar-background h-full w-full" @click="closeHeaderSidebar"></div>
     </div>
 
+    <!-- sticky -->
     <header
         class="ld-primary-background ld-primary-border-bottom ld-shadow-text transition-transform
-        flex justify-center duration-300 select-none sticky
-        h-[var(--header-height)] z-[2] w-full top-0 left-0"
+            flex justify-center duration-300 select-none
+            h-[var(--header-height)] z-[2] w-full top-0 left-0"
         :class="{'-translate-y-full': !preferenceManager.isHeaderFixedVisible() && isHeaderHidden}"
     >
         <nav class="header page-container flex justify-between xl:px-0 xs:px-4 px-2">
