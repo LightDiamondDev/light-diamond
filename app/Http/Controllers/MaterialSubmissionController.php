@@ -198,6 +198,31 @@ class MaterialSubmissionController extends Controller
         return $this->successJsonResponse();
     }
 
+    public function message(Request $request, int $submissionId): JsonResponse
+    {
+        $materialSubmission = MaterialSubmission::find($submissionId);
+        if ($materialSubmission === null) {
+            return $this->errorJsonResponse("Не найдена заявка на публикацию с id $submissionId.");
+        }
+        if (
+            ($materialSubmission->submitter_id !== Auth::id() || $materialSubmission->is_closed)
+            && !Auth::user()->is_moderator
+        ) {
+            return $this->errorJsonResponse("Вы не можете присылать сообщения в эту заявку.");
+        }
+
+        $validator = Validator::make($request->all(), [
+            'message' => ['required', 'string', 'min:2', 'max:1000'],
+        ]);
+        if ($validator->fails()) {
+            return $this->errorJsonResponse('', $validator->errors());
+        }
+
+        $this->materialSubmissionService->message($materialSubmission, $request->get('message'));
+
+        return $this->successJsonResponse();
+    }
+
     public function createDraft(Request $request): JsonResponse
     {
         if (!Auth::user()->is_moderator) {
@@ -314,7 +339,7 @@ class MaterialSubmissionController extends Controller
 
         $validator = $this->makeMaterialSubmissionUpdateValidator($request->all(), $materialSubmission, [
             'action_details'         => ['required', 'array'],
-            'action_details.message' => ['required', 'string'],
+            'action_details.message' => ['required', 'string', 'max:1000'],
         ]);
         if ($validator->fails()) {
             return $this->errorJsonResponse('', $validator->errors());
@@ -367,7 +392,7 @@ class MaterialSubmissionController extends Controller
 
         $validator = $this->makeMaterialSubmissionUpdateValidator($request->all(), $materialSubmission, [
             'action_details'        => ['required', 'array'],
-            'action_details.reason' => ['required', 'string'],
+            'action_details.reason' => ['required', 'string', 'max:1000'],
         ]);
         if ($validator->fails()) {
             return $this->errorJsonResponse('', $validator->errors());
@@ -412,11 +437,10 @@ class MaterialSubmissionController extends Controller
                 'material_state.localizations.*.language'                                      => ['bail', 'required', 'string', Rule::in(['ru'])],
                 'material_state.localizations.*.cover'                                         => ['bail', 'required', 'string', new ImageFileExistsRule()],
                 'material_state.localizations.*.title'                                         => ['bail', 'required', 'string', 'max:150'],
-                'material_state.localizations.*.description'                                   => ['bail', 'required', 'string', 'max:255'],
+                'material_state.localizations.*.description'                                   => ['bail', 'required', 'string', 'max:180'],
                 'material_state.localizations.*.content'                                       => ['bail', 'required', 'string', 'max:65535'],
                 'type'                                                                         => ['bail', 'required', 'string', Rule::enum(SubmissionType::class)],
                 'version_submissions.*.version_id'                                             => ['bail', 'required_if:version_submissions.*.type,UPDATE,DELETE', 'integer', 'distinct', new MaterialVersionRule($material)],
-                'version_submissions.*.version_state'                                          => ['bail', 'required_if:version_submissions.*.type,CREATE', 'array'],
                 'version_submissions.*.version_state.number'                                   => ['bail', 'required_if:version_submissions.*.type,CREATE', 'string', 'max:15'],
                 'version_submissions.*.version_state.localizations'                            => ['bail', 'required_if:version_submissions.*.type,CREATE', 'array', 'min:1'],
                 'version_submissions.*.version_state.localizations.*.language'                 => ['bail', 'required', 'string', Rule::in(['ru'])],
@@ -448,6 +472,11 @@ class MaterialSubmissionController extends Controller
             ['bail', 'present_if:version_submissions.*.type,CREATE', 'array', new MaterialFileSubmissionListRule()],
             fn() => $category?->isDownloadable()
         );
+        $validator->sometimes(
+            'version_submissions.*.version_state',
+            ['bail', 'required', 'array'],
+            fn() => $category?->isDownloadable()
+        );
 
         return $validator;
     }
@@ -472,11 +501,10 @@ class MaterialSubmissionController extends Controller
                 'material_state.localizations.*.language'                                      => ['bail', 'required', 'string', Rule::in(['ru'])],
                 'material_state.localizations.*.cover'                                         => ['bail', 'required', 'string', new ImageFileExistsRule()],
                 'material_state.localizations.*.title'                                         => ['bail', 'required', 'string', 'max:150'],
-                'material_state.localizations.*.description'                                   => ['bail', 'required', 'string', 'max:255'],
+                'material_state.localizations.*.description'                                   => ['bail', 'required', 'string', 'max:180'],
                 'material_state.localizations.*.content'                                       => ['bail', 'required', 'string', 'max:65535'],
                 'version_submissions.*.id'                                                     => ['bail', 'integer', 'distinct', new MaterialVersionSubmissionRule($submission)],
                 'version_submissions.*.version_id'                                             => ['bail', 'required_if:version_submissions.*.type,UPDATE,DELETE', 'integer', 'distinct', new MaterialVersionRule($material)],
-                'version_submissions.*.version_state'                                          => ['bail', 'nullable', 'required_if:version_submissions.*.type,CREATE', 'array'],
                 'version_submissions.*.version_state.number'                                   => ['bail', 'required_if:version_submissions.*.type,CREATE', 'string', 'max:15'],
                 'version_submissions.*.version_state.localizations'                            => ['bail', 'required_if:version_submissions.*.type,CREATE', 'array', 'min:1'],
                 'version_submissions.*.version_state.localizations.*.id'                       => ['bail', 'integer', 'distinct', new MaterialVersionLocalizationRule()],
@@ -509,6 +537,11 @@ class MaterialSubmissionController extends Controller
         $validator->sometimes(
             'version_submissions.*.file_submissions',
             ['bail', 'array', new MaterialFileSubmissionListRule()],
+            fn() => $category?->isDownloadable()
+        );
+        $validator->sometimes(
+            'version_submissions.*.version_state',
+            ['bail', 'required', 'array'],
             fn() => $category?->isDownloadable()
         );
 

@@ -49,6 +49,20 @@ readonly class MaterialSubmissionService
         );
     }
 
+    public function message(MaterialSubmission $materialSubmission, string $message): void
+    {
+        $this->actionService->create(
+            $materialSubmission,
+            new MaterialSubmissionActionDto(
+                type: MaterialSubmissionActionType::Message,
+                details: [
+                    'message' => $message,
+                    'is_moderator' => Auth::user()->is_moderator,
+                ]
+            ),
+        );
+    }
+
     public function createDraft(MaterialSubmissionCreateDto $dto): MaterialSubmission
     {
         return $this->create($dto, MaterialSubmissionStatus::Draft);
@@ -139,7 +153,9 @@ readonly class MaterialSubmissionService
                 }
             }
         } else {
-            $this->versionService->create($material, $now);
+            if ($materialSubmission->type === SubmissionType::Create) {
+                $this->versionService->create($material, $now);
+            }
         }
     }
 

@@ -2,7 +2,7 @@
 import type {PropType} from 'vue'
 import {
     type MaterialSubmissionAction,
-    type MaterialSubmissionActionAssignModerator,
+    type MaterialSubmissionActionAssignModerator, type MaterialSubmissionActionMessage,
     type MaterialSubmissionActionReject,
     type MaterialSubmissionActionRequestChanges,
     MaterialSubmissionActionType,
@@ -149,6 +149,13 @@ const props = defineProps({
                         class="material-submission-action-message px-3 py-2 max-w-[480px] w-full"
                     >
                         {{ (action.details as MaterialSubmissionActionRequestChanges).message }}
+                    </p>
+
+                    <p
+                        v-if="action.type === MaterialSubmissionActionType.MESSAGE"
+                        class="material-submission-action-message px-3 py-2 max-w-[480px] w-full"
+                    >
+                        {{ (action.details as MaterialSubmissionActionMessage).message }}
                     </p>
                 </div>
             </div>

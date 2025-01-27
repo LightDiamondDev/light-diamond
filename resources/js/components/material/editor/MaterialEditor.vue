@@ -2,7 +2,7 @@
 import axios, {type AxiosError} from 'axios'
 import {computed, type PropType, ref, toRaw, watch} from 'vue'
 
-import {convertDateToString, withCaptcha, getErrorMessageByCode} from '@/helpers'
+import {convertDateToString, getErrorMessageByCode, withCaptcha} from '@/helpers'
 import {useAuthStore} from '@/stores/auth'
 import usePreferenceManager from '@/preference-manager'
 import {deepClone, pick} from '@/utils/object'
@@ -71,6 +71,7 @@ defineProps({
 })
 
 defineExpose({
+    hasAnyOfFieldsFilled,
     hasAllFieldsFilled
 })
 
@@ -218,7 +219,7 @@ const contentEditorExtensions = [
     Blockquote.extend({
         priority: 101,
     }),
-    Heading.extend({ marks: '' }).configure({ levels: [2, 3, 4], }),
+    Heading.extend({marks: ''}).configure({levels: [2, 3, 4],}),
     Image,
     Link.configure({
         openOnClick: 'whenNotEditable',
@@ -301,8 +302,9 @@ function loadFileSubmissions() {
     })
 }
 
-function onCoverUpload(imagePath: string) {
+function onCoverUpload(imagePath: string, imageUrl: string) {
     currentLocalization.value.cover = imagePath
+    currentLocalization.value.cover_url = imageUrl
     emit('edit')
 }
 
@@ -542,6 +544,16 @@ function removeVersion() {
     emit('edit')
 }
 
+function hasAnyOfFieldsFilled() {
+    return currentLocalization.value.title?.length > 0
+        || currentLocalization.value.cover
+        || currentLocalization.value.content?.length > 0
+        || currentLocalization.value.description?.length > 0
+        || materialSubmission.value.material!.category !== undefined
+        // TODO: Добавить проверку на количество файлов в каждой версии
+        || versions.value.length > 0
+}
+
 function hasAllFieldsFilled() {
     return currentLocalization.value.title?.length > 0
         && currentLocalization.value.cover
@@ -677,7 +689,7 @@ loadVersionSubmissions()
                         v-model="currentLocalization.description"
                         :editable="editable"
                         id="material-description"
-                        :max-length="165"
+                        :max-length="180"
                         :min-length="15"
                         placeholder="Краткое описание для карточки Материала"
                         rows="3"
