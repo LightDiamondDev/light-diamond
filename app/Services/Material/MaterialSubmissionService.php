@@ -80,7 +80,9 @@ readonly class MaterialSubmissionService
             new MaterialSubmissionActionDto(MaterialSubmissionActionType::Submit)
         );
 
-        $this->botNotificationService->notifyNewSubmission($materialSubmission);
+        if (!Auth::user()->is_moderator) {
+            $this->botNotificationService->notifyNewSubmission($materialSubmission);
+        }
 
         return $materialSubmission;
     }
@@ -94,7 +96,9 @@ readonly class MaterialSubmissionService
             new MaterialSubmissionActionDto(MaterialSubmissionActionType::Submit)
         );
 
-        $this->botNotificationService->notifyNewSubmission($materialSubmission);
+        if (!Auth::user()->is_moderator) {
+            $this->botNotificationService->notifyNewSubmission($materialSubmission);
+        }
     }
 
     public function requestChanges(MaterialSubmission $materialSubmission, MaterialSubmissionUpdateDto $dto): void
