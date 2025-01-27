@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import MaterialEditor from '@/components/material/editor/MaterialEditor.vue'
-import {computed, type PropType, ref} from 'vue'
+import {computed, onMounted, onUnmounted, type PropType, ref} from 'vue'
 import axios, {type AxiosError} from 'axios'
-import {getErrorMessageByCode, withCaptcha} from '@/helpers'
+import {getErrorMessageByCode, getRelativeDate, withCaptcha} from '@/helpers'
 import {useToastStore} from '@/stores/toast'
 import OverlayPanel from '@/components/elements/OverlayPanel.vue'
-import {RouterLink, useRouter} from 'vue-router'
+import {onBeforeRouteLeave, RouterLink, useRouter} from 'vue-router'
 import {GameEdition, type Material, type MaterialSubmission, SubmissionType} from '@/types'
 import {useAuthStore} from '@/stores/auth'
 import ShineButton from '@/components/elements/ShineButton.vue'
@@ -15,6 +15,12 @@ import Button from '@/components/elements/Button.vue'
 import usePreferenceManager from '@/preference-manager'
 import useCategoryRegistry, {type Category} from '@/categoryRegistry'
 import ProcessingDiggingBlocks from '@/components/elements/ProcessingDiggingBlocks.vue'
+import Dialog from '@/components/elements/Dialog.vue'
+
+interface StoredMaterialSubmission {
+    stored_at: string
+    submission: MaterialSubmission
+}
 
 const props = defineProps({
     edition: String as PropType<GameEdition>,
@@ -36,10 +42,15 @@ const materialEditor = ref<InstanceType<typeof MaterialEditor>>()
 const submitOverlayPanel = ref<InstanceType<typeof OverlayPanel>>()
 const materialSubmission = ref<MaterialSubmission>()
 const errors = ref<{ [key: string]: string[] }>({})
+const isLoadStoredSubmissionDialog = ref(false)
+const storedMaterialSubmission = ref<StoredMaterialSubmission | null>(null)
+let storeChangesTimeout: number
 
 const canCreateSubmission = ref(true)
 const activeSubmissionCount = ref(0)
 const maxActiveSubmissionCount = ref(0)
+
+const isUpdate = computed(() => props.slug && props.category)
 
 const materialRoute = computed(() => ({
     name: 'material',
@@ -126,6 +137,7 @@ function submit() {
             if (response.data.success) {
                 toastStore.success('Заявка отправлена на рассмотрение.')
                 submitOverlayPanel.value?.hide()
+                localStorage.removeItem('editor-new-material-submission')
                 router.push({name: 'material-submission', params: {id: response.data.id}})
             } else {
                 if (response.data.errors) {
@@ -153,6 +165,7 @@ function saveAsDraft() {
             if (response.data.success) {
                 toastStore.success('Заявка сохранена как черновик.')
                 const materialSubmissionId = response.data.id
+                localStorage.removeItem('editor-new-material-submission')
                 router.push({name: 'material-submission', params: {id: materialSubmissionId}})
             } else {
                 if (response.data.errors) {
@@ -170,6 +183,62 @@ function saveAsDraft() {
         })
     })
 }
+
+function loadStoredSubmission() {
+    materialSubmission.value = storedMaterialSubmission.value!.submission
+    isLoadStoredSubmissionDialog.value = false
+}
+
+function onEdit() {
+    if (isUpdate.value) {
+        return
+    }
+    if (storeChangesTimeout) {
+        clearTimeout(storeChangesTimeout)
+    }
+    storeChangesTimeout = setTimeout(() => {
+        localStorage.setItem('editor-new-material-submission', JSON.stringify({
+            stored_at: new Date().toISOString(),
+            submission: materialSubmission.value
+        }))
+    }, 5000)
+}
+
+function confirmExit() {
+    return window.confirm('Вы не сохранили заявку! Вы точно хотите выйти?')
+}
+
+function onBeforePageUnload(e: BeforeUnloadEvent | CloseEvent) {
+    if (materialEditor.value?.hasAnyOfFieldsFilled() && !confirmExit()) {
+        e.preventDefault()
+        e.returnValue = ''
+    }
+}
+
+onBeforeRouteLeave((to, from, next) => {
+    if (isSavingAsDraft.value || isSubmitting.value || !materialEditor.value?.hasAnyOfFieldsFilled() || confirmExit()) {
+        next()
+    } else {
+        next(false)
+    }
+})
+
+onMounted(() => {
+    window.addEventListener('beforeunload', onBeforePageUnload)
+    window.addEventListener('close', onBeforePageUnload)
+
+    if (!isUpdate.value) {
+        storedMaterialSubmission.value = JSON.parse(localStorage.getItem('editor-new-material-submission') ?? 'null')
+        if (storedMaterialSubmission.value) {
+            isLoadStoredSubmissionDialog.value = true
+        }
+    }
+})
+
+onUnmounted(() => {
+    window.removeEventListener('beforeunload', onBeforePageUnload)
+    window.removeEventListener('close', onBeforePageUnload)
+})
 </script>
 
 <template>
@@ -223,6 +292,7 @@ function saveAsDraft() {
             upper-sidebar-classes="hidden"
             :is-upper-sidebar="false"
             :errors="errors"
+            @edit="onEdit"
         >
             <template v-slot:banner>
                 <Banner class="md:h-[208px] h-[178px]" :images-src="bannerImagesSrc">
@@ -312,6 +382,37 @@ function saveAsDraft() {
                 </div>
             </div>
         </OverlayPanel>
+
+        <Dialog
+            v-model:visible="isLoadStoredSubmissionDialog"
+            form-container-classes="max-w-[500px]"
+            title="Резервное сохранение"
+        >
+            <form action="" class="flex flex-col items-center p-2">
+                <p class="subtitle md:text-base text-sm text-center mb-4">
+                    У вас есть резервное сохранение
+                    «{{ storedMaterialSubmission.submission.material_state.localizations[0].title }}», созданное
+                    {{ getRelativeDate(storedMaterialSubmission.stored_at, true) }}. Восстановить?
+                </p>
+
+                <div class="flex justify-center w-[85%] gap-2 mb-6">
+                    <Button
+                        button-type="submit"
+                        label="Нет"
+                        class="secondary min-w-[140px]"
+                        @click.prevent="isLoadStoredSubmissionDialog = false"
+                    />
+
+                    <Button
+                        button-type="submit"
+                        label="Да, восстановить"
+                        class="success min-w-[140px]"
+                        pressClasses="px-4"
+                        @click.prevent="loadStoredSubmission()"
+                    />
+                </div>
+            </form>
+        </Dialog>
     </template>
 </template>
 

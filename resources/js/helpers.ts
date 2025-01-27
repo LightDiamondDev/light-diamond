@@ -10,7 +10,7 @@ interface ImportMeta {
         VITE_APP_NAME: string
         VITE_APP_URL: string
         VITE_HCAPTCHA_SITEKEY: string
-        VITE_HCAPTCHA_ENABLED: boolean
+        VITE_HCAPTCHA_ENABLED: string
     }
 }
 
@@ -56,7 +56,7 @@ export function getErrorMessageByCode(code: number) {
 
 export function withCaptcha(action: () => void) {
     if (
-        import.meta.env.VITE_HCAPTCHA_ENABLED
+        import.meta.env.VITE_HCAPTCHA_ENABLED !== 'false'
         && !useAuthStore().isModerator
         && !Cookies.get('captcha_solved')
     ) {
@@ -119,7 +119,7 @@ export function getFullPresentableDate(date: Date | string) {
     }
 }
 
-export function getRelativeDate(date: Date | string): string {
+export function getRelativeDate(date: Date | string, lowercase: boolean = false): string {
     const now = new Date()
     if (typeof date === 'string') {
         date = new Date(date)
@@ -127,7 +127,8 @@ export function getRelativeDate(date: Date | string): string {
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
 
     if (diffInSeconds < 60) {
-        return 'Только что'
+        const result = 'Только что'
+        return lowercase ? result.toLowerCase() : result
     }
 
     const diffInMinutes = Math.floor(diffInSeconds / 60)

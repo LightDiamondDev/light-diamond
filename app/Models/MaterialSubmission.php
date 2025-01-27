@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection $actions
  * @property-read int|null $actions_count
  * @property-read \App\Models\User|null $assignedModerator
+ * @property-read bool $is_closed
  * @property-read \App\Models\Material $material
  * @property-read \App\Models\MaterialState|null $materialState
  * @property-read \App\Models\User|null $submitter
@@ -143,7 +144,10 @@ class MaterialSubmission extends Model
                     $action->details      = $details;
                 }
             } else {
-                if ($action->type !== MaterialSubmissionActionType::Submit) {
+                if (
+                    !in_array($action->type, [MaterialSubmissionActionType::Submit, MaterialSubmissionActionType::Message])
+                    || isset($action->details['is_moderator']) && $action->details['is_moderator']
+                ) {
                     $action->makeHidden('user_id');
                     $action->makeHidden('user');
                 }
@@ -151,5 +155,10 @@ class MaterialSubmission extends Model
         });
 
         return $actions;
+    }
+
+    public function getIsClosedAttribute(): bool
+    {
+        return in_array($this->status, [MaterialSubmissionStatus::Accepted, MaterialSubmissionStatus::Rejected]);
     }
 }

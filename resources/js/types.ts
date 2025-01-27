@@ -120,6 +120,7 @@ export enum MaterialSubmissionActionType {
     ACCEPT = 'ACCEPT',
     REJECT = 'REJECT',
     ASSIGN_MODERATOR = 'ASSIGN_MODERATOR',
+    MESSAGE = 'MESSAGE',
 }
 
 export interface MaterialSubmissionActionRequestChanges {
@@ -135,13 +136,18 @@ export interface MaterialSubmissionActionAssignModerator {
     moderator?: User | null
 }
 
+export interface MaterialSubmissionActionMessage {
+    message?: string
+    is_moderator?: boolean
+}
+
 export interface MaterialSubmissionAction {
     id?: bigint
     submission_id?: bigint
     user_id?: bigint | null
     user?: User | null
     type?: MaterialSubmissionActionType
-    details?: {} | MaterialSubmissionActionRequestChanges | MaterialSubmissionActionReject | MaterialSubmissionActionAssignModerator
+    details?: {} | MaterialSubmissionActionRequestChanges | MaterialSubmissionActionReject | MaterialSubmissionActionAssignModerator | MaterialSubmissionActionMessage
     created_at?: string
     updated_at?: string
 }
