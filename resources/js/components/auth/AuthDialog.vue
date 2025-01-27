@@ -70,7 +70,7 @@ const activeSplash = getRandomAuthSplash()
 
             <ForgotPasswordForm v-else-if="formType === AuthFormType.FORGOT_PASSWORD"/>
 
-            <RegisterForm v-else @switch-to-login-form="formType = AuthFormType.LOGIN"/>
+            <RegisterForm v-else @switch-to-login-form="formType = AuthFormType.LOGIN" @close="isVisible = false"/>
 
         </Transition>
 

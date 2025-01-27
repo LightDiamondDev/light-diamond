@@ -24,7 +24,7 @@ const errors = ref([])
 const router = useRouter()
 const route = useRoute()
 
-const emit = defineEmits(['switch-to-login-form'])
+const emit = defineEmits(['switch-to-login-form', 'close'])
 
 function submitRegister() {
     withCaptcha(() => {
@@ -143,9 +143,19 @@ function submitRegister() {
                     <span class="policy-agree-me text-[0.8rem] whitespace-nowrap">Я соглашаюсь</span>
                 </label>
                 <div class="terms ld-title-font flex flex-col text-center text-[0.7rem]">
-                    <RouterLink class="ld-brilliant-link border-0" :to="{ name: 'terms-of-use' }">с Правилами Сайта</RouterLink>
-                    <RouterLink class="ld-brilliant-link border-0" :to="{ name: 'privacy-policy' }">и Политикой
-                        Конфиденциальности
+                    <RouterLink
+                        class="ld-brilliant-link border-0"
+                        :to="{ name: 'terms-of-use' }"
+                        @click="emit('close')"
+                    >
+                        с Условиями Использования
+                    </RouterLink>
+                    <RouterLink
+                        class="ld-brilliant-link border-0"
+                        :to="{ name: 'privacy-policy' }"
+                        @click="emit('close')"
+                    >
+                        и Политикой Конфиденциальности
                     </RouterLink>
                 </div>
             </div>
