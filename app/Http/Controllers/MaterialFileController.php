@@ -88,7 +88,7 @@ class MaterialFileController extends Controller
             $isFirstMaterialDownload = !MaterialFileDownload::ofMaterial($materialVersion->material_id)->whereIp($ip)->exists();
             if ($isFirstMaterialDownload) {
                 Material::withoutTimestamps(function () use ($materialVersion) {
-                    Material::whereId($materialVersion->material_id)->increment('downloads_count');
+                    Material::withoutGlobalScopes()->whereId($materialVersion->material_id)->increment('downloads_count');
                 });
             }
 
