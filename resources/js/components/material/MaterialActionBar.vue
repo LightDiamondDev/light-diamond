@@ -13,7 +13,6 @@ import Button from '@/components/elements/Button.vue'
 import EffectIcon from '@/components/elements/EffectIcon.vue'
 import type {Material} from '@/types'
 
-
 const props = defineProps({
     material: {
         type: Object as PropType<Material>,

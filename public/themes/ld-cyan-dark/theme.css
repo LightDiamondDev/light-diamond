@@ -1705,12 +1705,20 @@
         background-image: url('/images/icons/diamond-vk.svg');
     }
 
+    .icon-warning {
+        background-image: url('/images/icons/diamond-warning.svg');
+    }
+
     .icon-white-pencil {
         background-image: url('/images/icons/white-pencil.png');
     }
 
     .icon-white-rotate-left {
         background-image: url('/images/icons/white-rotate-left.png');
+    }
+
+    .icon-yellow-warning {
+        background-image: url('/images/icons/yellow-warning.svg');
     }
 
     .icon-youtube {

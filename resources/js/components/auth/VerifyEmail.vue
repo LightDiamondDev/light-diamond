@@ -42,7 +42,7 @@ function tryVerifyEmail() {
             <h1 v-if="isSuccess" class="text-4xl font-bold text-center mt-8">Поздравляем!</h1>
             <h1 v-else class="text-4xl font-bold text-center mt-8">Проверка...</h1>
 
-            <p v-if="isSuccess" class="text-muted mt-4">
+            <p v-if="isSuccess" class="text-center mt-4 px-4">
                 {{ responseMessage || 'Адрес электронной почты успешно подтверждён! Наслаждайтесь классными эмоциями и вдохновением!' }}
             </p>
             <p v-else class="text-muted mt-4">{{

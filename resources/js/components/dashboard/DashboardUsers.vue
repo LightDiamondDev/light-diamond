@@ -14,7 +14,6 @@ import Dialog from '@/components/elements/Dialog.vue'
 import Paginator from '@/components/elements/Paginator.vue'
 import ShineButton from '@/components/elements/ShineButton.vue'
 import UserForm from '@/components/dashboard/UserForm.vue'
-import UserAvatar from '@/components/user/UserAvatar.vue'
 import ProfileLink from '@/components/elements/ProfileLink.vue'
 
 interface ResponseData {
@@ -187,7 +186,11 @@ function onRecordSave() {
                     <ProfileLink class="row-item flex items-center h-[48px] w-[23%]" :user="record">
                         {{ record.username }}
                     </ProfileLink>
-                    <span class="row-item flex items-center h-[48px] w-[35%]">{{ record.email }}</span>
+                    <div class="row-item email-row flex items-center h-[48px] w-[35%] gap-1">
+                        <span>{{ record.email }}</span>
+                        <span v-if="!record.email_verified_at" class="icon-yellow-warning icon flex" v-tooltip.top="'Неподтверждённый E-mail'"/>
+                    </div>
+
                     <span
                         class="row-item flex items-center h-[48px] w-[20%]"
                         :class="{'ld-admin-color': record.role === 'ADMIN', 'ld-moder-color': record.role === 'MODERATOR'}"
@@ -295,6 +298,15 @@ function onRecordSave() {
         </Dialog>
     </div>
 </template>
+
+<style>
+.email-row .tooltip::after {
+    display: none;
+}
+.email-row .tooltip::before {
+    min-height: 2.5rem;
+}
+</style>
 
 <style scoped>
 
