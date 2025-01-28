@@ -23,12 +23,11 @@ use App\Services\MaterialVersion\MaterialVersionSubmissionService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Telegram\Bot\Laravel\Facades\Telegram;
 
 readonly class MaterialSubmissionService
 {
     public function __construct(
-        private BotNotificationService $botNotificationService,
+        private BotNotificationService           $botNotificationService,
         private MaterialSubmissionActionService  $actionService,
         private MaterialVersionService           $versionService,
         private MaterialVersionSubmissionService $versionSubmissionService,
@@ -59,7 +58,7 @@ readonly class MaterialSubmissionService
             new MaterialSubmissionActionDto(
                 type: MaterialSubmissionActionType::Message,
                 details: [
-                    'message' => $message,
+                    'message'      => $message,
                     'is_moderator' => Auth::user()->is_moderator,
                 ]
             ),
@@ -210,13 +209,16 @@ readonly class MaterialSubmissionService
                     ->filter()
                     ->all();
 
-                $materialSubmission->versionSubmissions
+                $removedVersionSubmissionKeys = $materialSubmission->versionSubmissions
                     ->reject(fn($versionSubmission) => in_array($versionSubmission->id, $versionSubmissionIds))
-                    ->each(fn($oldSubmission) => $this->versionSubmissionService->delete($oldSubmission));
+                    ->each(fn($oldVersionSubmission) => $this->versionSubmissionService->delete($oldVersionSubmission))
+                    ->keys();
+                $materialSubmission->versionSubmissions->forget($removedVersionSubmissionKeys);
 
                 foreach ($dto->versionSubmissions as $versionSubmissionDto) {
                     if ($versionSubmissionDto->id === null) {
-                        $this->versionSubmissionService->create($materialSubmission, $versionSubmissionDto);
+                        $newVersionSubmission = $this->versionSubmissionService->create($materialSubmission, $versionSubmissionDto);
+                        $materialSubmission->versionSubmissions->push($newVersionSubmission);
                     } else {
                         $versionSubmission = $materialSubmission->versionSubmissions->firstWhere('id', $versionSubmissionDto->id);
                         if ($versionSubmission) {

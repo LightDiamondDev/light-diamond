@@ -20,7 +20,7 @@ readonly class MaterialVersionSubmissionService
     {
     }
 
-    public function create(MaterialSubmission $materialSubmission, MaterialVersionSubmissionDto $dto): void
+    public function create(MaterialSubmission $materialSubmission, MaterialVersionSubmissionDto $dto): MaterialVersionSubmission
     {
         $version = $dto->type === SubmissionType::Create
             ? $this->versionService->create($materialSubmission->material)
@@ -41,6 +41,8 @@ readonly class MaterialVersionSubmissionService
                 $this->fileSubmissionService->create($versionSubmission, $fileSubmissionDto);
             }
         }
+
+        return $versionSubmission;
     }
 
     public function update(MaterialVersionSubmission $versionSubmission, MaterialVersionSubmissionDto $dto): void
@@ -59,13 +61,16 @@ readonly class MaterialVersionSubmissionService
                 ->filter()
                 ->all();
 
-            $versionSubmission->fileSubmissions
+            $removedFileSubmissionKeys = $versionSubmission->fileSubmissions
                 ->reject(fn($fileSubmission) => in_array($fileSubmission->id, $fileSubmissionIds))
-                ->each(fn($oldFileSubmission) => $this->fileSubmissionService->delete($oldFileSubmission));
+                ->each(fn($oldFileSubmission) => $this->fileSubmissionService->delete($oldFileSubmission))
+                ->keys();
+            $versionSubmission->fileSubmissions->forget($removedFileSubmissionKeys);
 
             foreach ($dto->fileSubmissions as $fileSubmissionDto) {
                 if ($fileSubmissionDto->id === null) {
-                    $this->fileSubmissionService->create($versionSubmission, $fileSubmissionDto);
+                    $newFileSubmission = $this->fileSubmissionService->create($versionSubmission, $fileSubmissionDto);
+                    $versionSubmission->fileSubmissions->push($newFileSubmission);
                 } else {
                     $fileSubmission = $versionSubmission->fileSubmissions->firstWhere('id', $fileSubmissionDto->id);
                     if ($fileSubmission) {

@@ -19,7 +19,7 @@ readonly class MaterialFileSubmissionService
     {
     }
 
-    public function create(MaterialVersionSubmission $versionSubmission, MaterialFileSubmissionDto $dto): void
+    public function create(MaterialVersionSubmission $versionSubmission, MaterialFileSubmissionDto $dto): MaterialFileSubmission
     {
         $file = $dto->type === SubmissionType::Create
             ? $this->fileService->create($versionSubmission->version, $dto->file)
@@ -34,6 +34,8 @@ readonly class MaterialFileSubmissionService
         $fileSubmission->versionSubmission()->associate($versionSubmission);
         $fileSubmission->type = $dto->type;
         $fileSubmission->save();
+
+        return $fileSubmission;
     }
 
     public function update(MaterialFileSubmission $fileSubmission, MaterialFileSubmissionDto $dto): void

@@ -110,11 +110,11 @@ class MaterialSubmissionController extends Controller
                     ]),
                 ]),
                 'versionSubmissions' => fn(HasMany $q) => $q->with([
-                    'version'         => fn(BelongsTo $q) => $q->withoutGlobalScope(SoftDeletingScope::class)->with([
+                    'version'         => fn(BelongsTo $q) => $q->with([
                         'state' => fn(HasOne $q) => $q->getOneOfManySubQuery()->where('published_at', '<', $updatedAt)
                     ]),
                     'fileSubmissions' => fn(HasMany $q) => $q->with([
-                        'file' => fn(BelongsTo $q) => $q->withoutGlobalScope(SoftDeletingScope::class)->with([
+                        'file' => fn(BelongsTo $q) => $q->with([
                             'state' => fn(HasOne $q) => $q->getOneOfManySubQuery()->where('published_at', '<', $updatedAt)
                         ]),
                     ]),
@@ -122,9 +122,9 @@ class MaterialSubmissionController extends Controller
             ]);
         } else {
             $materialSubmission->load([
-                'material' => fn(BelongsTo $q) => $q->withoutGlobalScopes()->with([
-                    'versions' => fn(HasMany $q) => $q->withoutGlobalScopes()->with([
-                        'files' => fn(HasMany $q) => $q->withoutGlobalScopes(),
+                'material' => fn(BelongsTo $q) => $q->with([
+                    'versions' => fn(HasMany $q) => $q->with([
+                        'files' => fn(HasMany $q) => $q,
                     ]),
                 ]),
                 'versionSubmissions'

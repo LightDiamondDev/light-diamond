@@ -39,13 +39,16 @@ readonly class MaterialStateService
                 ->filter()
                 ->all();
 
-            $state->localizations
+            $removedLocalizationKeys = $state->localizations
                 ->reject(fn($localization) => in_array($localization->id, $localizationIds))
-                ->each(fn($oldLocalization) => $this->localizationService->delete($oldLocalization));
+                ->each(fn($oldLocalization) => $this->localizationService->delete($oldLocalization))
+                ->keys();
+            $state->localizations->forget($removedLocalizationKeys);
 
             foreach ($dto->localizations as $localizationDto) {
                 if ($localizationDto->id === null) {
-                    $this->localizationService->create($state, $localizationDto);
+                    $newLocalization = $this->localizationService->create($state, $localizationDto);
+                    $state->localizations->push($newLocalization);
                 } else {
                     $localization = $state->localizations->firstWhere('id', $localizationDto->id);
                     if ($localization) {
