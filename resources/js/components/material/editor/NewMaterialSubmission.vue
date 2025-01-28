@@ -140,6 +140,7 @@ function submit() {
             if (response.data.success) {
                 toastStore.success('Заявка отправлена на рассмотрение.')
                 submitOverlayPanel.value?.hide()
+                clearTimeout(storeChangesTimeout)
                 localStorage.removeItem('editor-new-material-submission')
                 router.push({name: 'material-submission', params: {id: response.data.id}})
             } else {
