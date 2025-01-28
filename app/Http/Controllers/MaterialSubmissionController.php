@@ -6,11 +6,7 @@ use App\Models\Enums\GameEdition;
 use App\Models\Enums\MaterialSubmissionStatus;
 use App\Models\Enums\SubmissionType;
 use App\Models\Material;
-use App\Models\MaterialFile;
-use App\Models\MaterialFileSubmission;
 use App\Models\MaterialSubmission;
-use App\Models\MaterialVersion;
-use App\Models\MaterialVersionSubmission;
 use App\Models\User;
 use App\Registries\CategoryRegistry;
 use App\Registries\CategoryType;
@@ -122,9 +118,9 @@ class MaterialSubmissionController extends Controller
             ]);
         } else {
             $materialSubmission->load([
-                'material' => fn(BelongsTo $q) => $q->with([
-                    'versions' => fn(HasMany $q) => $q->with([
-                        'files' => fn(HasMany $q) => $q,
+                'material' => fn(BelongsTo $q) => $q->withoutGlobalScopes()->with([
+                    'versions' => fn(HasMany $q) => $q->withoutGlobalScopes()->with([
+                        'files' => fn(HasMany $q) => $q->withoutGlobalScopes(),
                     ]),
                 ]),
                 'versionSubmissions'
