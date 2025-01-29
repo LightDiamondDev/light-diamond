@@ -30,7 +30,7 @@ readonly class MaterialSlugRule implements ValidationRule
         }
 
         $exists = Material::whereSlug(strtolower($value))
-            ->whereEdition($this->gameEdition->value)
+            ->whereEdition($this->gameEdition?->value)
             ->whereCategory($this->category->value)
             ->exists();
         if ($exists) {
