@@ -54,7 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('verified')->group(function () {
         Route::post('/upload-image', [UploadImageController::class, 'upload'])->middleware('verify.captcha')->middleware(['throttle:10,2']);
-        Route::post('/upload-material-file', [MaterialFileController::class, 'upload'])->middleware('verify.captcha')->middleware(['throttle:3,10']);
+        Route::post('/upload-material-file', [MaterialFileController::class, 'upload'])->middleware('verify.captcha')->middleware(['throttle:5,10']);
 
         Route::get('/auth/user/can-create-submission', [UserController::class, 'canCreateSubmission']);
 
