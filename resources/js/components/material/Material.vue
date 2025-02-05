@@ -52,9 +52,7 @@ const router = useRouter()
 const material = ref<Material>()
 const materialContent = ref<Element>()
 const comments = ref<MaterialComment[]>()
-const commentsBlock = ref<Element>()
 const newComment = reactive<EditedComment>({})
-const commentsBlockObserver = new IntersectionObserver(observeCommentsBlock)
 const currentVersion = ref<MaterialVersion>()
 
 const isLoading = ref(true)
@@ -65,16 +63,8 @@ const isDownloadWindow = ref(false)
 const rootComments = computed(() => comments.value!.filter((comment) => !comment.parent_comment_id))
 const isDownloadable = computed(() => useCategoryRegistry().get(material.value!.category).isDownloadable)
 
-onUpdated(() => {
-    tryConnectCommentsBlockObserver()
-})
-
 onMounted(() => {
     loadMaterial()
-})
-
-onUnmounted(() => {
-    commentsBlockObserver.disconnect()
 })
 
 watch(() => [props.edition, props.category, props.slug], () => {
@@ -95,18 +85,6 @@ function updateTitle() {
     nextTick(() => {
         changeTitle(material.value!.state!.localization!.title!)
     })
-}
-
-function tryConnectCommentsBlockObserver() {
-    if (commentsBlock.value && !comments.value) {
-        commentsBlockObserver.observe(commentsBlock.value!)
-    }
-}
-
-function observeCommentsBlock([entry]: IntersectionObserverEntry[]) {
-    if (entry.isIntersecting) {
-        loadComments()
-    }
 }
 
 function loadMaterial() {
@@ -136,12 +114,7 @@ function loadMaterial() {
                 })
             }
             updateTitle()
-
-            if (route.hash === '#comments' || route.hash.match(/^#comment-\d+$/)) {
-                loadComments()
-            } else {
-                tryConnectCommentsBlockObserver()
-            }
+            loadComments()
         }
     }).catch((error: AxiosError) => {
         toastStore.error(getErrorMessageByCode(error.response!.status))
@@ -151,8 +124,6 @@ function loadMaterial() {
 }
 
 function loadComments() {
-    commentsBlockObserver.disconnect()
-
     axios.get(`/api/materials/${material.value!.id}/comments`).then((response) => {
         comments.value = response.data.records
         updateMaterialCommentCount()
@@ -382,51 +353,49 @@ function openDownloadWindow() {
                         />
                     </div>
 
-                    <div ref="commentsBlock">
-                        <div v-if="isLoadingComments" class="flex flex-col gap-6 mt-8">
-                            <div v-for="i in 3" class="flex gap-2">
-                                <div class="skeleton transfusion bordered h-[2.5rem] min-w-[2.5rem]"/>
-                                <div class="flex flex-col w-full gap-4">
-                                    <div class="flex gap-2 items-center">
-                                        <div class="skeleton transfusion bordered h-[1.2rem] w-[10rem]"/>
-                                        <div class="skeleton transfusion bordered h-[1.2rem] w-[5rem]"/>
-                                        <div class="skeleton transfusion bordered h-[1rem] w-[5rem]"/>
-                                    </div>
-                                    <div class="flex flex-col gap-2">
-                                        <div class="skeleton transfusion bordered h-[1rem] w-[85%]"/>
-                                        <div class="skeleton transfusion bordered h-[1rem] w-[80%]"/>
-                                        <div class="skeleton transfusion bordered h-[1rem] w-[75%]"/>
-                                    </div>
-                                    <div class="flex gap-2 items-center">
-                                        <div class="flex gap-4 items-center">
-                                            <div class="skeleton transfusion bordered h-[2rem] w-[2rem]"/>
-                                            <div class="skeleton transfusion bordered h-[1.5rem] w-[6rem]"/>
-                                        </div>
+                    <div v-if="isLoadingComments" class="flex flex-col gap-6 mt-8">
+                        <div v-for="i in 3" class="flex gap-2">
+                            <div class="skeleton transfusion bordered h-[2.5rem] min-w-[2.5rem]"/>
+                            <div class="flex flex-col w-full gap-4">
+                                <div class="flex gap-2 items-center">
+                                    <div class="skeleton transfusion bordered h-[1.2rem] w-[10rem]"/>
+                                    <div class="skeleton transfusion bordered h-[1.2rem] w-[5rem]"/>
+                                    <div class="skeleton transfusion bordered h-[1rem] w-[5rem]"/>
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <div class="skeleton transfusion bordered h-[1rem] w-[85%]"/>
+                                    <div class="skeleton transfusion bordered h-[1rem] w-[80%]"/>
+                                    <div class="skeleton transfusion bordered h-[1rem] w-[75%]"/>
+                                </div>
+                                <div class="flex gap-2 items-center">
+                                    <div class="flex gap-4 items-center">
+                                        <div class="skeleton transfusion bordered h-[2rem] w-[2rem]"/>
+                                        <div class="skeleton transfusion bordered h-[1.5rem] w-[6rem]"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div v-else-if="comments!.length !== 0" class="flex flex-col gap-6 mt-8">
-                            <div v-for="comment in rootComments" class="flex flex-col gap-6">
-                                <MaterialCommentComponent
-                                    :comment="{...comment, ...{material: material}}"
-                                    :material="material"
-                                    :id="`comment-${comment.id}`"
-                                    :key="comment.id"
-                                    @submit-reply="(id, content) => addComment(id, content, comment)"
-                                    @remove="removeComment(comment)"
-                                />
-                                <MaterialCommentComponent
-                                    v-for="descendantComment in getDescendantComments(comment.id)"
-                                    :comment="{...descendantComment, ...{material: material}}"
-                                    :material="material"
-                                    :id="`comment-${descendantComment.id}`"
-                                    :key="descendantComment.id"
-                                    class="ml-10"
-                                    @submit-reply="(id, content) => addComment(id, content, descendantComment)"
-                                    @remove="removeComment(descendantComment)"
-                                />
-                            </div>
+                    </div>
+                    <div v-else-if="comments!.length !== 0" class="flex flex-col gap-6 mt-8">
+                        <div v-for="comment in rootComments" class="flex flex-col gap-6">
+                            <MaterialCommentComponent
+                                :comment="{...comment, ...{material: material}}"
+                                :material="material"
+                                :id="`comment-${comment.id}`"
+                                :key="comment.id"
+                                @submit-reply="(id, content) => addComment(id, content, comment)"
+                                @remove="removeComment(comment)"
+                            />
+                            <MaterialCommentComponent
+                                v-for="descendantComment in getDescendantComments(comment.id)"
+                                :comment="{...descendantComment, ...{material: material}}"
+                                :material="material"
+                                :id="`comment-${descendantComment.id}`"
+                                :key="descendantComment.id"
+                                class="ml-10"
+                                @submit-reply="(id, content) => addComment(id, content, descendantComment)"
+                                @remove="removeComment(descendantComment)"
+                            />
                         </div>
                     </div>
                 </div>
