@@ -125,6 +125,22 @@
         border-top: var(--trinity-border);
     }
 
+    .ld-dark-blur {
+        position: absolute;
+    }
+
+    .ld-dark-blur:before {
+        position: absolute;
+        content: '';
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        background: rgba(0, 15, 15, .65);
+        filter: blur(5px);
+    }
+
     .ld-tinted-background {
         background: linear-gradient(rgba(0, 15, 15, .5), transparent);
     }

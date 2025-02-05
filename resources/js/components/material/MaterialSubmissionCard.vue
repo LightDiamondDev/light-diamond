@@ -42,14 +42,14 @@ const lastAction = computed(() => actions.value!.at(actions.value!.length - 1))
             >
                 <div
                     v-if="preferenceManager.isMaterialCategoryInPreviewVisible()"
-                    class="material-preview-category ld-tinted-background left flex pr-10 py-1 absolute"
+                    class="material-preview-category ld-dark-blur flex pr-2 py-1"
                 >
                     <p class="type flex items-center text-[10px]">
                         <span
-                            class="icon flex"
+                            class="icon flex sm:h-[32px] sm:w-[32px] h-[24px] w-[24px] z-[1]"
                             :class="useCategoryRegistry().get(materialSubmission.material?.category).icon"
                         />
-                        <span>{{ useCategoryRegistry().get(materialSubmission.material.category).singularName }}</span>
+                        <span class="text-2xs sm:text-xs z-[1]">{{ useCategoryRegistry().get(materialSubmission.material.category).singularName }}</span>
                     </p>
                 </div>
                 <img alt="Превью" class="preview flex w-full full-locked duration-500" :src="materialSubmission.material_state!.localization!.cover_url">

@@ -58,6 +58,7 @@ const props = defineProps({
                         :class="icon"
                     />
                     <span
+                        v-if="label"
                         class="label text-center flex items-center duration-200 truncate"
                         :class="classLabel"
                     >

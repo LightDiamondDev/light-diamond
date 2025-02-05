@@ -48,11 +48,11 @@ const wasMaterialUpdated = computed(() => props.material!.published_at !== props
             >
                 <div
                     v-if="preferenceManager.isMaterialCategoryInPreviewVisible()"
-                    class="material-preview-category ld-tinted-background left flex pr-10 absolute"
+                    class="material-preview-category ld-dark-blur flex pr-2"
                 >
                     <p class="type flex items-center gap-1 text-[10px]">
-                        <span class="icon flex" :class="useCategoryRegistry().get(material.category).icon"/>
-                        <span>{{ useCategoryRegistry().get(material.category).singularName }}</span>
+                        <span class="icon flex z-[1]" :class="useCategoryRegistry().get(material.category).icon"/>
+                        <span class="z-[1]">{{ useCategoryRegistry().get(material.category).singularName }}</span>
                     </p>
                 </div>
                 <img
