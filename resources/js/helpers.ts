@@ -30,7 +30,7 @@ export function changeTitle(title: string) {
     document.title = title + ' — ' + import.meta.env.VITE_APP_NAME
 }
 
-export function countHTMLTag(html: string|undefined, tag: string) {
+export function countHTMLTag(html: string | undefined, tag: string) {
     if (!html) return
     return (html.match(new RegExp(tag, 'g')) || []).length
 }
@@ -242,15 +242,24 @@ export function convertToPixels(value: string) {
 }
 
 export function lockGlobalScroll() {
-    const currentScrollbarWidth = window.innerWidth - document.documentElement.offsetWidth
-
-    document.body.style.setProperty('--current-global-scrollbar-width', currentScrollbarWidth + 'px')
     document.body.classList.add('lock-scroll')
+
+    // Используемый 'scrollbar-gutter: stable' в Chromium не добавляет отступа для fixed элементов,
+    // когда содержимое не прокручивается, поэтому нам приходится добавлять отступ самостоятельно.
+    // Решение достаточно костыльное, и fixed элементы все равно дергаются при изменении высоты окна
+    // (когда высота страницы становится меньше высоты окна).
+    //
+    // В будущем убрать это, когда баг с scrollbar-gutter исправится в Chromium
+    // (https://issues.chromium.org/issues/40792788).
+    if (window.innerHeight <= document.documentElement.offsetHeight) {
+        const currentScrollbarWidth = window.innerWidth - document.documentElement.offsetWidth
+        document.body.style.setProperty('--current-global-scrollbar-width', currentScrollbarWidth + 'px')
+    }
 }
 
 export function unlockGlobalScroll() {
-    document.body.style.removeProperty('--current-global-scrollbar-width')
     document.body.classList.remove('lock-scroll')
+    document.body.style.removeProperty('--current-global-scrollbar-width')
 }
 
 export function absolutePosition(
