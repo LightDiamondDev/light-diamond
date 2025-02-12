@@ -183,7 +183,7 @@ function deleteSubmission() {
                     :minimized="true"
                 />
                 <span class="icon-ellipsis icon cursor-pointer order-2 sm:order-1 mr-1 sm:mr-3 mt-0 sm:mt-1"
-                      @click="actionsMenu!.show"/>
+                      @click="actionsMenu!.toggle"/>
                 <div v-if="materialSubmission.assigned_moderator" class="flex relative m-2 order-1 sm:order-2">
                     <span
                         :class="{
