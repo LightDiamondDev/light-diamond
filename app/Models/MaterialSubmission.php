@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \App\Models\User|null $submitter
  * @property-read Collection<int, \App\Models\MaterialVersionSubmission> $versionSubmissions
  * @property-read int|null $version_submissions_count
+ * @method static Builder|MaterialSubmission closed()
  * @method static Builder|MaterialSubmission newModelQuery()
  * @method static Builder|MaterialSubmission newQuery()
  * @method static Builder|MaterialSubmission query()
@@ -131,10 +132,15 @@ class MaterialSubmission extends Model
         return $this->hasMany(MaterialVersionSubmission::class, 'material_submission_id');
     }
 
+    public function scopeClosed(Builder $query): Builder|MaterialSubmission
+    {
+        return $query->whereIn('status', [MaterialSubmissionStatus::Accepted, MaterialSubmissionStatus::Rejected]);
+    }
+
     public function getActionsAttribute(): Collection
     {
         $actions     = $this->getRelationValue('actions');
-        $isModerator = Auth::user()->is_moderator;
+        $isModerator = Auth::user()?->is_moderator;
 
         $actions->each(function (MaterialSubmissionAction $action) use ($isModerator) {
             if ($isModerator) {

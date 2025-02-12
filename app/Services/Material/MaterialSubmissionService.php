@@ -22,6 +22,7 @@ use App\Services\MaterialVersion\MaterialVersionService;
 use App\Services\MaterialVersion\MaterialVersionSubmissionService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Auth;
 
 readonly class MaterialSubmissionService
@@ -183,6 +184,41 @@ readonly class MaterialSubmissionService
         );
     }
 
+    public function create(
+        MaterialSubmissionCreateDto $dto,
+        MaterialSubmissionStatus    $status
+    ): MaterialSubmission
+    {
+        $material = $dto->type === SubmissionType::Create
+            ? $this->materialService->create($dto->material)
+            : Material::find($dto->material->id);
+
+        $materialSubmission = MaterialSubmission::make();
+        if ($dto->type !== SubmissionType::Delete) {
+            $materialState = $this->materialStateService->create($material, $dto->materialState);
+            $materialSubmission->materialState()->associate($materialState);
+        }
+        $materialSubmission->submitter()->associate(Auth::user());
+        $materialSubmission->material()->associate($material);
+        $materialSubmission->type   = $dto->type;
+        $materialSubmission->status = $status;
+        $materialSubmission->save();
+
+        $category = $this->categoryRegistry->get($material->category);
+
+        if (
+            $dto->versionSubmissions !== null
+            && $category->isDownloadable()
+            && $materialSubmission->type !== SubmissionType::Delete
+        ) {
+            foreach ($dto->versionSubmissions as $versionSubmissionDto) {
+                $this->versionSubmissionService->create($materialSubmission, $versionSubmissionDto);
+            }
+        }
+
+        return $materialSubmission;
+    }
+
     public function update(
         MaterialSubmission          $materialSubmission,
         MaterialSubmissionUpdateDto $dto,
@@ -240,61 +276,88 @@ readonly class MaterialSubmissionService
         $materialSubmission->save();
     }
 
-    private function create(
-        MaterialSubmissionCreateDto $dto,
-        MaterialSubmissionStatus    $status
-    ): MaterialSubmission
+    public function delete(MaterialSubmission $materialSubmission): void
     {
-        $material = $dto->type === SubmissionType::Create
-            ? $this->materialService->create($dto->material)
-            : Material::find($dto->material->id);
-
-        $materialSubmission = MaterialSubmission::make();
-        if ($dto->type !== SubmissionType::Delete) {
-            $materialState = $this->materialStateService->create($material, $dto->materialState);
-            $materialSubmission->materialState()->associate($materialState);
-        }
-        $materialSubmission->submitter()->associate(Auth::user());
-        $materialSubmission->material()->associate($material);
-        $materialSubmission->type   = $dto->type;
-        $materialSubmission->status = $status;
-        $materialSubmission->save();
-
-        $category = $this->categoryRegistry->get($material->category);
-
-        if (
-            $dto->versionSubmissions !== null
-            && $category->isDownloadable()
-            && $materialSubmission->type !== SubmissionType::Delete
-        ) {
-            foreach ($dto->versionSubmissions as $versionSubmissionDto) {
-                $this->versionSubmissionService->create($materialSubmission, $versionSubmissionDto);
-            }
+        if ($materialSubmission->type !== SubmissionType::Delete) {
+            $materialSubmission->versionSubmissions->each(
+                fn($versionSubmission) => $this->versionSubmissionService->delete($versionSubmission)
+            );
         }
 
-        return $materialSubmission;
-    }
-
-    private function delete(MaterialSubmission $materialSubmission): void
-    {
-        $isUnreleasedMaterial = $materialSubmission->type === SubmissionType::Create
-            && $materialSubmission->status !== MaterialSubmissionStatus::Accepted;
-        $isRemovedMaterial    = $materialSubmission->type === SubmissionType::Delete
-            && $materialSubmission->status === MaterialSubmissionStatus::Accepted;
-
-        if ($isUnreleasedMaterial || $isRemovedMaterial) {
+        if ($this->shouldDeleteMaterial($materialSubmission)) {
             $this->materialService->delete($materialSubmission->material);
             return;
         }
 
-        if ($materialSubmission->type === SubmissionType::Delete) {
+        if ($this->canDeleteState($materialSubmission)) {
+            $this->materialStateService->delete($materialSubmission->materialState);
+        } else {
             $materialSubmission->delete();
-            return;
         }
 
-        $materialSubmission->versionSubmissions->each(
-            fn($versionSubmission) => $this->versionSubmissionService->delete($versionSubmission)
-        );
-        $this->materialStateService->delete($materialSubmission->materialState);
+        $this->deletePreviousStateIfNeeded($materialSubmission);
+    }
+
+    private function shouldDeleteMaterial(MaterialSubmission $materialSubmission): bool
+    {
+        $isUnreleased = $materialSubmission->type === SubmissionType::Create
+            && $materialSubmission->status !== MaterialSubmissionStatus::Accepted;
+        $isRemoved    = $materialSubmission->type === SubmissionType::Delete
+            && $materialSubmission->status === MaterialSubmissionStatus::Accepted;
+
+        return $isUnreleased || $isRemoved;
+    }
+
+    private function canDeleteState(MaterialSubmission $materialSubmission): bool
+    {
+        if ($materialSubmission->type === SubmissionType::Delete) {
+            return false;
+        }
+
+        if ($materialSubmission->status === MaterialSubmissionStatus::Accepted) {
+            $latestMaterialStateId = MaterialState::where('material_id', $materialSubmission->material_id)
+                ->orderByDesc('published_at')
+                ->value('id');
+
+            if ($latestMaterialStateId === $materialSubmission->material_state_id) {
+                return false;
+            }
+
+            $isStatePreviousForAnySubmission = MaterialSubmission::closed()
+                ->where('material_id', $materialSubmission->material_id)
+                ->where('updated_at', '>', $materialSubmission->materialState->published_at)
+                ->where(function (Builder $query) use ($materialSubmission) {
+                    // id последнего опубликованного состояния на момент до закрытия заявки
+                    $query->select('id')
+                        ->from('material_states')
+                        ->whereNotNull('published_at')
+                        ->whereColumn('material_states.material_id', 'material_submissions.material_id')
+                        ->whereColumn('material_states.published_at', '<', 'material_submissions.updated_at')
+                        ->orderByDesc('material_states.published_at')
+                        ->limit(1);
+                }, $materialSubmission->material_state_id)
+                ->exists();
+
+            if ($isStatePreviousForAnySubmission) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function deletePreviousStateIfNeeded(MaterialSubmission $materialSubmission): void
+    {
+        if ($materialSubmission->is_closed) {
+            $previousState = MaterialState::where('material_id', $materialSubmission->material_id)
+                ->where('published_at', '<', $materialSubmission->updated_at)
+                ->orderByDesc('published_at')
+                ->withExists('materialSubmission')
+                ->first();
+
+            if ($previousState !== null && !$previousState->material_submission_exists) {
+                $this->materialStateService->delete($previousState);
+            }
+        }
     }
 }

@@ -1,15 +1,26 @@
 <script setup lang="ts">
-import {computed, type PropType} from 'vue'
-import {RouterLink} from 'vue-router'
-import {getFullPresentableDate, getRelativeDate} from '@/helpers'
+import {computed, type PropType, ref} from 'vue'
+import {RouterLink, useRouter} from 'vue-router'
+import {getAppUrl, getErrorMessageByCode, getFullPresentableDate, getRelativeDate} from '@/helpers'
 import useCategoryRegistry from '@/categoryRegistry'
 import usePreferenceManager from '@/preference-manager'
 
-import {type MaterialSubmission, MaterialSubmissionActionType as ActionType, UserRole} from '@/types'
+import {
+    type MaterialSubmission,
+    MaterialSubmissionActionType as ActionType,
+    MaterialSubmissionStatus,
+    UserRole
+} from '@/types'
 
 import MaterialSubmissionAction from '@/components/material/MaterialSubmissionAction.vue'
 import UserAvatar from '@/components/user/UserAvatar.vue'
 import ProfileLink from '@/components/elements/ProfileLink.vue'
+import axios, {type AxiosError} from 'axios'
+import {useAuthStore} from '@/stores/auth'
+import Menu, {type MenuItem} from '@/components/elements/Menu.vue'
+import {useToastStore} from '@/stores/toast'
+import Button from '@/components/elements/Button.vue'
+import Dialog from '@/components/elements/Dialog.vue'
 
 const props = defineProps({
     materialSubmission: {
@@ -22,11 +33,64 @@ const props = defineProps({
     }
 })
 
+const emit = defineEmits(['delete'])
+
 const preferenceManager = usePreferenceManager()
+const authStore = useAuthStore()
+const router = useRouter()
+const toastStore = useToastStore()
+
+const actionsMenu = ref<InstanceType<typeof Menu>>()
+const isDeleteModal = ref(false)
+const isDeleting = ref(false)
 
 const wasUpdated = computed(() => props.materialSubmission!.updated_at !== props.materialSubmission!.created_at)
 const actions = computed(() => props.materialSubmission!.actions!.sort((a, b) => a.created_at!.localeCompare(b.created_at!)))
 const lastAction = computed(() => actions.value!.at(actions.value!.length - 1))
+
+const actionsMenuItems = computed<MenuItem[]>(() => [
+    {
+        label: 'Удалить',
+        icon: 'icon-small-cross',
+        visible: authStore.isModerator || props.materialSubmission!.status === MaterialSubmissionStatus.DRAFT,
+        action: () => isDeleteModal.value = true,
+    },
+    {
+        label: 'Копировать ссылку',
+        icon: 'icon-share',
+        action: copyUrl,
+    }
+])
+
+function copyUrl() {
+    const url = new URL(
+        router.resolve({name: 'material-submission', params: {id: props.materialSubmission.id}}).fullPath,
+        getAppUrl()
+    ).href
+
+    navigator.clipboard.writeText(url)
+    toastStore.info('Ссылка на заявку скопирована.')
+}
+
+function deleteSubmission() {
+    isDeleting.value = true
+
+    axios.delete(`/api/material-submissions/${props.materialSubmission.id}`).then((response) => {
+        if (response.data.success) {
+            toastStore.success('Заявка Удалена.')
+            isDeleteModal.value = false
+            emit('delete')
+        } else {
+            if (response.data.message) {
+                toastStore.error(response.data.message)
+            }
+        }
+    }).catch((error: AxiosError) => {
+        toastStore.error(getErrorMessageByCode(error.response!.status))
+    }).finally(() => {
+        isDeleting.value = false
+    })
+}
 </script>
 
 <template>
@@ -49,10 +113,13 @@ const lastAction = computed(() => actions.value!.at(actions.value!.length - 1))
                             class="icon flex sm:h-[32px] sm:w-[32px] h-[24px] w-[24px] z-[1]"
                             :class="useCategoryRegistry().get(materialSubmission.material?.category).icon"
                         />
-                        <span class="text-2xs sm:text-xs z-[1]">{{ useCategoryRegistry().get(materialSubmission.material.category).singularName }}</span>
+                        <span class="text-2xs sm:text-xs z-[1]">{{
+                                useCategoryRegistry().get(materialSubmission.material.category).singularName
+                            }}</span>
                     </p>
                 </div>
-                <img alt="Превью" class="preview flex w-full full-locked duration-500" :src="materialSubmission.material_state!.localization!.cover_url">
+                <img alt="Превью" class="preview flex w-full full-locked duration-500"
+                     :src="materialSubmission.material_state!.localization!.cover_url">
             </RouterLink>
             <div class="description-wrap flex flex-col w-full">
                 <RouterLink
@@ -107,7 +174,7 @@ const lastAction = computed(() => actions.value!.at(actions.value!.length - 1))
         </div>
         <div class="sm-wrap flex xs:flex-row flex-col">
             <div
-                class="flex justify-end items-center sm:w-fit w-full"
+                class="flex sm:flex-col justify-end sm:justify-normal items-center sm:items-end sm:w-fit w-full"
             >
                 <MaterialSubmissionAction
                     v-if="[ActionType.ACCEPT, ActionType.REJECT, ActionType.REQUEST_CHANGES].includes(lastAction?.type!)"
@@ -115,7 +182,9 @@ const lastAction = computed(() => actions.value!.at(actions.value!.length - 1))
                     :action="lastAction"
                     :minimized="true"
                 />
-                <div v-if="materialSubmission.assigned_moderator" class="flex relative m-2">
+                <span class="icon-ellipsis icon cursor-pointer order-2 sm:order-1 mr-1 sm:mr-3 mt-0 sm:mt-1"
+                      @click="actionsMenu!.show"/>
+                <div v-if="materialSubmission.assigned_moderator" class="flex relative m-2 order-1 sm:order-2">
                     <span
                         :class="{
                             'icon-charoit-crown': materialSubmission.assigned_moderator?.role === UserRole.ADMIN,
@@ -135,6 +204,42 @@ const lastAction = computed(() => actions.value!.at(actions.value!.length - 1))
                 </div>
             </div>
         </div>
+
+        <Menu
+            class="ld-primary-background ld-primary-border z-[2]"
+            item-classes="case-font text-[0.8rem] min-h-[32px] gap-3 p-1"
+            :items="actionsMenuItems"
+            :align-right="true"
+            ref="actionsMenu"
+        />
+
+        <Dialog
+            v-model:visible="isDeleteModal"
+            title="Удаление заявки"
+        >
+            <form action="" class="flex flex-col items-center sm:min-w-[390px] max-w-[390px] p-2">
+                <p class="subtitle md:text-base text-sm text-center mb-4">
+                    Вы действительно хотите удалить заявку «{{ materialSubmission.material_state.localization.title }}»?
+                </p>
+
+                <div class="flex justify-center w-[85%] gap-2 mb-6">
+                    <Button
+                        button-type="submit"
+                        label="Удалить"
+                        class="danger min-w-[140px]"
+                        :loading="isDeleting"
+                        @click.prevent="deleteSubmission"
+                    />
+
+                    <Button
+                        button-type="submit"
+                        label="Отмена"
+                        class="secondary min-w-[140px]"
+                        @click.prevent="isDeleteModal = false"
+                    />
+                </div>
+            </form>
+        </Dialog>
     </div>
 </template>
 

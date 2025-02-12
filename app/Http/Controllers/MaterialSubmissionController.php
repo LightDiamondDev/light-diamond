@@ -401,6 +401,26 @@ class MaterialSubmissionController extends Controller
         ]);
     }
 
+    public function delete(int $id): JsonResponse
+    {
+        $submission = MaterialSubmission::find($id);
+        if ($submission === null) {
+            return $this->successJsonResponse();
+        }
+
+        $user = Auth::user();
+
+        if (
+            !$user->is_moderator
+            && ($submission->submitter_id !== $user->id || $submission->status !== MaterialSubmissionStatus::Draft)
+        ) {
+            return $this->errorJsonResponse("Вы не можете удалить эту заявку на публикацию.");
+        }
+
+        $this->materialSubmissionService->delete($submission);
+        return $this->successJsonResponse();
+    }
+
     private function makeMaterialSubmissionCreateDto(Request $request): MaterialSubmissionCreateDto
     {
         return MaterialSubmissionCreateDto::fromArray(

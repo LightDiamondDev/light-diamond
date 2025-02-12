@@ -62,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/material-submissions', [MaterialSubmissionController::class, 'createDraft'])->middleware('verify.captcha');
         Route::post('/material-submissions/submit', [MaterialSubmissionController::class, 'submitNew'])->middleware('verify.captcha');
         Route::patch('/material-submissions/{id}', [MaterialSubmissionController::class, 'update'])->middleware('verify.captcha')->where('id', '[0-9]+');
+        Route::delete('/material-submissions/{id}', [MaterialSubmissionController::class, 'delete'])->where('id', '[0-9]+');
         Route::patch('/material-submissions/{id}/submit', [MaterialSubmissionController::class, 'submit'])->middleware('verify.captcha')->where('id', '[0-9]+');
         Route::post('/material-submissions/{id}/messages', [MaterialSubmissionController::class, 'message'])->middleware(['verify.captcha', 'throttle:2,1'])->where('id', '[0-9]+');
 

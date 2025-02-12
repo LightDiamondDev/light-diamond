@@ -52,29 +52,29 @@ const tabMenuItems = computed(() => [
     {
         label: 'Черновики',
         icon: 'icon-script',
-        route: { name: 'studio.submissions.drafts' },
-        routes: [ 'studio.submissions.drafts' ],
+        route: {name: 'studio.submissions.drafts'},
+        routes: ['studio.submissions.drafts'],
         status: MaterialSubmissionStatus.DRAFT
     },
     {
         label: 'Ожидающие',
         icon: 'icon-clock',
-        route: { name: 'studio.submissions.pending' },
-        routes: [ 'studio.submissions.pending' ],
+        route: {name: 'studio.submissions.pending'},
+        routes: ['studio.submissions.pending'],
         status: MaterialSubmissionStatus.PENDING
     },
     {
         label: 'Принятые',
         icon: 'icon-tick',
-        route: { name: 'studio.submissions.accepted' },
-        routes: [ 'studio.submissions.accepted' ],
+        route: {name: 'studio.submissions.accepted'},
+        routes: ['studio.submissions.accepted'],
         status: MaterialSubmissionStatus.ACCEPTED
     },
     {
         label: 'Отклонённые',
         icon: 'icon-small-cross',
-        route: { name: 'studio.submissions.rejected' },
-        routes: [ 'studio.submissions.rejected' ],
+        route: {name: 'studio.submissions.rejected'},
+        routes: ['studio.submissions.rejected'],
         status: MaterialSubmissionStatus.REJECTED
     }
 ])
@@ -159,11 +159,14 @@ loadMaterialSubmissions()
                         </div>
                     </div>
                     <div v-else class="flex flex-col">
-                        <MaterialSubmissionCard v-for="materialSubmission in materialSubmissions" :material-submission="materialSubmission"/>
+                        <MaterialSubmissionCard
+                            v-for="materialSubmission in materialSubmissions"
+                            :material-submission="materialSubmission"
+                            @delete="loadMaterialSubmissions()"
+                        />
                     </div>
                 </div>
             </div>
-
         </div>
         <div class="flex sticky bottom-[0]" style="z-index: 1">
             <Paginator

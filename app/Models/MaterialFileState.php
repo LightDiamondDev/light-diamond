@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\MaterialFileState
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\MaterialFile $file
+ * @property-read \App\Models\MaterialFileSubmission|null $fileSubmission
  * @property-read \App\Models\MaterialFileLocalization|null $localization
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MaterialFileLocalization> $localizations
  * @property-read int|null $localizations_count
@@ -49,6 +51,11 @@ class MaterialFileState extends Model
     public function file(): BelongsTo
     {
         return $this->belongsTo(MaterialFile::class, 'file_id')->withoutGlobalScopes();
+    }
+
+    public function fileSubmission(): HasOne
+    {
+        return $this->hasOne(MaterialFileSubmission::class, 'file_state_id');
     }
 
     public function localizations(): HasMany

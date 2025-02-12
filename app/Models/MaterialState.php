@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\MaterialState
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MaterialLocalization> $localizations
  * @property-read int|null $localizations_count
  * @property-read \App\Models\Material $material
+ * @property-read \App\Models\MaterialSubmission|null $materialSubmission
  * @method static \Illuminate\Database\Eloquent\Builder|MaterialState newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MaterialState newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MaterialState query()
@@ -53,6 +55,11 @@ class MaterialState extends Model
     public function material(): BelongsTo
     {
         return $this->belongsTo(Material::class, 'material_id')->withoutGlobalScopes();
+    }
+
+    public function materialSubmission(): HasOne
+    {
+        return $this->hasOne(MaterialSubmission::class, 'material_state_id');
     }
 
     public function author(): BelongsTo

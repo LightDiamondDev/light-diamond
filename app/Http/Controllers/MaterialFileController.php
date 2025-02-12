@@ -71,8 +71,7 @@ class MaterialFileController extends Controller
                     ->join('material_files', 'material_files.id', '=', 'material_file_submissions.file_id')
                     ->where('material_files.id', $fileId)
                     ->orderByDesc('material_submissions.id')
-                    ->pluck('material_submissions.submitter_id')
-                    ->first();
+                    ->value('material_submissions.submitter_id');
             }
 
             if ($user === null || $user->id !== $fileOwnerId && !$user->is_moderator) {

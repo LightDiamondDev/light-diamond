@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Enums\MaterialSubmissionStatus;
 use App\Models\Enums\SubmissionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\MaterialVersionSubmission
@@ -18,6 +20,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property SubmissionType $type
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MaterialFileSubmission> $fileSubmissions
  * @property-read int|null $file_submissions_count
+ * @property-read bool $is_closed
+ * @property-read MaterialSubmissionStatus $status
+ * @property-read \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\MaterialSubmission $materialSubmission
  * @property-read \App\Models\MaterialVersion $version
  * @property-read \App\Models\MaterialVersionState|null $versionState
@@ -68,5 +73,20 @@ class MaterialVersionSubmission extends Model
     public function fileSubmissions(): HasMany
     {
         return $this->hasMany(MaterialFileSubmission::class, 'version_submission_id');
+    }
+
+    public function getUpdatedAtAttribute(): Carbon|null
+    {
+        return $this->materialSubmission->updated_at;
+    }
+
+    public function getStatusAttribute(): MaterialSubmissionStatus
+    {
+        return $this->materialSubmission->status;
+    }
+
+    public function getIsClosedAttribute(): bool
+    {
+        return $this->materialSubmission->is_closed;
     }
 }

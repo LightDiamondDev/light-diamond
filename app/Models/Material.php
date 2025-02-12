@@ -190,7 +190,6 @@ class Material extends Model
             ::where('material_id', $this->id)
             ->whereIn('status', [MaterialSubmissionStatus::Draft, MaterialSubmissionStatus::Pending])
             ->withoutGlobalScopes()
-            ->pluck('id')
-            ->first();
+            ->value('id');
     }
 }

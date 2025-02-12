@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Enums\MaterialSubmissionStatus;
 use App\Models\Enums\SubmissionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\MaterialFileSubmission
@@ -17,6 +19,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property SubmissionType $type
  * @property-read \App\Models\MaterialFile $file
  * @property-read \App\Models\MaterialFileState|null $fileState
+ * @property-read bool $is_closed
+ * @property-read MaterialSubmissionStatus $status
+ * @property-read \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\MaterialVersionSubmission $versionSubmission
  * @method static \Illuminate\Database\Eloquent\Builder|MaterialFileSubmission newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MaterialFileSubmission newQuery()
@@ -60,5 +65,20 @@ class MaterialFileSubmission extends Model
     public function fileState(): BelongsTo
     {
         return $this->belongsTo(MaterialFileState::class, 'file_state_id')->withoutGlobalScopes();
+    }
+
+    public function getUpdatedAtAttribute(): Carbon|null
+    {
+        return $this->versionSubmission->updated_at;
+    }
+
+    public function getStatusAttribute(): MaterialSubmissionStatus
+    {
+        return $this->versionSubmission->status;
+    }
+
+    public function getIsClosedAttribute(): bool
+    {
+        return $this->versionSubmission->is_closed;
     }
 }

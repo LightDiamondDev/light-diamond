@@ -155,11 +155,11 @@ loadMaterialSubmissions()
                         <MaterialSubmissionCard
                             v-for="materialSubmission in materialSubmissions"
                             :material-submission="materialSubmission"
+                            @delete="loadMaterialSubmissions()"
                         />
                     </div>
                 </div>
             </div>
-
         </div>
         <div class="flex sticky bottom-[0]" style="z-index: 1">
             <Paginator

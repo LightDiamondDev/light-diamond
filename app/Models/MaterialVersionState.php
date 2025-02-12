@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\MaterialVersionState
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MaterialVersionLocalization> $localizations
  * @property-read int|null $localizations_count
  * @property-read \App\Models\MaterialVersion $version
+ * @property-read \App\Models\MaterialVersionSubmission|null $versionSubmission
  * @method static \Illuminate\Database\Eloquent\Builder|MaterialVersionState newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MaterialVersionState newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MaterialVersionState query()
@@ -55,6 +57,11 @@ class MaterialVersionState extends Model
     public function version(): BelongsTo
     {
         return $this->belongsTo(MaterialVersion::class, 'version_id')->withoutGlobalScopes();
+    }
+
+    public function versionSubmission(): HasOne
+    {
+        return $this->hasOne(MaterialVersionSubmission::class, 'version_state_id');
     }
 
     public function localizations(): HasMany
