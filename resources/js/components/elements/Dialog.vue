@@ -36,12 +36,15 @@ const props = defineProps({
         default: true
     },
     formContainerClasses: String,
-    dialogClasses: String
+    class: {
+        type: String,
+        default: ''
+    },
 })
 
 const emit = defineEmits(['back'])
 
-let dialogClasses = ref('')
+const classes = ref()
 
 const container = ref<Element>()
 const isMaskMouseDown = ref(false)
@@ -89,66 +92,59 @@ function onMaskMouseUp(event: MouseEvent) {
     isMaskMouseDown.value = false
 }
 
-dialogClasses.value = props.position === 'center' ? 'items-center ' + props.dialogClasses : 'items-start ' + props.dialogClasses
-
+classes.value = props.position === 'center' ? 'items-center ' + props.class : 'items-start ' + props.class
 </script>
 
 <template>
-
-    <Transition :name="animation">
-
-        <div
-            v-if="isVisible"
-            class="dialog-background outer flex justify-center fixed w-full h-full top-0 left-0 z-[3]"
-            :class="dialogClasses"
-            @mousedown="onMaskMouseDown"
-            @mouseup="onMaskMouseUp"
-        >
-
+    <Teleport to="body">
+        <Transition :name="animation">
             <div
                 v-if="isVisible"
-                class="dialog-form-container inner flex"
-                :class="formContainerClasses"
-                ref="container"
+                class="dialog-background outer flex justify-center fixed w-full h-full top-0 left-0 z-[3]"
+                :class="classes"
+                @mousedown="onMaskMouseDown"
+                @mouseup="onMaskMouseUp"
             >
+                <div
+                    v-if="isVisible"
+                    class="dialog-form-container inner flex"
+                    :class="formContainerClasses"
+                    ref="container"
+                >
+                    <slot name="left-content"/>
 
-                <slot name="left-content"/>
+                    <div class="interface ld-primary-background w-full">
 
-                <div class="interface ld-primary-background w-full">
+                        <div v-if="header" class="dialog-header flex justify-between items-center">
+                            <button
+                                v-if="backButton"
+                                class="flex justify-center items-center m-2"
+                                type="button"
+                                @click="emit('back')"
+                            >
+                                <span class="icon icon-long-left-arrow"></span>
+                            </button>
 
-                    <div v-if="header" class="dialog-header flex justify-between items-center">
-                        <button
-                            v-if="backButton"
-                            class="flex justify-center items-center m-2"
-                            type="button"
-                            @click="emit('back')"
-                        >
-                            <span class="icon icon-long-left-arrow"></span>
-                        </button>
+                            <div v-else class="back-button-replacement m-2"/>
 
-                        <div v-else class="back-button-replacement m-2"/>
+                            <h1 class="text-[1.2rem] md:text-[1.8rem] text-center">{{ title }}</h1>
 
-                        <h1 class="text-[1.2rem] md:text-[1.8rem] text-center">{{ title }}</h1>
+                            <button
+                                v-if="closeButton"
+                                class="flex justify-center items-center m-2"
+                                type="button"
+                                @click="isVisible = false"
+                            >
+                                <span class="icon icon-cross"></span>
+                            </button>
+                        </div>
 
-                        <button
-                            v-if="closeButton"
-                            class="flex justify-center items-center m-2"
-                            type="button"
-                            @click="isVisible = false"
-                        >
-                            <span class="icon icon-cross"></span>
-                        </button>
+                        <slot/>
                     </div>
-
-                    <slot/>
-
                 </div>
             </div>
-
-        </div>
-
-    </Transition>
-
+        </Transition>
+    </Teleport>
 </template>
 
 <style scoped>
