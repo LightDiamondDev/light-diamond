@@ -1,27 +1,24 @@
 FROM php:8.3-fpm
 
 # Install all necessary packets and extensions
-RUN \
-    apt-get update && \
-    apt-get install -y \
-      apt-utils \
-      libpq-dev \
-      libpng-dev \
-      libjpeg-dev \
-      libfreetype-dev \
-      libzip-dev \
-      zip \
-      unzip \
-      git \
-      npm \
-      jpegoptim \
-      optipng \
-      pngquant \
-      gifsicle \
-      webp \
-      libavif-bin && \
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    git \
+    npm \
+    jpegoptim \
+    optipng \
+    pngquant \
+    gifsicle \
+    webp \
+    libavif-bin && \
     pecl config-set php_ini "${PHP_INI_DIR}/php.ini" && \
-    docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg &&\
+    docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg && \
     docker-php-ext-install \
       pdo_pgsql \
       bcmath \

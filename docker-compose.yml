@@ -17,7 +17,6 @@ services:
             APP_URL: ${APP_URL}
             VIRTUAL_HOST: ${APP_HOST:-localhost,lightdiamond.local}
             LETSENCRYPT_HOST: ${APP_HOST}
-#            LETSENCRYPT_EMAIL: ${EMAIL}
 
     nginx-proxy:
         container_name: light-diamond_nginx-proxy
@@ -38,8 +37,6 @@ services:
     acme-companion:
         container_name: light-diamond_nginx-proxy-acme
         image: nginxproxy/acme-companion:2.5
-#        environment:
-#            - DEFAULT_EMAIL=${EMAIL}
         restart: unless-stopped
         volumes_from:
             - nginx-proxy
@@ -60,6 +57,18 @@ services:
         depends_on:
             postgres:
                 condition: service_healthy
+
+    app-worker:
+        container_name: light-diamond_app-worker
+        build:
+            context: .
+            dockerfile: docker/app/Dockerfile
+        restart: unless-stopped
+        volumes_from:
+            - app
+        command: php artisan schedule:work
+        depends_on:
+            - app
 
     postgres:
         container_name: light-diamond_postgres
@@ -85,11 +94,10 @@ services:
         image: node:22-alpine
         ports:
             - ${VITE_PORT}:5173
-        restart: unless-stopped
         volumes:
             - ./:/var/www
         working_dir: /var/www
-        command: sh -c 'if [ "${APP_DEBUG}" = "true" ]; then npm run dev; else npm run build && tail -f /dev/null; fi'
+        command: sh -c 'if [ "${APP_DEBUG}" = "true" ]; then npm run dev; else npm run build; fi'
 
     mailpit:
         container_name: light-diamond_mailpit
