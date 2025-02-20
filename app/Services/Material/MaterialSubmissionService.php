@@ -13,6 +13,7 @@ use App\Models\MaterialSubmission;
 use App\Models\MaterialVersion;
 use App\Models\MaterialVersionState;
 use App\Models\User;
+use App\Notifications\MaterialSubmissionReviewedNotification;
 use App\Registries\CategoryRegistry;
 use App\Services\BotNotification\BotNotificationService;
 use App\Services\Material\Dto\MaterialSubmissionActionDto;
@@ -106,13 +107,15 @@ readonly class MaterialSubmissionService
         $materialSubmission->assignedModerator()->associate(Auth::user());
         $this->update($materialSubmission, $dto, MaterialSubmissionStatus::Draft);
 
-        $this->actionService->create(
+        $action = $this->actionService->create(
             $materialSubmission,
             new MaterialSubmissionActionDto(
                 type: MaterialSubmissionActionType::RequestChanges,
                 details: $dto->actionDetails
             ),
         );
+
+        $materialSubmission->submitter->notify(new MaterialSubmissionReviewedNotification($materialSubmission, $action));
     }
 
     public function accept(MaterialSubmission $materialSubmission, MaterialSubmissionUpdateDto $dto): void
@@ -122,7 +125,7 @@ readonly class MaterialSubmissionService
         $materialSubmission->assignedModerator()->associate(Auth::user());
         $this->update($materialSubmission, $dto, MaterialSubmissionStatus::Accepted, $now);
 
-        $this->actionService->create(
+        $action = $this->actionService->create(
             $materialSubmission,
             new MaterialSubmissionActionDto(MaterialSubmissionActionType::Accept)
         );
@@ -168,6 +171,8 @@ readonly class MaterialSubmissionService
                 $this->versionService->create($material, $now);
             }
         }
+
+        $materialSubmission->submitter->notify(new MaterialSubmissionReviewedNotification($materialSubmission, $action));
     }
 
     public function reject(MaterialSubmission $materialSubmission, MaterialSubmissionUpdateDto $dto): void
@@ -175,13 +180,15 @@ readonly class MaterialSubmissionService
         $materialSubmission->assignedModerator()->associate(Auth::user());
         $this->update($materialSubmission, $dto, MaterialSubmissionStatus::Rejected);
 
-        $this->actionService->create(
+        $action = $this->actionService->create(
             $materialSubmission,
             new MaterialSubmissionActionDto(
                 type: MaterialSubmissionActionType::Reject,
                 details: $dto->actionDetails
             )
         );
+
+        $materialSubmission->submitter->notify(new MaterialSubmissionReviewedNotification($materialSubmission, $action));
     }
 
     public function create(
