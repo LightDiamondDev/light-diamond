@@ -115,7 +115,9 @@ readonly class MaterialSubmissionService
             ),
         );
 
-        $materialSubmission->submitter->notify(new MaterialSubmissionReviewedNotification($materialSubmission, $action));
+        if (Auth::id() !== $materialSubmission->submitter_id) {
+            $materialSubmission->submitter->notify(new MaterialSubmissionReviewedNotification($materialSubmission, $action));
+        }
     }
 
     public function accept(MaterialSubmission $materialSubmission, MaterialSubmissionUpdateDto $dto): void
@@ -172,7 +174,9 @@ readonly class MaterialSubmissionService
             }
         }
 
-        $materialSubmission->submitter->notify(new MaterialSubmissionReviewedNotification($materialSubmission, $action));
+        if (Auth::id() !== $materialSubmission->submitter_id) {
+            $materialSubmission->submitter->notify(new MaterialSubmissionReviewedNotification($materialSubmission, $action));
+        }
     }
 
     public function reject(MaterialSubmission $materialSubmission, MaterialSubmissionUpdateDto $dto): void
@@ -188,7 +192,9 @@ readonly class MaterialSubmissionService
             )
         );
 
-        $materialSubmission->submitter->notify(new MaterialSubmissionReviewedNotification($materialSubmission, $action));
+        if (Auth::id() !== $materialSubmission->submitter_id) {
+            $materialSubmission->submitter->notify(new MaterialSubmissionReviewedNotification($materialSubmission, $action));
+        }
     }
 
     public function create(
