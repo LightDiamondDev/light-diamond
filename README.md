@@ -1,6 +1,6 @@
 <p style="text-align: center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="/public/images/logo-dark.svg?raw=true">
+    <source media="(prefers-color-scheme: dark)" srcset="public/images/elements/light-diamond-logo.png?raw=true">
     <img alt="Light Diamond Logo" src="public/images/elements/light-diamond-logo.png" style="width: 400px; margin-top: 50px">
   </picture>
 </p>

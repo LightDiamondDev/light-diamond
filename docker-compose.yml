@@ -85,11 +85,10 @@ services:
         image: node:22-alpine
         ports:
             - ${VITE_PORT}:5173
-        restart: unless-stopped
         volumes:
             - ./:/var/www
         working_dir: /var/www
-        command: sh -c 'if [ "${APP_DEBUG}" = "true" ]; then npm run dev; else npm run build && tail -f /dev/null; fi'
+        command: sh -c 'if [ "${APP_DEBUG}" = "true" ]; then npm run dev; else npm run build; fi'
 
     mailpit:
         container_name: light-diamond_mailpit
