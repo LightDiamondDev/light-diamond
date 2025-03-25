@@ -200,18 +200,34 @@ class MaterialController extends Controller
 
     public function getUserMaterials(Request $request, int $userId): JsonResponse
     {
-        $validator = $this->validatePagination($request, [
-            'sort_field' => ['string', new ColumnExistsRule(Material::getModel()->getTable())],
-        ]);
+        $validator = $this->validatePagination($request);
 
         if ($validator->fails()) {
             return $this->errorJsonResponse('', $validator->errors());
         }
 
-        ['perPage' => $perPage, 'sortField' => $sortField, 'sortDirection' => $sortDirection] =
-            $this->getPaginationParameters($request);
+        ['perPage' => $perPage] = $this->getPaginationParameters($request, 'updated_at');
 
-        $materials = Material::ofUser($userId)->orderBy($sortField, $sortDirection)->paginate($perPage);
+        $materials = Material
+            ::ofUser($userId)
+            ->joinSub(
+                MaterialVersion
+                    ::withoutGlobalScopes()
+                    ->whereIn('id', function (\Illuminate\Database\Query\Builder $query) {
+                        $query->selectRaw('DISTINCT ON (material_id) id')
+                            ->from('material_versions')
+                            ->whereNull('deleted_at')
+                            ->whereNotNull('published_at')
+                            ->orderBy('material_id')
+                            ->orderBy('published_at', 'desc');
+                    }),
+                'version',
+                'materials.id',
+                '=',
+                'version.material_id'
+            )
+            ->orderBy('version.published_at', 'desc')
+            ->paginate($perPage);
 
         return $this->paginateResponse($materials);
     }
