@@ -105,7 +105,7 @@ function loadMaterial() {
         if (Object.keys(materialData).length !== 0) {
             material.value = materialData
             if (material.value.versions) {
-                currentVersion.value = versions.value[versions.value.length - 1]
+                currentVersion.value = versions.value[0]
             }
             if (material.value.edition !== props.edition) {
                 router.replace({
