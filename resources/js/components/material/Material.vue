@@ -53,6 +53,7 @@ const material = ref<Material>()
 const materialContent = ref<Element>()
 const comments = ref<MaterialComment[]>()
 const newComment = reactive<EditedComment>({})
+const versions = computed(() => material.value!.versions!.sort((a, b) => b.published_at!.localeCompare(a.published_at!)))
 const currentVersion = ref<MaterialVersion>()
 
 const isLoading = ref(true)
@@ -104,7 +105,7 @@ function loadMaterial() {
         if (Object.keys(materialData).length !== 0) {
             material.value = materialData
             if (material.value.versions) {
-                currentVersion.value = material.value.versions[material.value.versions.length - 1]
+                currentVersion.value = versions.value[versions.value.length - 1]
             }
             if (material.value.edition !== props.edition) {
                 router.replace({
@@ -271,7 +272,7 @@ function openDownloadWindow() {
                 <div v-if="isDownloadable" class="flex flex-col gap-2 w-full" id="download">
                     <MaterialVersionSelect
                         v-model="currentVersion"
-                        :versions="material!.versions!.sort((a, b) => b.published_at!.localeCompare(a.published_at!))"
+                        :versions="versions"
                     />
 
                     <div
