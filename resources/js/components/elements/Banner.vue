@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from 'vue'
+import {onBeforeMount, ref} from 'vue'
 
 const props = defineProps({
     imagesSrc: {
@@ -33,7 +33,7 @@ const isBannerWinterSnowflakesParticles = ref(false)
 function launchBannerSwitchSlidesAnimation() {
     if (bannerImagesSrc.value.length > 1) {
         setInterval(function () {
-            if (currentBannerImageSrc.value < bannerImagesSrc.value.length - 2) {
+            if (currentBannerImageSrc.value < bannerImagesSrc.value.length - 1) {
                 currentBannerImageSrc.value++
             } else {
                 currentBannerImageSrc.value = 0
@@ -57,8 +57,19 @@ function launchBannerParticles(type: string) {
     }
 }
 
+async function loadImages() {
+    Object.keys(bannerImagesSrc.value).map((key, _index) => {
+        const img = new Image();
+        img.src = bannerImagesSrc.value[key];
+    });
+}
+
 launchBannerSwitchSlidesAnimation()
 launchBannerParticles(BannerParticles.SPRING_FLOWERS)
+
+onBeforeMount(() => {
+    loadImages()
+})
 </script>
 
 <template>

@@ -9,10 +9,9 @@ const bannerImagesSrc = [
     //'/images/elements/home-banner-cherry-forest.png',
     //'/images/elements/home-banner-christmas-village.png',
     //'/images/elements/home-banner-christmas-village.png'
-    '/images/elements/home-banner-plains.png',
-    '/images/elements/home-banner-cherry-forest.png',
-    '/images/elements/home-banner-nether-portal.png',
-    '/images/elements/home-banner-nether-portal.png'
+    '/images/elements/home-banner-plains.jpg',
+    '/images/elements/home-banner-cherry-forest.jpg',
+    '/images/elements/home-banner-nether-portal.jpg'
 ]
 
 const titles = [

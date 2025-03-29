@@ -56,7 +56,7 @@ const authStore = useAuthStore()
 const toastStore = useToastStore()
 const router = useRouter()
 
-const bannerImagesSrc = ['/images/elements/general-banner-ancient-city.png']
+const bannerImagesSrc = ['/images/elements/thin-banner-birch-forest.jpg']
 
 const materialEditor = ref<InstanceType<typeof MaterialEditor>>()
 const acceptOverlayPanel = ref<InstanceType<typeof OverlayPanel>>()

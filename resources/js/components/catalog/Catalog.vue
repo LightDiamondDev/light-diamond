@@ -63,7 +63,7 @@ const authStore = useAuthStore()
 const toastStore = useToastStore()
 const categoryRegistry = useCategoryRegistry()
 
-const bannerImagesSrc = [ '/images/elements/catalog-banner-birch-forest.png' ]
+const bannerImagesSrc = [ '/images/elements/thin-banner-birch-forest.jpg' ]
 
 const materials = ref<Material[]>([])
 const router = useRouter()

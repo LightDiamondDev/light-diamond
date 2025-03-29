@@ -36,7 +36,7 @@ const toastStore = useToastStore()
 const router = useRouter()
 const preferenceManager = usePreferenceManager()
 
-const bannerImagesSrc = ['/images/elements/general-banner-ancient-city.png']
+const bannerImagesSrc = ['/images/elements/thin-banner-birch-forest.jpg']
 
 const isLoading = ref(true)
 const isSubmitting = ref(false)
