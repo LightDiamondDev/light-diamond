@@ -483,13 +483,14 @@ loadMaterialSubmission()
                                 Заявка на публикацию</h1>
 
                             <div class="mark-block flex absolute bottom-2 gap-2">
-                                <div
-                                    :class="{
+                                <div style="background-color: rgba(0, 0, 0, .6)">
+                                    <div
+                                        :class="{
                                         'new': materialSubmission.type === SubmissionType.CREATE,
                                         'update': materialSubmission.type === SubmissionType.UPDATE
                                     }"
-                                    class="material-type new flex items-center h-fit gap-2 locked"
-                                >
+                                        class="material-type new flex items-center h-fit gap-2 locked"
+                                    >
                                     <span
                                         class="icon flex"
                                         :class="{
@@ -497,20 +498,23 @@ loadMaterialSubmission()
                                             'icon-medium-top-arrow': materialSubmission.type === SubmissionType.UPDATE
                                         }"
                                     />
-                                    <p class="text-[9px] xs:text-[.7rem]">
-                                        {{
-                                            materialSubmission.type === SubmissionType.CREATE ? 'Новый Материал' : 'Обновление'
-                                        }}
-                                    </p>
+                                        <p class="text-[9px] xs:text-[.7rem]">
+                                            {{
+                                                materialSubmission.type === SubmissionType.CREATE ? 'Новый Материал' : 'Обновление'
+                                            }}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div
-                                    class="time-ago time flex items-center h-fit gap-2 locked tooltip whitespace-nowrap"
-                                    v-tooltip.top="'Обновлено: ' + getFullPresentableDate(materialSubmission!.updated_at!)"
-                                >
-                                    <span class="icon-clock icon flex"/>
-                                    <p class="text-[9px] xs:text-[.7rem]">
-                                        {{ getRelativeDate(materialSubmission!.updated_at!) }}
-                                    </p>
+                                <div style="background-color: rgba(0, 0, 0, .6)">
+                                    <div
+                                        class="time-ago time flex items-center h-fit gap-2 locked tooltip whitespace-nowrap"
+                                        v-tooltip.top="'Обновлено: ' + getFullPresentableDate(materialSubmission!.updated_at!)"
+                                    >
+                                        <span class="icon-clock icon flex"/>
+                                        <p class="text-[9px] xs:text-[.7rem]">
+                                            {{ getRelativeDate(materialSubmission!.updated_at!) }}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
