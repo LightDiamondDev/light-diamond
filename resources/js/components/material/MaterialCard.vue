@@ -65,7 +65,7 @@ const wasMaterialUpdated = computed(() => props.material!.published_at !== props
             </RouterLink>
             <div class="description-wrap flex flex-col flex-grow justify-between text-[12px] w-full">
                 <div class="flex flex-col">
-                    <RouterLink class="material-title-wrap ld-default-link transfusion p-2" :to="materialRoute">
+                    <RouterLink class="material-title-wrap ld-default-link p-2" :to="materialRoute">
                         <h2
                             class="material-title text-[15px] duration-300"
                             :class="{ 'sm:text-[15px] xs:text-[12px] text-[14px]': isHorizontalDirection }"
