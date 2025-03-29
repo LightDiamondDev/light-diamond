@@ -67,16 +67,14 @@ async function loadImages() {
 launchBannerSwitchSlidesAnimation()
 launchBannerParticles(BannerParticles.SPRING_FLOWERS)
 
-onBeforeMount(() => {
-    loadImages()
-})
+onBeforeMount(() => { loadImages() })
 </script>
 
 <template>
     <div class="banner flex justify-center max-w-[100vw] w-full overflow-hidden">
         <div
             class="banner-slide bg-fixed flex h-full w-full duration-1000"
-            style="background-position-x: center; background-repeat: no-repeat"
+            style="background-position-x: center; background-repeat: no-repeat;"
             :style="{ 'background-image': `url(${bannerImagesSrc[currentBannerImageSrc]})` }"
         >
             <div class="banner-effects flex justify-center snowflakes h-full w-full relative" :class="{ 'effects-off': !isBannerAnimation }">
@@ -349,7 +347,7 @@ onBeforeMount(() => {
 
 /* =============== [ Медиа-Запрос { 1920px > ?px } ] =============== */
 
-@media screen and (min-width: 1920px) {
+@media screen and (min-width: 1872px) {
     .banner-slide {
         background-size: contain;
     }

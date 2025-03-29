@@ -125,21 +125,21 @@ updateTitle()
         :style="{ 'background-image': `url(${profileBackgroundSrc})`  }"
         style="background-attachment: fixed; background-position-x: center; overflow: clip"
     >
-        <span class="particle icon particle-snowflake-flower n1"/>
-        <span class="particle icon particle-snowflake-star n2"/>
-        <span class="sm:block hidden particle icon article-snowflake-square n3"/>
-        <span class="particle icon particle-snowflake-star n4"/>
-        <span class="particle icon particle-snowflake-wheel n5"/>
-        <span class="sm:block hidden particle icon particle-snowflake-flower n6"/>
-        <span class="particle icon particle-snowflake-round n7"/>
-        <span class="particle icon article-snowflake-square n8"/>
-        <span class="sm:block hidden particle icon particle-snowflake-star n9"/>
-        <span class="particle icon particle-snowflake-wheel n10"/>
-        <span class="particle icon particle-snowflake-flower n11"/>
-        <span class="sm:block hidden particle icon particle-snowflake-star n12"/>
-        <span class="particle icon article-snowflake-square n13"/>
-        <span class="particle icon particle-snowflake-star n14"/>
-        <span class="sm:block hidden particle icon particle-snowflake-wheel n15"/>
+        <span class="particle icon particle-flower-cherry small n1"/>
+        <span class="particle icon particle-flower-lightblue small n2"/>
+        <span class="sm:block hidden particle icon particle-flower-purple small n3"/>
+        <span class="particle icon particle-flower-white medium n4"/>
+        <span class="particle icon particle-flower-yellow small n5"/>
+        <span class="sm:block hidden particle icon particle-flower-cherry medium n6"/>
+        <span class="particle icon particle-flower-lightblue medium n7"/>
+        <span class="particle icon particle-flower-purple medium n8"/>
+        <span class="sm:block hidden particle icon particle-flower-white small n9"/>
+        <span class="particle icon particle-flower-yellow medium n10"/>
+        <span class="particle icon particle-flower-cherry small n11"/>
+        <span class="sm:block hidden particle icon particle-flower-lightblue medium n12"/>
+        <span class="particle icon particle-flower-purple small n13"/>
+        <span class="particle icon particle-flower-white medium n14"/>
+        <span class="sm:block hidden particle icon particle-flower-yellow small n15"/>
         <div v-if="isLoading" class="flex justify-center items-center overflow-hidden h-[85vh] w-full">
             <ProcessingDiggingBlocks processing-classes="md:h-[192px] md:w-[192px] h-[128px] w-[128px]"/>
         </div>
@@ -254,8 +254,18 @@ updateTitle()
     pointer-events: none;
     position: absolute;
     transition: .5s;
+}
+.particle.big {
     height: 32px;
     width: 32px;
+}
+.particle.medium {
+    height: 24px;
+    width: 24px;
+}
+.particle.small {
+    height: 16px;
+    width: 16px;
 }
 
 .snowflakes .n1 { animation: falling-snowflake-animation1 5s infinite linear; top: -20%; }

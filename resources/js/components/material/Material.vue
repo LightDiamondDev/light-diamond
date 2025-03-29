@@ -239,9 +239,12 @@ function openDownloadWindow() {
             </aside>
 
             <div
-                class="material center-interaction bright-background ld-fixed-background flex flex-col items-center max-w-[832px] w-full xs:px-4 px-2"
-                ref="materialContent">
+                class="material center-interaction bright-background ld-fixed-background
+                    flex flex-col items-center max-w-[832px] w-full xs:px-4 px-2"
+                style="min-height: 100vh"
+                ref="materialContent"
 
+            >
                 <div class="material-info-dates xl:hidden flex lg:justify-between justify-center w-full">
                     <MaterialInfoBar class="xl:flex-col flex-wrap justify-center gap-4 lg:mt-0 mt-4 duration-500"
                         :material="material"/>

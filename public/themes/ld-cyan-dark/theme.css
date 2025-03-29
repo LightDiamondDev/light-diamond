@@ -983,6 +983,10 @@
         color: var(--trinity-text-color);
     }
 
+    .banner-title .ld-title-font {
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 1);
+    }
+
     .settings .banner {
         border-right: 2px solid rgba(255, 255, 255, .5);
         border-left: 2px solid rgba(255, 255, 255, .5);
@@ -1125,6 +1129,10 @@
         background: linear-gradient(90deg, rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1));
         animation: transfusion-animation 10s linear infinite;
         background-size: 400% 100%;
+    }
+
+    .transfusion-state {
+        background: linear-gradient(90deg, rgba(0, 255, 255, .1), rgba(0, 255, 255, .3), rgba(0, 255, 255, .1), rgba(0, 255, 255, .3));
     }
 
     .transfusion.lite {

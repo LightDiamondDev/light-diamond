@@ -302,7 +302,7 @@ onUnmounted(() => {
                 <Banner class="md:h-[208px] h-[178px]" :images-src="bannerImagesSrc">
                     <template v-slot:banner-content>
                         <div
-                            class="banner-title page-container flex flex-col justify-center items-center md:items-end max-w-[800px]"
+                            class="banner-title page-container ld-shadow-text flex flex-col justify-center items-center md:items-end max-w-[800px]"
                         >
                             <h1 class="ld-title-font flex self-center text-center md:text-[3rem] text-[1.5rem] locked">
                                 {{

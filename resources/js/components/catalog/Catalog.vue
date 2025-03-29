@@ -157,7 +157,7 @@ loadMaterials()
 </script>
 
 <template>
-    <Banner class="md:h-[208px] h-[178px]" :images-src="bannerImagesSrc">
+    <Banner class="md:h-[207px] h-[178px]" :images-src="bannerImagesSrc">
         <template v-slot:banner-content>
             <div class="title flex flex-col justify-center items-center w-full">
                 <RouterLink
@@ -233,10 +233,10 @@ loadMaterials()
 
                     <div class="menu-separator flex self-center"></div>
 
-                    <div class="line flex flex-wrap sm:justify-start justify-center gap-3 p-3">
+                    <div class="line flex gap-3 p-3 overflow-x-auto" style="scrollbar-width: thin">
                         <ShineButton
                             as="RouterLink"
-                            class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
+                            class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 lg:px-6 px-4 py-0.5"
                             :class="{'active': props.category === undefined}"
                             label="Все"
                             icon="icon-brilliant"
@@ -246,7 +246,7 @@ loadMaterials()
                         <template v-for="category in categoryRegistry.getByEdition(edition)">
                             <ShineButton
                                 as="RouterLink"
-                                class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 px-6 py-0.5"
+                                class-preset="ld-title-font justify-center sm:text-[16px] xs:text-[14px] text-[12px] gap-1 lg:px-6 px-4 py-0.5"
                                 :class="{'active': props.category?.type === category.type}"
                                 :label="category.name"
                                 :icon="category.icon"

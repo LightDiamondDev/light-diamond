@@ -410,7 +410,7 @@ let colors = [
     '#00ffff',
     '#ff5ada',
     '#50da30',
-    '#108aff',
+    '#5aaaff',
     '#fff500',
     '#00ffff',
     '#ff1050',
@@ -419,7 +419,7 @@ let colors = [
     '#3affff',
     '#ffff5a',
     '#ff5aff',
-    '#00aaaa',
+    '#00daca',
     '#fff500',
     '#00ffff'
 ]
