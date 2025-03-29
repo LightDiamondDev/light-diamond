@@ -159,10 +159,20 @@
     .item-ender-pearl { background-image: url('/public/images/items/ender-pearl.png'); }
     .item-gold-ingot { background-image: url('/public/images/items/gold-ingot.png'); }
 
+    .particle-flower-cherry { background-image: url('/public/images/particles/flower-cherry.png'); }
+    .particle-flower-lightblue { background-image: url('/public/images/particles/flower-lightblue.png'); }
+    .particle-flower-purple { background-image: url('/public/images/particles/flower-purple.png'); }
+    .particle-flower-white { background-image: url('/public/images/particles/flower-white.png'); }
+    .particle-flower-yellow { background-image: url('/public/images/particles/flower-yellow.png'); }
+
+    .particle-leave-forestgreen { background-image: url('/public/images/particles/leave-forestgreen.png'); }
     .particle-leave-gold { background-image: url('/public/images/particles/leave-gold.png'); }
+    .particle-leave-green { background-image: url('/public/images/particles/leave-green.png'); }
+    .particle-leave-greeny { background-image: url('/public/images/particles/leave-greeny.png'); }
     .particle-leave-lime { background-image: url('/public/images/particles/leave-lime.png'); }
     .particle-leave-orange { background-image: url('/public/images/particles/leave-orange.png'); }
     .particle-leave-red { background-image: url('/public/images/particles/leave-red.png'); }
+    .particle-leave-tropic { background-image: url('/public/images/particles/leave-tropic.png'); }
     .particle-leave-yellow { background-image: url('/public/images/particles/leave-yellow.png'); }
 
     .particle-snowflake-flower { background-image: url('/public/images/particles/snowflake-flower.png'); }

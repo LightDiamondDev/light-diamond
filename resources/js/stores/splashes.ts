@@ -406,7 +406,7 @@ let splashes = [
 ]
 let colors = [
     '#fff500',
-    '#80ffaa',
+    '#3affaa',
     '#00ffff',
     '#ff5ada',
     '#50da30',
@@ -416,9 +416,9 @@ let colors = [
     '#ff1050',
     '#ff8000',
     '#ffffff',
-    '#8affff',
-    '#ffff8a',
-    '#ff8aff',
+    '#3affff',
+    '#ffff5a',
+    '#ff5aff',
     '#00aaaa',
     '#fff500',
     '#00ffff'

@@ -13,8 +13,10 @@ const props = defineProps({
 })
 
 enum BannerParticles {
-    LEAVES = 'LEAVES',
-    SNOWFLAKES = 'SNOWFLAKES'
+    AUTUMN_LEAVES = 'AUTUMN_LEAVES',
+    SPRING_FLOWERS = 'SPRING_FLOWERS',
+    SUMMER_LEAVES = 'SUMMER_LEAVES',
+    WINTER_SNOWFLAKES = 'WINTER_SNOWFLAKES'
 }
 
 const bannerImagesSrc = ref(props.imagesSrc)
@@ -23,8 +25,10 @@ const currentBannerImageSrc = ref(0)
 
 const isBannerAnimation = ref(true)
 
-const isBannerLeavesParticles = ref(false)
-const isBannerSnowflakesParticles = ref(false)
+const isBannerAutumnLeavesParticles = ref(false)
+const isBannerSpringFlowersParticles = ref(false)
+const isBannerSummerLeavesParticles = ref(false)
+const isBannerWinterSnowflakesParticles = ref(false)
 
 function launchBannerSwitchSlidesAnimation() {
     if (bannerImagesSrc.value.length > 1) {
@@ -39,16 +43,22 @@ function launchBannerSwitchSlidesAnimation() {
 }
 
 function launchBannerParticles(type: string) {
-    if (type === BannerParticles.LEAVES) {
-        isBannerLeavesParticles.value = true
+    if (type === BannerParticles.AUTUMN_LEAVES) {
+        isBannerAutumnLeavesParticles.value = true
     }
-    else if (type === BannerParticles.SNOWFLAKES) {
-        isBannerSnowflakesParticles.value = true
+    else if (type === BannerParticles.SPRING_FLOWERS) {
+        isBannerSpringFlowersParticles.value = true
+    }
+    else if (type === BannerParticles.SUMMER_LEAVES) {
+        isBannerSummerLeavesParticles.value = true
+    }
+    else if (type === BannerParticles.WINTER_SNOWFLAKES) {
+        isBannerWinterSnowflakesParticles.value = true
     }
 }
 
 launchBannerSwitchSlidesAnimation()
-launchBannerParticles(BannerParticles.SNOWFLAKES)
+launchBannerParticles(BannerParticles.SPRING_FLOWERS)
 </script>
 
 <template>
@@ -73,40 +83,76 @@ launchBannerParticles(BannerParticles.SNOWFLAKES)
                     </button>
                 </div>
 
-                <template v-if="isBannerLeavesParticles">
-                    <span class="particle icon particle-leave-gold n1"/>
-                    <span class="particle icon particle-leave-lime n2"/>
-                    <span class="sm:block hidden particle icon particle-leave-orange n3"/>
-                    <span class="particle icon particle-leave-red n4"/>
-                    <span class="particle icon particle-leave-yellow n5"/>
-                    <span class="sm:block hidden particle icon particle-leave-gold n6"/>
-                    <span class="particle icon particle-leave-lime n7"/>
-                    <span class="particle icon particle-leave-orange n8"/>
-                    <span class="sm:block hidden particle icon particle-leave-red n9"/>
-                    <span class="particle icon particle-leave-yellow n10"/>
-                    <span class="particle icon particle-leave-gold n11"/>
-                    <span class="sm:block hidden particle icon particle-leave-lime n12"/>
-                    <span class="particle icon particle-leave-orange n13"/>
-                    <span class="particle icon particle-leave-red n14"/>
-                    <span class="sm:block hidden particle icon particle-leave-yellow n15"/>
+                <template v-if="isBannerAutumnLeavesParticles">
+                    <span class="particle icon particle-leave-gold medium n1"/>
+                    <span class="particle icon particle-leave-lime medium n2"/>
+                    <span class="sm:block hidden particle icon particle-leave-orange medium n3"/>
+                    <span class="particle icon particle-leave-red medium n4"/>
+                    <span class="particle icon particle-leave-yellow medium n5"/>
+                    <span class="sm:block hidden particle icon particle-leave-gold medium n6"/>
+                    <span class="particle icon particle-leave-lime medium n7"/>
+                    <span class="particle icon particle-leave-orange medium n8"/>
+                    <span class="sm:block hidden particle icon particle-leave-red medium n9"/>
+                    <span class="particle icon particle-leave-yellow medium n10"/>
+                    <span class="particle icon particle-leave-gold medium n11"/>
+                    <span class="sm:block hidden particle icon particle-leave-lime medium n12"/>
+                    <span class="particle icon particle-leave-orange medium n13"/>
+                    <span class="particle icon particle-leave-red medium n14"/>
+                    <span class="sm:block hidden particle icon particle-leave-yellow medium n15"/>
                 </template>
 
-                <template v-if="isBannerSnowflakesParticles">
-                    <span class="particle icon particle-snowflake-flower n1"/>
-                    <span class="particle icon particle-snowflake-star n2"/>
-                    <span class="sm:block hidden particle icon article-snowflake-square n3"/>
-                    <span class="particle icon particle-snowflake-star n4"/>
-                    <span class="particle icon particle-snowflake-wheel n5"/>
-                    <span class="sm:block hidden particle icon particle-snowflake-flower n6"/>
-                    <span class="particle icon particle-snowflake-round n7"/>
-                    <span class="particle icon article-snowflake-square n8"/>
-                    <span class="sm:block hidden particle icon particle-snowflake-star n9"/>
-                    <span class="particle icon particle-snowflake-wheel n10"/>
-                    <span class="particle icon particle-snowflake-flower n11"/>
-                    <span class="sm:block hidden particle icon particle-snowflake-star n12"/>
-                    <span class="particle icon article-snowflake-square n13"/>
-                    <span class="particle icon particle-snowflake-star n14"/>
-                    <span class="sm:block hidden particle icon particle-snowflake-wheel n15"/>
+                <template v-if="isBannerSpringFlowersParticles">
+                    <span class="particle icon particle-flower-cherry small n1"/>
+                    <span class="particle icon particle-flower-lightblue small n2"/>
+                    <span class="sm:block hidden particle icon particle-flower-purple small n3"/>
+                    <span class="particle icon particle-flower-white medium n4"/>
+                    <span class="particle icon particle-flower-yellow small n5"/>
+                    <span class="sm:block hidden particle icon particle-flower-cherry medium n6"/>
+                    <span class="particle icon particle-flower-lightblue medium n7"/>
+                    <span class="particle icon particle-flower-purple medium n8"/>
+                    <span class="sm:block hidden particle icon particle-flower-white small n9"/>
+                    <span class="particle icon particle-flower-yellow medium n10"/>
+                    <span class="particle icon particle-flower-cherry small n11"/>
+                    <span class="sm:block hidden particle icon particle-flower-lightblue medium n12"/>
+                    <span class="particle icon particle-flower-purple small n13"/>
+                    <span class="particle icon particle-flower-white medium n14"/>
+                    <span class="sm:block hidden particle icon particle-flower-yellow small n15"/>
+                </template>
+
+                <template v-if="isBannerSummerLeavesParticles">
+                    <span class="particle icon particle-leave-forestgreen medium n1"/>
+                    <span class="particle icon particle-leave-green medium n2"/>
+                    <span class="sm:block hidden particle icon particle-leave-greeny medium n3"/>
+                    <span class="particle icon particle-leave-lime medium n4"/>
+                    <span class="particle icon particle-leave-tropic medium n5"/>
+                    <span class="sm:block hidden particle icon particle-leave-forestgreen medium n6"/>
+                    <span class="particle icon particle-leave-green medium n7"/>
+                    <span class="particle icon particle-leave-greeny medium n8"/>
+                    <span class="sm:block hidden particle icon particle-leave-lime medium n9"/>
+                    <span class="particle icon particle-leave-tropic medium n10"/>
+                    <span class="particle icon particle-leave-forestgreen medium n11"/>
+                    <span class="sm:block hidden particle icon particle-leave-green medium n12"/>
+                    <span class="particle icon particle-leave-greeny medium n13"/>
+                    <span class="particle icon particle-leave-lime medium n14"/>
+                    <span class="sm:block hidden particle icon particle-leave-tropic medium n15"/>
+                </template>
+
+                <template v-if="isBannerWinterSnowflakesParticles">
+                    <span class="particle icon particle-snowflake-flower medium n1"/>
+                    <span class="particle icon particle-snowflake-star medium n2"/>
+                    <span class="sm:block hidden particle icon article-snowflake-square medium n3"/>
+                    <span class="particle icon particle-snowflake-star medium n4"/>
+                    <span class="particle icon particle-snowflake-wheel medium n5"/>
+                    <span class="sm:block hidden particle icon particle-snowflake-flower medium n6"/>
+                    <span class="particle icon particle-snowflake-round medium n7"/>
+                    <span class="particle icon article-snowflake-square medium n8"/>
+                    <span class="sm:block hidden particle icon particle-snowflake-star medium n9"/>
+                    <span class="particle icon particle-snowflake-wheel medium n10"/>
+                    <span class="particle icon particle-snowflake-flower medium n11"/>
+                    <span class="sm:block hidden particle icon particle-snowflake-star medium n12"/>
+                    <span class="particle icon article-snowflake-square medium n13"/>
+                    <span class="particle icon particle-snowflake-star medium n14"/>
+                    <span class="sm:block hidden particle icon particle-snowflake-wheel medium n15"/>
                 </template>
 
             </div>
@@ -119,8 +165,18 @@ launchBannerParticles(BannerParticles.SNOWFLAKES)
     pointer-events: none;
     position: absolute;
     transition: .5s;
+}
+.particle.big {
     height: 32px;
     width: 32px;
+}
+.particle.medium {
+    height: 24px;
+    width: 24px;
+}
+.particle.small {
+    height: 16px;
+    width: 16px;
 }
 .effects-off .particle {
     opacity: 0;

@@ -5,10 +5,14 @@ import Banner from '@/components/elements/Banner.vue'
 import Button from '@/components/elements/Button.vue'
 
 const bannerImagesSrc = [
-    '/images/elements/home-banner-snowy-taiga.png',
+    //'/images/elements/home-banner-snowy-taiga.png',
+    //'/images/elements/home-banner-cherry-forest.png',
+    //'/images/elements/home-banner-christmas-village.png',
+    //'/images/elements/home-banner-christmas-village.png'
+    '/images/elements/home-banner-plains.png',
     '/images/elements/home-banner-cherry-forest.png',
-    '/images/elements/home-banner-christmas-village.png',
-    '/images/elements/home-banner-christmas-village.png'
+    '/images/elements/home-banner-nether-portal.png',
+    '/images/elements/home-banner-nether-portal.png'
 ]
 
 const titles = [
