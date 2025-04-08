@@ -1939,6 +1939,10 @@
         img {
             max-height: 220px;
         }
+
+        img.vue-advanced-cropper__image, img.vue-preview__image {
+            max-height: unset;
+        }
     }
 
     /* =============== [ Медиа-Запрос { ?px < 425px } ] =============== */

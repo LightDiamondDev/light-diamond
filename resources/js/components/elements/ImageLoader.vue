@@ -1,10 +1,59 @@
 <script setup lang="ts">
 
+import type {MaterialSubmission} from '@/types'
+import {ref} from 'vue'
+
 const props = defineProps({
+    editable: {
+        default: true,
+        type: Boolean
+    },
     fillerIcon: String,
     id: String,
+    maxSizeInMegabytes: {
+        type: Number,
+        required: true
+    },
     imagePath: String
 })
+
+const emit = defineEmits<{
+    (e: 'upload', file: File): void
+}>()
+
+const allowedFileFormats = ['PNG']
+const maxSizeInMegabytes = props.maxSizeInMegabytes
+const input = ref<HTMLInputElement>()
+
+function onChange(event: Event) {
+    if (props.editable && event.target && event.target.files[0]) {
+        uploadFile(event.target.files![0])
+    }
+    input.value!.value = null
+}
+
+function uploadFile(file: File) {
+    const fileExtension = file.name.split('.').pop().toUpperCase()
+
+    if (!allowedFileFormats.includes(fileExtension)) {
+        toastStore.warning(
+            `Недопустимый формат Файла, разрешены только ${allowedFileFormats.join(', ')}.`,
+            'Неверный формат'
+        )
+        return
+    }
+
+    if (file.size > maxSizeInMegabytes * 1024 * 1024) {
+        toastStore.warning(
+            `Файл слишком большой. Максимальный размер - ${maxSizeInMegabytes} Мб.`,
+            'Размер'
+        )
+        return
+    }
+
+    emit('upload', file)
+}
+
 </script>
 
 <template>
@@ -14,13 +63,9 @@ const props = defineProps({
         :for="id"
     >
         <span class="filler flex justify-center items-center w-full">
-            <span :class="fillerIcon" class="icon"></span>
+            <span :class="fillerIcon" class="icon"/>
         </span>
-        <input
-            class="hidden"
-            :id="id"
-            type="file"
-        >
+        <input class="hidden" :id="id" ref="input" type="file" @change="onChange">
     </label>
 </template>
 

@@ -2,20 +2,25 @@
 import axios, {type AxiosError} from 'axios'
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
-import {getErrorMessageByCode} from '@/helpers'
+import {getErrorMessageByCode, withCaptcha} from '@/helpers'
 import ImageLoader from '@/components/elements/ImageLoader.vue'
 import Input from '@/components/elements/Input.vue'
 import Button from '@/components/elements/Button.vue'
 import {ref} from 'vue'
+import Dialog from '@/components/elements/Dialog.vue'
+import AvatarCropperForm from '@/components/modals/AvatarCropperForm.vue'
+import UploadFile from '@/components/elements/UploadFile.vue'
+import {SubmissionType} from '@/types'
 
 const authStore = useAuthStore()
 const toastStore = useToastStore()
+const newAvatarImageSrc = ref('')
 
 const avatarData = ref({
     avatar: authStore.user,
 })
 const avatarErrors = ref([])
-const isEditingAvatar = ref(false)
+const isAvatarDialog = ref(false)
 const isProcessingAvatar = ref(false)
 
 const usernameData = ref({
@@ -57,45 +62,70 @@ function submitChangeUsername() {
     })
 }
 
-function submitChangeAvatar() {
-    isProcessingUsername.value = true
-    avatarErrors.value = []
+function submitChangeAvatar(file: File) {
+    withCaptcha(() => {
+        const formData = new FormData()
+        formData.append('file', file)
 
-    axios.put('/api/settings/profile/username', avatarData.value).then((response) => {
-        if (response.data.success) {
-            // toggleEditingAvatar()
-            toastStore.success('Аватар успешно изменён!')
-            authStore.fetchUser()
-        } else {
-            if (response.data.errors) {
-                avatarErrors.value = response.data.errors
+        axios.post('/api/upload-image', formData).then((response) => {
+            if (response.data.success) {
+                toastStore.success('Изображение Аватара успешно загружено!')
+                const filePath = response.data.file_path
+                const nowDate = new Date().toISOString()
+                emit('edit')
+            } else {
+                if (response.data.errors) {
+                    toastStore.error(response.data.errors['file'][0])
+                }
             }
-            if (response.data.message) {
-                toastStore.error(response.data.message)
-            }
-        }
-    }).catch((error: AxiosError) => {
-        toastStore.error(getErrorMessageByCode(error.response!.status))
-    }).finally(() => {
-        isProcessingAvatar.value = false
+        }).catch((error: AxiosError) => {
+            toastStore.error(getErrorMessageByCode(error.response!.status))
+        }).finally(() => {
+            isAvatarDialog.value = false
+        })
     })
+}
+
+function fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => {
+            const result = reader.result as string;
+            resolve(result)
+        }
+        reader.onerror = (error) => { reject(error) }
+        reader.readAsDataURL(file)
+    })
+}
+
+async function uploadAvatarImage(file: File) {
+    newAvatarImageSrc.value = await fileToBase64(file)
+    isAvatarDialog.value = true
 }
 </script>
 
 <template>
     <div class="section flex flex-col min-h-[100vh]">
+        <Dialog
+            v-model:visible="isAvatarDialog"
+            animation="top-translate"
+            class="search-dialog outer w-full"
+            form-container-classes="ld-primary-border max-w-[768px] w-full"
+            position="center"
+            title="Настройка Аватара"
+        >
+            <AvatarCropperForm :image-src="newAvatarImageSrc" @close="isAvatarDialog = false"/>
+        </Dialog>
         <div class="banner flex justify-center items-center max-h-[168px] w-full overflow-hidden">
             <img
-                alt=""
+                alt="Баннер"
                 class="profile sm:pt-0 pt-2"
                 src="/images/elements/stylization-banner.png"
                 style="animation: banner-scale-animation 15s infinite;"
             >
         </div>
         <form action="" class="flex flex-col h-full w-full">
-
             <div class="section-title ld-title-font flex justify-center transfusion text-[20px] mt-2">Аватар</div>
-
             <fieldset class="flex flex-col m-2">
                 <div class="flex flex-col xs:flex-row gap-2">
                     <div class="flex self-center md:self-start">
@@ -105,6 +135,8 @@ function submitChangeAvatar() {
                             filler-icon="icon-white-pencil"
                             id="settings-profile-avatar"
                             image-path="/images/users/avatars/avatar-light-diamond.png"
+                            :max-size-in-megabytes="5"
+                            @upload="uploadAvatarImage"
                         />
                     </div>
                     <div class="description flex flex-col">
