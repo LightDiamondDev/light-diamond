@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import axios, {type AxiosError} from 'axios'
+import {ref} from 'vue'
+
 import {useAuthStore} from '@/stores/auth'
 import {useToastStore} from '@/stores/toast'
 import {getErrorMessageByCode, withCaptcha} from '@/helpers'
+
 import ImageLoader from '@/components/elements/ImageLoader.vue'
 import Input from '@/components/elements/Input.vue'
 import Button from '@/components/elements/Button.vue'
-import {ref} from 'vue'
+
 import Dialog from '@/components/elements/Dialog.vue'
 import AvatarCropperForm from '@/components/modals/AvatarCropperForm.vue'
-import UploadFile from '@/components/elements/UploadFile.vue'
-import {SubmissionType} from '@/types'
 
 const authStore = useAuthStore()
 const toastStore = useToastStore()
@@ -62,24 +63,22 @@ function submitChangeUsername() {
     })
 }
 
-function submitChangeAvatar(file: File) {
+function submitChangeAvatar(blob: Blob) {
     withCaptcha(() => {
         const formData = new FormData()
-        formData.append('file', file)
-
+        formData.append('image', blob)
         axios.post('/api/upload-image', formData).then((response) => {
             if (response.data.success) {
-                toastStore.success('Изображение Аватара успешно загружено!')
-                const filePath = response.data.file_path
-                const nowDate = new Date().toISOString()
-                emit('edit')
+                const imagePath = response.data.image_path
+                const imageUrl = response.data.image_url
+                //emit('upload', imagePath, imageUrl)
+                isAvatarDialog.value = false
             } else {
-                if (response.data.errors) {
-                    toastStore.error(response.data.errors['file'][0])
-                }
+                if (response.data.errors) toastStore.error(response.data.errors['image'][0])
+                isAvatarDialog.value = false
             }
         }).catch((error: AxiosError) => {
-            toastStore.error(getErrorMessageByCode(error.response!.status))
+            //toastStore.error(getErrorMessageByCode(error.response!.status))
         }).finally(() => {
             isAvatarDialog.value = false
         })
@@ -90,7 +89,7 @@ function fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.onload = () => {
-            const result = reader.result as string;
+            const result = reader.result as string
             resolve(result)
         }
         reader.onerror = (error) => { reject(error) }
@@ -114,14 +113,19 @@ async function uploadAvatarImage(file: File) {
             position="center"
             title="Настройка Аватара"
         >
-            <AvatarCropperForm :image-src="newAvatarImageSrc" @close="isAvatarDialog = false"/>
+            <AvatarCropperForm
+                :image-src="newAvatarImageSrc"
+                @cancel="isAvatarDialog = false"
+                @close="isAvatarDialog = false"
+                @submit="submitChangeAvatar"
+            />
         </Dialog>
         <div class="banner flex justify-center items-center max-h-[168px] w-full overflow-hidden">
             <img
                 alt="Баннер"
                 class="profile sm:pt-0 pt-2"
                 src="/images/elements/stylization-banner.png"
-                style="animation: banner-scale-animation 15s infinite;"
+                style="animation: banner-scale-animation 15s infinite"
             >
         </div>
         <form action="" class="flex flex-col h-full w-full">
@@ -163,13 +167,8 @@ async function uploadAvatarImage(file: File) {
                         <div v-if="!isEditingUsername">
                             <span class="subtitle text-[14px]">Никнейм</span>
                             <div
-                                class="
-                                    current-data-field
-                                    transfusion bordered
-                                    flex
-                                    justify-between
-                                    items-center
-                                    h-[48px]"
+                                class=" current-data-field transfusion bordered flex
+                                    justify-between items-center h-[48px]"
                             >
                                 <div class="flex pl-3 text-[14px]">{{ authStore.username }}</div>
                                 <button
