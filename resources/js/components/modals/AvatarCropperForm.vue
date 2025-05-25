@@ -63,6 +63,7 @@ function submitChangeAvatar() {
         </p>
         <Cropper
             :src="imageSrc"
+            :stencil-props="{ aspectRatio: 1 }"
             ref="avatarCropper"
         />
         <div class="ld-primary-border-top flex justify-center items-end w-full gap-2 py-2">
