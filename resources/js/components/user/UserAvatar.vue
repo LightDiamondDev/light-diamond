@@ -15,6 +15,11 @@ defineProps({
 
 <template>
     <span :class="borderClassList" class="icon icon-border icon-outline flex justify-center items-center">
-        <img alt="" class="mt-0" :class="iconClassList" src="/images/users/avatars/avatar-light-diamond.png">
+        <img
+            alt=""
+            :src="user.avatar_url ?? '/images/users/avatars/avatar-light-diamond.png'"
+            class="mt-0"
+            :class="iconClassList"
+        >
     </span>
 </template>

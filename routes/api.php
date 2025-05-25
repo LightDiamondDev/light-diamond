@@ -47,6 +47,7 @@ Route::get('/material-versions/{versionId}/download/{fileId}', [MaterialFileCont
 Route::post('/captcha-tokens', [CaptchaTokenController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/settings/profile/avatar', [SettingsController::class, 'changeAvatar'])->middleware('verify.captcha')->middleware(['throttle:2,1']);
     Route::put('/settings/profile/username', [SettingsController::class, 'changeUsername']);
     Route::put('/settings/security/email', [SettingsController::class, 'changeEmail']);
     Route::put('/settings/security/password', [SettingsController::class, 'changePassword']);

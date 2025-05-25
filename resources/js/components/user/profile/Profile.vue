@@ -107,12 +107,11 @@ function updateTitle() {
     changeTitle(getTitle().replace(/Профиль/g, `Профиль ${props.username}`))
 }
 
-const profileBackgroundSrc = ref('')
-const profileAvatarSrc = ref('')
+const profileBackgroundSrc = '/images/elements/default.png'
+const profileAvatarSrc = computed(() => user.value?.avatar_url ?? '/images/users/avatars/avatar-light-diamond.png')
 
 // profileBackgroundSrc.value = '/images/elements/home-banner-trial-chamber.png'
-profileBackgroundSrc.value = '/images/elements/default.png'
-profileAvatarSrc.value = '/images/users/avatars/avatar-light-diamond.png'
+
 // const activeColor = ref('#00ffff')
 
 loadUser()

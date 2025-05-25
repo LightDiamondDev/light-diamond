@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Storage;
 
 /**
  * App\Models\User
@@ -22,8 +23,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $avatar
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MaterialComment> $comments
  * @property-read int $comments_count
+ * @property-read string|null $avatar_url
  * @property-read int $collected_downloads_count
  * @property-read int $collected_likes_count
  * @property-read int $collected_views_count
@@ -39,6 +42,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
@@ -76,6 +80,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
+        'avatar',
     ];
 
     /**
@@ -93,9 +98,18 @@ class User extends Authenticatable implements MustVerifyEmail
         'role' => UserRole::User,
     ];
 
+    protected $appends = [
+        'avatar_url',
+    ];
+
     public function comments(): HasMany
     {
         return $this->hasMany(MaterialComment::class, 'user_id');
+    }
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        return $this->avatar ? Storage::url($this->avatar) : null;
     }
 
     public function getMaterialsCountAttribute(): int

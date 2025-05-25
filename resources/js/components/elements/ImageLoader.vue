@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import type {MaterialSubmission} from '@/types'
 import {ref} from 'vue'
+import {useToastStore} from '@/stores/toast'
 
 const props = defineProps({
     editable: {
@@ -21,7 +21,9 @@ const emit = defineEmits<{
     (e: 'upload', file: File): void
 }>()
 
-const allowedFileFormats = ['PNG']
+const toastStore = useToastStore()
+const allowedFileFormats = ['JPG', 'JPEG', 'PNG']
+const allowedFormats = allowedFileFormats.map((format) => 'image/' + format.toLowerCase())
 const maxSizeInMegabytes = props.maxSizeInMegabytes
 const input = ref<HTMLInputElement>()
 
@@ -65,7 +67,7 @@ function uploadFile(file: File) {
         <span class="filler flex justify-center items-center w-full">
             <span :class="fillerIcon" class="icon"/>
         </span>
-        <input class="hidden" :id="id" ref="input" type="file" @change="onChange">
+        <input class="hidden" :id="id" ref="input" type="file" :accept="allowedFormats" @change="onChange">
     </label>
 </template>
 
@@ -75,6 +77,7 @@ function uploadFile(file: File) {
     position: relative;
     cursor: pointer;
 }
+
 .image-loader .filler {
     background-color: rgba(0, 0, 0, .7);
     position: absolute;
@@ -82,13 +85,16 @@ function uploadFile(file: File) {
     bottom: 0;
     height: 0;
 }
+
 .image-loader:hover .filler {
     height: 100%;
 }
+
 .image-loader .filler .icon {
     transition: .2s;
     opacity: 0;
 }
+
 .image-loader:hover .filler .icon {
     transition: 1s;
     opacity: 1;

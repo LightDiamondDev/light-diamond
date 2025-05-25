@@ -20,9 +20,7 @@ const newAvatarImageSrc = ref('')
 const avatarData = ref({
     avatar: authStore.user,
 })
-const avatarErrors = ref([])
 const isAvatarDialog = ref(false)
-const isProcessingAvatar = ref(false)
 
 const usernameData = ref({
     username: authStore.username,
@@ -63,28 +61,6 @@ function submitChangeUsername() {
     })
 }
 
-function submitChangeAvatar(blob: Blob) {
-    withCaptcha(() => {
-        const formData = new FormData()
-        formData.append('image', blob)
-        axios.post('/api/upload-image', formData).then((response) => {
-            if (response.data.success) {
-                const imagePath = response.data.image_path
-                const imageUrl = response.data.image_url
-                //emit('upload', imagePath, imageUrl)
-                isAvatarDialog.value = false
-            } else {
-                if (response.data.errors) toastStore.error(response.data.errors['image'][0])
-                isAvatarDialog.value = false
-            }
-        }).catch((error: AxiosError) => {
-            //toastStore.error(getErrorMessageByCode(error.response!.status))
-        }).finally(() => {
-            isAvatarDialog.value = false
-        })
-    })
-}
-
 function fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
@@ -92,7 +68,9 @@ function fileToBase64(file: File): Promise<string> {
             const result = reader.result as string
             resolve(result)
         }
-        reader.onerror = (error) => { reject(error) }
+        reader.onerror = (error) => {
+            reject(error)
+        }
         reader.readAsDataURL(file)
     })
 }
@@ -117,7 +95,6 @@ async function uploadAvatarImage(file: File) {
                 :image-src="newAvatarImageSrc"
                 @cancel="isAvatarDialog = false"
                 @close="isAvatarDialog = false"
-                @submit="submitChangeAvatar"
             />
         </Dialog>
         <div class="banner flex justify-center items-center max-h-[168px] w-full overflow-hidden">
@@ -138,7 +115,7 @@ async function uploadAvatarImage(file: File) {
                             v-model="avatarData.avatar"
                             filler-icon="icon-white-pencil"
                             id="settings-profile-avatar"
-                            image-path="/images/users/avatars/avatar-light-diamond.png"
+                            :image-path="authStore.avatarUrl ?? '/images/users/avatars/avatar-light-diamond.png'"
                             :max-size-in-megabytes="5"
                             @upload="uploadAvatarImage"
                         />
