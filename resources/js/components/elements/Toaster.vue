@@ -25,7 +25,7 @@ const toastStore = useToastStore()
 .toaster {
     top: var(--header-height);
     width: 100%;
-    z-index: 3;
+    z-index: 4;
     right: 0;
 }
 

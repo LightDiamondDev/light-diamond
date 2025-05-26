@@ -7,6 +7,7 @@ use App\Rules\NotVerifiedEmailRule;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 
@@ -27,11 +28,21 @@ class AuthController extends Controller
             return $this->errorJsonResponse('', $validator->errors());
         }
 
-        $attributes = $request->only('username', 'password');
+        $login = $request->input('username');
+        $password = $request->input('password');
 
-        if (!Auth::attempt($attributes, $request->get('remember', true))) {
-            return $this->errorJsonResponse('Неверное имя Пользователя или пароль.');
+        $user = User::where('username', $login)
+            ->orWhere(function ($query) use ($login) {
+                $query->where('email', $login)
+                    ->whereNotNull('email_verified_at');
+            })
+            ->first();
+
+        if (!$user || !Hash::check($password, $user->password)) {
+            return $this->errorJsonResponse('Неверное имя пользователя, email или пароль.');
         }
+
+        Auth::login($user, $request->get('remember', true));
 
         return $this->successJsonResponse();
     }
