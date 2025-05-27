@@ -115,7 +115,7 @@ async function uploadAvatarImage(file: File) {
                             v-model="avatarData.avatar"
                             filler-icon="icon-white-pencil"
                             id="settings-profile-avatar"
-                            :image-path="authStore.avatarUrl ?? '/images/users/avatars/avatar-light-diamond.png'"
+                            :image-path="authStore.avatarUrl ?? '/images/users/default-avatar.png'"
                             :max-size-in-megabytes="5"
                             @upload="uploadAvatarImage"
                         />

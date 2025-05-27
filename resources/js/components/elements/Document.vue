@@ -55,7 +55,7 @@ const isLoading = ref(true)
                                 <span
                                     class="icon icon-border icon-outline flex justify-center items-center md:h-10 md:w-10 h-8 w-8">
                                     <img alt="" class="md:h-7 md:w-7 h-6 w-6 mt-0"
-                                         src="/images/users/avatars/avatar-light-diamond.png">
+                                         src="/images/users/default-avatar.png">
                                 </span>
                             </span>
 
@@ -137,7 +137,7 @@ const isLoading = ref(true)
                                 <span
                                     class="icon icon-border icon-outline flex justify-center items-center md:h-10 md:w-10 h-8 w-8">
                                     <img alt="" class="md:h-7 md:w-7 h-6 w-6 mt-0"
-                                         src="/images/users/avatars/avatar-light-diamond.png">
+                                         src="/images/users/default-avatar.png">
                                 </span>
                             </span>
 

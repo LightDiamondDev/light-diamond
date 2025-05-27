@@ -108,7 +108,7 @@ function updateTitle() {
 }
 
 const profileBackgroundSrc = '/images/elements/default.png'
-const profileAvatarSrc = computed(() => user.value?.avatar_url ?? '/images/users/avatars/avatar-light-diamond.png')
+const profileAvatarSrc = computed(() => user.value?.avatar_url ?? '/images/users/default-avatar.png')
 
 // profileBackgroundSrc.value = '/images/elements/home-banner-trial-chamber.png'
 
